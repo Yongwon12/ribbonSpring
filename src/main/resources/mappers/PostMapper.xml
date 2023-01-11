@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.ribbon.domain.post.PostMapper">
+
+    <!-- tb_post 테이블 전체 컬럼 -->
+    <sql id="postColumns">
+        id
+        , title
+        , content
+        , writer
+        , cnt
+    </sql>
+
+
+    <!-- 게시글 저장 -->
+    <insert id="save" parameterType="com.project.ribbon.domain.post.PostRequest"
+    useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_post (
+        <include refid="postColumns" />
+        ) VALUES (
+        #{id}
+        , #{title}
+        , #{content}
+        , #{writer}
+        , #{cnt}
+        )
+    </insert>
+
+
+    <!-- 게시글 상세정보 조회 -->
+    <select id="findById" parameterType="long" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+        <include refid="postColumns" />
+        FROM
+        tb_post
+        WHERE
+        id = #{value}
+    </select>
+
+
+    <!-- 게시글 수정 -->
+    <update id="update" parameterType="com.project.ribbon.domain.post.PostRequest">
+        UPDATE tb_post
+        SET
+            title = #{title}
+          , content = #{content}
+          , writer = #{writer}
+        WHERE
+            id = #{id}
+    </update>
+
+
+
+
+    <!-- 게시글 리스트 조회 -->
+    <select id="findAll" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+        *
+        FROM
+        tb_post
+    </select>
+
+</mapper>
