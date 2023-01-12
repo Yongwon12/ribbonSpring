@@ -18,40 +18,222 @@ public class PostController {
 
     private final PostService postService;
 
-    // 게시글 작성 페이지
-    @GetMapping("/post/write.do")
-    public String openPostWrite(@RequestParam(value = "id", required = false) final Long id, Model model) {
-        if (id != null) {
-            PostResponse post = postService.findPostById(id);
-            model.addAttribute("post", post);
-        }
-        return "post/write";
-    }
-    @PostMapping("/post/save.do")
+    // 커뮤니티 게시글 작성
+    @PostMapping("/post/write")
     public Long savePost(@RequestBody PostRequest params) {
         return postService.savePost(params);
 
     }
-    // 게시글 리스트 페이지
-    @GetMapping("/post/list.do")
-    public String openPostList(Model model) {
-        List<PostResponse> posts = postService.findAllPost();
-        model.addAttribute("posts", posts);
-        return "post/list";
-    }
-    // 게시글 상세 페이지
-    @GetMapping("/post/board")
-    public ResponseEntity<?> boardwrite(Model model) {
+
+    // 커뮤니티 게시글 조회
+    @GetMapping("/post/board1")
+    public ResponseEntity<?> boardwrite1(Model model) {
         Map<String, Object> obj = new HashMap<>();
-        List<PostResponse> posts = postService.findAllPost();
+        List<PostResponse> posts = postService.findAllPost1();
         model.addAttribute("posts", posts);
-        obj.put("boardwrite", posts);
+        obj.put("boardwrite1", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    @GetMapping("/post/board2")
+    public ResponseEntity<?> boardwrite2(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostResponse> posts = postService.findAllPost2();
+        model.addAttribute("posts", posts);
+        obj.put("boardwrite2", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    @GetMapping("/post/board3")
+    public ResponseEntity<?> boardwrite3(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostResponse> posts = postService.findAllPost3();
+        model.addAttribute("posts", posts);
+        obj.put("boardwrite3", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    @GetMapping("/post/board4")
+    public ResponseEntity<?> boardwrite4(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostResponse> posts = postService.findAllPost4();
+        model.addAttribute("posts", posts);
+        obj.put("boardwrite4", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    @GetMapping("/post/board5")
+    public ResponseEntity<?> boardwrite5(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostResponse> posts = postService.findAllPost5();
+        model.addAttribute("posts", posts);
+        obj.put("boardwrite5", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    @GetMapping("/post/board6")
+    public ResponseEntity<?> boardwrite6(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostResponse> posts = postService.findAllPost6();
+        model.addAttribute("posts", posts);
+        obj.put("boardwrite6", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    @GetMapping("/post/board7")
+    public ResponseEntity<?> boardwrite7(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostResponse> posts = postService.findAllPost7();
+        model.addAttribute("posts", posts);
+        obj.put("boardwrite7", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    @GetMapping("/post/board8")
+    public ResponseEntity<?> boardwrite8(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostResponse> posts = postService.findAllPost8();
+        model.addAttribute("posts", posts);
+        obj.put("boardwrite8", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    @GetMapping("/post/board9")
+    public ResponseEntity<?> boardwrite9(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostResponse> posts = postService.findAllPost9();
+        model.addAttribute("posts", posts);
+        obj.put("boardwrite9", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    @GetMapping("/post/board10")
+    public ResponseEntity<?> boardwrite10(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostResponse> posts = postService.findAllPost10();
+        model.addAttribute("posts", posts);
+        obj.put("boardwrite10", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
     // 기존 게시글 수정
-    @PostMapping("/post/update.do")
+    @PostMapping("/post/update")
     public Long updatePost(@RequestBody PostRequest params) {
         return postService.updatePost(params);
     }
 
+    // 기존 게시글 삭제
+    @PostMapping("/post/delete")
+    public Long deletePost(@RequestBody PostRequest params) {
+        return postService.deletePost(params);
+    }
+    // 단체 작성글 조회
+    @GetMapping("/post/group")
+    public ResponseEntity<?> group(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostGroupResponse> posts = postService.findGroupAllPost();
+        model.addAttribute("posts", posts);
+        obj.put("groupwrite", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 단체 글작성
+    @PostMapping("/post/writegroup")
+    public Long saveGroupPost(@RequestBody PostGroupRequest params) {
+        return postService.saveGroupPost(params);
+
+    }
+
+    // 단체 게시글 수정
+    @PostMapping("/post/updategroup")
+    public Long updateGroupPost(@RequestBody PostGroupRequest params) {
+        return postService.updateGroupPost(params);
+    }
+
+    // 단체 게시글 삭제
+    @PostMapping("/post/deletegroup")
+    public Long deleteGroupPost(@RequestBody PostGroupRequest params) {
+        return postService.deleteGroupPost(params);
+    }
+
+    // 개인 작성글 조회
+    @GetMapping("/post/individual")
+    public ResponseEntity<?> individual(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostIndiResponse> posts = postService.findIndiAllPost();
+        model.addAttribute("posts", posts);
+        obj.put("individualwrite", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 개인 글작성
+    @PostMapping("/post/writeindividual")
+    public Long saveIndiPost(@RequestBody PostIndiRequest params) {
+        return postService.saveIndiPost(params);
+
+    }
+
+    // 개인 게시글 수정
+    @PostMapping("/post/updateindividual")
+    public Long updateIndiPost(@RequestBody PostIndiRequest params) {
+        return postService.updateIndiPost(params);
+    }
+
+    // 개인 게시글 삭제
+    @PostMapping("/post/deleteindividual")
+    public Long deleteIndiPost(@RequestBody PostIndiRequest params) {
+        return postService.deleteIndiPost(params);
+    }
+
+    // 중고 작성글 조회
+    @GetMapping("/post/used")
+    public ResponseEntity<?> used(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostUsedResponse> posts = postService.findUsedAllPost();
+        model.addAttribute("posts", posts);
+        obj.put("usedwrite", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 중고 글작성
+    @PostMapping("/post/writeused")
+    public Long saveUsedPost(@RequestBody PostUsedRequest params) {
+        return postService.saveUsedPost(params);
+
+    }
+
+    // 중고 게시글 수정
+    @PostMapping("/post/updateused")
+    public Long updateUsedPost(@RequestBody PostUsedRequest params) {
+        return postService.updateUsedPost(params);
+    }
+
+    // 중고 게시글 삭제
+    @PostMapping("/post/deleteused")
+    public Long deleteUsedPost(@RequestBody PostUsedRequest params) {
+        return postService.deleteUsedPost(params);
+    }
+    // 유저 정보 조회
+    @GetMapping("/post/sign")
+    public ResponseEntity<?> user(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostUserResponse> posts = postService.findUserAllPost();
+        model.addAttribute("posts", posts);
+        obj.put("userinfo", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 유저 정보 등록
+    @PostMapping("/post/sign")
+    public Long saveUserPost(@RequestBody PostUserRequest params) {
+        return postService.saveUserPost(params);
+
+    }
+
+    // 유저 정보 수정
+    @PostMapping("/post/updateuser")
+    public Long updateUserPost(@RequestBody PostUserRequest params) {
+        return postService.updateUserPost(params);
+    }
+
+    // 유저 정보 삭제
+    @PostMapping("/post/deleteuser")
+    public Long deleteUserPost(@RequestBody PostUserRequest params) {
+        return postService.deleteUserPost(params);
+    }
+    // 실시간 인기글
+    @GetMapping("/post/realtimeup")
+    public ResponseEntity<?> realtimeup(Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostResponse> posts = postService.findAllPost11();
+        model.addAttribute("posts", posts);
+        obj.put("bestwrite", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
 }

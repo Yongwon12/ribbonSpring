@@ -3,62 +3,448 @@
 
 <mapper namespace="com.project.ribbon.domain.post.PostMapper">
 
-    <!-- tb_post 테이블 전체 컬럼 -->
+    <!-- boardwrite 테이블 전체 컬럼 -->
     <sql id="postColumns">
         id
+        , userid
         , title
-        , content
-        , writer
-        , cnt
+        , description
+        , img
+        , writedate
+        , profileimage
+        , nickname
+        , boardid
+        , likedcount
+        , commentcount
+    </sql>
+    <!-- groupwrite 테이블 전체 컬럼 -->
+    <sql id="postGroupColumns">
+        id
+        , region
+        , title
+        , line
+        , description
+        , peoplenum
+        , gender
+        , minage
+        , titleimage
+        , userid
+        , maxage
+        , writedate
+        , peoplenownum
+        , nickname
+        , groupid
+        , once
+        , commentcount
+    </sql>
+    <!-- individualwrite 테이블 전체 컬럼 -->
+    <sql id="postIndiColumns">
+        id
+        , region
+        , meetdate
+        , title
+        , description
+        , gender
+        , userimage
+        , userid
+        , writedate
+        , maxage
+        , minage
+        , nickname
+        , individualid
+        , likedcount
+        , commentcount
     </sql>
 
+    <!-- usedwrite 테이블 전체 컬럼 -->
+    <sql id="postUsedColumns">
+        id
+        , region
+        , title
+        , description
+        , usedimage1
+        , price
+        , userid
+        , writedate
+        , nickname
+        , usedid
+        , usedimage2
+        , usedimage3
+        , usedimage4
+        , usedimage5
+        , likedcount
+        , commentcount
+    </sql>
 
-    <!-- 게시글 저장 -->
+    <!-- user 테이블 전체 컬럼 -->
+    <sql id="postUserColumns">
+        id
+        , username
+        , password
+        , email
+        , nickname
+        , mobile
+        , createdate
+        , modifydate
+        , birth
+        , userimage
+        , gender
+        , bestcategory
+        , shortinfo
+    </sql>
+
+    <!-- 커뮤니티 게시글 저장 -->
     <insert id="save" parameterType="com.project.ribbon.domain.post.PostRequest"
-    useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO tb_post (
+    useGeneratedKeys="true" keyProperty="boardid">
+        INSERT INTO boardwrite (
         <include refid="postColumns" />
         ) VALUES (
         #{id}
+        , #{userid}
         , #{title}
-        , #{content}
-        , #{writer}
-        , #{cnt}
+        , #{description}
+        , #{img}
+        , #{writedate}
+        , #{profileimage}
+        , #{nickname}
+        , #{boardid}
+        , 0
+        , 0
         )
     </insert>
 
 
-    <!-- 게시글 상세정보 조회 -->
-    <select id="findById" parameterType="long" resultType="com.project.ribbon.domain.post.PostResponse">
-        SELECT
-        <include refid="postColumns" />
-        FROM
-        tb_post
-        WHERE
-        id = #{value}
-    </select>
-
-
-    <!-- 게시글 수정 -->
+    <!-- 커뮤니티 게시글 수정 -->
     <update id="update" parameterType="com.project.ribbon.domain.post.PostRequest">
-        UPDATE tb_post
+        UPDATE boardwrite
         SET
             title = #{title}
-          , content = #{content}
-          , writer = #{writer}
+          , description = #{description}
+          , img = #{img}
+          , writedate = #{writedate}
+          , profileimage = #{profileimage}
+        WHERE
+            boardid = #{boardid}
+    </update>
+
+
+
+
+    <!-- 커뮤니티 게시글  조회 -->
+    <select id="findAll1" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+        *
+        FROM
+        boardwrite where id = 1
+    </select>
+    <select id="findAll2" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+            *
+        FROM
+            boardwrite where id = 2
+    </select>
+    <select id="findAll3" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+            *
+        FROM
+            boardwrite where id = 3
+    </select>
+    <select id="findAll4" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+            *
+        FROM
+            boardwrite where id = 4
+    </select>
+    <select id="findAll5" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+            *
+        FROM
+            boardwrite where id = 5
+    </select>
+    <select id="findAll6" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+            *
+        FROM
+            boardwrite where id = 6
+    </select>
+    <select id="findAll7" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+            *
+        FROM
+            boardwrite where id = 7
+    </select>
+    <select id="findAll8" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+            *
+        FROM
+            boardwrite where id = 8
+    </select>
+    <select id="findAll9" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+            *
+        FROM
+            boardwrite where id = 9
+    </select>
+    <select id="findAll10" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+            *
+        FROM
+            boardwrite where id = 10
+    </select>
+    <!-- 커뮤니티 게시글 삭제 -->
+    <delete id="deleteById" >
+        DELETE
+        FROM
+        boardwrite
+        where boardid = #{boardid}
+    </delete>
+
+    <!-- 단체 게시글 조회  -->
+    <select id="findGroupAll" resultType="com.project.ribbon.domain.post.PostGroupResponse">
+        SELECT
+        <include refid="postGroupColumns" />
+        FROM
+            groupwrite
+    </select>
+
+    <!-- 단체 게시글 저장 -->
+    <insert id="saveGroup" parameterType="com.project.ribbon.domain.post.PostGroupRequest"
+            useGeneratedKeys="true" keyProperty="groupid">
+        INSERT INTO groupwrite (
+        <include refid="postGroupColumns" />
+        ) VALUES (
+        #{id}
+        , #{region}
+        , #{title}
+        , #{line}
+        , #{description}
+        , #{peoplenum}
+        , #{gender}
+        , #{minage}
+        , #{titleimage}
+        , #{userid}
+        , #{maxage}
+        , #{writedate}
+        , #{peoplenownum}
+        , #{nickname}
+        , #{groupid}
+        , #{once}
+        , 0
+        )
+    </insert>
+
+    <!-- 단체 게시글 수정 -->
+    <update id="updateGroup" parameterType="com.project.ribbon.domain.post.PostGroupRequest">
+        UPDATE groupwrite
+        SET
+            region = #{region}
+          , title = #{title}
+          , line = #{line}
+          , description = #{description}
+          , peoplenum = #{peoplenum}
+          , minage = #{minage}
+          , titleimage = #{titleimage}
+          , maxage = #{maxage}
+          , writedate = #{writedate}
+          , peoplenownum = #{peoplenownum}
+          , once = #{once}
+        WHERE
+            groupid = #{groupid}
+    </update>
+
+    <!-- 단체 게시글 삭제 -->
+    <delete id="deleteByGroupId" >
+        DELETE
+        FROM
+            groupwrite
+        where groupid = #{groupid}
+    </delete>
+
+
+    <!-- 개인 게시글 조회  -->
+    <select id="findIndiAll" resultType="com.project.ribbon.domain.post.PostIndiResponse">
+        SELECT
+        <include refid="postIndiColumns" />
+        FROM
+        individualwrite
+    </select>
+
+    <!-- 개인 게시글 저장 -->
+    <insert id="saveIndi" parameterType="com.project.ribbon.domain.post.PostIndiRequest"
+            useGeneratedKeys="true" keyProperty="individualid">
+        INSERT INTO individualwrite (
+        <include refid="postIndiColumns" />
+        ) VALUES (
+        #{id}
+        , #{region}
+        , #{meetdate}
+        , #{title}
+        , #{description}
+        , #{gender}
+        , #{userimage}
+        , #{userid}
+        , #{writedate}
+        , #{maxage}
+        , #{minage}
+        , #{nickname}
+        , #{individualid}
+        , 0
+        , 0
+        )
+    </insert>
+
+    <!-- 개인 게시글 수정 -->
+    <update id="updateIndi" parameterType="com.project.ribbon.domain.post.PostIndiRequest">
+        UPDATE individualwrite
+        SET
+            region = #{region}
+          , meetdate = #{meetdate}
+          , title = #{title}
+          , description = #{description}
+          , userimage = #{userimage}
+          , writedate = #{writedate}
+          , maxage = #{maxage}
+          , minage = #{minage}
+        WHERE
+            individualid = #{individualid}
+    </update>
+
+    <!-- 개인 게시글 삭제 -->
+    <delete id="deleteByIndiId" >
+        DELETE
+        FROM
+            individualwrite
+        where individualid = #{individualid}
+    </delete>
+
+    <!-- 중고 게시글 조회  -->
+    <select id="findUsedAll" resultType="com.project.ribbon.domain.post.PostUsedResponse">
+        SELECT
+        <include refid="postUsedColumns" />
+        FROM
+        usedwrite
+    </select>
+
+    <!-- 중고 게시글 저장 -->
+    <insert id="saveUsed" parameterType="com.project.ribbon.domain.post.PostUsedRequest"
+            useGeneratedKeys="true" keyProperty="usedid">
+        INSERT INTO usedwrite (
+        <include refid="postUsedColumns" />
+        ) VALUES (
+        #{id}
+        , #{region}
+        , #{title}
+        , #{description}
+        , #{usedimage1}
+        , #{price}
+        , #{userid}
+        , #{writedate}
+        , #{nickname}
+        , #{usedid}
+        , #{usedimage2}
+        , #{usedimage3}
+        , #{usedimage4}
+        , #{usedimage5}
+        , 0
+        , 0
+        )
+    </insert>
+
+    <!-- 중고 게시글 수정 -->
+    <update id="updateUsed" parameterType="com.project.ribbon.domain.post.PostUsedRequest">
+        UPDATE usedwrite
+        SET
+            region = #{region}
+          , title = #{title}
+          , description = #{description}
+          , usedimage1 = #{usedimage1}
+          , price = #{price}
+          , writedate = #{writedate}
+          , usedimage2 = #{usedimage2}
+          , usedimage3 = #{usedimage3}
+          , usedimage4 = #{usedimage4}
+          , usedimage5 = #{usedimage5}
+        WHERE
+            usedid = #{usedid}
+    </update>
+
+    <!-- 중고 게시글 삭제 -->
+    <delete id="deleteByUsedId" >
+        DELETE
+        FROM
+            usedwrite
+        where usedid = #{usedid}
+    </delete>
+
+    <!-- 유저 정보 조회  -->
+    <select id="findUserAll" resultType="com.project.ribbon.domain.post.PostUserResponse">
+        SELECT
+        id,username,nickname,email,userimage,gender,bestcategory,shortinfo
+        FROM
+        user ORDER BY id DESC LIMIT 1;
+    </select>
+
+    <!-- 유저 가입 -->
+    <insert id="saveUser" parameterType="com.project.ribbon.domain.post.PostUserRequest"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user (
+        <include refid="postUserColumns" />
+        ) VALUES (
+        #{id}
+        , #{username}
+        , #{password}
+        , #{email}
+        , #{nickname}
+        , #{mobile}
+        , #{createdate}
+        , #{modifydate}
+        , #{birth}
+        , #{userimage}
+        , #{gender}
+        , #{bestcategory}
+        , #{shortinfo}
+        );
+
+    </insert>
+
+    <!-- 유저 마이페이지 수정 -->
+    <update id="updateUser" parameterType="com.project.ribbon.domain.post.PostUserRequest">
+        UPDATE usedwrite
+        SET
+            nickname = #{nickname}
+          , userimage = #{userimage}
+          , modifyDate = #{modifydate}
+          , bestcategory = #{bestcategory}
+          , shortinfo = #{shortinfo}
         WHERE
             id = #{id}
     </update>
 
 
 
-
-    <!-- 게시글 리스트 조회 -->
-    <select id="findAll" resultType="com.project.ribbon.domain.post.PostResponse">
+    <!-- 유저 정보 삭제 -->
+    <delete id="deleteByUserId" >
+        DELETE
+        FROM
+            user
+        where id = #{id}
+    </delete>
+    <!-- 실시간 인기글 -->
+    <select id="findAll11" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
         *
         FROM
-        tb_post
+            boardwrite
+        WHERE
+            likedcount
+                = (SELECT max(likedcount) FROM boardwrite)
+        ORDER BY
+            boardid
+            DESC
+             limit 1
     </select>
+
+
+
 
 </mapper>

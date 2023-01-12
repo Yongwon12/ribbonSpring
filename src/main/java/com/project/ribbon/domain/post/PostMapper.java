@@ -7,41 +7,74 @@ import java.util.List;
 @Mapper
 public interface PostMapper {
 
-    /**
-     * 게시글 저장
-     * @param params - 게시글 정보
-     */
+    // 커뮤니티 게시글 작성
+
     void save(PostRequest params);
 
-    /**
-     * 게시글 상세정보 조회
-     * @param id - PK
-     * @return 게시글 상세정보
-     */
-    PostResponse findById(Long id);
 
-    /**
-     * 게시글 수정
-     * @param params - 게시글 정보
-     */
+    // 커뮤니티 게시글 수정
     void update(PostRequest params);
 
-    /**
-     * 게시글 삭제
-     * @param id - PK
-     */
-    void deleteById(Long id);
+    // 커뮤니티 게시글 삭제
+    void deleteById(PostRequest params);
 
-    /**
-     * 게시글 리스트 조회
-     * @return 게시글 리스트
-     */
-    List<PostResponse> findAll();
+    // 커뮤니티 게시글 조회
 
-    /**
-     * 게시글 수 카운팅
-     * @return 게시글 수
-     */
+    List<PostResponse> findAll1();
+    List<PostResponse> findAll2();
+    List<PostResponse> findAll3();
+    List<PostResponse> findAll4();
+    List<PostResponse> findAll5();
+    List<PostResponse> findAll6();
+    List<PostResponse> findAll7();
+    List<PostResponse> findAll8();
+    List<PostResponse> findAll9();
+    List<PostResponse> findAll10();
+    List<PostResponse> findAll11();
+
+    // 단체 게시글 조회
+    List<PostGroupResponse> findGroupAll();
+    // 단체 게시글 작성
+    void saveGroup(PostGroupRequest params);
+    // 단체 게시글 수정
+    void updateGroup(PostGroupRequest params);
+    // 단체 게시글 삭제
+    void deleteByGroupId(PostGroupRequest params);
+
+    // 개인 게시글 조회
+    List<PostIndiResponse> findIndiAll();
+    // 개인 게시글 작성
+    void saveIndi(PostIndiRequest params);
+    // 개인 게시글 수정
+    void updateIndi(PostIndiRequest params);
+    // 개인 게시글 삭제
+    void deleteByIndiId(PostIndiRequest params);
+    // 중고 게시글 조회
+    List<PostUsedResponse> findUsedAll();
+    // 중고 게시글 작성
+    void saveUsed(PostUsedRequest params);
+    // 중고 게시글 수정
+    void updateUsed(PostUsedRequest params);
+    // 중고 게시글 삭제
+    void deleteByUsedId(PostUsedRequest params);
+
+    // 유저 조회
+    List<PostUserResponse> findUserAll();
+    // 유저 가입
+    void saveUser(PostUserRequest params);
+    // 유저 수정
+    void updateUser(PostUserRequest params);
+    // 유저 삭제
+    void deleteByUserId(PostUserRequest params);
+
+
+
+
+
+
+
+
+    // 게시글 갯수 카운트
     int count();
 
 }

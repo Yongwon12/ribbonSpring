@@ -9,11 +9,17 @@ import org.springframework.context.annotation.Bean;
 @AllArgsConstructor
 public class PostRequest {
 
-        private Long id;             // PK
-        private String title;        // 제목
-        private String content;      // 내용
-        private String writer;       // 작성자
-        private Integer cnt;
+        private Integer id;
+        private Long userid;
+        private String title;
+        private String description;
+        private String img;
+        private String writedate;
+        private String profileimage;
+        private String nickname;
+        private Long boardid;   // PK
+        private Integer likedcount;
+        private Integer commentcount;
 
 }
 
