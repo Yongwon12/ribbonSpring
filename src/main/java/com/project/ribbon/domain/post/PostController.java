@@ -1,8 +1,8 @@
 package com.project.ribbon.domain.post;
 
-import lombok.Data;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +17,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("api")
 @ResponseBody
+@Slf4j
+@RestController
+
 public class PostController {
 
     private final PostService postService;
@@ -324,15 +327,16 @@ public class PostController {
 
     // 특정 유저 아이디 받아서 응답
     @RequestMapping(method = RequestMethod.POST,path ="/post/userprofile")
-    public ResponseEntity<?> saveUserInfo(@RequestParam TestRequest params,Model model) {
-        postService.saveUserinfo(params);
-        Map<String, Object> obj = new HashMap<>();
-        List<TestResponse> posts = postService.findUserInfoPost();
-        model.addAttribute("posts", posts);
-        obj.put("UserInfo", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
+    public Long findUserInfo(@RequestBody TestResponse userid,Model model) {
 
+        return userid.getUserid();
     }
 
+    @GetMapping("/test")
+    public String requestTest(
+            @RequestParam("userid") String userid){
+        log.info("userid={}", userid);
+        return "ok";
+    }
 
 }

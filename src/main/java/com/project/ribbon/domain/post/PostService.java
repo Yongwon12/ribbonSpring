@@ -1,7 +1,10 @@
 package com.project.ribbon.domain.post;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -209,16 +212,13 @@ public class PostService {
         postMapper.deleteComments(params);
         return params.getInherentid();
     }
-    // 특정 유저 프로필 조회
+    // 특정 유저 프로필 조회 테스트
 
-    public List<TestResponse> findUserInfoPost() {
-        return postMapper.findUserInfo();
+
+    public TestResponse getUserInfo() {
+        return postMapper.getUserInfo();
     }
 
-    // 댓글 기입
-    @Transactional
-    public Long saveUserinfo(final TestRequest params) {
-        postMapper.saveUserInfo(params);
-        return params.getId();
-    }
+    // 유저정보 테스트 기입
+
 }

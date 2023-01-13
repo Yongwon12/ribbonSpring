@@ -1,13 +1,24 @@
 package com.project.ribbon.domain.post;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Getter
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TestResponse {
 
-    private Integer nickname;
-    private Integer userimage;
-    private Integer gender;
+    private String nickname;
+    private String userimage;
+    private String gender;
+    private Long userid;
+
+
+
+
 
 
 }
