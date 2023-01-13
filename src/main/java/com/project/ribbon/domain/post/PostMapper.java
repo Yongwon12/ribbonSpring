@@ -1,10 +1,13 @@
 package com.project.ribbon.domain.post;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Mapper
+
 public interface PostMapper {
 
     // 커뮤니티 게시글 작성
@@ -67,6 +70,31 @@ public interface PostMapper {
     // 유저 삭제
     void deleteByUserId(PostUserRequest params);
 
+
+
+    // 좋아요
+    void saveLiked(PostLikedRequest params);
+    // 좋아요 수정
+    void updateDeleteLiked(PostLikedRequest params);
+    void updateLiked(PostLikedRequest params);
+    // 좋아요 삭제
+    void deleteByLikedId(PostLikedRequest params);
+
+    // 댓글 조회
+    List<PostCommentsResponse> findComments();
+    // 댓글 아이디 조회
+    List<PostCommentsIdResponse> findCommentsId();
+    // 댓글 기입
+    void saveComments(PostCommentsRequest params);
+    // 댓글 수정
+    void updateComments(PostCommentsRequest params);
+    void updateDeleteCommentsCount(PostCommentsRequest params);
+    // 댓글 삭제
+    void deleteComments(PostCommentsRequest params);
+
+    List<TestResponse> findUserInfo();
+    // 댓글 기입
+    void saveUserInfo(TestRequest params);
 
 
 

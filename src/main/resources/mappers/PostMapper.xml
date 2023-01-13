@@ -92,6 +92,26 @@
         , bestcategory
         , shortinfo
     </sql>
+    <!-- liked 테이블 전체 컬럼 -->
+    <sql id="postLikedColumns">
+        categoryid
+        , userid
+        , inherentid
+            ,id
+    </sql>
+    <!-- comments 테이블 전체 컬럼 -->
+    <sql id="postCommentsColumns">
+        description
+        , userid
+        , nickname
+        , categoryid
+        , inherentid
+        , writedate
+        , profileimage
+        , likedcount
+        , commentsid
+        , isrecomment
+    </sql>
 
     <!-- 커뮤니티 게시글 저장 -->
     <insert id="save" parameterType="com.project.ribbon.domain.post.PostRequest"
@@ -403,7 +423,7 @@
         , #{gender}
         , #{bestcategory}
         , #{shortinfo}
-        );
+        )
 
     </insert>
 
@@ -445,6 +465,114 @@
     </select>
 
 
+    <!-- 좋아요 삽입 -->
+    <insert id="saveLiked" parameterType="com.project.ribbon.domain.post.PostLikedRequest"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO liked (
+        <include refid="postLikedColumns" />
+        ) VALUES (
+        #{categoryid}
+        , #{userid}
+        , #{inherentid}
+        , #{id}
+        )
+
+    </insert>
+    <!-- 좋아요 갯수 카운트 +1 -->
+    <update id="updateLiked" parameterType="com.project.ribbon.domain.post.PostLikedRequest">
+
+        update boardwrite set likedcount = likedcount + 1 where boardid = #{inherentid}
+
+    </update>
+    <!-- 좋아요 갯수 카운트 -1 -->
+    <update id="updateDeleteLiked" parameterType="com.project.ribbon.domain.post.PostLikedRequest">
+
+        update boardwrite set likedcount = likedcount - 1 where boardid = #{inherentid}
+
+    </update>
+
+    <!-- 좋아요 삭제 -->
+    <delete id="deleteByLikedId" >
+        DELETE
+        FROM
+            liked
+        where categoryid = #{categoryid}
+        AND userid = #{userid}
+        AND inherentid = #{inherentid}
+    </delete>
+
+
+    <!-- 댓글 작성자 아이디 조회  -->
+    <select id="findCommentsId" resultType="com.project.ribbon.domain.post.PostCommentsIdResponse">
+        SELECT
+        commentsid
+        FROM
+            comments
+        order by commentsid desc limit 1
+    </select>
+    <!-- 댓글 정보 조회  -->
+    <select id="findComments" resultType="com.project.ribbon.domain.post.PostCommentsResponse">
+        SELECT
+        <include refid="postCommentsColumns" />
+        FROM
+            comments
+    </select>
+
+    <!-- 댓글 작성 -->
+    <insert id="saveComments" parameterType="com.project.ribbon.domain.post.PostCommentsRequest"
+            useGeneratedKeys="true" keyProperty="commentsid">
+    <selectKey databaseId="findComments" keyProperty="commentsid" resultType="com.project.ribbon.domain.post.PostCommentsResponse" order="AFTER">
+        select <include refid="postCommentsColumns" /> from comments where commentsid = #{commentsid}
+    </selectKey>
+        INSERT INTO comments (
+        <include refid="postCommentsColumns" />
+        ) VALUES (
+        #{description}
+        , #{userid}
+        , #{nickname}
+        , #{categoryid}
+        , #{inherentid}
+        , #{writedate}
+        , #{profileimage}
+        , 0
+        , #{commentsid}
+        , 2
+        )
+
+    </insert>
+
+    <!-- 댓글 갯수 카운트 +1 -->
+    <update id="updateDeleteCommentsCount" parameterType="com.project.ribbon.domain.post.PostCommentsRequest">
+
+        update boardwrite set commentcount = commentcount + 1 where boardid = #{inherentid}
+
+    </update>
+
+    <!-- 댓글 수정 -->
+    <update id="updateComments" parameterType="com.project.ribbon.domain.post.PostUserRequest">
+        UPDATE comments
+        SET
+            description = #{description}
+          , nickname = #{nickname}
+          , writedate = #{writedate}
+          , profileimage = #{profileimage}
+        WHERE
+            commentsid = #{commentsid}
+    </update>
+
+
+
+    <!-- 댓글 정보 삭제 -->
+    <delete id="deleteComments" >
+        DELETE
+        FROM
+            comments
+        where commentsid = #{commentsid}
+    </delete>
+
+    <select id="saveUserInfo" resultType="com.project.ribbon.domain.post.TestResponse" >
+        SELECT nickname,userimage,gender FROM user where id = #{param}
+    </select>
 
 
 </mapper>
