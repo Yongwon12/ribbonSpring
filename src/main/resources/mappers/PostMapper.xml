@@ -112,11 +112,7 @@
         , commentsid
         , isrecomment
     </sql>
-    <!-- test 테이블 전체 컬럼 -->
-    <sql id="testColumns">
-        userid
-        , des
-    </sql>
+
 
     <!-- 커뮤니티 게시글 저장 -->
     <insert id="save" parameterType="com.project.ribbon.domain.post.PostRequest"
@@ -574,37 +570,14 @@
 
 
 
-    <!-- 유저 정보 테스트 -->
-   <!-- <insert id="saveUserInfo" parameterType="com.project.ribbon.domain.post.TestRequest"
-    useGeneratedKeys="true" keyProperty="userid">
-
-        INSERT INTO test (
-        <include refid="testColumns" />
-        ) VALUES (
-         #{userid},
-         #{des}
-        )
-        <selectKey keyProperty="userid" resultType="Integer" order="AFTER">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
-
-      <selectKey keyColumn="userid" resultType="Integer" order="AFTER">
-            select nickname,gender,userimage,userid,des
-            from user
-            left join test
-            on test.des = user.id
-            where id = #{userid}
-            order by id
-            desc limit 1
-        </selectKey>
-
-    </insert>-->
-    <!-- 유저 테스트 -->
- <select id="getUserid" resultType="com.project.ribbon.domain.post.TestResponse" >
-        select nickname,gender,userimage
-        from user
-        where id = #{userid}
- </select>
-
+    <!-- 특정 유저 프로필 조회  -->
+    <select id="findById" parameterType="Long" resultType="com.project.ribbon.domain.post.UserInfoResponse">
+        SELECT
+        nickname,gender,userimage,id
+        FROM
+        user
+        WHERE
+        id = #{id}
+    </select>
 
 </mapper>

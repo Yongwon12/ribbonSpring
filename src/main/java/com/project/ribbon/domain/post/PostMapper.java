@@ -1,9 +1,6 @@
 package com.project.ribbon.domain.post;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -93,11 +90,8 @@ public interface PostMapper {
     // 댓글 삭제
     void deleteComments(PostCommentsRequest params);
 
-    // 유저 정보 테스트
-    TestResponse getUserInfo();
-    // 유저 정보 테스트 기입
-
-
+    // 특정 유저 프로필 조회
+    List<UserInfoResponse> findById(Long id);
 
 
     // 게시글 갯수 카운트

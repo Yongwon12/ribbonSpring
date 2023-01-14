@@ -325,18 +325,17 @@ public class PostController {
     }
 
 
-    // 특정 유저 아이디 받아서 응답
-    @RequestMapping(method = RequestMethod.POST,path ="/post/userprofile")
-    public Long findUserInfo(@RequestBody TestResponse userid,Model model) {
-
-        return userid.getUserid();
+    // 특정 유저 프로필 조회
+    @PostMapping("/post/userinfo")
+    public ResponseEntity<?> openPostView(@RequestBody UserInfoResponse id, Model model) {
+        postService.findPostById(id.getId());
+        Map<String, Object> obj = new HashMap<>();
+        List<UserInfoResponse> posts = postService.findPostById(id.getId());
+        model.addAttribute("posts", posts);
+        obj.put("userinfo", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
     }
 
-    @GetMapping("/test")
-    public String requestTest(
-            @RequestParam("userid") String userid){
-        log.info("userid={}", userid);
-        return "ok";
-    }
+
 
 }
