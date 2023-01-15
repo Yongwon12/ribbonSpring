@@ -77,9 +77,23 @@ public interface PostMapper {
     void updateLiked(PostLikedRequest params);
     // 좋아요 삭제
     void deleteByLikedId(PostLikedRequest params);
+    // 개인 좋아요
+    void saveIndividualLiked(PostIndividualLikedRequest params);
+    // 개인 좋아요 수정
+    void updateDeleteIndividualLiked(PostIndividualLikedRequest params);
+    void updateIndividualLiked(PostIndividualLikedRequest params);
+    // 개인 좋아요 삭제
+    void deleteByIndividualLikedId(PostIndividualLikedRequest params);
+    // 중고 좋아요
+    void saveUsedLiked(PostUsedLikedRequest params);
+    // 중고 좋아요 수정
+    void updateDeleteUsedLiked(PostUsedLikedRequest params);
+    void updateUsedLiked(PostUsedLikedRequest params);
+    // 중고 좋아요 삭제
+    void deleteByUsedLikedId(PostUsedLikedRequest params);
 
     // 댓글 조회
-    List<PostCommentsResponse> findComments();
+    List<PostCommentsResponse> findByInherentId(Long inherentid);
     // 댓글 아이디 조회
     List<PostCommentsIdResponse> findCommentsId();
     // 댓글 기입
@@ -92,6 +106,21 @@ public interface PostMapper {
 
     // 특정 유저 프로필 조회
     List<UserInfoResponse> findById(Long id);
+    // 내가 쓴 글 커뮤니티
+    List<PostMyBoardResponse> findByMyUserId(Long userid);
+    // 내가 쓴 글 단체
+    List<PostMyGroupResponse> findByMyGroupUserId(Long userid);
+    // 내가 쓴 글 개인
+    List<PostMyIndiResponse> findByMyIndividualUserId(Long userid);
+    // 내가 쓴 글 중고
+    List<PostMyUsedResponse> findByMyUsedUserId(Long userid);
+
+    // 내가 좋아요 누른 글 커뮤니티
+    List<PostMyLikedResponse> findByMyLikedUserId(Long userid);
+    // 내가 좋아요 누른 글 개인
+    List<PostMyIndividualLikedResponse> findByMyIndividualLikedUserId(Long userid);
+    // 내가 좋아요 누른 글 중고
+    List<PostMyUsedLikedResponse> findByMyUsedLikedUserId(Long userid);
 
 
     // 게시글 갯수 카운트

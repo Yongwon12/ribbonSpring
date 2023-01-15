@@ -159,30 +159,75 @@ public class PostService {
     @Transactional
     public Integer saveLikedPost(final PostLikedRequest params) {
         postMapper.saveLiked(params);
-        return params.getCategoryid();
+        return params.getInherentid();
     }
     // 좋아요 정보 수정
     @Transactional
     public Integer updateLikedPost(final PostLikedRequest params) {
         postMapper.updateLiked(params);
-        return params.getCategoryid();
+        return params.getInherentid();
     }
     @Transactional
-    public Integer updateLikedDeletePost(final PostLikedRequest params) {
+    public Integer updateDeleteLikedPost(final PostLikedRequest params) {
         postMapper.updateDeleteLiked(params);
-        return params.getCategoryid();
+        return params.getInherentid();
     }
     // 좋아요 정보 삭제
     public Integer deleteLikedPost(final PostLikedRequest params) {
         postMapper.deleteByLikedId(params);
-        return params.getCategoryid();
+        return params.getInherentid();
+    }
+    // 좋아요 개인 삽입
+    @Transactional
+    public Integer saveIndividualLikedPost(final PostIndividualLikedRequest params) {
+        postMapper.saveIndividualLiked(params);
+        return params.getInherentid();
+    }
+    // 좋아요 개인 정보 수정
+    @Transactional
+    public Integer updateIndividualLikedPost(final PostIndividualLikedRequest params) {
+        postMapper.updateIndividualLiked(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Integer updateDeleteIndividualLikedPost(final PostIndividualLikedRequest params) {
+        postMapper.updateDeleteIndividualLiked(params);
+        return params.getInherentid();
+    }
+    // 좋아요 개인 정보 삭제
+    public Integer deleteIndividualLikedPost(final PostIndividualLikedRequest params) {
+        postMapper.deleteByIndividualLikedId(params);
+        return params.getInherentid();
+    }
+    // 좋아요 중고 삽입
+    @Transactional
+    public Integer saveUsedLikedPost(final PostUsedLikedRequest params) {
+        postMapper.saveUsedLiked(params);
+        return params.getInherentid();
+    }
+    // 좋아요 중고 정보 수정
+    @Transactional
+    public Integer updateUsedLikedPost(final PostUsedLikedRequest params) {
+        postMapper.updateUsedLiked(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Integer updateDeleteUsedLikedPost(final PostUsedLikedRequest params) {
+        postMapper.updateDeleteUsedLiked(params);
+        return params.getInherentid();
+    }
+    // 좋아요 중고 정보 삭제
+    public Integer deleteUsedLikedPost(final PostUsedLikedRequest params) {
+        postMapper.deleteByUsedLikedId(params);
+        return params.getInherentid();
     }
 
 
     // 댓글 정보 조회
-    public List<PostCommentsResponse> findCommentsPost() {
-        return postMapper.findComments();
+    public List<PostCommentsResponse> findPostByInherentId(final Long inherentid) {
+        return postMapper.findByInherentId(inherentid);
     }
+    // 댓글 작성자 아이디 조회
     public List<PostCommentsIdResponse> findCommentsIdPost() {
         return postMapper.findCommentsId();
     }
@@ -213,6 +258,37 @@ public class PostService {
     public List<UserInfoResponse> findPostById(final Long id) {
         return postMapper.findById(id);
     }
+
+    // 내가 쓴 글 커뮤니티
+    public List<PostMyBoardResponse> findPostByMyUserId(final Long userid) {
+        return postMapper.findByMyUserId(userid);
+    }
+    // 내가 쓴 글 단체
+    public List<PostMyGroupResponse> findPostByMyGroupUserId(final Long userid) {
+        return postMapper.findByMyGroupUserId(userid);
+    }
+    // 내가 쓴 글 개인
+    public List<PostMyIndiResponse> findPostByMyIndividualUserId(final Long userid) {
+        return postMapper.findByMyIndividualUserId(userid);
+    }
+    // 내가 쓴 글 중고
+    public List<PostMyUsedResponse> findPostByMyUsedUserId(final Long userid) {
+        return postMapper.findByMyUsedUserId(userid);
+    }
+
+    // 내가 좋아요 누른 글 커뮤니티
+    public List<PostMyLikedResponse> findPostByMyLikedUserId(final Long userid) {
+        return postMapper.findByMyLikedUserId(userid);
+    }
+    // 내가 좋아요 누른 글 개인
+    public List<PostMyIndividualLikedResponse> findPostByMyIndividualLikedUserId(final Long userid) {
+        return postMapper.findByMyIndividualLikedUserId(userid);
+    }
+    // 내가 좋아요 누른 글 중고
+    public List<PostMyUsedLikedResponse> findPostByMyUsedLikedUserId(final Long userid) {
+        return postMapper.findByMyUsedLikedUserId(userid);
+    }
+
 
 
 }

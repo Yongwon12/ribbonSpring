@@ -25,7 +25,7 @@ public class PostController {
     private final PostService postService;
 
     // 커뮤니티 게시글 작성
-    @PostMapping("/post/write")
+    @PostMapping("/post/boardwrite")
     public Long savePost(@RequestBody PostRequest params) {
         return postService.savePost(params);
 
@@ -129,7 +129,7 @@ public class PostController {
     }
 
     // 기존 게시글 삭제
-    @PostMapping("/post/delete")
+    @RequestMapping("/post/delete")
     public Long deletePost(@RequestBody PostRequest params) {
         return postService.deletePost(params);
     }
@@ -158,7 +158,7 @@ public class PostController {
     }
 
     // 단체 게시글 삭제
-    @PostMapping("/post/deletegroup")
+    @RequestMapping("/post/deletegroup")
     public Long deleteGroupPost(@RequestBody PostGroupRequest params) {
         return postService.deleteGroupPost(params);
     }
@@ -187,7 +187,7 @@ public class PostController {
     }
 
     // 개인 게시글 삭제
-    @PostMapping("/post/deleteindividual")
+    @RequestMapping("/post/deleteindividual")
     public Long deleteIndiPost(@RequestBody PostIndiRequest params) {
         return postService.deleteIndiPost(params);
     }
@@ -233,9 +233,13 @@ public class PostController {
 
     // 유저 정보 등록
     @PostMapping("/post/sign")
-    public Long saveUserPost(@RequestBody PostUserRequest params) {
-        return postService.saveUserPost(params);
-
+    public ResponseEntity<?> saveUserPost(@RequestBody PostUserRequest params,Model model) {
+        postService.saveUserPost(params);
+        Map<String, Object> obj = new HashMap<>();
+        List<PostUserResponse> posts = postService.findUserAllPost();
+        model.addAttribute("posts", posts);
+        obj.put("userid", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
     }
 
     // 유저 정보 수정
@@ -265,34 +269,59 @@ public class PostController {
     // 좋아요 등록
     @PostMapping("/post/liked")
     public Integer saveLikedPost(@RequestBody PostLikedRequest params) {
-
+        postService.updateLikedPost(params);
         return postService.saveLikedPost(params);
 
     }
 
 
-    // 좋아요 수정
-    @PostMapping("/post/updateliked")
-    public Integer updateLikedPost(@RequestBody PostLikedRequest params) {
-        return postService.updateLikedPost(params);
-    }
-    @PostMapping("/post/updatedeleteliked")
-    public Integer updateLikedDeletePost(@RequestBody PostLikedRequest params) {
-        return postService.updateLikedDeletePost(params);
-    }
     // 좋아요 삭제
-    @PostMapping("/post/deleteliked")
+    @RequestMapping("/post/deleteliked")
     public Integer deleteLikedPost(@RequestBody PostLikedRequest params) {
+        postService.updateDeleteLikedPost(params);
         return postService.deleteLikedPost(params);
     }
 
+    // 개인 좋아요 등록
+    @PostMapping("/post/individualliked")
+    public Integer saveIndividualLikedPost(@RequestBody PostIndividualLikedRequest params) {
+        postService.updateIndividualLikedPost(params);
+        return postService.saveIndividualLikedPost(params);
+
+    }
+
+
+    // 개인 좋아요 삭제
+    @RequestMapping("/post/deleteindividualliked")
+    public Integer deleteIndividualLikedPost(@RequestBody PostIndividualLikedRequest params) {
+        postService.updateDeleteIndividualLikedPost(params);
+        return postService.deleteIndividualLikedPost(params);
+    }
+
+    // 중고 좋아요 등록
+    @PostMapping("/post/usedliked")
+    public Integer saveUsedLikedPost(@RequestBody PostUsedLikedRequest params) {
+        postService.updateUsedLikedPost(params);
+        return postService.saveUsedLikedPost(params);
+
+    }
+
+
+    // 중고 좋아요 삭제
+    @RequestMapping("/post/deleteusedliked")
+    public Integer deleteUsedLikedPost(@RequestBody PostUsedLikedRequest params) {
+        postService.updateDeleteUsedLikedPost(params);
+        return postService.deleteUsedLikedPost(params);
+    }
+
     // 댓글 조회
-    @GetMapping( "/post/commentsinfo")
-    public ResponseEntity<?> comments(Model model) {
+    @RequestMapping("/post/commentsinfo")
+    public ResponseEntity<?> commentsinfo(@RequestBody PostCommentsResponse inherentid, Model model) {
+        postService.findPostByInherentId(inherentid.getInherentid());
         Map<String, Object> obj = new HashMap<>();
-        List<PostCommentsResponse> posts = postService.findCommentsPost();
+        List<PostCommentsResponse> posts = postService.findPostByInherentId(inherentid.getInherentid());
         model.addAttribute("posts", posts);
-        obj.put("comments", posts);
+        obj.put("comment", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
 
@@ -315,11 +344,9 @@ public class PostController {
     public Long updateCommentsPost(@RequestBody PostCommentsRequest params) {
         return postService.updateCommentsPost(params);
     }
-    // 댓글 갯수 카운트
-
 
     // 댓글 삭제
-    @PostMapping("/post/deletecomments")
+    @RequestMapping("/post/deletecomments")
     public Long deleteCommentsPost(@RequestBody PostCommentsRequest params) {
         return postService.deleteCommentsPost(params);
     }
@@ -335,7 +362,78 @@ public class PostController {
         obj.put("userinfo", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
+    // 내가 쓴 글 커뮤니티
+    @PostMapping("/post/myboardwrite")
+    public ResponseEntity<?> myboardwrite(@RequestBody PostMyBoardResponse userid, Model model) {
+        postService.findPostByMyUserId(userid.getUserid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostMyBoardResponse> posts = postService.findPostByMyUserId(userid.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("myboard", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
 
+    // 내가 쓴 글 단체
+    @PostMapping("/post/mygroupwrite")
+    public ResponseEntity<?> myboardwrite(@RequestBody PostMyGroupResponse userid, Model model) {
+        postService.findPostByMyGroupUserId(userid.getUserid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostMyGroupResponse> posts = postService.findPostByMyGroupUserId(userid.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("groupwrite", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+    // 내가 쓴 글 개인
+    @PostMapping("/post/myindividualwrite")
+    public ResponseEntity<?> myboardwrite(@RequestBody PostMyIndiResponse userid, Model model) {
+        postService.findPostByMyIndividualUserId(userid.getUserid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostMyIndiResponse> posts = postService.findPostByMyIndividualUserId(userid.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("individualwrite", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 내가 쓴 글 중고
+    @PostMapping("/post/myusedwrite")
+    public ResponseEntity<?> myboardwrite(@RequestBody PostMyUsedResponse userid, Model model) {
+        postService.findPostByMyUsedUserId(userid.getUserid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostMyUsedResponse> posts = postService.findPostByMyUsedUserId(userid.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("usedwrite", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 내가 좋아요 누른 글 커뮤니티
+    @PostMapping("/post/myboardliked")
+    public ResponseEntity<?> myboardliked(@RequestBody PostMyLikedResponse userid, Model model) {
+        postService.findPostByMyLikedUserId(userid.getUserid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostMyLikedResponse> posts = postService.findPostByMyLikedUserId(userid.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("myboard", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 내가 좋아요 누른 글 개인
+    @PostMapping("/post/myindividualliked")
+    public ResponseEntity<?> myindividualliked(@RequestBody PostMyIndividualLikedResponse userid, Model model) {
+        postService.findPostByMyIndividualLikedUserId(userid.getUserid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostMyIndividualLikedResponse> posts = postService.findPostByMyIndividualLikedUserId(userid.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("individualwrite", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 내가 좋아요 누른 글 중고
+    @PostMapping("/post/myusedliked")
+    public ResponseEntity<?> myusedliked(@RequestBody PostMyUsedLikedResponse userid, Model model) {
+        postService.findPostByMyUsedLikedUserId(userid.getUserid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostMyUsedLikedResponse> posts = postService.findPostByMyUsedLikedUserId(userid.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("usedwrite", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
 
 
 }

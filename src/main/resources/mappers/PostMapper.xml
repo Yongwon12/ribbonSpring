@@ -97,7 +97,6 @@
         categoryid
         , userid
         , inherentid
-            ,id
     </sql>
     <!-- comments 테이블 전체 컬럼 -->
     <sql id="postCommentsColumns">
@@ -400,7 +399,7 @@
     <!-- 유저 정보 조회  -->
     <select id="findUserAll" resultType="com.project.ribbon.domain.post.PostUserResponse">
         SELECT
-        id,username,nickname,email,userimage,gender,bestcategory,shortinfo
+        id
         FROM
         user ORDER BY id DESC LIMIT 1;
     </select>
@@ -430,7 +429,7 @@
 
     <!-- 유저 마이페이지 수정 -->
     <update id="updateUser" parameterType="com.project.ribbon.domain.post.PostUserRequest">
-        UPDATE usedwrite
+        UPDATE user
         SET
             nickname = #{nickname}
           , userimage = #{userimage}
@@ -468,14 +467,13 @@
 
     <!-- 좋아요 삽입 -->
     <insert id="saveLiked" parameterType="com.project.ribbon.domain.post.PostLikedRequest"
-            useGeneratedKeys="true" keyProperty="id">
+            >
         INSERT INTO liked (
         <include refid="postLikedColumns" />
         ) VALUES (
         #{categoryid}
         , #{userid}
         , #{inherentid}
-        , #{id}
         )
 
     </insert>
@@ -501,6 +499,73 @@
         AND userid = #{userid}
         AND inherentid = #{inherentid}
     </delete>
+    <!-- 개인 좋아요 삽입 -->
+    <insert id="saveIndividualLiked" parameterType="com.project.ribbon.domain.post.PostIndividualLikedRequest"
+    >
+        INSERT INTO individualliked (
+        <include refid="postLikedColumns" />
+        ) VALUES (
+        #{categoryid}
+        , #{userid}
+        , #{inherentid}
+        )
+
+    </insert>
+    <!-- 개인 좋아요 갯수 카운트 +1 -->
+    <update id="updateIndividualLiked" parameterType="com.project.ribbon.domain.post.PostIndividualLikedRequest">
+
+        update individualwrite set likedcount = likedcount + 1 where individualid = #{inherentid}
+
+    </update>
+    <!-- 개인 좋아요 갯수 카운트 -1 -->
+    <update id="updateDeleteIndividualLiked" parameterType="com.project.ribbon.domain.post.PostIndividualLikedRequest">
+
+        update individualwrite set likedcount = likedcount - 1 where individualid = #{inherentid}
+
+    </update>
+
+    <!-- 개인 좋아요 삭제 -->
+    <delete id="deleteByIndividualLikedId" >
+        DELETE
+        FROM
+            individualliked
+        where categoryid = #{categoryid}
+          AND userid = #{userid}
+          AND inherentid = #{inherentid}
+    </delete>
+    <!-- 중고 좋아요 삽입 -->
+    <insert id="saveUsedLiked" parameterType="com.project.ribbon.domain.post.PostUsedLikedRequest"
+    >
+        INSERT INTO usedliked (
+        <include refid="postLikedColumns" />
+        ) VALUES (
+        #{categoryid}
+        , #{userid}
+        , #{inherentid}
+        )
+    </insert>
+    <!-- 중고 좋아요 갯수 카운트 +1 -->
+    <update id="updateUsedLiked" parameterType="com.project.ribbon.domain.post.PostUsedLikedRequest">
+
+        update usedwrite set likedcount = likedcount + 1 where usedid = #{inherentid}
+
+    </update>
+    <!-- 중고 좋아요 갯수 카운트 -1 -->
+    <update id="updateDeleteUsedLiked" parameterType="com.project.ribbon.domain.post.PostUsedLikedRequest">
+
+        update usedwrite set likedcount = likedcount - 1 where usedid = #{inherentid}
+
+    </update>
+
+    <!-- 중고 좋아요 삭제 -->
+    <delete id="deleteByUsedLikedId" >
+        DELETE
+        FROM
+            usedliked
+        where categoryid = #{categoryid}
+          AND userid = #{userid}
+          AND inherentid = #{inherentid}
+    </delete>
 
 
     <!-- 댓글 작성자 아이디 조회  -->
@@ -512,11 +577,10 @@
         order by commentsid desc limit 1
     </select>
     <!-- 댓글 정보 조회  -->
-    <select id="findComments" resultType="com.project.ribbon.domain.post.PostCommentsResponse">
-        SELECT
-        <include refid="postCommentsColumns" />
-        FROM
-            comments
+    <select id="findByInherentId" resultType="com.project.ribbon.domain.post.PostCommentsResponse">
+        select *
+        from comments
+         where inherentid = #{inherentid}
     </select>
 
     <!-- 댓글 작성 -->
@@ -547,7 +611,7 @@
     </update>
 
     <!-- 댓글 수정 -->
-    <update id="updateComments" parameterType="com.project.ribbon.domain.post.PostUserRequest">
+    <update id="updateComments" parameterType="com.project.ribbon.domain.post.PostCommentsRequest">
         UPDATE comments
         SET
             description = #{description}
@@ -578,6 +642,71 @@
         user
         WHERE
         id = #{id}
+    </select>
+
+    <!-- 커뮤니티 내가 쓴 글  -->
+    <select id="findByMyUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyBoardResponse">
+        SELECT
+            *
+        FROM
+            boardwrite
+        WHERE
+            userid = #{userid}
+    </select>
+    <!-- 단체 내가 쓴 글  -->
+    <select id="findByMyGroupUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyGroupResponse">
+        SELECT
+            *
+        FROM
+            groupwrite
+        WHERE
+            userid = #{userid}
+    </select>
+    <!-- 개인 내가 쓴 글  -->
+    <select id="findByMyIndividualUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyIndiResponse">
+        SELECT
+            *
+        FROM
+            individualwrite
+        WHERE
+            userid = #{userid}
+    </select>
+    <!-- 중고 내가 쓴 글  -->
+    <select id="findByMyUsedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyUsedResponse">
+        SELECT
+           *
+        FROM
+            usedwrite
+        WHERE
+            userid = #{userid}
+    </select>
+    <!-- 내가 좋아요 누른 글 커뮤니티 -->
+    <select id="findByMyLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyLikedResponse">
+        select *
+        from boardwrite
+            left join liked
+           on liked.inherentid=boardwrite.boardid
+            where liked.userid = #{userid}
+    </select>
+    <!-- 내가 좋아요 누른 글 개인 -->
+    <select id="findByMyIndividualLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyIndividualLikedResponse">
+        SELECT
+            *
+        FROM
+            individualwrite
+                left join individualliked
+                    on individualliked.inherentid=individualwrite.individualid
+        where individualliked.userid = #{userid}
+    </select>
+    <!-- 내가 좋아요 누른 글 중고 -->
+    <select id="findByMyUsedLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyUsedLikedResponse">
+        SELECT
+            *
+        FROM
+            usedwrite
+                left join usedliked
+                    on usedliked.inherentid=usedwrite.usedid
+        where usedliked.userid = #{userid}
     </select>
 
 </mapper>
