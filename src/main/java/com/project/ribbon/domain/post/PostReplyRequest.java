@@ -8,16 +8,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostCommentsRequest {
+public class PostReplyRequest {
 
         private String description;
-        private Integer userid;
+        private Long userid;
         private String  nickname;
-        private Integer categoryid;
+        private Long categoryid;
         private Long inherentid;
         private String writedate;
+        private Integer likedcount;
         @Id
-        private Long commentsid;
+        private Long replyid;
+        private Long inherentcommentsid;
+        private Integer isrecomment;
 
 }
 

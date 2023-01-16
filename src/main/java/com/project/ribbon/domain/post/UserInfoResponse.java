@@ -10,7 +10,7 @@ public class UserInfoResponse {
     private String nickname;
     private String userimage;
     private String gender;
-    private Long id;
+    private Long userid;
 
 
 

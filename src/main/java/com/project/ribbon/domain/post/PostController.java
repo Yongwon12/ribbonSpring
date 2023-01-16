@@ -26,7 +26,7 @@ public class PostController {
 
     // 커뮤니티 게시글 작성
     @PostMapping("/post/boardwrite")
-    public Long savePost(@RequestBody PostRequest params) {
+    public Long savePost(@RequestBody PostRequest params){
         return postService.savePost(params);
 
     }
@@ -136,7 +136,7 @@ public class PostController {
 
     // 단체 작성글 조회
     @GetMapping("/post/group")
-    public ResponseEntity<?> group(Model model) {
+    public ResponseEntity<?> groupWrite(Model model) {
         Map<String, Object> obj = new HashMap<>();
         List<PostGroupResponse> posts = postService.findGroupAllPost();
         model.addAttribute("posts", posts);
@@ -165,7 +165,7 @@ public class PostController {
 
     // 개인 작성글 조회
     @GetMapping("/post/individual")
-    public ResponseEntity<?> individual(Model model) {
+    public ResponseEntity<?> indiWrite(Model model) {
         Map<String, Object> obj = new HashMap<>();
         List<PostIndiResponse> posts = postService.findIndiAllPost();
         model.addAttribute("posts", posts);
@@ -194,7 +194,7 @@ public class PostController {
 
     // 중고 작성글 조회
     @GetMapping("/post/used")
-    public ResponseEntity<?> used(Model model) {
+    public ResponseEntity<?> usedWrite(Model model) {
         Map<String, Object> obj = new HashMap<>();
         List<PostUsedResponse> posts = postService.findUsedAllPost();
         model.addAttribute("posts", posts);
@@ -216,7 +216,7 @@ public class PostController {
     }
 
     // 중고 게시글 삭제
-    @PostMapping("/post/deleteused")
+    @RequestMapping("/post/deleteused")
     public Long deleteUsedPost(@RequestBody PostUsedRequest params) {
         return postService.deleteUsedPost(params);
     }
@@ -256,7 +256,7 @@ public class PostController {
 
     // 실시간 인기글
     @GetMapping("/post/realtimeup")
-    public ResponseEntity<?> realtimeup(Model model) {
+    public ResponseEntity<?> realTimeUp(Model model) {
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findAllPost11();
         model.addAttribute("posts", posts);
@@ -284,7 +284,7 @@ public class PostController {
 
     // 개인 좋아요 등록
     @PostMapping("/post/individualliked")
-    public Integer saveIndividualLikedPost(@RequestBody PostIndividualLikedRequest params) {
+    public Integer saveIndiLikedPost(@RequestBody PostIndividualLikedRequest params) {
         postService.updateIndividualLikedPost(params);
         return postService.saveIndividualLikedPost(params);
 
@@ -293,7 +293,7 @@ public class PostController {
 
     // 개인 좋아요 삭제
     @RequestMapping("/post/deleteindividualliked")
-    public Integer deleteIndividualLikedPost(@RequestBody PostIndividualLikedRequest params) {
+    public Integer deleteIndiLikedPost(@RequestBody PostIndividualLikedRequest params) {
         postService.updateDeleteIndividualLikedPost(params);
         return postService.deleteIndividualLikedPost(params);
     }
@@ -316,7 +316,7 @@ public class PostController {
 
     // 댓글 조회
     @RequestMapping("/post/commentsinfo")
-    public ResponseEntity<?> commentsinfo(@RequestBody PostCommentsResponse inherentid, Model model) {
+    public ResponseEntity<?> commentsInfo(@RequestBody PostCommentsResponse inherentid, Model model) {
         postService.findPostByInherentId(inherentid.getInherentid());
         Map<String, Object> obj = new HashMap<>();
         List<PostCommentsResponse> posts = postService.findPostByInherentId(inherentid.getInherentid());
@@ -330,7 +330,7 @@ public class PostController {
     @RequestMapping(method = RequestMethod.POST,path ="/post/comments")
     public ResponseEntity<?> saveComments(@RequestBody PostCommentsRequest params,Model model) {
         postService.saveCommentsPost(params);
-        postService.updateDeleteCommentsCountPost(params);
+        postService.updateCommentsCountPost(params);
         Map<String, Object> obj = new HashMap<>();
         List<PostCommentsIdResponse> posts = postService.findCommentsIdPost();
         model.addAttribute("posts", posts);
@@ -348,23 +348,298 @@ public class PostController {
     // 댓글 삭제
     @RequestMapping("/post/deletecomments")
     public Long deleteCommentsPost(@RequestBody PostCommentsRequest params) {
+        postService.updateDeleteCommentsCountPost(params);
         return postService.deleteCommentsPost(params);
     }
+
+    // 개인 댓글 조회
+    @RequestMapping("/post/indicommentsinfo")
+    public ResponseEntity<?> indiCommentsInfo(@RequestBody PostIndiCommentsResponse inherentid, Model model) {
+        postService.findPostByIndiCommentsInherentId(inherentid.getInherentid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostIndiCommentsResponse> posts = postService.findPostByIndiCommentsInherentId(inherentid.getInherentid());
+        model.addAttribute("posts", posts);
+        obj.put("comment", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+
+    // 개인 댓글 등록 및 아이디 전송
+    @RequestMapping(method = RequestMethod.POST,path ="/post/indicomments")
+    public ResponseEntity<?> saveIndiComments(@RequestBody PostIndiCommentsRequest params,Model model) {
+        postService.saveIndiCommentsPost(params);
+        postService.updateIndiCommentsCountPost(params);
+        Map<String, Object> obj = new HashMap<>();
+        List<PostIndiCommentsIdResponse> posts = postService.findIndiCommentsIdPost();
+        model.addAttribute("posts", posts);
+        obj.put("commentsid", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+
+    }
+
+    // 개인 댓글 수정
+    @PostMapping("/post/updateindicomments")
+    public Long updateIndiCommentsPost(@RequestBody PostIndiCommentsRequest params) {
+        return postService.updateIndiCommentsPost(params);
+    }
+
+    // 개인 댓글 삭제
+    @RequestMapping("/post/deleteindicomments")
+    public Long deleteIndiCommentsPost(@RequestBody PostIndiCommentsRequest params) {
+        postService.updateDeleteIndiCommentsCountPost(params);
+        return postService.deleteIndiCommentsPost(params);
+    }
+
+    // 단체 댓글 조회
+    @RequestMapping("/post/groupcommentsinfo")
+    public ResponseEntity<?> groupCommentsInfo(@RequestBody PostGroupCommentsResponse inherentid, Model model) {
+        postService.findPostByGroupCommentsInherentId(inherentid.getInherentid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostGroupCommentsResponse> posts = postService.findPostByGroupCommentsInherentId(inherentid.getInherentid());
+        model.addAttribute("posts", posts);
+        obj.put("comment", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+
+    // 단체 댓글 등록 및 아이디 전송
+    @RequestMapping(method = RequestMethod.POST,path ="/post/groupcomments")
+    public ResponseEntity<?> saveGroupComments(@RequestBody PostGroupCommentsRequest params,Model model) {
+        postService.saveGroupCommentsPost(params);
+        postService.updateGroupCommentsCountPost(params);
+        Map<String, Object> obj = new HashMap<>();
+        List<PostGroupCommentsIdResponse> posts = postService.findGroupCommentsIdPost();
+        model.addAttribute("posts", posts);
+        obj.put("commentsid", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+
+    }
+
+    // 단체 댓글 수정
+    @PostMapping("/post/updategroupcomments")
+    public Long updateGroupCommentsPost(@RequestBody PostGroupCommentsRequest params) {
+        return postService.updateGroupCommentsPost(params);
+    }
+
+    // 단체 댓글 삭제
+    @RequestMapping("/post/deletegroupcomments")
+    public Long deleteGroupCommentsPost(@RequestBody PostGroupCommentsRequest params) {
+        postService.updateDeleteGroupCommentsCountPost(params);
+        return postService.deleteGroupCommentsPost(params);
+    }
+
+
+    // 중고 댓글 조회
+    @RequestMapping("/post/usedcommentsinfo")
+    public ResponseEntity<?> usedcommentsinfo(@RequestBody PostUsedCommentsResponse inherentid, Model model) {
+        postService.findPostByUsedCommentsInherentId(inherentid.getInherentid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostUsedCommentsResponse> posts = postService.findPostByUsedCommentsInherentId(inherentid.getInherentid());
+        model.addAttribute("posts", posts);
+        obj.put("comment", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+
+    // 중고 댓글 등록 및 아이디 전송
+    @RequestMapping(method = RequestMethod.POST,path ="/post/usedcomments")
+    public ResponseEntity<?> saveUsedComments(@RequestBody PostUsedCommentsRequest params,Model model) {
+        postService.saveUsedCommentsPost(params);
+        postService.updateUsedCommentsCountPost(params);
+        Map<String, Object> obj = new HashMap<>();
+        List<PostUsedCommentsIdResponse> posts = postService.findUsedCommentsIdPost();
+        model.addAttribute("posts", posts);
+        obj.put("commentsid", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+
+    }
+
+    // 중고 댓글 수정
+    @PostMapping("/post/updateusedcomments")
+    public Long updateUsedCommentsPost(@RequestBody PostUsedCommentsRequest params) {
+        return postService.updateUsedCommentsPost(params);
+    }
+
+    // 중고 댓글 삭제
+    @RequestMapping("/post/deleteusedcomments")
+    public Long deleteUsedCommentsPost(@RequestBody PostUsedCommentsRequest params) {
+        postService.updateDeleteUsedCommentsCountPost(params);
+        return postService.deleteUsedCommentsPost(params);
+    }
+
+
+
+
+    // 답글 조회
+    @RequestMapping("/post/replyinfo")
+    public ResponseEntity<?> replyInfo(@RequestBody PostReplyResponse inherentid, Model model) {
+        postService.findPostByReplyInherentId(inherentid.getInherentid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostReplyResponse> posts = postService.findPostByReplyInherentId(inherentid.getInherentid());
+        model.addAttribute("posts", posts);
+        obj.put("reply", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+
+    // 답글 등록 및 아이디 전송
+    @RequestMapping(method = RequestMethod.POST,path ="/post/reply")
+    public ResponseEntity<?> saveReply(@RequestBody PostReplyRequest params,Model model) {
+        postService.saveReplyPost(params);
+        postService.updateReplyCountPost(params);
+        Map<String, Object> obj = new HashMap<>();
+        List<PostReplyIdResponse> posts = postService.findReplyIdPost();
+        model.addAttribute("posts", posts);
+        obj.put("replyid", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+
+    }
+
+    // 답글 수정
+    @PostMapping("/post/updatereply")
+    public Long updateReplyPost(@RequestBody PostReplyRequest params) {
+        return postService.updateReplyPost(params);
+    }
+
+    // 답글 삭제
+    @RequestMapping("/post/deletereply")
+    public Long deleteReplyPost(@RequestBody PostReplyRequest params) {
+        postService.updateDeleteReplyCountPost(params);
+        return postService.deleteReplyPost(params);
+    }
+
+    // 개인 답글 조회
+    @RequestMapping("/post/indireplyinfo")
+    public ResponseEntity<?> indiReplyInfo(@RequestBody PostIndiReplyResponse inherentid, Model model) {
+        postService.findPostByIndiReplyInherentId(inherentid.getInherentid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostIndiReplyResponse> posts = postService.findPostByIndiReplyInherentId(inherentid.getInherentid());
+        model.addAttribute("posts", posts);
+        obj.put("reply", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+
+    // 개인 답글 등록 및 아이디 전송
+    @RequestMapping(method = RequestMethod.POST,path ="/post/indireply")
+    public ResponseEntity<?> saveIndiReply(@RequestBody PostIndiReplyRequest params,Model model) {
+        postService.saveIndiReplyPost(params);
+        postService.updateIndiReplyCountPost(params);
+        Map<String, Object> obj = new HashMap<>();
+        List<PostIndiReplyIdResponse> posts = postService.findIndiReplyIdPost();
+        model.addAttribute("posts", posts);
+        obj.put("replyid", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+
+    }
+
+    // 개인 답글 수정
+    @PostMapping("/post/updateindireply")
+    public Long updateIndiReplyPost(@RequestBody PostIndiReplyRequest params) {
+        return postService.updateIndiReplyPost(params);
+    }
+
+    // 개인 답글 삭제
+    @RequestMapping("/post/deleteindireply")
+    public Long deleteIndiReplyPost(@RequestBody PostIndiReplyRequest params) {
+        postService.updateDeleteIndiReplyCountPost(params);
+        return postService.deleteIndiReplyPost(params);
+    }
+
+    // 단체 답글 조회
+    @RequestMapping("/post/groupreplyinfo")
+    public ResponseEntity<?> groupReplyInfo(@RequestBody PostGroupReplyResponse inherentid, Model model) {
+        postService.findPostByGroupReplyInherentId(inherentid.getInherentid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostGroupReplyResponse> posts = postService.findPostByGroupReplyInherentId(inherentid.getInherentid());
+        model.addAttribute("posts", posts);
+        obj.put("reply", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+
+    // 단체 답글 등록 및 아이디 전송
+    @RequestMapping(method = RequestMethod.POST,path ="/post/groupreply")
+    public ResponseEntity<?> saveGroupReply(@RequestBody PostGroupReplyRequest params,Model model) {
+        postService.saveGroupReplyPost(params);
+        postService.updateGroupReplyCountPost(params);
+        Map<String, Object> obj = new HashMap<>();
+        List<PostGroupReplyIdResponse> posts = postService.findGroupReplyIdPost();
+        model.addAttribute("posts", posts);
+        obj.put("replyid", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+
+    }
+
+    // 단체 답글 수정
+    @PostMapping("/post/updategroupreply")
+    public Long updateGroupReplyPost(@RequestBody PostGroupReplyRequest params) {
+        return postService.updateGroupReplyPost(params);
+    }
+
+    // 단체 답글 삭제
+    @RequestMapping("/post/deletegroupreply")
+    public Long deleteGroupReplyPost(@RequestBody PostGroupReplyRequest params) {
+        postService.updateDeleteGroupReplyCountPost(params);
+        return postService.deleteGroupReplyPost(params);
+    }
+
+
+
+    // 중고 답글 조회
+    @RequestMapping("/post/usedreplyinfo")
+    public ResponseEntity<?> usedReplyInfo(@RequestBody PostUsedReplyResponse inherentid, Model model) {
+        postService.findPostByUsedReplyInherentId(inherentid.getInherentid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostUsedReplyResponse> posts = postService.findPostByUsedReplyInherentId(inherentid.getInherentid());
+        model.addAttribute("posts", posts);
+        obj.put("reply", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+
+    // 중고 답글 등록 및 아이디 전송
+    @RequestMapping(method = RequestMethod.POST,path ="/post/usedreply")
+    public ResponseEntity<?> saveUsedReply(@RequestBody PostUsedReplyRequest params,Model model) {
+        postService.saveUsedReplyPost(params);
+        postService.updateUsedReplyCountPost(params);
+        Map<String, Object> obj = new HashMap<>();
+        List<PostUsedReplyIdResponse> posts = postService.findUsedReplyIdPost();
+        model.addAttribute("posts", posts);
+        obj.put("replyid", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+
+    }
+
+    // 중고 답글 수정
+    @PostMapping("/post/updateusedreply")
+    public Long updateUsedReplyPost(@RequestBody PostUsedReplyRequest params) {
+        return postService.updateUsedReplyPost(params);
+    }
+
+    // 중고 답글 삭제
+    @RequestMapping("/post/deleteusedreply")
+    public Long deleteUsedReplyPost(@RequestBody PostUsedReplyRequest params) {
+        postService.updateDeleteUsedReplyCountPost(params);
+        return postService.deleteUsedReplyPost(params);
+    }
+
+
 
 
     // 특정 유저 프로필 조회
     @PostMapping("/post/userinfo")
-    public ResponseEntity<?> openPostView(@RequestBody UserInfoResponse id, Model model) {
-        postService.findPostById(id.getId());
+    public ResponseEntity<?> openPostView(@RequestBody UserInfoResponse userid, Model model) {
+        postService.findPostById(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
-        List<UserInfoResponse> posts = postService.findPostById(id.getId());
+        List<UserInfoResponse> posts = postService.findPostById(userid.getUserid());
         model.addAttribute("posts", posts);
         obj.put("userinfo", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
     // 내가 쓴 글 커뮤니티
     @PostMapping("/post/myboardwrite")
-    public ResponseEntity<?> myboardwrite(@RequestBody PostMyBoardResponse userid, Model model) {
+    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyBoardResponse userid, Model model) {
         postService.findPostByMyUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyBoardResponse> posts = postService.findPostByMyUserId(userid.getUserid());
@@ -375,7 +650,7 @@ public class PostController {
 
     // 내가 쓴 글 단체
     @PostMapping("/post/mygroupwrite")
-    public ResponseEntity<?> myboardwrite(@RequestBody PostMyGroupResponse userid, Model model) {
+    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyGroupResponse userid, Model model) {
         postService.findPostByMyGroupUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyGroupResponse> posts = postService.findPostByMyGroupUserId(userid.getUserid());
@@ -386,7 +661,7 @@ public class PostController {
 
     // 내가 쓴 글 개인
     @PostMapping("/post/myindividualwrite")
-    public ResponseEntity<?> myboardwrite(@RequestBody PostMyIndiResponse userid, Model model) {
+    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyIndiResponse userid, Model model) {
         postService.findPostByMyIndividualUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyIndiResponse> posts = postService.findPostByMyIndividualUserId(userid.getUserid());
@@ -396,7 +671,7 @@ public class PostController {
     }
     // 내가 쓴 글 중고
     @PostMapping("/post/myusedwrite")
-    public ResponseEntity<?> myboardwrite(@RequestBody PostMyUsedResponse userid, Model model) {
+    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyUsedResponse userid, Model model) {
         postService.findPostByMyUsedUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyUsedResponse> posts = postService.findPostByMyUsedUserId(userid.getUserid());
@@ -406,7 +681,7 @@ public class PostController {
     }
     // 내가 좋아요 누른 글 커뮤니티
     @PostMapping("/post/myboardliked")
-    public ResponseEntity<?> myboardliked(@RequestBody PostMyLikedResponse userid, Model model) {
+    public ResponseEntity<?> myBoardLiked(@RequestBody PostMyLikedResponse userid, Model model) {
         postService.findPostByMyLikedUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyLikedResponse> posts = postService.findPostByMyLikedUserId(userid.getUserid());
@@ -416,7 +691,7 @@ public class PostController {
     }
     // 내가 좋아요 누른 글 개인
     @PostMapping("/post/myindividualliked")
-    public ResponseEntity<?> myindividualliked(@RequestBody PostMyIndividualLikedResponse userid, Model model) {
+    public ResponseEntity<?> myIndividualLiked(@RequestBody PostMyIndividualLikedResponse userid, Model model) {
         postService.findPostByMyIndividualLikedUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyIndividualLikedResponse> posts = postService.findPostByMyIndividualLikedUserId(userid.getUserid());
@@ -426,7 +701,7 @@ public class PostController {
     }
     // 내가 좋아요 누른 글 중고
     @PostMapping("/post/myusedliked")
-    public ResponseEntity<?> myusedliked(@RequestBody PostMyUsedLikedResponse userid, Model model) {
+    public ResponseEntity<?> myUsedLiked(@RequestBody PostMyUsedLikedResponse userid, Model model) {
         postService.findPostByMyUsedLikedUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyUsedLikedResponse> posts = postService.findPostByMyUsedLikedUserId(userid.getUserid());
@@ -434,6 +709,7 @@ public class PostController {
         obj.put("usedwrite", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
+
 
 
 }

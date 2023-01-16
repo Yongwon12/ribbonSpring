@@ -65,6 +65,8 @@ public interface PostMapper {
     void saveUser(PostUserRequest params);
     // 유저 수정
     void updateUser(PostUserRequest params);
+
+
     // 유저 삭제
     void deleteByUserId(PostUserRequest params);
 
@@ -92,6 +94,7 @@ public interface PostMapper {
     // 중고 좋아요 삭제
     void deleteByUsedLikedId(PostUsedLikedRequest params);
 
+
     // 댓글 조회
     List<PostCommentsResponse> findByInherentId(Long inherentid);
     // 댓글 아이디 조회
@@ -100,9 +103,109 @@ public interface PostMapper {
     void saveComments(PostCommentsRequest params);
     // 댓글 수정
     void updateComments(PostCommentsRequest params);
-    void updateDeleteCommentsCount(PostCommentsRequest params);
+    void updateCommentsCount(PostCommentsRequest params);
     // 댓글 삭제
     void deleteComments(PostCommentsRequest params);
+    void updateDeleteCommentsCount(PostCommentsRequest params);
+
+    // 개인 댓글 조회
+    List<PostIndiCommentsResponse> findByIndiCommentsInherentId(Long inherentid);
+    // 개인 댓글 아이디 조회
+    List<PostIndiCommentsIdResponse> findIndiCommentsId();
+    // 개인 댓글 기입
+    void saveIndiComments(PostIndiCommentsRequest params);
+    // 개인 댓글 수정
+    void updateIndiComments(PostIndiCommentsRequest params);
+    void updateIndiCommentsCount(PostIndiCommentsRequest params);
+    // 개인 댓글 삭제
+    void deleteIndiComments(PostIndiCommentsRequest params);
+    void updateDeleteIndiCommentsCount(PostIndiCommentsRequest params);
+
+    // 단체 댓글 조회
+    List<PostGroupCommentsResponse> findByGroupCommentsInherentId(Long inherentid);
+    // 단체 댓글 아이디 조회
+    List<PostGroupCommentsIdResponse> findGroupCommentsId();
+    // 단체 댓글 기입
+    void saveGroupComments(PostGroupCommentsRequest params);
+    // 단체 댓글 수정
+    void updateGroupComments(PostGroupCommentsRequest params);
+    void updateGroupCommentsCount(PostGroupCommentsRequest params);
+    // 단체 댓글 삭제
+    void deleteGroupComments(PostGroupCommentsRequest params);
+    void updateDeleteGroupCommentsCount(PostGroupCommentsRequest params);
+
+
+    // 중고 댓글 조회
+    List<PostUsedCommentsResponse> findByUsedCommentsInherentId(Long inherentid);
+    // 중고 댓글 아이디 조회
+    List<PostUsedCommentsIdResponse> findUsedCommentsId();
+    // 중고 댓글 기입
+    void saveUsedComments(PostUsedCommentsRequest params);
+    // 중고 댓글 수정
+    void updateUsedComments(PostUsedCommentsRequest params);
+    void updateUsedCommentsCount(PostUsedCommentsRequest params);
+    // 중고 댓글 삭제
+    void deleteUsedComments(PostUsedCommentsRequest params);
+    void updateDeleteUsedCommentsCount(PostUsedCommentsRequest params);
+
+
+
+
+    // 답글 조회
+    List<PostReplyResponse> findByReplyInherentId(Long inherentid);
+    // 답글 아이디 조회
+    List<PostReplyIdResponse> findReplyId();
+    // 답글 기입
+    void saveReply(PostReplyRequest params);
+    // 답글 수정
+    void updateReply(PostReplyRequest params);
+    void updateReplyCount(PostReplyRequest params);
+    // 답글 삭제
+    void deleteReply(PostReplyRequest params);
+    void updateDeleteReplyCount(PostReplyRequest params);
+
+
+    // 개인 답글 조회
+    List<PostIndiReplyResponse> findByIndiReplyInherentId(Long inherentid);
+    // 개인 답글 아이디 조회
+    List<PostIndiReplyIdResponse> findIndiReplyId();
+    // 개인 답글 기입
+    void saveIndiReply(PostIndiReplyRequest params);
+    // 개인 답글 수정
+    void updateIndiReply(PostIndiReplyRequest params);
+    void updateIndiReplyCount(PostIndiReplyRequest params);
+    // 개인 답글 삭제
+    void deleteIndiReply(PostIndiReplyRequest params);
+    void updateDeleteIndiReplyCount(PostIndiReplyRequest params);
+
+
+    // 단체 답글 조회
+    List<PostGroupReplyResponse> findByGroupReplyInherentId(Long inherentid);
+    // 단체 답글 아이디 조회
+    List<PostGroupReplyIdResponse> findGroupReplyId();
+    // 단체 답글 기입
+    void saveGroupReply(PostGroupReplyRequest params);
+    // 단체 답글 수정
+    void updateGroupReply(PostGroupReplyRequest params);
+    void updateGroupReplyCount(PostGroupReplyRequest params);
+    // 단체 답글 삭제
+    void deleteGroupReply(PostGroupReplyRequest params);
+    void updateDeleteGroupReplyCount(PostGroupReplyRequest params);
+
+    // 중고 답글 조회
+    List<PostUsedReplyResponse> findByUsedReplyInherentId(Long inherentid);
+    // 중고 답글 아이디 조회
+    List<PostUsedReplyIdResponse> findUsedReplyId();
+    // 중고 답글 기입
+    void saveUsedReply(PostUsedReplyRequest params);
+    // 중고 답글 수정
+    void updateUsedReply(PostUsedReplyRequest params);
+    void updateUsedReplyCount(PostUsedReplyRequest params);
+    // 중고 답글 삭제
+    void deleteUsedReply(PostUsedReplyRequest params);
+    void updateDeleteUsedReplyCount(PostUsedReplyRequest params);
+
+
 
     // 특정 유저 프로필 조회
     List<UserInfoResponse> findById(Long id);

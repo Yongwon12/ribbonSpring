@@ -11,9 +11,9 @@ public class PostMyBoardResponse {
     private String description;       // 작성자
     private String img;
     private String writedate;
-    private String profileimage;
     private String nickname;
     private Long boardid;
     private Integer likedcount;
     private Integer commentcount;
+    private String profileimage;
 }

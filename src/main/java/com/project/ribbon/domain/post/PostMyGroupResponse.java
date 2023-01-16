@@ -22,4 +22,5 @@ public class PostMyGroupResponse {
     private Long groupid;   // PK
     private String once;
     private Integer commentcount;
+    private String profileimage;
 }

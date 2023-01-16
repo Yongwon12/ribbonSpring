@@ -3,18 +3,18 @@ package com.project.ribbon.domain.post;
 import lombok.Getter;
 
 @Getter
-public class PostCommentsResponse {
+public class PostReplyResponse {
 
     private String description;
-    private Integer userid;
+    private Long userid;
     private String  nickname;
-    private Integer categoryid;
+    private Long categoryid;
     private Long inherentid;
     private String writedate;
     private Integer likedcount;
-    private Long commentsid;
+    private Long replyid;
+    private Long inherentcommentsid;
     private Integer isrecomment;
     private String profileimage;
-
 
 }

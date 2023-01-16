@@ -11,7 +11,6 @@ public class PostMyIndividualLikedResponse {
     private String title;
     private String description;
     private String gender;
-    private String userimage;
     private Long userid;
     private String writedate;
     private String maxage;
@@ -21,4 +20,5 @@ public class PostMyIndividualLikedResponse {
     private Integer likedcount;
     private Integer commentcount;
 
+    private String profileimage;
 }

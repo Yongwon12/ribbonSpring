@@ -3,7 +3,8 @@ package com.project.ribbon.domain.post;
 import lombok.Getter;
 
 @Getter
-public class PostUserResponse {
+public class PostReplyIdResponse {
 
-    private Long userid; //PK
+    private Long replyid;
+
 }

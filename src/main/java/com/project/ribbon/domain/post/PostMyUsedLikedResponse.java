@@ -21,4 +21,5 @@ public class PostMyUsedLikedResponse {
     private String  usedimage5;
     private Integer  likedcount;
     private Integer  commentcount;
+    private String profileimage;
 }

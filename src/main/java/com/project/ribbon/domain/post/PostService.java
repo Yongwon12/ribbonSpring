@@ -140,18 +140,22 @@ public class PostService {
     @Transactional
     public Long saveUserPost(final PostUserRequest params) {
         postMapper.saveUser(params);
-        return params.getId();
+        return params.getUserid();
     }
     // 유저 정보 수정
     @Transactional
     public Long updateUserPost(final PostUserRequest params) {
         postMapper.updateUser(params);
-        return params.getId();
+        return params.getUserid();
     }
+
+
+
+
     // 유저 정보 삭제
     public Long deleteUserPost(final PostUserRequest params) {
         postMapper.deleteByUserId(params);
-        return params.getId();
+        return params.getUserid();
     }
 
 
@@ -245,6 +249,11 @@ public class PostService {
         return params.getInherentid();
     }
     @Transactional
+    public Long updateCommentsCountPost(final PostCommentsRequest params) {
+        postMapper.updateCommentsCount(params);
+        return params.getInherentid();
+    }
+    @Transactional
     public Long updateDeleteCommentsCountPost(final PostCommentsRequest params) {
         postMapper.updateDeleteCommentsCount(params);
         return params.getInherentid();
@@ -254,6 +263,280 @@ public class PostService {
         postMapper.deleteComments(params);
         return params.getInherentid();
     }
+
+    // 개인 댓글 정보 조회
+    public List<PostIndiCommentsResponse> findPostByIndiCommentsInherentId(final Long inherentid) {
+        return postMapper.findByIndiCommentsInherentId(inherentid);
+    }
+    // 개인 댓글 작성자 아이디 조회
+    public List<PostIndiCommentsIdResponse> findIndiCommentsIdPost() {
+        return postMapper.findIndiCommentsId();
+    }
+
+    // 개인 댓글 기입
+    @Transactional
+    public Long saveIndiCommentsPost(final PostIndiCommentsRequest params) {
+        postMapper.saveIndiComments(params);
+        return params.getInherentid();
+    }
+    // 개인 댓글 정보 수정
+    @Transactional
+    public Long updateIndiCommentsPost(final PostIndiCommentsRequest params) {
+        postMapper.updateIndiComments(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateIndiCommentsCountPost(final PostIndiCommentsRequest params) {
+        postMapper.updateIndiCommentsCount(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateDeleteIndiCommentsCountPost(final PostIndiCommentsRequest params) {
+        postMapper.updateDeleteIndiCommentsCount(params);
+        return params.getInherentid();
+    }
+    // 개인 댓글 정보 삭제
+    public Long deleteIndiCommentsPost(final PostIndiCommentsRequest params) {
+        postMapper.deleteIndiComments(params);
+        return params.getInherentid();
+    }
+
+    // 단체 댓글 정보 조회
+    public List<PostGroupCommentsResponse> findPostByGroupCommentsInherentId(final Long inherentid) {
+        return postMapper.findByGroupCommentsInherentId(inherentid);
+    }
+    // 단체 댓글 작성자 아이디 조회
+    public List<PostGroupCommentsIdResponse> findGroupCommentsIdPost() {
+        return postMapper.findGroupCommentsId();
+    }
+
+    // 단체 댓글 기입
+    @Transactional
+    public Long saveGroupCommentsPost(final PostGroupCommentsRequest params) {
+        postMapper.saveGroupComments(params);
+        return params.getInherentid();
+    }
+    // 단체 댓글 정보 수정
+    @Transactional
+    public Long updateGroupCommentsPost(final PostGroupCommentsRequest params) {
+        postMapper.updateGroupComments(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateGroupCommentsCountPost(final PostGroupCommentsRequest params) {
+        postMapper.updateGroupCommentsCount(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateDeleteGroupCommentsCountPost(final PostGroupCommentsRequest params) {
+        postMapper.updateDeleteGroupCommentsCount(params);
+        return params.getInherentid();
+    }
+    // 단체 댓글 정보 삭제
+    public Long deleteGroupCommentsPost(final PostGroupCommentsRequest params) {
+        postMapper.deleteGroupComments(params);
+        return params.getInherentid();
+    }
+
+
+
+    // 중고 댓글 정보 조회
+    public List<PostUsedCommentsResponse> findPostByUsedCommentsInherentId(final Long inherentid) {
+        return postMapper.findByUsedCommentsInherentId(inherentid);
+    }
+    // 중고 댓글 작성자 아이디 조회
+    public List<PostUsedCommentsIdResponse> findUsedCommentsIdPost() {
+        return postMapper.findUsedCommentsId();
+    }
+
+    // 중고 댓글 기입
+    @Transactional
+    public Long saveUsedCommentsPost(final PostUsedCommentsRequest params) {
+        postMapper.saveUsedComments(params);
+        return params.getInherentid();
+    }
+    // 중고 댓글 정보 수정
+    @Transactional
+    public Long updateUsedCommentsPost(final PostUsedCommentsRequest params) {
+        postMapper.updateUsedComments(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateUsedCommentsCountPost(final PostUsedCommentsRequest params) {
+        postMapper.updateUsedCommentsCount(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateDeleteUsedCommentsCountPost(final PostUsedCommentsRequest params) {
+        postMapper.updateDeleteUsedCommentsCount(params);
+        return params.getInherentid();
+    }
+    // 중고 댓글 정보 삭제
+    public Long deleteUsedCommentsPost(final PostUsedCommentsRequest params) {
+        postMapper.deleteUsedComments(params);
+        return params.getInherentid();
+    }
+
+
+
+
+    // 답글 정보 조회
+    public List<PostReplyResponse> findPostByReplyInherentId(final Long inherentid) {
+        return postMapper.findByReplyInherentId(inherentid);
+    }
+    // 답글 작성자 아이디 조회
+    public List<PostReplyIdResponse> findReplyIdPost() {
+        return postMapper.findReplyId();
+    }
+
+    // 답글 기입
+    @Transactional
+    public Long saveReplyPost(final PostReplyRequest params) {
+        postMapper.saveReply(params);
+        return params.getInherentid();
+    }
+    // 답글 정보 수정
+    @Transactional
+    public Long updateReplyPost(final PostReplyRequest params) {
+        postMapper.updateReply(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateReplyCountPost(final PostReplyRequest params) {
+        postMapper.updateReplyCount(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateDeleteReplyCountPost(final PostReplyRequest params) {
+        postMapper.updateDeleteReplyCount(params);
+        return params.getInherentid();
+    }
+
+    // 답글 정보 삭제
+    public Long deleteReplyPost(final PostReplyRequest params) {
+        postMapper.deleteReply(params);
+        return params.getInherentid();
+    }
+
+    // 개인 답글 정보 조회
+    public List<PostIndiReplyResponse> findPostByIndiReplyInherentId(final Long inherentid) {
+        return postMapper.findByIndiReplyInherentId(inherentid);
+    }
+    // 개인 답글 작성자 아이디 조회
+    public List<PostIndiReplyIdResponse> findIndiReplyIdPost() {
+        return postMapper.findIndiReplyId();
+    }
+
+    // 개인 답글 기입
+    @Transactional
+    public Long saveIndiReplyPost(final PostIndiReplyRequest params) {
+        postMapper.saveIndiReply(params);
+        return params.getInherentid();
+    }
+    // 개인 답글 정보 수정
+    @Transactional
+    public Long updateIndiReplyPost(final PostIndiReplyRequest params) {
+        postMapper.updateIndiReply(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateIndiReplyCountPost(final PostIndiReplyRequest params) {
+        postMapper.updateIndiReplyCount(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateDeleteIndiReplyCountPost(final PostIndiReplyRequest params) {
+        postMapper.updateDeleteIndiReplyCount(params);
+        return params.getInherentid();
+    }
+
+    // 개인 답글 정보 삭제
+    public Long deleteIndiReplyPost(final PostIndiReplyRequest params) {
+        postMapper.deleteIndiReply(params);
+        return params.getInherentid();
+    }
+
+
+    // 단체 답글 정보 조회
+    public List<PostGroupReplyResponse> findPostByGroupReplyInherentId(final Long inherentid) {
+        return postMapper.findByGroupReplyInherentId(inherentid);
+    }
+    // 단체 답글 작성자 아이디 조회
+    public List<PostGroupReplyIdResponse> findGroupReplyIdPost() {
+        return postMapper.findGroupReplyId();
+    }
+
+    // 단체 답글 기입
+    @Transactional
+    public Long saveGroupReplyPost(final PostGroupReplyRequest params) {
+        postMapper.saveGroupReply(params);
+        return params.getInherentid();
+    }
+    // 단체 답글 정보 수정
+    @Transactional
+    public Long updateGroupReplyPost(final PostGroupReplyRequest params) {
+        postMapper.updateGroupReply(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateGroupReplyCountPost(final PostGroupReplyRequest params) {
+        postMapper.updateGroupReplyCount(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateDeleteGroupReplyCountPost(final PostGroupReplyRequest params) {
+        postMapper.updateDeleteGroupReplyCount(params);
+        return params.getInherentid();
+    }
+
+    // 단체 답글 정보 삭제
+    public Long deleteGroupReplyPost(final PostGroupReplyRequest params) {
+        postMapper.deleteGroupReply(params);
+        return params.getInherentid();
+    }
+
+
+
+    // 중고 답글 정보 조회
+    public List<PostUsedReplyResponse> findPostByUsedReplyInherentId(final Long inherentid) {
+        return postMapper.findByUsedReplyInherentId(inherentid);
+    }
+    // 중고 답글 작성자 아이디 조회
+    public List<PostUsedReplyIdResponse> findUsedReplyIdPost() {
+        return postMapper.findUsedReplyId();
+    }
+
+    // 중고 답글 기입
+    @Transactional
+    public Long saveUsedReplyPost(final PostUsedReplyRequest params) {
+        postMapper.saveUsedReply(params);
+        return params.getInherentid();
+    }
+    // 중고 답글 정보 수정
+    @Transactional
+    public Long updateUsedReplyPost(final PostUsedReplyRequest params) {
+        postMapper.updateUsedReply(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateUsedReplyCountPost(final PostUsedReplyRequest params) {
+        postMapper.updateUsedReplyCount(params);
+        return params.getInherentid();
+    }
+    @Transactional
+    public Long updateDeleteUsedReplyCountPost(final PostUsedReplyRequest params) {
+        postMapper.updateDeleteUsedReplyCount(params);
+        return params.getInherentid();
+    }
+
+    // 중고 답글 정보 삭제
+    public Long deleteUsedReplyPost(final PostUsedReplyRequest params) {
+        postMapper.deleteUsedReply(params);
+        return params.getInherentid();
+    }
+
+
+
     // 특정 유저 프로필 조회
     public List<UserInfoResponse> findPostById(final Long id) {
         return postMapper.findById(id);

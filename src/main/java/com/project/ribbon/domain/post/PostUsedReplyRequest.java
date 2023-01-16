@@ -8,16 +8,18 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostCommentsRequest {
+public class PostUsedReplyRequest {
 
         private String description;
-        private Integer userid;
-        private String  nickname;
-        private Integer categoryid;
-        private Long inherentid;
         private String writedate;
+        private Long userid;
+        private String  nickname;
+        private Long inherentid;
+        private Integer likedcount;
         @Id
-        private Long commentsid;
+        private Long usedreplyid;
+        private Long inherentcommentsid;
+        private Integer isrecomment;
 
 }
 

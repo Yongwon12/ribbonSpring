@@ -1,5 +1,6 @@
 package com.project.ribbon.domain.post;
 
+import jakarta.persistence.Id;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,12 +17,12 @@ public class PostIndiRequest {
         private String title;
         private String description;
         private String gender;
-        private String userimage;
         private Long userid;
         private String writedate;
         private String maxage;
         private String minage;
         private String nickname;
+        @Id
         private Long individualid;      // PK
         private Integer likedcount;
         private Integer commentcount;

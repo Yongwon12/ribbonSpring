@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostUserRequest {
 
-        private Long id; //PK
+        private Long userid; //PK
         private String username;
         private String password;
         private String email;
@@ -18,7 +18,7 @@ public class PostUserRequest {
         private String createdate;
         private String modifydate;
         private String birth;
-        private String userimage;
+        private String profileimage;
         private String gender;
         private String bestcategory;
         private String shortinfo;

@@ -15,7 +15,6 @@ public class PostRequest {
         private String description;
         private String img;
         private String writedate;
-        private String profileimage;
         private String nickname;
         private Long boardid;   // PK
         private Integer likedcount;
