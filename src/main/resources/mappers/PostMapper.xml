@@ -704,7 +704,7 @@
     <select id="findByInherentId" resultType="com.project.ribbon.domain.post.PostCommentsResponse">
         select
             description,writedate,comments.userid,user.nickname,categoryid
-            inherentid,likedcount,replyid,isrecomment,
+            inherentid,likedcount,commentsid,isrecomment,
             profileimage
         from comments
         left join user
@@ -776,7 +776,7 @@
     <select id="findByReplyInherentId" resultType="com.project.ribbon.domain.post.PostReplyResponse">
         select
             description,writedate,reply.userid,user.nickname,categoryid,
-            inherentid,likedcount,usedreplyid,inherentcommentsid,isrecomment,
+            inherentid,likedcount,replyid,inherentcommentsid,isrecomment,
             profileimage
         from reply
         left join user

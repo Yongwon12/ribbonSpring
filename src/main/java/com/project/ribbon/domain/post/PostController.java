@@ -1,5 +1,7 @@
 package com.project.ribbon.domain.post;
 
+import com.project.ribbon.enums.ExceptionEnum;
+import com.project.ribbon.response.ApiException;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,14 +28,16 @@ public class PostController {
 
     // 커뮤니티 게시글 작성
     @PostMapping("/post/boardwrite")
-    public Long savePost(@RequestBody PostRequest params){
+    public Long savePost(@RequestBody PostRequest params) throws ApiException{
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.savePost(params);
 
     }
 
     // 커뮤니티 게시글 조회
     @GetMapping("/post/board1")
-    public ResponseEntity<?> boardwrite1(Model model) {
+    public ResponseEntity<?> boardwrite1(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findAllPost1();
         model.addAttribute("posts", posts);
@@ -42,7 +46,8 @@ public class PostController {
     }
 
     @GetMapping("/post/board2")
-    public ResponseEntity<?> boardwrite2(Model model) {
+    public ResponseEntity<?> boardwrite2(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findAllPost2();
         model.addAttribute("posts", posts);
@@ -51,7 +56,8 @@ public class PostController {
     }
 
     @GetMapping("/post/board3")
-    public ResponseEntity<?> boardwrite3(Model model) {
+    public ResponseEntity<?> boardwrite3(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findAllPost3();
         model.addAttribute("posts", posts);
@@ -60,7 +66,8 @@ public class PostController {
     }
 
     @GetMapping("/post/board4")
-    public ResponseEntity<?> boardwrite4(Model model) {
+    public ResponseEntity<?> boardwrite4(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findAllPost4();
         model.addAttribute("posts", posts);
@@ -69,7 +76,8 @@ public class PostController {
     }
 
     @GetMapping("/post/board5")
-    public ResponseEntity<?> boardwrite5(Model model) {
+    public ResponseEntity<?> boardwrite5(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findAllPost5();
         model.addAttribute("posts", posts);
@@ -78,7 +86,8 @@ public class PostController {
     }
 
     @GetMapping("/post/board6")
-    public ResponseEntity<?> boardwrite6(Model model) {
+    public ResponseEntity<?> boardwrite6(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findAllPost6();
         model.addAttribute("posts", posts);
@@ -87,7 +96,8 @@ public class PostController {
     }
 
     @GetMapping("/post/board7")
-    public ResponseEntity<?> boardwrite7(Model model) {
+    public ResponseEntity<?> boardwrite7(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findAllPost7();
         model.addAttribute("posts", posts);
@@ -96,7 +106,8 @@ public class PostController {
     }
 
     @GetMapping("/post/board8")
-    public ResponseEntity<?> boardwrite8(Model model) {
+    public ResponseEntity<?> boardwrite8(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findAllPost8();
         model.addAttribute("posts", posts);
@@ -105,7 +116,8 @@ public class PostController {
     }
 
     @GetMapping("/post/board9")
-    public ResponseEntity<?> boardwrite9(Model model) {
+    public ResponseEntity<?> boardwrite9(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findAllPost9();
         model.addAttribute("posts", posts);
@@ -114,7 +126,8 @@ public class PostController {
     }
 
     @GetMapping("/post/board10")
-    public ResponseEntity<?> boardwrite10(Model model) {
+    public ResponseEntity<?> boardwrite10(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findAllPost10();
         model.addAttribute("posts", posts);
@@ -124,19 +137,22 @@ public class PostController {
 
     // 기존 게시글 수정
     @PostMapping("/post/update")
-    public Long updatePost(@RequestBody PostRequest params) {
+    public Long updatePost(@RequestBody PostRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.updatePost(params);
     }
 
     // 기존 게시글 삭제
     @RequestMapping("/post/delete")
-    public Long deletePost(@RequestBody PostRequest params) {
+    public Long deletePost(@RequestBody PostRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.deletePost(params);
     }
 
     // 단체 작성글 조회
     @GetMapping("/post/group")
-    public ResponseEntity<?> groupWrite(Model model) {
+    public ResponseEntity<?> groupWrite(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostGroupResponse> posts = postService.findGroupAllPost();
         model.addAttribute("posts", posts);
@@ -146,26 +162,30 @@ public class PostController {
 
     // 단체 글작성
     @PostMapping("/post/writegroup")
-    public Long saveGroupPost(@RequestBody PostGroupRequest params) {
+    public Long saveGroupPost(@RequestBody PostGroupRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.saveGroupPost(params);
 
     }
 
     // 단체 게시글 수정
     @PostMapping("/post/updategroup")
-    public Long updateGroupPost(@RequestBody PostGroupRequest params) {
+    public Long updateGroupPost(@RequestBody PostGroupRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.updateGroupPost(params);
     }
 
     // 단체 게시글 삭제
     @RequestMapping("/post/deletegroup")
-    public Long deleteGroupPost(@RequestBody PostGroupRequest params) {
+    public Long deleteGroupPost(@RequestBody PostGroupRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.deleteGroupPost(params);
     }
 
     // 개인 작성글 조회
     @GetMapping("/post/individual")
-    public ResponseEntity<?> indiWrite(Model model) {
+    public ResponseEntity<?> indiWrite(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostIndiResponse> posts = postService.findIndiAllPost();
         model.addAttribute("posts", posts);
@@ -175,26 +195,30 @@ public class PostController {
 
     // 개인 글작성
     @PostMapping("/post/writeindividual")
-    public Long saveIndiPost(@RequestBody PostIndiRequest params) {
+    public Long saveIndiPost(@RequestBody PostIndiRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.saveIndiPost(params);
 
     }
 
     // 개인 게시글 수정
     @PostMapping("/post/updateindividual")
-    public Long updateIndiPost(@RequestBody PostIndiRequest params) {
+    public Long updateIndiPost(@RequestBody PostIndiRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.updateIndiPost(params);
     }
 
     // 개인 게시글 삭제
     @RequestMapping("/post/deleteindividual")
-    public Long deleteIndiPost(@RequestBody PostIndiRequest params) {
+    public Long deleteIndiPost(@RequestBody PostIndiRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.deleteIndiPost(params);
     }
 
     // 중고 작성글 조회
     @GetMapping("/post/used")
-    public ResponseEntity<?> usedWrite(Model model) {
+    public ResponseEntity<?> usedWrite(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostUsedResponse> posts = postService.findUsedAllPost();
         model.addAttribute("posts", posts);
@@ -204,26 +228,30 @@ public class PostController {
 
     // 중고 글작성
     @PostMapping("/post/writeused")
-    public Long saveUsedPost(@RequestBody PostUsedRequest params) {
+    public Long saveUsedPost(@RequestBody PostUsedRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.saveUsedPost(params);
 
     }
 
     // 중고 게시글 수정
     @PostMapping("/post/updateused")
-    public Long updateUsedPost(@RequestBody PostUsedRequest params) {
+    public Long updateUsedPost(@RequestBody PostUsedRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.updateUsedPost(params);
     }
 
     // 중고 게시글 삭제
     @RequestMapping("/post/deleteused")
-    public Long deleteUsedPost(@RequestBody PostUsedRequest params) {
+    public Long deleteUsedPost(@RequestBody PostUsedRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.deleteUsedPost(params);
     }
 
     // 유저 정보 조회
     @GetMapping("/post/sign")
-    public ResponseEntity<?> user(Model model) {
+    public ResponseEntity<?> user(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostUserResponse> posts = postService.findUserAllPost();
         model.addAttribute("posts", posts);
@@ -233,7 +261,8 @@ public class PostController {
 
     // 유저 정보 등록
     @PostMapping("/post/sign")
-    public ResponseEntity<?> saveUserPost(@RequestBody PostUserRequest params,Model model) {
+    public ResponseEntity<?> saveUserPost(@RequestBody PostUserRequest params,Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.saveUserPost(params);
         Map<String, Object> obj = new HashMap<>();
         List<PostUserResponse> posts = postService.findUserAllPost();
@@ -244,19 +273,22 @@ public class PostController {
 
     // 유저 정보 수정
     @PostMapping("/post/updateuser")
-    public Long updateUserPost(@RequestBody PostUserRequest params) {
+    public Long updateUserPost(@RequestBody PostUserRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.updateUserPost(params);
     }
 
     // 유저 정보 삭제
     @PostMapping("/post/deleteuser")
-    public Long deleteUserPost(@RequestBody PostUserRequest params) {
+    public Long deleteUserPost(@RequestBody PostUserRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.deleteUserPost(params);
     }
 
     // 실시간 인기글
     @GetMapping("/post/realtimeup")
-    public ResponseEntity<?> realTimeUp(Model model) {
+    public ResponseEntity<?> realTimeUp(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findAllPost11();
         model.addAttribute("posts", posts);
@@ -268,7 +300,8 @@ public class PostController {
 
     // 좋아요 등록
     @PostMapping("/post/liked")
-    public Integer saveLikedPost(@RequestBody PostLikedRequest params) {
+    public Integer saveLikedPost(@RequestBody PostLikedRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateLikedPost(params);
         return postService.saveLikedPost(params);
 
@@ -277,14 +310,16 @@ public class PostController {
 
     // 좋아요 삭제
     @RequestMapping("/post/deleteliked")
-    public Integer deleteLikedPost(@RequestBody PostLikedRequest params) {
+    public Integer deleteLikedPost(@RequestBody PostLikedRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateDeleteLikedPost(params);
         return postService.deleteLikedPost(params);
     }
 
     // 개인 좋아요 등록
     @PostMapping("/post/individualliked")
-    public Integer saveIndiLikedPost(@RequestBody PostIndividualLikedRequest params) {
+    public Integer saveIndiLikedPost(@RequestBody PostIndividualLikedRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateIndividualLikedPost(params);
         return postService.saveIndividualLikedPost(params);
 
@@ -293,14 +328,16 @@ public class PostController {
 
     // 개인 좋아요 삭제
     @RequestMapping("/post/deleteindividualliked")
-    public Integer deleteIndiLikedPost(@RequestBody PostIndividualLikedRequest params) {
+    public Integer deleteIndiLikedPost(@RequestBody PostIndividualLikedRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateDeleteIndividualLikedPost(params);
         return postService.deleteIndividualLikedPost(params);
     }
 
     // 중고 좋아요 등록
     @PostMapping("/post/usedliked")
-    public Integer saveUsedLikedPost(@RequestBody PostUsedLikedRequest params) {
+    public Integer saveUsedLikedPost(@RequestBody PostUsedLikedRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateUsedLikedPost(params);
         return postService.saveUsedLikedPost(params);
 
@@ -309,14 +346,16 @@ public class PostController {
 
     // 중고 좋아요 삭제
     @RequestMapping("/post/deleteusedliked")
-    public Integer deleteUsedLikedPost(@RequestBody PostUsedLikedRequest params) {
+    public Integer deleteUsedLikedPost(@RequestBody PostUsedLikedRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateDeleteUsedLikedPost(params);
         return postService.deleteUsedLikedPost(params);
     }
 
     // 댓글 조회
     @RequestMapping("/post/commentsinfo")
-    public ResponseEntity<?> commentsInfo(@RequestBody PostCommentsResponse inherentid, Model model) {
+    public ResponseEntity<?> commentsInfo(@RequestBody PostCommentsResponse inherentid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByInherentId(inherentid.getInherentid());
         Map<String, Object> obj = new HashMap<>();
         List<PostCommentsResponse> posts = postService.findPostByInherentId(inherentid.getInherentid());
@@ -328,7 +367,8 @@ public class PostController {
 
     // 댓글 등록 및 아이디 전송
     @RequestMapping(method = RequestMethod.POST,path ="/post/comments")
-    public ResponseEntity<?> saveComments(@RequestBody PostCommentsRequest params,Model model) {
+    public ResponseEntity<?> saveComments(@RequestBody PostCommentsRequest params,Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.saveCommentsPost(params);
         postService.updateCommentsCountPost(params);
         Map<String, Object> obj = new HashMap<>();
@@ -341,20 +381,23 @@ public class PostController {
 
     // 댓글 수정
     @PostMapping("/post/updatecomments")
-    public Long updateCommentsPost(@RequestBody PostCommentsRequest params) {
+    public Long updateCommentsPost(@RequestBody PostCommentsRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.updateCommentsPost(params);
     }
 
     // 댓글 삭제
     @RequestMapping("/post/deletecomments")
-    public Long deleteCommentsPost(@RequestBody PostCommentsRequest params) {
+    public Long deleteCommentsPost(@RequestBody PostCommentsRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateDeleteCommentsCountPost(params);
         return postService.deleteCommentsPost(params);
     }
 
     // 개인 댓글 조회
     @RequestMapping("/post/indicommentsinfo")
-    public ResponseEntity<?> indiCommentsInfo(@RequestBody PostIndiCommentsResponse inherentid, Model model) {
+    public ResponseEntity<?> indiCommentsInfo(@RequestBody PostIndiCommentsResponse inherentid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByIndiCommentsInherentId(inherentid.getInherentid());
         Map<String, Object> obj = new HashMap<>();
         List<PostIndiCommentsResponse> posts = postService.findPostByIndiCommentsInherentId(inherentid.getInherentid());
@@ -366,7 +409,8 @@ public class PostController {
 
     // 개인 댓글 등록 및 아이디 전송
     @RequestMapping(method = RequestMethod.POST,path ="/post/indicomments")
-    public ResponseEntity<?> saveIndiComments(@RequestBody PostIndiCommentsRequest params,Model model) {
+    public ResponseEntity<?> saveIndiComments(@RequestBody PostIndiCommentsRequest params,Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.saveIndiCommentsPost(params);
         postService.updateIndiCommentsCountPost(params);
         Map<String, Object> obj = new HashMap<>();
@@ -379,20 +423,23 @@ public class PostController {
 
     // 개인 댓글 수정
     @PostMapping("/post/updateindicomments")
-    public Long updateIndiCommentsPost(@RequestBody PostIndiCommentsRequest params) {
+    public Long updateIndiCommentsPost(@RequestBody PostIndiCommentsRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.updateIndiCommentsPost(params);
     }
 
     // 개인 댓글 삭제
     @RequestMapping("/post/deleteindicomments")
-    public Long deleteIndiCommentsPost(@RequestBody PostIndiCommentsRequest params) {
+    public Long deleteIndiCommentsPost(@RequestBody PostIndiCommentsRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateDeleteIndiCommentsCountPost(params);
         return postService.deleteIndiCommentsPost(params);
     }
 
     // 단체 댓글 조회
     @RequestMapping("/post/groupcommentsinfo")
-    public ResponseEntity<?> groupCommentsInfo(@RequestBody PostGroupCommentsResponse inherentid, Model model) {
+    public ResponseEntity<?> groupCommentsInfo(@RequestBody PostGroupCommentsResponse inherentid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByGroupCommentsInherentId(inherentid.getInherentid());
         Map<String, Object> obj = new HashMap<>();
         List<PostGroupCommentsResponse> posts = postService.findPostByGroupCommentsInherentId(inherentid.getInherentid());
@@ -404,7 +451,8 @@ public class PostController {
 
     // 단체 댓글 등록 및 아이디 전송
     @RequestMapping(method = RequestMethod.POST,path ="/post/groupcomments")
-    public ResponseEntity<?> saveGroupComments(@RequestBody PostGroupCommentsRequest params,Model model) {
+    public ResponseEntity<?> saveGroupComments(@RequestBody PostGroupCommentsRequest params,Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.saveGroupCommentsPost(params);
         postService.updateGroupCommentsCountPost(params);
         Map<String, Object> obj = new HashMap<>();
@@ -417,13 +465,15 @@ public class PostController {
 
     // 단체 댓글 수정
     @PostMapping("/post/updategroupcomments")
-    public Long updateGroupCommentsPost(@RequestBody PostGroupCommentsRequest params) {
+    public Long updateGroupCommentsPost(@RequestBody PostGroupCommentsRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.updateGroupCommentsPost(params);
     }
 
     // 단체 댓글 삭제
     @RequestMapping("/post/deletegroupcomments")
-    public Long deleteGroupCommentsPost(@RequestBody PostGroupCommentsRequest params) {
+    public Long deleteGroupCommentsPost(@RequestBody PostGroupCommentsRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateDeleteGroupCommentsCountPost(params);
         return postService.deleteGroupCommentsPost(params);
     }
@@ -431,7 +481,8 @@ public class PostController {
 
     // 중고 댓글 조회
     @RequestMapping("/post/usedcommentsinfo")
-    public ResponseEntity<?> usedcommentsinfo(@RequestBody PostUsedCommentsResponse inherentid, Model model) {
+    public ResponseEntity<?> usedcommentsinfo(@RequestBody PostUsedCommentsResponse inherentid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByUsedCommentsInherentId(inherentid.getInherentid());
         Map<String, Object> obj = new HashMap<>();
         List<PostUsedCommentsResponse> posts = postService.findPostByUsedCommentsInherentId(inherentid.getInherentid());
@@ -443,7 +494,8 @@ public class PostController {
 
     // 중고 댓글 등록 및 아이디 전송
     @RequestMapping(method = RequestMethod.POST,path ="/post/usedcomments")
-    public ResponseEntity<?> saveUsedComments(@RequestBody PostUsedCommentsRequest params,Model model) {
+    public ResponseEntity<?> saveUsedComments(@RequestBody PostUsedCommentsRequest params,Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.saveUsedCommentsPost(params);
         postService.updateUsedCommentsCountPost(params);
         Map<String, Object> obj = new HashMap<>();
@@ -456,13 +508,15 @@ public class PostController {
 
     // 중고 댓글 수정
     @PostMapping("/post/updateusedcomments")
-    public Long updateUsedCommentsPost(@RequestBody PostUsedCommentsRequest params) {
+    public Long updateUsedCommentsPost(@RequestBody PostUsedCommentsRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.updateUsedCommentsPost(params);
     }
 
     // 중고 댓글 삭제
     @RequestMapping("/post/deleteusedcomments")
-    public Long deleteUsedCommentsPost(@RequestBody PostUsedCommentsRequest params) {
+    public Long deleteUsedCommentsPost(@RequestBody PostUsedCommentsRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateDeleteUsedCommentsCountPost(params);
         return postService.deleteUsedCommentsPost(params);
     }
@@ -472,7 +526,8 @@ public class PostController {
 
     // 답글 조회
     @RequestMapping("/post/replyinfo")
-    public ResponseEntity<?> replyInfo(@RequestBody PostReplyResponse inherentid, Model model) {
+    public ResponseEntity<?> replyInfo(@RequestBody PostReplyResponse inherentid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByReplyInherentId(inherentid.getInherentid());
         Map<String, Object> obj = new HashMap<>();
         List<PostReplyResponse> posts = postService.findPostByReplyInherentId(inherentid.getInherentid());
@@ -484,7 +539,8 @@ public class PostController {
 
     // 답글 등록 및 아이디 전송
     @RequestMapping(method = RequestMethod.POST,path ="/post/reply")
-    public ResponseEntity<?> saveReply(@RequestBody PostReplyRequest params,Model model) {
+    public ResponseEntity<?> saveReply(@RequestBody PostReplyRequest params,Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.saveReplyPost(params);
         postService.updateReplyCountPost(params);
         Map<String, Object> obj = new HashMap<>();
@@ -497,20 +553,23 @@ public class PostController {
 
     // 답글 수정
     @PostMapping("/post/updatereply")
-    public Long updateReplyPost(@RequestBody PostReplyRequest params) {
+    public Long updateReplyPost(@RequestBody PostReplyRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.updateReplyPost(params);
     }
 
     // 답글 삭제
     @RequestMapping("/post/deletereply")
-    public Long deleteReplyPost(@RequestBody PostReplyRequest params) {
+    public Long deleteReplyPost(@RequestBody PostReplyRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateDeleteReplyCountPost(params);
         return postService.deleteReplyPost(params);
     }
 
     // 개인 답글 조회
     @RequestMapping("/post/indireplyinfo")
-    public ResponseEntity<?> indiReplyInfo(@RequestBody PostIndiReplyResponse inherentid, Model model) {
+    public ResponseEntity<?> indiReplyInfo(@RequestBody PostIndiReplyResponse inherentid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByIndiReplyInherentId(inherentid.getInherentid());
         Map<String, Object> obj = new HashMap<>();
         List<PostIndiReplyResponse> posts = postService.findPostByIndiReplyInherentId(inherentid.getInherentid());
@@ -522,7 +581,8 @@ public class PostController {
 
     // 개인 답글 등록 및 아이디 전송
     @RequestMapping(method = RequestMethod.POST,path ="/post/indireply")
-    public ResponseEntity<?> saveIndiReply(@RequestBody PostIndiReplyRequest params,Model model) {
+    public ResponseEntity<?> saveIndiReply(@RequestBody PostIndiReplyRequest params,Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.saveIndiReplyPost(params);
         postService.updateIndiReplyCountPost(params);
         Map<String, Object> obj = new HashMap<>();
@@ -535,20 +595,23 @@ public class PostController {
 
     // 개인 답글 수정
     @PostMapping("/post/updateindireply")
-    public Long updateIndiReplyPost(@RequestBody PostIndiReplyRequest params) {
+    public Long updateIndiReplyPost(@RequestBody PostIndiReplyRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.updateIndiReplyPost(params);
     }
 
     // 개인 답글 삭제
     @RequestMapping("/post/deleteindireply")
-    public Long deleteIndiReplyPost(@RequestBody PostIndiReplyRequest params) {
+    public Long deleteIndiReplyPost(@RequestBody PostIndiReplyRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateDeleteIndiReplyCountPost(params);
         return postService.deleteIndiReplyPost(params);
     }
 
     // 단체 답글 조회
     @RequestMapping("/post/groupreplyinfo")
-    public ResponseEntity<?> groupReplyInfo(@RequestBody PostGroupReplyResponse inherentid, Model model) {
+    public ResponseEntity<?> groupReplyInfo(@RequestBody PostGroupReplyResponse inherentid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByGroupReplyInherentId(inherentid.getInherentid());
         Map<String, Object> obj = new HashMap<>();
         List<PostGroupReplyResponse> posts = postService.findPostByGroupReplyInherentId(inherentid.getInherentid());
@@ -560,7 +623,8 @@ public class PostController {
 
     // 단체 답글 등록 및 아이디 전송
     @RequestMapping(method = RequestMethod.POST,path ="/post/groupreply")
-    public ResponseEntity<?> saveGroupReply(@RequestBody PostGroupReplyRequest params,Model model) {
+    public ResponseEntity<?> saveGroupReply(@RequestBody PostGroupReplyRequest params,Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.saveGroupReplyPost(params);
         postService.updateGroupReplyCountPost(params);
         Map<String, Object> obj = new HashMap<>();
@@ -573,13 +637,15 @@ public class PostController {
 
     // 단체 답글 수정
     @PostMapping("/post/updategroupreply")
-    public Long updateGroupReplyPost(@RequestBody PostGroupReplyRequest params) {
+    public Long updateGroupReplyPost(@RequestBody PostGroupReplyRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.updateGroupReplyPost(params);
     }
 
     // 단체 답글 삭제
     @RequestMapping("/post/deletegroupreply")
-    public Long deleteGroupReplyPost(@RequestBody PostGroupReplyRequest params) {
+    public Long deleteGroupReplyPost(@RequestBody PostGroupReplyRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateDeleteGroupReplyCountPost(params);
         return postService.deleteGroupReplyPost(params);
     }
@@ -588,7 +654,8 @@ public class PostController {
 
     // 중고 답글 조회
     @RequestMapping("/post/usedreplyinfo")
-    public ResponseEntity<?> usedReplyInfo(@RequestBody PostUsedReplyResponse inherentid, Model model) {
+    public ResponseEntity<?> usedReplyInfo(@RequestBody PostUsedReplyResponse inherentid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByUsedReplyInherentId(inherentid.getInherentid());
         Map<String, Object> obj = new HashMap<>();
         List<PostUsedReplyResponse> posts = postService.findPostByUsedReplyInherentId(inherentid.getInherentid());
@@ -600,7 +667,8 @@ public class PostController {
 
     // 중고 답글 등록 및 아이디 전송
     @RequestMapping(method = RequestMethod.POST,path ="/post/usedreply")
-    public ResponseEntity<?> saveUsedReply(@RequestBody PostUsedReplyRequest params,Model model) {
+    public ResponseEntity<?> saveUsedReply(@RequestBody PostUsedReplyRequest params,Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.saveUsedReplyPost(params);
         postService.updateUsedReplyCountPost(params);
         Map<String, Object> obj = new HashMap<>();
@@ -613,13 +681,15 @@ public class PostController {
 
     // 중고 답글 수정
     @PostMapping("/post/updateusedreply")
-    public Long updateUsedReplyPost(@RequestBody PostUsedReplyRequest params) {
+    public Long updateUsedReplyPost(@RequestBody PostUsedReplyRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.updateUsedReplyPost(params);
     }
 
     // 중고 답글 삭제
     @RequestMapping("/post/deleteusedreply")
-    public Long deleteUsedReplyPost(@RequestBody PostUsedReplyRequest params) {
+    public Long deleteUsedReplyPost(@RequestBody PostUsedReplyRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.updateDeleteUsedReplyCountPost(params);
         return postService.deleteUsedReplyPost(params);
     }
@@ -629,7 +699,8 @@ public class PostController {
 
     // 특정 유저 프로필 조회
     @PostMapping("/post/userinfo")
-    public ResponseEntity<?> openPostView(@RequestBody UserInfoResponse userid, Model model) {
+    public ResponseEntity<?> openPostView(@RequestBody UserInfoResponse userid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostById(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<UserInfoResponse> posts = postService.findPostById(userid.getUserid());
@@ -639,7 +710,8 @@ public class PostController {
     }
     // 내가 쓴 글 커뮤니티
     @PostMapping("/post/myboardwrite")
-    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyBoardResponse userid, Model model) {
+    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyBoardResponse userid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByMyUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyBoardResponse> posts = postService.findPostByMyUserId(userid.getUserid());
@@ -650,7 +722,8 @@ public class PostController {
 
     // 내가 쓴 글 단체
     @PostMapping("/post/mygroupwrite")
-    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyGroupResponse userid, Model model) {
+    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyGroupResponse userid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByMyGroupUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyGroupResponse> posts = postService.findPostByMyGroupUserId(userid.getUserid());
@@ -661,7 +734,8 @@ public class PostController {
 
     // 내가 쓴 글 개인
     @PostMapping("/post/myindividualwrite")
-    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyIndiResponse userid, Model model) {
+    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyIndiResponse userid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByMyIndividualUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyIndiResponse> posts = postService.findPostByMyIndividualUserId(userid.getUserid());
@@ -671,7 +745,8 @@ public class PostController {
     }
     // 내가 쓴 글 중고
     @PostMapping("/post/myusedwrite")
-    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyUsedResponse userid, Model model) {
+    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyUsedResponse userid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByMyUsedUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyUsedResponse> posts = postService.findPostByMyUsedUserId(userid.getUserid());
@@ -681,7 +756,8 @@ public class PostController {
     }
     // 내가 좋아요 누른 글 커뮤니티
     @PostMapping("/post/myboardliked")
-    public ResponseEntity<?> myBoardLiked(@RequestBody PostMyLikedResponse userid, Model model) {
+    public ResponseEntity<?> myBoardLiked(@RequestBody PostMyLikedResponse userid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByMyLikedUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyLikedResponse> posts = postService.findPostByMyLikedUserId(userid.getUserid());
@@ -691,7 +767,8 @@ public class PostController {
     }
     // 내가 좋아요 누른 글 개인
     @PostMapping("/post/myindividualliked")
-    public ResponseEntity<?> myIndividualLiked(@RequestBody PostMyIndividualLikedResponse userid, Model model) {
+    public ResponseEntity<?> myIndividualLiked(@RequestBody PostMyIndividualLikedResponse userid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByMyIndividualLikedUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyIndividualLikedResponse> posts = postService.findPostByMyIndividualLikedUserId(userid.getUserid());
@@ -701,7 +778,8 @@ public class PostController {
     }
     // 내가 좋아요 누른 글 중고
     @PostMapping("/post/myusedliked")
-    public ResponseEntity<?> myUsedLiked(@RequestBody PostMyUsedLikedResponse userid, Model model) {
+    public ResponseEntity<?> myUsedLiked(@RequestBody PostMyUsedLikedResponse userid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.findPostByMyUsedLikedUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
         List<PostMyUsedLikedResponse> posts = postService.findPostByMyUsedLikedUserId(userid.getUserid());
