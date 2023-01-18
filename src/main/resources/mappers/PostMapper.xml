@@ -558,6 +558,7 @@
           , modifyDate = #{modifydate}
           , bestcategory = #{bestcategory}
           , shortinfo = #{shortinfo}
+            , birth = #{birth}
         WHERE
             userid = #{userid}
     </update>
