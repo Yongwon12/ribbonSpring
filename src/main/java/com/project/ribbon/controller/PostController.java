@@ -1,7 +1,9 @@
-package com.project.ribbon.domain.post;
+package com.project.ribbon.controller;
 
+import com.project.ribbon.domain.post.*;
 import com.project.ribbon.enums.ExceptionEnum;
 import com.project.ribbon.response.ApiException;
+import com.project.ribbon.service.PostService;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;

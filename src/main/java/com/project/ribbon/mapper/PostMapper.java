@@ -1,5 +1,6 @@
-package com.project.ribbon.domain.post;
+package com.project.ribbon.mapper;
 
+import com.project.ribbon.domain.post.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

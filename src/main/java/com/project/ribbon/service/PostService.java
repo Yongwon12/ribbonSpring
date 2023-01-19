@@ -1,5 +1,7 @@
-package com.project.ribbon.domain.post;
+package com.project.ribbon.service;
 
+import com.project.ribbon.domain.post.*;
+import com.project.ribbon.mapper.PostMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
