@@ -243,91 +243,91 @@
         SELECT
         id,boardwrite.userid,title,description,img,writedate,user.nickname,
         boardid,likedcount,commentcount,profileimage
-        from boardwrite
-        left join user
-        on user.userid=boardwrite.userid
-        where id = 1
+        FROM boardwrite
+        LEFT JOIN user
+        ON user.userid=boardwrite.userid
+        WHERE id = 1
     </select>
     <select id="findAll2" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,boardwrite.userid,title,description,img,writedate,user.nickname,
             boardid,likedcount,commentcount,profileimage
-        from boardwrite
-                 left join user
-                           on user.userid=boardwrite.userid
-        where id = 2
+        FROM boardwrite
+                 LEFT JOIN user
+                           ON user.userid=boardwrite.userid
+        WHERE id = 2
     </select>
     <select id="findAll3" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,boardwrite.userid,title,description,img,writedate,user.nickname,
             boardid,likedcount,commentcount,profileimage
-        from boardwrite
-                 left join user
-                           on user.userid=boardwrite.userid
-        where id = 3
+        FROM boardwrite
+                 LEFT JOIN user
+                           ON user.userid=boardwrite.userid
+        WHERE id = 3
     </select>
     <select id="findAll4" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,boardwrite.userid,title,description,img,writedate,user.nickname,
             boardid,likedcount,commentcount,profileimage
-        from boardwrite
-                 left join user
-                           on user.userid=boardwrite.userid
-        where id = 4
+        FROM boardwrite
+                 LEFT JOIN user
+                           ON user.userid=boardwrite.userid
+        WHERE id = 4
     </select>
     <select id="findAll5" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,boardwrite.userid,title,description,img,writedate,user.nickname,
             boardid,likedcount,commentcount,profileimage
-        from boardwrite
-                 left join user
-                           on user.userid=boardwrite.userid
-        where id = 5
+        FROM boardwrite
+                 LEFT JOIN user
+                           ON user.userid=boardwrite.userid
+        WHERE id = 5
     </select>
     <select id="findAll6" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,boardwrite.userid,title,description,img,writedate,user.nickname,
             boardid,likedcount,commentcount,profileimage
-        from boardwrite
-                 left join user
-                           on user.userid=boardwrite.userid
-        where id = 6
+        FROM boardwrite
+                 LEFT JOIN user
+                           ON user.userid=boardwrite.userid
+        WHERE id = 6
     </select>
     <select id="findAll7" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,boardwrite.userid,title,description,img,writedate,user.nickname,
             boardid,likedcount,commentcount,profileimage
-        from boardwrite
-                 left join user
-                           on user.userid=boardwrite.userid
-        where id = 7
+        FROM boardwrite
+                 LEFT JOIN user
+                           ON user.userid=boardwrite.userid
+        WHERE id = 7
     </select>
     <select id="findAll8" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,boardwrite.userid,title,description,img,writedate,user.nickname,
             boardid,likedcount,commentcount,profileimage
-        from boardwrite
-                 left join user
-                           on user.userid=boardwrite.userid
-        where id = 8
+        FROM boardwrite
+                 LEFT JOIN user
+                           ON user.userid=boardwrite.userid
+        WHERE id = 8
     </select>
     <select id="findAll9" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,boardwrite.userid,title,description,img,writedate,user.nickname,
             boardid,likedcount,commentcount,profileimage
-        from boardwrite
-                 left join user
-                           on user.userid=boardwrite.userid
-        where id = 9
+        FROM boardwrite
+                 LEFT JOIN user
+                           ON user.userid=boardwrite.userid
+        WHERE id = 9
     </select>
     <select id="findAll10" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,boardwrite.userid,title,description,img,writedate,user.nickname,
             boardid,likedcount,commentcount,profileimage
-        from boardwrite
-                 left join user
-                           on user.userid=boardwrite.userid
-        where id = 10
+        FROM boardwrite
+                 LEFT JOIN user
+                           ON user.userid=boardwrite.userid
+        WHERE id = 10
     </select>
     <!-- 커뮤니티 게시글 삭제 -->
     <delete id="deleteById" >
@@ -395,7 +395,7 @@
         DELETE
         FROM
             groupwrite
-        where groupid = #{groupid}
+        WHERE groupid = #{groupid}
     </delete>
 
 
@@ -407,8 +407,8 @@
         individualid,likedcount,commentcount,profileimage
         FROM
         individualwrite
-        left join user
-        on user.userid = individualwrite.userid
+        LEFT JOIN user
+        ON user.userid = individualwrite.userid
 
     </select>
 
@@ -456,7 +456,7 @@
         DELETE
         FROM
             individualwrite
-        where individualid = #{individualid}
+        WHERE individualid = #{individualid}
     </delete>
 
     <!-- 중고 게시글 조회  -->
@@ -570,16 +570,18 @@
         DELETE
         FROM
             user
-        where userid = #{userid}
+        WHERE userid = #{userid}
     </delete>
+
+
     <!-- 실시간 인기글 -->
     <select id="findAll11" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,boardwrite.userid,title,description,img,writedate,user.nickname,
             boardid,likedcount,commentcount,profileimage
-        from boardwrite
-                 left join user
-                           on user.userid=boardwrite.userid
+        FROM boardwrite
+                 LEFT JOIN user
+                           ON user.userid=boardwrite.userid
         WHERE
             likedcount
                 = (SELECT max(likedcount) FROM boardwrite)
@@ -602,28 +604,33 @@
         )
 
     </insert>
+
+
     <!-- 좋아요 갯수 카운트 +1 -->
     <update id="updateLiked" parameterType="com.project.ribbon.domain.post.PostLikedRequest">
 
-        update boardwrite set likedcount = likedcount + 1 where boardid = #{inherentid}
+        UPDATE boardwrite SET likedcount = likedcount + 1 WHERE boardid = #{inherentid}
 
     </update>
     <!-- 좋아요 갯수 카운트 -1 -->
     <update id="updateDeleteLiked" parameterType="com.project.ribbon.domain.post.PostLikedRequest">
 
-        update boardwrite set likedcount = likedcount - 1 where boardid = #{inherentid}
+        UPDATE boardwrite SET likedcount = likedcount - 1 WHERE boardid = #{inherentid}
 
     </update>
+
 
     <!-- 좋아요 삭제 -->
     <delete id="deleteByLikedId" >
         DELETE
         FROM
             liked
-        where categoryid = #{categoryid}
+        WHERE categoryid = #{categoryid}
         AND userid = #{userid}
         AND inherentid = #{inherentid}
     </delete>
+
+
     <!-- 개인 좋아요 삽입 -->
     <insert id="saveIndividualLiked" parameterType="com.project.ribbon.domain.post.PostIndividualLikedRequest"
     >
@@ -636,16 +643,18 @@
         )
 
     </insert>
+
+
     <!-- 개인 좋아요 갯수 카운트 +1 -->
     <update id="updateIndividualLiked" parameterType="com.project.ribbon.domain.post.PostIndividualLikedRequest">
 
-        update individualwrite set likedcount = likedcount + 1 where individualid = #{inherentid}
+        UPDATE individualwrite SET likedcount = likedcount + 1 WHERE individualid = #{inherentid}
 
     </update>
     <!-- 개인 좋아요 갯수 카운트 -1 -->
     <update id="updateDeleteIndividualLiked" parameterType="com.project.ribbon.domain.post.PostIndividualLikedRequest">
 
-        update individualwrite set likedcount = likedcount - 1 where individualid = #{inherentid}
+        UPDATE individualwrite SET likedcount = likedcount - 1 WHERE individualid = #{inherentid}
 
     </update>
 
@@ -654,10 +663,12 @@
         DELETE
         FROM
             individualliked
-        where categoryid = #{categoryid}
+        WHERE categoryid = #{categoryid}
           AND userid = #{userid}
           AND inherentid = #{inherentid}
     </delete>
+
+
     <!-- 중고 좋아요 삽입 -->
     <insert id="saveUsedLiked" parameterType="com.project.ribbon.domain.post.PostUsedLikedRequest"
     >
@@ -669,25 +680,28 @@
         , #{inherentid}
         )
     </insert>
+
+
     <!-- 중고 좋아요 갯수 카운트 +1 -->
     <update id="updateUsedLiked" parameterType="com.project.ribbon.domain.post.PostUsedLikedRequest">
 
-        update usedwrite set likedcount = likedcount + 1 where usedid = #{inherentid}
+        UPDATE usedwrite SET likedcount = likedcount + 1 WHERE usedid = #{inherentid}
 
     </update>
     <!-- 중고 좋아요 갯수 카운트 -1 -->
     <update id="updateDeleteUsedLiked" parameterType="com.project.ribbon.domain.post.PostUsedLikedRequest">
 
-        update usedwrite set likedcount = likedcount - 1 where usedid = #{inherentid}
+        UPDATE usedwrite SET likedcount = likedcount - 1 WHERE usedid = #{inherentid}
 
     </update>
+
 
     <!-- 중고 좋아요 삭제 -->
     <delete id="deleteByUsedLikedId" >
         DELETE
         FROM
             usedliked
-        where categoryid = #{categoryid}
+        WHERE categoryid = #{categoryid}
           AND userid = #{userid}
           AND inherentid = #{inherentid}
     </delete>
@@ -699,19 +713,22 @@
         commentsid
         FROM
             comments
-        order by commentsid desc limit 1
+        ORDER BY commentsid DESC limit 1
     </select>
+
+
     <!-- 댓글 정보 조회  -->
     <select id="findByInherentId" resultType="com.project.ribbon.domain.post.PostCommentsResponse">
-        select
+        SELECT
             description,writedate,comments.userid,user.nickname,categoryid
             inherentid,likedcount,commentsid,isrecomment,
             profileimage
-        from comments
-        left join user
-        on user.userid = comments.userid
-         where inherentid = #{inherentid}
+        FROM comments
+        LEFT JOIN user
+        ON user.userid = comments.userid
+         WHERE inherentid = #{inherentid}
     </select>
+
 
     <!-- 댓글 작성 -->
     <insert id="saveComments" parameterType="com.project.ribbon.domain.post.PostCommentsRequest"
@@ -732,18 +749,20 @@
 
     </insert>
 
+
     <!-- 댓글 갯수 카운트 +1 -->
     <update id="updateCommentsCount" parameterType="com.project.ribbon.domain.post.PostCommentsRequest">
 
-        update boardwrite set commentcount = commentcount + 1 where boardid = #{inherentid}
+        UPDATE boardwrite SET commentcount = commentcount + 1 WHERE boardid = #{inherentid}
 
     </update>
     <!-- 댓글 갯수 카운트 -1 -->
     <update id="updateDeleteCommentsCount" parameterType="com.project.ribbon.domain.post.PostCommentsRequest">
 
-        update boardwrite set commentcount = commentcount - 1 where boardid = #{inherentid}
+        UPDATE boardwrite SET commentcount = commentcount - 1 WHERE boardid = #{inherentid}
 
     </update>
+
 
     <!-- 댓글 수정 -->
     <update id="updateComments" parameterType="com.project.ribbon.domain.post.PostCommentsRequest">
@@ -762,8 +781,9 @@
         DELETE
         FROM
             comments
-        where commentsid = #{commentsid}
+        WHERE commentsid = #{commentsid}
     </delete>
+
 
     <!-- 답글 작성자 아이디 조회  -->
     <select id="findReplyId" resultType="com.project.ribbon.domain.post.PostReplyIdResponse">
@@ -771,19 +791,22 @@
             replyid
         FROM
             reply
-        order by replyid desc limit 1
+        ORDER BY replyid DESC limit 1
     </select>
+
+
     <!-- 답글 정보 조회  -->
     <select id="findByReplyInherentId" resultType="com.project.ribbon.domain.post.PostReplyResponse">
-        select
+        SELECT
             description,writedate,reply.userid,user.nickname,categoryid,
             inherentid,likedcount,replyid,inherentcommentsid,isrecomment,
             profileimage
-        from reply
-        left join user
-        on user.userid = reply.userid
-        where inherentid = #{inherentid}
+        FROM reply
+        LEFT JOIN user
+        ON user.userid = reply.userid
+        WHERE inherentid = #{inherentid}
     </select>
+
 
     <!-- 답글 작성 -->
     <insert id="saveReply" parameterType="com.project.ribbon.domain.post.PostReplyRequest"
@@ -805,18 +828,20 @@
 
     </insert>
 
+
     <!-- 답글 갯수 카운트 +1 -->
     <update id="updateReplyCount" parameterType="com.project.ribbon.domain.post.PostReplyRequest">
 
-        update boardwrite set commentcount = commentcount + 1 where boardid = #{inherentid}
+        UPDATE boardwrite SET commentcount = commentcount + 1 WHERE boardid = #{inherentid}
 
     </update>
     <!-- 답글 갯수 카운트 -1 -->
     <update id="updateDeleteReplyCount" parameterType="com.project.ribbon.domain.post.PostReplyRequest">
 
-        update boardwrite set commentcount = commentcount - 1 where boardid = #{inherentid}
+        UPDATE boardwrite SET commentcount = commentcount - 1 WHERE boardid = #{inherentid}
 
     </update>
+
 
     <!-- 답글 수정 -->
     <update id="updateReply" parameterType="com.project.ribbon.domain.post.PostReplyRequest">
@@ -836,7 +861,7 @@
         DELETE
         FROM
             reply
-        where replyid = #{replyid}
+        WHERE replyid = #{replyid}
     </delete>
 
 
@@ -846,18 +871,21 @@
             groupcommentsid
         FROM
             groupcomments
-        order by groupcommentsid desc limit 1
+        ORDER BY groupcommentsid DESC limit 1
     </select>
+
+
     <!-- 단체 댓글 정보 조회  -->
     <select id="findByGroupInherentId" resultType="com.project.ribbon.domain.post.PostGroupCommentsResponse">
-        select
+        SELECT
             description,groupcomments.userid,user.nickname,inherentid,
             writedate,likedcount,groupcommentsid,isrecomment,profileimage
-        from groupcomments
-        left join user
-        on user.userid = groupcomments.userid
-        where inherentid = #{inherentid}
+        FROM groupcomments
+        LEFT JOIN user
+        ON user.userid = groupcomments.userid
+        WHERE inherentid = #{inherentid}
     </select>
+
 
     <!-- 단체 댓글 작성 -->
     <insert id="saveGroupComments" parameterType="com.project.ribbon.domain.post.PostGroupCommentsRequest"
@@ -877,18 +905,20 @@
 
     </insert>
 
+
     <!-- 단체 댓글 갯수 카운트 +1 -->
     <update id="updateGroupCommentsCount" parameterType="com.project.ribbon.domain.post.PostGroupCommentsRequest">
 
-        update groupwrite set commentcount = commentcount + 1 where groupid = #{inherentid}
+        UPDATE groupwrite SET commentcount = commentcount + 1 WHERE groupid = #{inherentid}
 
     </update>
     <!-- 단체 댓글 갯수 카운트 -1 -->
     <update id="updateDeleteGroupCommentsCount" parameterType="com.project.ribbon.domain.post.PostGroupCommentsRequest">
 
-        update groupwrite set commentcount = commentcount - 1 where groupid = #{inherentid}
+        UPDATE groupwrite SET commentcount = commentcount - 1 WHERE groupid = #{inherentid}
 
     </update>
+
 
     <!-- 단체 댓글 수정 -->
     <update id="updateGroupComments" parameterType="com.project.ribbon.domain.post.PostGroupCommentsRequest">
@@ -907,8 +937,9 @@
         DELETE
         FROM
             groupcomments
-        where groupcommentsid = #{groupcommentsid}
+        WHERE groupcommentsid = #{groupcommentsid}
     </delete>
+
 
     <!-- 단체 답글 작성자 아이디 조회  -->
     <select id="findGroupReplyId" resultType="com.project.ribbon.domain.post.PostGroupReplyIdResponse">
@@ -916,18 +947,19 @@
             groupreplyid
         FROM
             groupreply
-        order by groupreplyid desc limit 1
+        ORDER BY groupreplyid DESC limit 1
     </select>
+
     <!-- 단체 답글 정보 조회  -->
     <select id="findByGroupReplyInherentId" resultType="com.project.ribbon.domain.post.PostGroupReplyResponse">
-        select
+        SELECT
             description,writedate,groupreply.userid,user.nickname,
             inherentid,likedcount,groupreplyid,inherentcommentsid,isrecomment,
             profileimage
-        from groupreply
-        left join user
-        on uesr.userid = groupreply.userid
-        where inherentid = #{inherentid}
+        FROM groupreply
+        LEFT JOIN user
+        ON uesr.userid = groupreply.userid
+        WHERE inherentid = #{inherentid}
     </select>
 
     <!-- 단체 답글 작성 -->
@@ -952,13 +984,13 @@
     <!-- 단체 답글 갯수 카운트 +1 -->
     <update id="updateGroupReplyCount" parameterType="com.project.ribbon.domain.post.PostGroupReplyRequest">
 
-        update groupwrite set commentcount = commentcount + 1 where groupid = #{inherentid}
+        UPDATE groupwrite SET commentcount = commentcount + 1 WHERE groupid = #{inherentid}
 
     </update>
     <!-- 단체 답글 갯수 카운트 -1 -->
     <update id="updateDeleteGroupReplyCount" parameterType="com.project.ribbon.domain.post.PostGroupReplyRequest">
 
-        update groupwrite set commentcount = commentcount - 1 where groupid = #{inherentid}
+        UPDATE groupwrite SET commentcount = commentcount - 1 WHERE groupid = #{inherentid}
 
     </update>
 
@@ -980,7 +1012,7 @@
         DELETE
         FROM
             groupreply
-        where groupreplyid = #{groupreplyid}
+        WHERE groupreplyid = #{groupreplyid}
     </delete>
 
 
@@ -990,18 +1022,22 @@
             individualcommentsid
         FROM
             individualcomments
-        order by individualcommentsid desc limit 1
+        ORDER BY individualcommentsid DESC limit 1
     </select>
+
+
+
     <!-- 개인 댓글 정보 조회  -->
     <select id="findByIndiInherentId" resultType="com.project.ribbon.domain.post.PostIndiCommentsResponse">
-        select
+        SELECT
             description,individualcomments.userid,user.nickname,inherentid,
             writedate,likedcount,individualcommentsid,isrecomment,profileimage
-        from individualcomments
-        left join user
-        on user.userid = individualcomments.userid
-        where inherentid = #{inherentid}
+        FROM individualcomments
+        LEFT JOIN user
+        ON user.userid = individualcomments.userid
+        WHERE inherentid = #{inherentid}
     </select>
+
 
     <!-- 개인 댓글 작성 -->
     <insert id="saveIndiComments" parameterType="com.project.ribbon.domain.post.PostIndiCommentsRequest"
@@ -1024,13 +1060,13 @@
     <!-- 개인 댓글 갯수 카운트 +1 -->
     <update id="updateIndiCommentsCount" parameterType="com.project.ribbon.domain.post.PostIndiCommentsRequest">
 
-        update individualwrite set commentcount = commentcount + 1 where individualid = #{inherentid}
+        UPDATE individualwrite SET commentcount = commentcount + 1 WHERE individualid = #{inherentid}
 
     </update>
     <!-- 개인 댓글 갯수 카운트 -1 -->
     <update id="updateDeleteIndiCommentsCount" parameterType="com.project.ribbon.domain.post.PostIndiCommentsRequest">
 
-        update individualwrite set commentcount = commentcount - 1 where individualid = #{inherentid}
+        UPDATE individualwrite SET commentcount = commentcount - 1 WHERE individualid = #{inherentid}
 
     </update>
 
@@ -1051,8 +1087,9 @@
         DELETE
         FROM
             individualcomments
-        where individualcommentsid = #{individualcommentsid}
+        WHERE individualcommentsid = #{individualcommentsid}
     </delete>
+
 
     <!-- 개인 답글 작성자 아이디 조회  -->
     <select id="findIndiReplyId" resultType="com.project.ribbon.domain.post.PostIndiReplyIdResponse">
@@ -1060,18 +1097,20 @@
             individualreplyid
         FROM
             individualreply
-        order by individualreplyid desc limit 1
+        ORDER BY individualreplyid DESC limit 1
     </select>
+
+
     <!-- 개인 답글 정보 조회  -->
     <select id="findByIndiReplyInherentId" resultType="com.project.ribbon.domain.post.PostIndiReplyResponse">
-        select
+        SELECT
             description,writedate,individualreply.userid,user.nickname,
             inherentid,likedcount,individualreplyid,inherentcommentsid,isrecomment,
             profileimage
-        from individualreply
-        left join user
-        on user.userid = individualreply.userid
-        where inherentid = #{inherentid}
+        FROM individualreply
+        LEFT JOIN user
+        ON user.userid = individualreply.userid
+        WHERE inherentid = #{inherentid}
     </select>
 
     <!-- 개인 답글 작성 -->
@@ -1096,13 +1135,13 @@
     <!-- 개인 답글 갯수 카운트 +1 -->
     <update id="updateIndiReplyCount" parameterType="com.project.ribbon.domain.post.PostIndiReplyRequest">
 
-        update individualwrite set commentcount = commentcount + 1 where individualid = #{inherentid}
+        UPDATE individualwrite SET commentcount = commentcount + 1 WHERE individualid = #{inherentid}
 
     </update>
     <!-- 개인 답글 갯수 카운트 -1 -->
     <update id="updateDeleteIndiReplyCount" parameterType="com.project.ribbon.domain.post.PostIndiReplyRequest">
 
-        update individualwrite set commentcount = commentcount - 1 where individualid = #{inherentid}
+        UPDATE individualwrite SET commentcount = commentcount - 1 WHERE individualid = #{inherentid}
 
     </update>
 
@@ -1124,7 +1163,7 @@
         DELETE
         FROM
             individualreply
-        where individualreplyid = #{individualreplyid}
+        WHERE individualreplyid = #{individualreplyid}
     </delete>
 
 
@@ -1134,18 +1173,21 @@
             usedcommentsid
         FROM
             usedcomments
-        order by usedcommentsid desc limit 1
+        ORDER BY usedcommentsid DESC limit 1
     </select>
+
+
     <!-- 중고 댓글 정보 조회  -->
     <select id="findByUsedInherentId" resultType="com.project.ribbon.domain.post.PostUsedCommentsResponse">
-        select
+        SELECT
             description,usedcomments.userid,user.nickname,inherentid,
             writedate,likedcount,usedcommentsid,isrecomment,profileimage
-        from usedcomments
-        left join user
-        on user.userid = usedcomments.userid
-        where inherentid = #{inherentid}
+        FROM usedcomments
+        LEFT JOIN user
+        ON user.userid = usedcomments.userid
+        WHERE inherentid = #{inherentid}
     </select>
+
 
     <!-- 중고 댓글 작성 -->
     <insert id="saveUsedComments" parameterType="com.project.ribbon.domain.post.PostUsedCommentsRequest"
@@ -1168,15 +1210,16 @@
     <!-- 중고 댓글 갯수 카운트 +1 -->
     <update id="updateUsedCommentsCount" parameterType="com.project.ribbon.domain.post.PostUsedCommentsRequest">
 
-        update usedwrite set commentcount = commentcount + 1 where usedid = #{inherentid}
+        UPDATE usedwrite SET commentcount = commentcount + 1 WHERE usedid = #{inherentid}
 
     </update>
     <!-- 중고 댓글 갯수 카운트 -1 -->
     <update id="updateDeleteUsedCommentsCount" parameterType="com.project.ribbon.domain.post.PostUsedCommentsRequest">
 
-        update usedwrite set commentcount = commentcount - 1 where usedid = #{inherentid}
+        UPDATE usedwrite SET commentcount = commentcount - 1 WHERE usedid = #{inherentid}
 
     </update>
+
 
     <!-- 중고 댓글 수정 -->
     <update id="updateUsedComments" parameterType="com.project.ribbon.domain.post.PostUsedCommentsRequest">
@@ -1195,8 +1238,9 @@
         DELETE
         FROM
             usedcomments
-        where usedcommentsid = #{usedcommentsid}
+        WHERE usedcommentsid = #{usedcommentsid}
     </delete>
+
 
     <!-- 중고 답글 작성자 아이디 조회  -->
     <select id="findUsedReplyId" resultType="com.project.ribbon.domain.post.PostUsedReplyIdResponse">
@@ -1204,19 +1248,22 @@
             usedreplyid
         FROM
             usedreply
-        order by usedreplyid desc limit 1
+        ORDER BY usedreplyid DESC limit 1
     </select>
+
+
     <!-- 중고 답글 정보 조회  -->
     <select id="findByUsedReplyInherentId" resultType="com.project.ribbon.domain.post.PostUsedReplyResponse">
-        select
+        SELECT
             description,writedate,usedreply.userid,user.nickname,
             inherentid,likedcount,usedreplyid,inherentcommentsid,isrecomment,
             profileimage
-        from usedreply
-        left join user
-        on user.userid = usedreply.userid
-        where inherentid = #{inherentid}
+        FROM usedreply
+        LEFT JOIN user
+        ON user.userid = usedreply.userid
+        WHERE inherentid = #{inherentid}
     </select>
+
 
     <!-- 중고 답글 작성 -->
     <insert id="saveUsedReply" parameterType="com.project.ribbon.domain.post.PostUsedReplyRequest"
@@ -1240,15 +1287,16 @@
     <!-- 중고 답글 갯수 카운트 +1 -->
     <update id="updateUsedReplyCount" parameterType="com.project.ribbon.domain.post.PostUsedReplyRequest">
 
-        update usedwrite set commentcount = commentcount + 1 where usedid = #{inherentid}
+        UPDATE usedwrite SET commentcount = commentcount + 1 WHERE usedid = #{inherentid}
 
     </update>
     <!-- 중고 답글 갯수 카운트 -1 -->
     <update id="updateDeleteUsedReplyCount" parameterType="com.project.ribbon.domain.post.PostUsedReplyRequest">
 
-        update usedwrite set commentcount = commentcount - 1 where usedid = #{inherentid}
+        UPDATE usedwrite SET commentcount = commentcount - 1 WHERE usedid = #{inherentid}
 
     </update>
+
 
     <!-- 중고 답글 수정 -->
     <update id="updateUsedReply" parameterType="com.project.ribbon.domain.post.PostUsedReplyRequest">
@@ -1268,7 +1316,7 @@
         DELETE
         FROM
             usedreply
-        where usedreplyid = #{usedreplyid}
+        WHERE usedreplyid = #{usedreplyid}
     </delete>
 
 
@@ -1283,17 +1331,20 @@
         userid = #{userid}
     </select>
 
+
     <!-- 커뮤니티 내가 쓴 글  -->
     <select id="findByMyUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyBoardResponse">
         SELECT
             id,boardwrite.userid,title,description,img,writedate,user.nickname,
             boardid,likedcount,commentcount,profileimage
-        from boardwrite
-                 left join user
-                           on user.userid=boardwrite.userid
+        FROM boardwrite
+                 LEFT JOIN user
+                           ON user.userid=boardwrite.userid
         WHERE
             boardwrite.userid = #{userid}
     </select>
+
+
     <!-- 단체 내가 쓴 글  -->
     <select id="findByMyGroupUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyGroupResponse">
         SELECT
@@ -1302,11 +1353,13 @@
             writedate,peoplenownum,user.nickname,groupid,once,commentcount,profileimage
         FROM
             groupwrite
-        left join user
-        on user.userid = groupwrite.userid
+        LEFT JOIN user
+        ON user.userid = groupwrite.userid
         WHERE
             groupwrite.userid = #{userid}
     </select>
+
+
     <!-- 개인 내가 쓴 글  -->
     <select id="findByMyIndividualUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyIndiResponse">
         SELECT
@@ -1315,11 +1368,13 @@
             individualid,likedcount,commentcount,profileimage
         FROM
             individualwrite
-                left join user
-                          on user.userid = individualwrite.userid
+                LEFT JOIN user
+                          ON user.userid = individualwrite.userid
         WHERE
             individualwrite.userid = #{userid}
     </select>
+
+
     <!-- 중고 내가 쓴 글  -->
     <select id="findByMyUsedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyUsedResponse">
         SELECT
@@ -1328,23 +1383,27 @@
            usedimage5,likedcount,commentcount,profileimage
         FROM
             usedwrite
-        left join user
-        on user.userid = usedwrite.userid
+        LEFT JOIN user
+        ON user.userid = usedwrite.userid
         WHERE
             usedwrite.userid = #{userid}
     </select>
+
+
     <!-- 내가 좋아요 누른 글 커뮤니티 -->
     <select id="findByMyLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyLikedResponse">
-        select
+        SELECT
             id,boardwrite.userid,title,description,img,writedate,user.nickname,
             boardid,likedcount,commentcount,profileimage
-        from boardwrite
-            left join liked
-           on liked.inherentid=boardwrite.boardid
-            left join user
-            on user.userid = boardwrite.userid
-            where liked.userid = #{userid}
+        FROM boardwrite
+            LEFT JOIN liked
+           ON liked.inherentid=boardwrite.boardid
+            LEFT JOIN user
+            ON user.userid = boardwrite.userid
+            WHERE liked.userid = #{userid}
     </select>
+
+
     <!-- 내가 좋아요 누른 글 개인 -->
     <select id="findByMyIndividualLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyIndividualLikedResponse">
         SELECT
@@ -1353,12 +1412,14 @@
             individualid,likedcount,commentcount,profileimage
         FROM
             individualwrite
-                left join individualliked
-                    on individualliked.inherentid=individualwrite.individualid
-                left join user
-                    on user.userid = individualwrite.userid
-        where individualliked.userid = #{userid}
+                LEFT JOIN individualliked
+                    ON individualliked.inherentid=individualwrite.individualid
+                LEFT JOIN user
+                    ON user.userid = individualwrite.userid
+        WHERE individualliked.userid = #{userid}
     </select>
+
+
     <!-- 내가 좋아요 누른 글 중고 -->
     <select id="findByMyUsedLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyUsedLikedResponse">
         SELECT
@@ -1367,11 +1428,13 @@
             usedimage5,likedcount,commentcount,profileimage
         FROM
             usedwrite
-                left join usedliked
-                    on usedliked.inherentid=usedwrite.usedid
-                left join user
-                    on user.userid = usedwrite.userid
-        where usedliked.userid = #{userid}
+                LEFT JOIN usedliked
+                    ON usedliked.inherentid=usedwrite.usedid
+                LEFT JOIN user
+                    ON user.userid = usedwrite.userid
+        WHERE usedliked.userid = #{userid}
     </select>
+
+
 
 </mapper>
