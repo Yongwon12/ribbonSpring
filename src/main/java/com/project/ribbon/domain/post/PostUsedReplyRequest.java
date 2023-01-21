@@ -15,11 +15,12 @@ public class PostUsedReplyRequest {
         private Long userid;
         private String  nickname;
         private Long inherentid;
-        private Integer likedcount;
+
         @Id
         private Long usedreplyid;
         private Long inherentcommentsid;
         private Integer isrecomment;
+
 
 }
 

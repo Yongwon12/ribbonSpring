@@ -6,12 +6,11 @@ import lombok.Getter;
 public class PostCommentsResponse {
 
     private String description;
+    private String writedate;
     private Integer userid;
     private String  nickname;
     private Integer categoryid;
     private Long inherentid;
-    private String writedate;
-    private Integer likedcount;
     private Long commentsid;
     private Integer isrecomment;
     private String profileimage;

@@ -10,7 +10,6 @@ public class PostUsedCommentsResponse {
     private String  nickname;
     private Long inherentid;
     private String writedate;
-    private Integer likedcount;
     private Long usedcommentsid;
     private Integer isrecomment;
     private String profileimage;

@@ -277,6 +277,7 @@ public class PostController {
     @PostMapping("/post/updateuser")
     public Long updateUserPost(@RequestBody PostUserRequest params) throws ApiException {
         ExceptionEnum err = ExceptionEnum.SECURITY_01;
+        List<PostUserResponse> posts = postService.findUserAllPost();
         return postService.updateUserPost(params);
     }
 

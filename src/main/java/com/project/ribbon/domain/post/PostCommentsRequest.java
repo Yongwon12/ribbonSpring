@@ -18,6 +18,8 @@ public class PostCommentsRequest {
         private String writedate;
         @Id
         private Long commentsid;
+        private Integer isrecomment;
+
 
 }
 

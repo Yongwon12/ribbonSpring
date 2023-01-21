@@ -15,11 +15,11 @@ public class PostIndiReplyRequest {
         private Long userid;
         private String  nickname;
         private Long inherentid;
-        private Integer likedcount;
         @Id
         private Long individualreplyid;
         private Long inherentcommentsid;
         private Integer isrecomment;
+
 
 }
 

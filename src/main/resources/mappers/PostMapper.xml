@@ -80,7 +80,7 @@
     <sql id="postUserColumns">
         userid
         , username
-        , password
+        , sns
         , email
         , nickname
         , mobile
@@ -91,6 +91,7 @@
         , gender
         , bestcategory
         , shortinfo
+            ,youtube
     </sql>
     <!-- liked 테이블 전체 컬럼 -->
     <sql id="postLikedColumns">
@@ -106,7 +107,6 @@
         , categoryid
         , inherentid
         , writedate
-        , likedcount
         , commentsid
         , isrecomment
     </sql>
@@ -118,7 +118,6 @@
         , nickname
         , inherentid
         , writedate
-        , likedcount
         , groupcommentsid
         , isrecomment
     </sql>
@@ -130,7 +129,6 @@
         , nickname
         , inherentid
         , writedate
-        , likedcount
         , individualcommentsid
         , isrecomment
     </sql>
@@ -142,7 +140,6 @@
         , nickname
         , inherentid
         , writedate
-        , likedcount
         , usedcommentsid
         , isrecomment
     </sql>
@@ -155,10 +152,10 @@
         , nickname
         , categoryid
         , inherentid
-        , likedcount
         , replyid
         , inherentcommentsid
         , isrecomment
+
     </sql>
 
     <!-- groupreply 테이블 전체 컬럼 -->
@@ -168,7 +165,6 @@
         , userid
         , nickname
         , inherentid
-        , likedcount
         , groupreplyid
         , inherentcommentsid
         , isrecomment
@@ -181,7 +177,6 @@
         , userid
         , nickname
         , inherentid
-        , likedcount
         , individualreplyid
         , inherentcommentsid
         , isrecomment
@@ -194,7 +189,6 @@
         , userid
         , nickname
         , inherentid
-        , likedcount
         , usedreplyid
         , inherentcommentsid
         , isrecomment
@@ -534,7 +528,7 @@
         ) VALUES (
         #{userid}
         , #{username}
-        , #{password}
+        , #{sns}
         , #{email}
         , #{nickname}
         , #{mobile}
@@ -545,6 +539,7 @@
         , #{gender}
         , #{bestcategory}
         , #{shortinfo}
+        , #{youtube}
         )
 
     </insert>
@@ -553,12 +548,15 @@
     <update id="updateUser" parameterType="com.project.ribbon.domain.post.PostUserRequest">
         UPDATE user
         SET
-            nickname = #{nickname}
+            sns = #{sns}
+          , nickname = #{nickname}
           , profileimage = #{profileimage}
           , modifyDate = #{modifydate}
           , bestcategory = #{bestcategory}
           , shortinfo = #{shortinfo}
             , birth = #{birth}
+            , youtube = #{youtube}
+
         WHERE
             userid = #{userid}
     </update>
@@ -720,8 +718,8 @@
     <!-- 댓글 정보 조회  -->
     <select id="findByInherentId" resultType="com.project.ribbon.domain.post.PostCommentsResponse">
         SELECT
-            description,writedate,comments.userid,user.nickname,categoryid
-            inherentid,likedcount,commentsid,isrecomment,
+            description,writedate,comments.userid,user.nickname,categoryid,
+            inherentid,commentsid,isrecomment,
             profileimage
         FROM comments
         LEFT JOIN user
@@ -742,7 +740,6 @@
         , #{categoryid}
         , #{inherentid}
         , #{writedate}
-        , 0
         , #{commentsid}
         , 2
         )
@@ -799,12 +796,13 @@
     <select id="findByReplyInherentId" resultType="com.project.ribbon.domain.post.PostReplyResponse">
         SELECT
             description,writedate,reply.userid,user.nickname,categoryid,
-            inherentid,likedcount,replyid,inherentcommentsid,isrecomment,
+            inherentid,replyid,inherentcommentsid,isrecomment,
             profileimage
         FROM reply
         LEFT JOIN user
         ON user.userid = reply.userid
         WHERE inherentid = #{inherentid}
+
     </select>
 
 
@@ -820,7 +818,6 @@
         , #{nickname}
         , #{categoryid}
         , #{inherentid}
-        , 0
         , #{replyid}
         , #{inherentcommentsid}
         , 1
@@ -879,7 +876,7 @@
     <select id="findByGroupInherentId" resultType="com.project.ribbon.domain.post.PostGroupCommentsResponse">
         SELECT
             description,groupcomments.userid,user.nickname,inherentid,
-            writedate,likedcount,groupcommentsid,isrecomment,profileimage
+            writedate,groupcommentsid,isrecomment,profileimage
         FROM groupcomments
         LEFT JOIN user
         ON user.userid = groupcomments.userid
@@ -898,7 +895,6 @@
         , #{nickname}
         , #{inherentid}
         , #{writedate}
-        , 0
         , #{commentsid}
         , 2
         )
@@ -954,7 +950,7 @@
     <select id="findByGroupReplyInherentId" resultType="com.project.ribbon.domain.post.PostGroupReplyResponse">
         SELECT
             description,writedate,groupreply.userid,user.nickname,
-            inherentid,likedcount,groupreplyid,inherentcommentsid,isrecomment,
+            inherentid,groupreplyid,inherentcommentsid,isrecomment,
             profileimage
         FROM groupreply
         LEFT JOIN user
@@ -973,7 +969,6 @@
         , #{userid}
         , #{nickname}
         , #{inherentid}
-        , 0
         , #{groupreplyid}
         , #{inherentcommentsid}
         , 1
@@ -1031,7 +1026,7 @@
     <select id="findByIndiInherentId" resultType="com.project.ribbon.domain.post.PostIndiCommentsResponse">
         SELECT
             description,individualcomments.userid,user.nickname,inherentid,
-            writedate,likedcount,individualcommentsid,isrecomment,profileimage
+            writedate,individualcommentsid,isrecomment,profileimage
         FROM individualcomments
         LEFT JOIN user
         ON user.userid = individualcomments.userid
@@ -1050,7 +1045,6 @@
         , #{nickname}
         , #{inherentid}
         , #{writedate}
-        , 0
         , #{commentsid}
         , 2
         )
@@ -1105,7 +1099,7 @@
     <select id="findByIndiReplyInherentId" resultType="com.project.ribbon.domain.post.PostIndiReplyResponse">
         SELECT
             description,writedate,individualreply.userid,user.nickname,
-            inherentid,likedcount,individualreplyid,inherentcommentsid,isrecomment,
+            inherentid,individualreplyid,inherentcommentsid,isrecomment,
             profileimage
         FROM individualreply
         LEFT JOIN user
@@ -1124,7 +1118,6 @@
         , #{userid}
         , #{nickname}
         , #{inherentid}
-        , 0
         , #{individualreplyid}
         , #{inherentcommentsid}
         , 1
@@ -1181,7 +1174,7 @@
     <select id="findByUsedInherentId" resultType="com.project.ribbon.domain.post.PostUsedCommentsResponse">
         SELECT
             description,usedcomments.userid,user.nickname,inherentid,
-            writedate,likedcount,usedcommentsid,isrecomment,profileimage
+            writedate,usedcommentsid,isrecomment,profileimage
         FROM usedcomments
         LEFT JOIN user
         ON user.userid = usedcomments.userid
@@ -1200,7 +1193,6 @@
         , #{nickname}
         , #{inherentid}
         , #{writedate}
-        , 0
         , #{usedcommentsid}
         , 2
         )
@@ -1256,7 +1248,7 @@
     <select id="findByUsedReplyInherentId" resultType="com.project.ribbon.domain.post.PostUsedReplyResponse">
         SELECT
             description,writedate,usedreply.userid,user.nickname,
-            inherentid,likedcount,usedreplyid,inherentcommentsid,isrecomment,
+            inherentid,usedreplyid,inherentcommentsid,isrecomment,
             profileimage
         FROM usedreply
         LEFT JOIN user
@@ -1276,7 +1268,6 @@
         , #{userid}
         , #{nickname}
         , #{inherentid}
-        , 0
         , #{usedreplyid}
         , #{inherentcommentsid}
         , 1

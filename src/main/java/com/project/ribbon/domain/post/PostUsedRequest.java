@@ -1,5 +1,6 @@
 package com.project.ribbon.domain.post;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class PostUsedRequest {
         private String price;
         private Long userid;
         private String writedate;
+
         private String nickname;
         private Long usedid;      // PK
         private String  usedimage2;

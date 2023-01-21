@@ -16,11 +16,11 @@ public class PostReplyRequest {
         private Long categoryid;
         private Long inherentid;
         private String writedate;
-        private Integer likedcount;
         @Id
         private Long replyid;
         private Long inherentcommentsid;
         private Integer isrecomment;
+
 
 }
 

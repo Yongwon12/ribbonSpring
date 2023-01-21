@@ -10,10 +10,10 @@ public class PostIndiReplyResponse {
     private Long userid;
     private String  nickname;
     private Long inherentid;
-    private Integer likedcount;
     private Long individualreplyid;
     private Long inherentcommentsid;
     private Integer isrecomment;
     private String profileimage;
+
 
 }

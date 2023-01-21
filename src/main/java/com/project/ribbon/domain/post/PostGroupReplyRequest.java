@@ -15,11 +15,11 @@ public class PostGroupReplyRequest {
         private Long userid;
         private String  nickname;
         private Long inherentid;
-        private Integer likedcount;
         @Id
         private Long groupreplyid;
         private Long inherentcommentsid;
         private Integer isrecomment;
+
 
 }
 

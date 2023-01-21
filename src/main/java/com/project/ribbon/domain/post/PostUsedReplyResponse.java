@@ -10,11 +10,11 @@ public class PostUsedReplyResponse {
     private Long userid;
     private String  nickname;
     private Long inherentid;
-    private Integer likedcount;
     private Long usedreplyid;
     private Long inherentcommentsid;
     private Integer isrecomment;
     private String profileimage;
+
 
 
 }
