@@ -20,7 +20,7 @@ public class PostUsedReplyRequest {
         private Long usedreplyid;
         private Long inherentcommentsid;
         private Integer isrecomment;
-        private Integer token;
+
 
 
 }

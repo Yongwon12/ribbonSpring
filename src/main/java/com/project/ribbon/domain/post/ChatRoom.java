@@ -36,7 +36,6 @@ public class ChatRoom {
         if (chatMessage.getType().equals(ChatMessage.MessageType.QUIT)) {
             sessions.add(session);
             chatMessage.setMessage(chatMessage.getSender() + "님이 퇴장했습니다.");
-
         }
         sendMessage(chatMessage, chatService);
     }

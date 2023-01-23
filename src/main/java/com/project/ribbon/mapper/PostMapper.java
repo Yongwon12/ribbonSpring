@@ -152,64 +152,66 @@ public interface PostMapper {
 
 
 
-    // 답글 조회
-    List<PostReplyResponse> findByReplyInherentId(Long inherentid);
-    // 답글 아이디 조회
-    List<PostReplyIdResponse> findReplyId();
-    // 답글 기입
-    void saveReply(PostReplyRequest params);
-    // 답글 수정
-    void updateReply(PostReplyRequest params);
-    void updateReplyCount(PostReplyRequest params);
-    // 답글 삭제
-    void deleteReply(PostReplyRequest params);
-    void updateDeleteReplyCount(PostReplyRequest params);
-
-
-    // 개인 답글 조회
-    List<PostIndiReplyResponse> findByIndiReplyInherentId(Long inherentid);
-    // 개인 답글 아이디 조회
-    List<PostIndiReplyIdResponse> findIndiReplyId();
-    // 개인 답글 기입
-    void saveIndiReply(PostIndiReplyRequest params);
-    // 개인 답글 수정
-    void updateIndiReply(PostIndiReplyRequest params);
-    void updateIndiReplyCount(PostIndiReplyRequest params);
-    // 개인 답글 삭제
-    void deleteIndiReply(PostIndiReplyRequest params);
-    void updateDeleteIndiReplyCount(PostIndiReplyRequest params);
-
-
-    // 단체 답글 조회
-    List<PostGroupReplyResponse> findByGroupReplyInherentId(Long inherentid);
-    // 단체 답글 아이디 조회
-    List<PostGroupReplyIdResponse> findGroupReplyId();
-    // 단체 답글 기입
-    void saveGroupReply(PostGroupReplyRequest params);
-    // 단체 답글 수정
-    void updateGroupReply(PostGroupReplyRequest params);
-    void updateGroupReplyCount(PostGroupReplyRequest params);
-    // 단체 답글 삭제
-    void deleteGroupReply(PostGroupReplyRequest params);
-    void updateDeleteGroupReplyCount(PostGroupReplyRequest params);
-
-    // 중고 답글 조회
-    List<PostUsedReplyResponse> findByUsedReplyInherentId(Long inherentid);
-    // 중고 답글 아이디 조회
-    List<PostUsedReplyIdResponse> findUsedReplyId();
-    // 중고 답글 기입
-    void saveUsedReply(PostUsedReplyRequest params);
-    // 중고 답글 수정
-    void updateUsedReply(PostUsedReplyRequest params);
-    void updateUsedReplyCount(PostUsedReplyRequest params);
-    // 중고 답글 삭제
-    void deleteUsedReply(PostUsedReplyRequest params);
-    void updateDeleteUsedReplyCount(PostUsedReplyRequest params);
+//    // 답글 조회
+//    List<PostReplyResponse> findByReplyInherentId(Long inherentid);
+//    // 답글 아이디 조회
+//    List<PostReplyIdResponse> findReplyId();
+//    // 답글 기입
+//    void saveReply(PostReplyRequest params);
+//    // 답글 수정
+//    void updateReply(PostReplyRequest params);
+//    void updateReplyCount(PostReplyRequest params);
+//    // 답글 삭제
+//    void deleteReply(PostReplyRequest params);
+//    void updateDeleteReplyCount(PostReplyRequest params);
+//
+//
+//    // 개인 답글 조회
+//    List<PostIndiReplyResponse> findByIndiReplyInherentId(Long inherentid);
+//    // 개인 답글 아이디 조회
+//    List<PostIndiReplyIdResponse> findIndiReplyId();
+//    // 개인 답글 기입
+//    void saveIndiReply(PostIndiReplyRequest params);
+//    // 개인 답글 수정
+//    void updateIndiReply(PostIndiReplyRequest params);
+//    void updateIndiReplyCount(PostIndiReplyRequest params);
+//    // 개인 답글 삭제
+//    void deleteIndiReply(PostIndiReplyRequest params);
+//    void updateDeleteIndiReplyCount(PostIndiReplyRequest params);
+//
+//
+//    // 단체 답글 조회
+//    List<PostGroupReplyResponse> findByGroupReplyInherentId(Long inherentid);
+//    // 단체 답글 아이디 조회
+//    List<PostGroupReplyIdResponse> findGroupReplyId();
+//    // 단체 답글 기입
+//    void saveGroupReply(PostGroupReplyRequest params);
+//    // 단체 답글 수정
+//    void updateGroupReply(PostGroupReplyRequest params);
+//    void updateGroupReplyCount(PostGroupReplyRequest params);
+//    // 단체 답글 삭제
+//    void deleteGroupReply(PostGroupReplyRequest params);
+//    void updateDeleteGroupReplyCount(PostGroupReplyRequest params);
+//
+//    // 중고 답글 조회
+//    List<PostUsedReplyResponse> findByUsedReplyInherentId(Long inherentid);
+//    // 중고 답글 아이디 조회
+//    List<PostUsedReplyIdResponse> findUsedReplyId();
+//    // 중고 답글 기입
+//    void saveUsedReply(PostUsedReplyRequest params);
+//    // 중고 답글 수정
+//    void updateUsedReply(PostUsedReplyRequest params);
+//    void updateUsedReplyCount(PostUsedReplyRequest params);
+//    // 중고 답글 삭제
+//    void deleteUsedReply(PostUsedReplyRequest params);
+//    void updateDeleteUsedReplyCount(PostUsedReplyRequest params);
 
 
 
     // 특정 유저 프로필 조회
     List<UserInfoResponse> findById(Long id);
+
+
     // 내가 쓴 글 커뮤니티
     List<PostMyBoardResponse> findByMyUserId(Long userid);
     // 내가 쓴 글 단체

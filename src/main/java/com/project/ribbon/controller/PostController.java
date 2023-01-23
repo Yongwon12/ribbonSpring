@@ -4,6 +4,7 @@ import com.project.ribbon.domain.post.*;
 import com.project.ribbon.enums.ExceptionEnum;
 import com.project.ribbon.response.ApiException;
 import com.project.ribbon.service.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -263,7 +264,7 @@ public class PostController {
 
     // 유저 정보 등록
     @PostMapping("/post/sign")
-    public ResponseEntity<?> saveUserPost(@RequestBody PostUserRequest params,Model model) throws ApiException {
+    public ResponseEntity<?> saveUserPost(@RequestBody @Valid PostUserRequest params, Model model) throws ApiException {
         ExceptionEnum err = ExceptionEnum.SECURITY_01;
         postService.saveUserPost(params);
         Map<String, Object> obj = new HashMap<>();
@@ -275,7 +276,7 @@ public class PostController {
 
     // 유저 정보 수정
     @PostMapping("/post/updateuser")
-    public Long updateUserPost(@RequestBody PostUserRequest params) throws ApiException {
+    public Long updateUserPost(@RequestBody @Valid PostUserRequest params) throws ApiException {
         ExceptionEnum err = ExceptionEnum.SECURITY_01;
         List<PostUserResponse> posts = postService.findUserAllPost();
         return postService.updateUserPost(params);
@@ -527,175 +528,175 @@ public class PostController {
 
 
 
-    // 답글 조회
-    @RequestMapping("/post/replyinfo")
-    public ResponseEntity<?> replyInfo(@RequestBody PostReplyResponse inherentid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        postService.findPostByReplyInherentId(inherentid.getInherentid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostReplyResponse> posts = postService.findPostByReplyInherentId(inherentid.getInherentid());
-        model.addAttribute("posts", posts);
-        obj.put("reply", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-
-    // 답글 등록 및 아이디 전송
-    @RequestMapping(method = RequestMethod.POST,path ="/post/reply")
-    public ResponseEntity<?> saveReply(@RequestBody PostReplyRequest params,Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        postService.saveReplyPost(params);
-        postService.updateReplyCountPost(params);
-        Map<String, Object> obj = new HashMap<>();
-        List<PostReplyIdResponse> posts = postService.findReplyIdPost();
-        model.addAttribute("posts", posts);
-        obj.put("replyid", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-
-    }
-
-    // 답글 수정
-    @PostMapping("/post/updatereply")
-    public Long updateReplyPost(@RequestBody PostReplyRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        return postService.updateReplyPost(params);
-    }
-
-    // 답글 삭제
-    @RequestMapping("/post/deletereply")
-    public Long deleteReplyPost(@RequestBody PostReplyRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        postService.updateDeleteReplyCountPost(params);
-        return postService.deleteReplyPost(params);
-    }
-
-    // 개인 답글 조회
-    @RequestMapping("/post/indireplyinfo")
-    public ResponseEntity<?> indiReplyInfo(@RequestBody PostIndiReplyResponse inherentid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        postService.findPostByIndiReplyInherentId(inherentid.getInherentid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostIndiReplyResponse> posts = postService.findPostByIndiReplyInherentId(inherentid.getInherentid());
-        model.addAttribute("posts", posts);
-        obj.put("reply", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-
-    // 개인 답글 등록 및 아이디 전송
-    @RequestMapping(method = RequestMethod.POST,path ="/post/indireply")
-    public ResponseEntity<?> saveIndiReply(@RequestBody PostIndiReplyRequest params,Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        postService.saveIndiReplyPost(params);
-        postService.updateIndiReplyCountPost(params);
-        Map<String, Object> obj = new HashMap<>();
-        List<PostIndiReplyIdResponse> posts = postService.findIndiReplyIdPost();
-        model.addAttribute("posts", posts);
-        obj.put("replyid", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-
-    }
-
-    // 개인 답글 수정
-    @PostMapping("/post/updateindireply")
-    public Long updateIndiReplyPost(@RequestBody PostIndiReplyRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        return postService.updateIndiReplyPost(params);
-    }
-
-    // 개인 답글 삭제
-    @RequestMapping("/post/deleteindireply")
-    public Long deleteIndiReplyPost(@RequestBody PostIndiReplyRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        postService.updateDeleteIndiReplyCountPost(params);
-        return postService.deleteIndiReplyPost(params);
-    }
-
-    // 단체 답글 조회
-    @RequestMapping("/post/groupreplyinfo")
-    public ResponseEntity<?> groupReplyInfo(@RequestBody PostGroupReplyResponse inherentid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        postService.findPostByGroupReplyInherentId(inherentid.getInherentid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostGroupReplyResponse> posts = postService.findPostByGroupReplyInherentId(inherentid.getInherentid());
-        model.addAttribute("posts", posts);
-        obj.put("reply", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-
-    // 단체 답글 등록 및 아이디 전송
-    @RequestMapping(method = RequestMethod.POST,path ="/post/groupreply")
-    public ResponseEntity<?> saveGroupReply(@RequestBody PostGroupReplyRequest params,Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        postService.saveGroupReplyPost(params);
-        postService.updateGroupReplyCountPost(params);
-        Map<String, Object> obj = new HashMap<>();
-        List<PostGroupReplyIdResponse> posts = postService.findGroupReplyIdPost();
-        model.addAttribute("posts", posts);
-        obj.put("replyid", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-
-    }
-
-    // 단체 답글 수정
-    @PostMapping("/post/updategroupreply")
-    public Long updateGroupReplyPost(@RequestBody PostGroupReplyRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        return postService.updateGroupReplyPost(params);
-    }
-
-    // 단체 답글 삭제
-    @RequestMapping("/post/deletegroupreply")
-    public Long deleteGroupReplyPost(@RequestBody PostGroupReplyRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        postService.updateDeleteGroupReplyCountPost(params);
-        return postService.deleteGroupReplyPost(params);
-    }
-
-
-
-    // 중고 답글 조회
-    @RequestMapping("/post/usedreplyinfo")
-    public ResponseEntity<?> usedReplyInfo(@RequestBody PostUsedReplyResponse inherentid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        postService.findPostByUsedReplyInherentId(inherentid.getInherentid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostUsedReplyResponse> posts = postService.findPostByUsedReplyInherentId(inherentid.getInherentid());
-        model.addAttribute("posts", posts);
-        obj.put("reply", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-
-    // 중고 답글 등록 및 아이디 전송
-    @RequestMapping(method = RequestMethod.POST,path ="/post/usedreply")
-    public ResponseEntity<?> saveUsedReply(@RequestBody PostUsedReplyRequest params,Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        postService.saveUsedReplyPost(params);
-        postService.updateUsedReplyCountPost(params);
-        Map<String, Object> obj = new HashMap<>();
-        List<PostUsedReplyIdResponse> posts = postService.findUsedReplyIdPost();
-        model.addAttribute("posts", posts);
-        obj.put("replyid", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-
-    }
-
-    // 중고 답글 수정
-    @PostMapping("/post/updateusedreply")
-    public Long updateUsedReplyPost(@RequestBody PostUsedReplyRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        return postService.updateUsedReplyPost(params);
-    }
-
-    // 중고 답글 삭제
-    @RequestMapping("/post/deleteusedreply")
-    public Long deleteUsedReplyPost(@RequestBody PostUsedReplyRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.SECURITY_01;
-        postService.updateDeleteUsedReplyCountPost(params);
-        return postService.deleteUsedReplyPost(params);
-    }
+//    // 답글 조회
+//    @RequestMapping("/post/replyinfo")
+//    public ResponseEntity<?> replyInfo(@RequestBody PostReplyResponse inherentid, Model model) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        postService.findPostByReplyInherentId(inherentid.getInherentid());
+//        Map<String, Object> obj = new HashMap<>();
+//        List<PostReplyResponse> posts = postService.findPostByReplyInherentId(inherentid.getInherentid());
+//        model.addAttribute("posts", posts);
+//        obj.put("reply", posts);
+//        return new ResponseEntity<>(obj, HttpStatus.OK);
+//    }
+//
+//
+//    // 답글 등록 및 아이디 전송
+//    @RequestMapping(method = RequestMethod.POST,path ="/post/reply")
+//    public ResponseEntity<?> saveReply(@RequestBody PostReplyRequest params,Model model) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        postService.saveReplyPost(params);
+//        postService.updateReplyCountPost(params);
+//        Map<String, Object> obj = new HashMap<>();
+//        List<PostReplyIdResponse> posts = postService.findReplyIdPost();
+//        model.addAttribute("posts", posts);
+//        obj.put("replyid", posts);
+//        return new ResponseEntity<>(obj, HttpStatus.OK);
+//
+//    }
+//
+//    // 답글 수정
+//    @PostMapping("/post/updatereply")
+//    public Long updateReplyPost(@RequestBody PostReplyRequest params) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        return postService.updateReplyPost(params);
+//    }
+//
+//    // 답글 삭제
+//    @RequestMapping("/post/deletereply")
+//    public Long deleteReplyPost(@RequestBody PostReplyRequest params) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        postService.updateDeleteReplyCountPost(params);
+//        return postService.deleteReplyPost(params);
+//    }
+//
+//    // 개인 답글 조회
+//    @RequestMapping("/post/indireplyinfo")
+//    public ResponseEntity<?> indiReplyInfo(@RequestBody PostIndiReplyResponse inherentid, Model model) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        postService.findPostByIndiReplyInherentId(inherentid.getInherentid());
+//        Map<String, Object> obj = new HashMap<>();
+//        List<PostIndiReplyResponse> posts = postService.findPostByIndiReplyInherentId(inherentid.getInherentid());
+//        model.addAttribute("posts", posts);
+//        obj.put("reply", posts);
+//        return new ResponseEntity<>(obj, HttpStatus.OK);
+//    }
+//
+//
+//    // 개인 답글 등록 및 아이디 전송
+//    @RequestMapping(method = RequestMethod.POST,path ="/post/indireply")
+//    public ResponseEntity<?> saveIndiReply(@RequestBody PostIndiReplyRequest params,Model model) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        postService.saveIndiReplyPost(params);
+//        postService.updateIndiReplyCountPost(params);
+//        Map<String, Object> obj = new HashMap<>();
+//        List<PostIndiReplyIdResponse> posts = postService.findIndiReplyIdPost();
+//        model.addAttribute("posts", posts);
+//        obj.put("replyid", posts);
+//        return new ResponseEntity<>(obj, HttpStatus.OK);
+//
+//    }
+//
+//    // 개인 답글 수정
+//    @PostMapping("/post/updateindireply")
+//    public Long updateIndiReplyPost(@RequestBody PostIndiReplyRequest params) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        return postService.updateIndiReplyPost(params);
+//    }
+//
+//    // 개인 답글 삭제
+//    @RequestMapping("/post/deleteindireply")
+//    public Long deleteIndiReplyPost(@RequestBody PostIndiReplyRequest params) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        postService.updateDeleteIndiReplyCountPost(params);
+//        return postService.deleteIndiReplyPost(params);
+//    }
+//
+//    // 단체 답글 조회
+//    @RequestMapping("/post/groupreplyinfo")
+//    public ResponseEntity<?> groupReplyInfo(@RequestBody PostGroupReplyResponse inherentid, Model model) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        postService.findPostByGroupReplyInherentId(inherentid.getInherentid());
+//        Map<String, Object> obj = new HashMap<>();
+//        List<PostGroupReplyResponse> posts = postService.findPostByGroupReplyInherentId(inherentid.getInherentid());
+//        model.addAttribute("posts", posts);
+//        obj.put("reply", posts);
+//        return new ResponseEntity<>(obj, HttpStatus.OK);
+//    }
+//
+//
+//    // 단체 답글 등록 및 아이디 전송
+//    @RequestMapping(method = RequestMethod.POST,path ="/post/groupreply")
+//    public ResponseEntity<?> saveGroupReply(@RequestBody PostGroupReplyRequest params,Model model) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        postService.saveGroupReplyPost(params);
+//        postService.updateGroupReplyCountPost(params);
+//        Map<String, Object> obj = new HashMap<>();
+//        List<PostGroupReplyIdResponse> posts = postService.findGroupReplyIdPost();
+//        model.addAttribute("posts", posts);
+//        obj.put("replyid", posts);
+//        return new ResponseEntity<>(obj, HttpStatus.OK);
+//
+//    }
+//
+//    // 단체 답글 수정
+//    @PostMapping("/post/updategroupreply")
+//    public Long updateGroupReplyPost(@RequestBody PostGroupReplyRequest params) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        return postService.updateGroupReplyPost(params);
+//    }
+//
+//    // 단체 답글 삭제
+//    @RequestMapping("/post/deletegroupreply")
+//    public Long deleteGroupReplyPost(@RequestBody PostGroupReplyRequest params) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        postService.updateDeleteGroupReplyCountPost(params);
+//        return postService.deleteGroupReplyPost(params);
+//    }
+//
+//
+//
+//    // 중고 답글 조회
+//    @RequestMapping("/post/usedreplyinfo")
+//    public ResponseEntity<?> usedReplyInfo(@RequestBody PostUsedReplyResponse inherentid, Model model) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        postService.findPostByUsedReplyInherentId(inherentid.getInherentid());
+//        Map<String, Object> obj = new HashMap<>();
+//        List<PostUsedReplyResponse> posts = postService.findPostByUsedReplyInherentId(inherentid.getInherentid());
+//        model.addAttribute("posts", posts);
+//        obj.put("reply", posts);
+//        return new ResponseEntity<>(obj, HttpStatus.OK);
+//    }
+//
+//
+//    // 중고 답글 등록 및 아이디 전송
+//    @RequestMapping(method = RequestMethod.POST,path ="/post/usedreply")
+//    public ResponseEntity<?> saveUsedReply(@RequestBody PostUsedReplyRequest params,Model model) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        postService.saveUsedReplyPost(params);
+//        postService.updateUsedReplyCountPost(params);
+//        Map<String, Object> obj = new HashMap<>();
+//        List<PostUsedReplyIdResponse> posts = postService.findUsedReplyIdPost();
+//        model.addAttribute("posts", posts);
+//        obj.put("replyid", posts);
+//        return new ResponseEntity<>(obj, HttpStatus.OK);
+//
+//    }
+//
+//    // 중고 답글 수정
+//    @PostMapping("/post/updateusedreply")
+//    public Long updateUsedReplyPost(@RequestBody PostUsedReplyRequest params) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        return postService.updateUsedReplyPost(params);
+//    }
+//
+//    // 중고 답글 삭제
+//    @RequestMapping("/post/deleteusedreply")
+//    public Long deleteUsedReplyPost(@RequestBody PostUsedReplyRequest params) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+//        postService.updateDeleteUsedReplyCountPost(params);
+//        return postService.deleteUsedReplyPost(params);
+//    }
 
 
 
@@ -711,6 +712,9 @@ public class PostController {
         obj.put("userinfo", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
+
+
+
     // 내가 쓴 글 커뮤니티
     @PostMapping("/post/myboardwrite")
     public ResponseEntity<?> myBoardWrite(@RequestBody PostMyBoardResponse userid, Model model) throws ApiException {
