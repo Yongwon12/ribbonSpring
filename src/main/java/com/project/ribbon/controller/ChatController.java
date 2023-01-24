@@ -22,4 +22,5 @@ public class ChatController {
     public List<ChatRoom> findAllRoom() {
         return chatService.findAllRoom();
     }
+
 }
