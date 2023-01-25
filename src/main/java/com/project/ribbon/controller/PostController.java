@@ -31,7 +31,7 @@ public class PostController {
 
     // 커뮤니티 게시글 작성
     @PostMapping("/post/boardwrite")
-    public Long savePost(@RequestBody PostRequest params) throws ApiException{
+    public Long savePost(@RequestBody @Valid PostRequest params) throws ApiException{
         ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.savePost(params);
 
@@ -165,7 +165,7 @@ public class PostController {
 
     // 단체 글작성
     @PostMapping("/post/writegroup")
-    public Long saveGroupPost(@RequestBody PostGroupRequest params) throws ApiException {
+    public Long saveGroupPost(@RequestBody @Valid PostGroupRequest params) throws ApiException {
         ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.saveGroupPost(params);
 
@@ -198,7 +198,7 @@ public class PostController {
 
     // 개인 글작성
     @PostMapping("/post/writeindividual")
-    public Long saveIndiPost(@RequestBody PostIndiRequest params) throws ApiException {
+    public Long saveIndiPost(@RequestBody @Valid PostIndiRequest params) throws ApiException {
         ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.saveIndiPost(params);
 
@@ -231,7 +231,7 @@ public class PostController {
 
     // 중고 글작성
     @PostMapping("/post/writeused")
-    public Long saveUsedPost(@RequestBody PostUsedRequest params) throws ApiException {
+    public Long saveUsedPost(@RequestBody @Valid PostUsedRequest params) throws ApiException {
         ExceptionEnum err = ExceptionEnum.SECURITY_01;
         return postService.saveUsedPost(params);
 
