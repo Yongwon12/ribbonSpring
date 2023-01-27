@@ -228,6 +228,12 @@ public interface PostMapper {
     // 내가 좋아요 누른 글 중고
     List<PostMyUsedLikedResponse> findByMyUsedLikedUserId(Long userid);
 
+    // 특정 채팅방 조회
+    List<PostChatRoomResponse> findByMyId(Integer myid);
+
+
+    // 채팅방 입력
+    void saveChatRoom(PostChatRoomRequest params);
 
     // 게시글 갯수 카운트
     int count();

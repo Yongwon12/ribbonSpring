@@ -574,6 +574,19 @@ public class PostService {
         return postMapper.findByMyUsedLikedUserId(userid);
     }
 
+    // 특정 채팅방 조회
+    public List<PostChatRoomResponse> findPostByMyId(final Integer myid) {
+        return postMapper.findByMyId(myid);
+    }
+
+
+
+    // 채팅방 넣기
+    @Transactional
+    public Long saveChatRoomPost(final PostChatRoomRequest params) {
+        postMapper.saveChatRoom(params);
+        return params.getId();
+    }
 
 
 }

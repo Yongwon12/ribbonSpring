@@ -20,16 +20,16 @@ public class PostGroupRequest {
         private String description;
         @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9]{2,30}$", message = "한 줄 설명은 특수문자를 제외한 최대 30자입니다.")
         private String line;
-        private Integer peoplenum;
+        private String peoplenum;
         private String gender;
-        private Integer minage;
+        private String minage;
         private String titleimage;
         private Long userid;
-        private Integer maxage;
+        private String maxage;
         private String writedate;
-        private Integer peoplenownum;
-        @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$", message = "닉네임은 특수문자를 제외한 2~10자리여야 합니다.")
-        @NotBlank(message="닉네임은 필수 입력 값입니다.")
+        private String peoplenownum;
+        @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9\\*]{2,30}$", message = "닉네임은 특수문자를 제외한 2~30자리여야 합니다.")
+        @NotBlank(message = "닉네임은 필수 입력 값입니다.")
         private String nickname;
         private Long groupid;// PK
         private String once;

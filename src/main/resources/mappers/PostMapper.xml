@@ -145,6 +145,18 @@
         , isrecomment
     </sql>
 
+    <!-- chat 테이블 전체 컬럼 -->
+    <sql id="postChatColumns">
+        id
+        , roomname
+        , myid
+        , yourid
+        , mynickname
+        , yournickname
+        , myprofileimage
+            , yourprofileimage
+    </sql>
+
 <!--    &lt;!&ndash; reply 테이블 전체 컬럼 &ndash;&gt;-->
 <!--    <sql id="postReplyColumns">-->
 <!--        description-->
@@ -1426,6 +1438,35 @@
                 LEFT JOIN user
                     ON user.userid = usedwrite.userid
         WHERE usedliked.userid = #{userid}
+    </select>
+
+
+    <!-- 채팅방 정보 저장 -->
+    <insert id="saveChatRoom" parameterType="com.project.ribbon.domain.post.PostChatRoomRequest"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO chat (
+        <include refid="postChatColumns" />
+        ) VALUES (
+        #{id}
+        , #{roomname}
+        , #{myid}
+        , #{yourid}
+        , #{mynickname}
+        , #{yournickname}
+        , #{myprofileimage}
+        , #{yourprofileimage}
+        )
+    </insert>
+
+
+    <!-- 특정 채팅방 정보 조회  -->
+    <select id="findByMyId" parameterType="Integer" resultType="com.project.ribbon.domain.post.PostChatRoomResponse">
+        SELECT
+            roomname,yourid,yournickname,yourprofileimage
+        FROM
+            chat
+        WHERE
+            myid = #{myid}
     </select>
 
 
