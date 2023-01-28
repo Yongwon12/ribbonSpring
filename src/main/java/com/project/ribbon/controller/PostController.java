@@ -814,6 +814,15 @@ public class PostController {
             model.addAttribute("posts", posts);
             obj.put("chatroom", posts);
             return new ResponseEntity<>(obj, HttpStatus.OK);
-        }
+    }
+
+
+    // db 정보 꺼내서 사용해보기
+    @GetMapping("/post/test")
+    public List<PostResponse> dbTest(@RequestBody PostResponse id){
+
+        return postService.findAllPostTest(id.getId());
+
+    }
 
 }

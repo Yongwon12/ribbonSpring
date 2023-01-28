@@ -1470,5 +1470,15 @@
     </select>
 
 
+    <!-- db데이터조회 테스트 -->
+    <select id="findAllTest" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+            id
+        FROM boardwrite
+                 LEFT JOIN user
+                           ON user.userid=boardwrite.userid
+        WHERE id = 1
+    </select>
+
 
 </mapper>

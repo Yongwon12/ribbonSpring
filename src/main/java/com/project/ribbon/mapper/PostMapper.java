@@ -232,8 +232,12 @@ public interface PostMapper {
     List<PostChatRoomResponse> findByMyId(Integer myid);
 
 
+
     // 채팅방 입력
     void saveChatRoom(PostChatRoomRequest params);
+
+    // db꺼내오기 테스트
+    List<PostResponse> findAllTest(Integer id);
 
     // 게시글 갯수 카운트
     int count();

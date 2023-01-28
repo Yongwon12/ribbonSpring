@@ -7,10 +7,12 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
 
@@ -50,5 +52,6 @@ public class DatabaseConfig {
     public org.apache.ibatis.session.Configuration mybatisConfig(){
         return new org.apache.ibatis.session.Configuration();
     }
+
 
 }

@@ -2,6 +2,7 @@ package com.project.ribbon.service;
 
 import com.project.ribbon.domain.post.*;
 import com.project.ribbon.mapper.PostMapper;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -588,5 +589,9 @@ public class PostService {
         return params.getId();
     }
 
+    // db꺼내오기 텣스트
+    public List<PostResponse> findAllPostTest(final Integer id) {
+        return postMapper.findAllTest(id);
+    }
 
 }
