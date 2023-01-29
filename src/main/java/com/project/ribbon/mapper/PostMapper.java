@@ -239,6 +239,13 @@ public interface PostMapper {
     // db꺼내오기 테스트
     List<PostResponse> findAllTest(Integer id);
 
+
+
+    // 채팅룸 삭제
+    void deleteByRoomName(PostChatRoomDeleteRequest params);
+
+
+
     // 게시글 갯수 카운트
     int count();
 

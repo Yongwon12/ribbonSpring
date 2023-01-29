@@ -817,12 +817,14 @@ public class PostController {
     }
 
 
-    // db 정보 꺼내서 사용해보기
-    @GetMapping("/post/test")
-    public List<PostResponse> dbTest(@RequestBody PostResponse id){
 
-        return postService.findAllPostTest(id.getId());
-
+    // 채팅룸 삭제
+    @RequestMapping("/post/deleteroom")
+    public String deleteChatRoomPost(@RequestBody PostChatRoomDeleteRequest params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.SECURITY_01;
+        return postService.deleteChatRoomPost(params);
     }
+
+
 
 }

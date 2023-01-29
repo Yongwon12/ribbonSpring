@@ -589,6 +589,13 @@ public class PostService {
         return params.getId();
     }
 
+    // 채팅룸 삭제
+    public String deleteChatRoomPost(final PostChatRoomDeleteRequest params) {
+        postMapper.deleteByRoomName(params);
+        return params.getRoomname();
+    }
+
+
     // db꺼내오기 텣스트
     public List<PostResponse> findAllPostTest(final Integer id) {
         return postMapper.findAllTest(id);
