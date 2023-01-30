@@ -65,7 +65,7 @@ public interface PostMapper {
     // 유저 가입
     void saveUser(PostUserRequest params);
     // 유저 수정
-    void updateUser(PostUserRequest params);
+    void updateUser(PostUserUpdateRequest params);
 
 
     // 유저 삭제

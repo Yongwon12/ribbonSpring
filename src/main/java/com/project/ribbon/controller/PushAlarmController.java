@@ -15,7 +15,7 @@ import java.io.IOException;
 public class PushAlarmController {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
 
-    @PostMapping("/api/fcm")
+    @PostMapping("/api/pushalarm")
     public ResponseEntity pushMessage(@RequestBody RequestDTO requestDTO) throws IOException {
         System.out.println(requestDTO.getTargetToken() + " "
                 +requestDTO.getTitle() + " " + requestDTO.getBody());

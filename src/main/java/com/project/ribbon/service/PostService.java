@@ -139,6 +139,7 @@ public class PostService {
     public List<PostUserResponse> findUserAllPost() {
         return postMapper.findUserAll();
     }
+
     // 유저 정보 가입
     @Transactional
     public Long saveUserPost(final PostUserRequest params) {
@@ -147,7 +148,7 @@ public class PostService {
     }
     // 유저 정보 수정
     @Transactional
-    public Long updateUserPost(final PostUserRequest params) {
+    public Long updateUserPost(final PostUserUpdateRequest params) {
         postMapper.updateUser(params);
         return params.getUserid();
     }
