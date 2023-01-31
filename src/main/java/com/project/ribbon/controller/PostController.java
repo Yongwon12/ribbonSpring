@@ -818,7 +818,7 @@ public class PostController {
 
 
 
-    // 채팅룸 삭제
+    // 특정 채팅방 삭제
     @RequestMapping("/post/deleteroom")
     public String deleteChatRoomPost(@RequestBody PostChatRoomDeleteRequest params) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
