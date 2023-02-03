@@ -145,8 +145,8 @@
         , isrecomment
     </sql>
 
-    <!-- chat 테이블 전체 컬럼 -->
-    <sql id="postChatColumns">
+    <!-- chatroom 테이블 전체 컬럼 -->
+    <sql id="postChatRoomColumns">
         id
         , roomname
         , myid
@@ -156,6 +156,7 @@
         , myprofileimage
             , yourprofileimage
     </sql>
+
 
 <!--    &lt;!&ndash; reply 테이블 전체 컬럼 &ndash;&gt;-->
 <!--    <sql id="postReplyColumns">-->
@@ -1444,8 +1445,8 @@
     <!-- 채팅방 정보 저장 -->
     <insert id="saveChatRoom" parameterType="com.project.ribbon.domain.post.PostChatRoomRequest"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO chat (
-        <include refid="postChatColumns" />
+        INSERT INTO chatroom (
+        <include refid="postChatRoomColumns" />
         ) VALUES (
         #{id}
         , #{roomname}
@@ -1464,7 +1465,7 @@
         SELECT
             roomname,yourid,yournickname,yourprofileimage
         FROM
-            chat
+            chatroom
         WHERE
             myid = #{myid}
     </select>
@@ -1474,11 +1475,33 @@
     <delete id="deleteByRoomName" >
         DELETE
         FROM
-            chat
+            chatroom
         WHERE roomname = #{roomname}
     </delete>
 
 
+    <!-- 채팅 정보 저장 -->
+    <insert id="saveChat" parameterType="com.project.ribbon.domain.post.PostChatMessage">
+        INSERT INTO chattable (
+        roomname,nickname,message,profileimage,writedate
+        ) VALUES (
+         #{roomname}
+        , #{nickname}
+        , #{message}
+        , #{profileimage}
+        , NOW()
+        )
+    </insert>
+
+    <!-- 특정 채팅방 채팅정보 조회  -->
+<!--    <select id="findByMyId" parameterType="Integer" resultType="com.project.ribbon.domain.post.PostChatRoomResponse">-->
+<!--        SELECT-->
+<!--            roomid,yourid,yournickname,yourprofileimage-->
+<!--        FROM-->
+<!--            chatroom-->
+<!--        WHERE-->
+<!--            myid = #{myid}-->
+<!--    </select>-->
 
 
 </mapper>

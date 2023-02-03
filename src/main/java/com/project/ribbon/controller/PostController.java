@@ -2,17 +2,21 @@ package com.project.ribbon.controller;
 
 import com.project.ribbon.domain.post.*;
 import com.project.ribbon.enums.ExceptionEnum;
+import com.project.ribbon.handler.WebSocketHandler;
 import com.project.ribbon.response.ApiException;
+import com.project.ribbon.service.ChatService;
 import com.project.ribbon.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.socket.TextMessage;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +32,7 @@ import java.util.Map;
 public class PostController {
 
     private final PostService postService;
+
 
     // 커뮤니티 게시글 작성
     @PostMapping("/post/boardwrite")
@@ -825,6 +830,12 @@ public class PostController {
         return postService.deleteChatRoomPost(params);
     }
 
+    // 채팅 넣기
+    @PostMapping("/chat")
+    public String saveChatPost(@RequestBody PostChatMessage params){
+        return postService.saveChatPost(params);
+
+    }
 
 
 }

@@ -596,6 +596,12 @@ public class PostService {
         return params.getRoomname();
     }
 
+    // 채팅 넣기
+    @Transactional
+    public String saveChatPost(final PostChatMessage params) {
+        postMapper.saveChat(params);
+        return params.getRoomid();
+    }
 
     // db꺼내오기 텣스트
     public List<PostResponse> findAllPostTest(final Integer id) {

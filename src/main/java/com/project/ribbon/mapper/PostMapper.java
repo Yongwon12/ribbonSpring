@@ -2,6 +2,7 @@ package com.project.ribbon.mapper;
 
 import com.project.ribbon.domain.post.*;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.web.socket.TextMessage;
 
 import java.util.List;
 
@@ -245,6 +246,8 @@ public interface PostMapper {
     void deleteByRoomName(PostChatRoomDeleteRequest params);
 
 
+    // 채팅 입력
+    void saveChat(PostChatMessage params);
 
     // 게시글 갯수 카운트
     int count();
