@@ -12,7 +12,7 @@ public class ChatMessage {
     }
 
     private MessageType type;
-    private String roomid;
+    private String roomname;
     private String nickname;
     private String message;
     private String profileimage;

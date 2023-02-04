@@ -600,7 +600,7 @@ public class PostService {
     @Transactional
     public String saveChatPost(final PostChatMessage params) {
         postMapper.saveChat(params);
-        return params.getRoomid();
+        return params.getRoomname();
     }
 
     // db꺼내오기 텣스트

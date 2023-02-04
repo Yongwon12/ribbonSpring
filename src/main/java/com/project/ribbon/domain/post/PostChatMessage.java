@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 public class PostChatMessage {
 
-    private String roomid;
+    private String roomname;
     private String nickname;
     private String message;
     private String profileimage;
