@@ -1,6 +1,6 @@
 package com.project.ribbon.controller;
 
-import com.project.ribbon.domain.post.RequestDTO;
+import com.project.ribbon.domain.post.ResponseDTO;
 import com.project.ribbon.service.FirebaseCloudMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +16,11 @@ public class PushAlarmController {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     @PostMapping("/api/push")
-    public ResponseEntity pushMessage(@RequestBody RequestDTO requestDTO) throws IOException {
-        System.out.println(requestDTO.getTargetToken() + " "
-                +requestDTO.getTitle() + " " + requestDTO.getBody());
-
+    public ResponseEntity pushMessage(@RequestBody ResponseDTO responseDTO) throws IOException {
         firebaseCloudMessageService.sendMessageTo(
-                requestDTO.getTargetToken(),
-                requestDTO.getTitle(),
-                requestDTO.getBody());
+                responseDTO.getToken(),
+                responseDTO.getTitle(),
+                responseDTO.getBody());
         return ResponseEntity.ok().build();
     }
 }

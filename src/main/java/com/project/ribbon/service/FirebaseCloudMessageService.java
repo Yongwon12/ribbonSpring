@@ -18,11 +18,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FirebaseCloudMessageService {
 
-    private final String API_URL = "https://fcm.googleapis.com/v1/projects/ribbon-42d1d/messages:send";
+    private final String API_URL = "https://fcm.googleapis.com/v1/projects/sportscommunity-d11ee/messages:send";
     private final ObjectMapper objectMapper;
 
-    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
-        String message = makeMessage(targetToken, title, body);
+    public void sendMessageTo(String token, String title, String body) throws IOException {
+        String message = makeMessage(token, title, body);
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message,
@@ -39,11 +39,11 @@ public class FirebaseCloudMessageService {
         System.out.println(response.body().string());
     }
 
-    private String makeMessage(String targetToken, String title, String body) throws JsonParseException, JsonProcessingException {
+    private String makeMessage(String token, String title, String body) throws JsonParseException, JsonProcessingException {
         FcmMessage fcmMessage = FcmMessage.builder()
                 .message(FcmMessage.Message.builder()
-                        .token(targetToken)
-                        .notification(FcmMessage.Notification.builder()
+                        .token(token)
+                        .data(FcmMessage.Data.builder()
                                 .title(title)
                                 .body(body)
                                 .image(null)
@@ -54,7 +54,7 @@ public class FirebaseCloudMessageService {
     }
 
     private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "firebase/ribbon-42d1d-firebase-adminsdk-c7aty-8bacb1047b.json";
+        String firebaseConfigPath = "/firebase/sportscommunity-d11ee-firebase-adminsdk-i14sx-647d1e0507.json";
 
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())

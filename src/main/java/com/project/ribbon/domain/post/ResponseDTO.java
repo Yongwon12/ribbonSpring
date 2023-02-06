@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestDTO {
-    private String targetToken;
+public class ResponseDTO {
+    private String token;
     private String title;
     private String body;
 }

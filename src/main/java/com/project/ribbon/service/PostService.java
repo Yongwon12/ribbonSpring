@@ -169,6 +169,11 @@ public class PostService {
         postMapper.saveLiked(params);
         return params.getInherentid();
     }
+    // 좋아요 알림
+    public List<PostLikedRequest> findPostByAlram(final Long inherentid) {
+        return postMapper.findByAlramAll(inherentid);
+    }
+
     // 좋아요 정보 수정
     @Transactional
     public Integer updateLikedPost(final PostLikedRequest params) {

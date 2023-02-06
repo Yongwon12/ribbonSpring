@@ -615,8 +615,18 @@
         , #{userid}
         , #{inherentid}
         )
-
     </insert>
+
+    <!-- 좋아요 삽입시 알림-->
+    <select id="findByAlramAll" resultType="com.project.ribbon.domain.post.ResponseDTO">
+        SELECT token,title,liked.userid
+        FROM user
+        LEFT JOIN boardwrite
+        ON boardwrite.userid = user.userid
+        LEFT JOIN liked
+        ON liked.inherentid = boardwrite.boardid
+        WHERE inherentid = #{inherentid};
+    </select>
 
 
     <!-- 좋아요 갯수 카운트 +1 -->

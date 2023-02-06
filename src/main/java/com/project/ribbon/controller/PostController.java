@@ -5,6 +5,7 @@ import com.project.ribbon.enums.ExceptionEnum;
 import com.project.ribbon.handler.WebSocketHandler;
 import com.project.ribbon.response.ApiException;
 import com.project.ribbon.service.ChatService;
+import com.project.ribbon.service.FirebaseCloudMessageService;
 import com.project.ribbon.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.TextMessage;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -313,8 +315,8 @@ public class PostController {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         postService.updateLikedPost(params);
         return postService.saveLikedPost(params);
-
     }
+
 
 
     // 좋아요 삭제
