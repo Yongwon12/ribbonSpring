@@ -22,6 +22,7 @@ public class PostIndiCommentsRequest {
         private String writedate;
         @Id
         private Long individualcommentsid;
+        private String token;
 
 }
 

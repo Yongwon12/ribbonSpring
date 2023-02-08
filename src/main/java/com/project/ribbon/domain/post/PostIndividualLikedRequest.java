@@ -13,6 +13,8 @@ public class PostIndividualLikedRequest {
         private Integer userid;
 
         private Integer inherentid;
+        private String token;
+        private String nickname;
 
 }
 

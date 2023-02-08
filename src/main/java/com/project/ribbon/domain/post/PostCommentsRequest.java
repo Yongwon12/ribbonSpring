@@ -24,6 +24,7 @@ public class PostCommentsRequest {
         @Id
         private Long commentsid;
         private Integer isrecomment;
+        private String token;
 
 
 }

@@ -2,23 +2,20 @@ package com.project.ribbon.controller;
 
 import com.project.ribbon.domain.post.*;
 import com.project.ribbon.enums.ExceptionEnum;
-import com.project.ribbon.handler.WebSocketHandler;
 import com.project.ribbon.response.ApiException;
-import com.project.ribbon.service.ChatService;
-import com.project.ribbon.service.FirebaseCloudMessageService;
+import com.project.ribbon.service.FirebaseCloudMessageCommentsService;
+import com.project.ribbon.service.FirebaseCloudMessageLikedService;
 import com.project.ribbon.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.annotation.PersistenceConstructor;
+import org.codehaus.groovy.tools.shell.IO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.socket.TextMessage;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,6 +32,8 @@ import java.util.Map;
 public class PostController {
 
     private final PostService postService;
+    private final FirebaseCloudMessageLikedService firebaseCloudMessageLikedService;
+    private final FirebaseCloudMessageCommentsService firebaseCloudMessageCommentsService;
 
 
     // 커뮤니티 게시글 작성
@@ -312,12 +311,16 @@ public class PostController {
 
     // 좋아요 등록
     @PostMapping("/post/liked")
-    public Integer saveLikedPost(@RequestBody PostLikedRequest params) throws ApiException {
+    public Integer saveLikedPost(@RequestBody PostLikedRequest params) throws ApiException,IOException{
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         postService.updateLikedPost(params);
-        return postService.saveLikedPost(params);
-    }
+        postService.saveLikedPost(params);
+        firebaseCloudMessageLikedService.sendMessageTo(
+                params.getToken(),
+                params.getNickname());
+        return ResponseEntity.ok().build().getStatusCodeValue();
 
+    }
 
 
     // 좋아요 삭제
@@ -330,10 +333,14 @@ public class PostController {
 
     // 개인 좋아요 등록
     @PostMapping("/post/individualliked")
-    public Integer saveIndiLikedPost(@RequestBody PostIndividualLikedRequest params) throws ApiException {
+    public Integer saveIndiLikedPost(@RequestBody PostIndividualLikedRequest params) throws ApiException,IOException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         postService.updateIndividualLikedPost(params);
-        return postService.saveIndividualLikedPost(params);
+        postService.saveIndividualLikedPost(params);
+        firebaseCloudMessageLikedService.sendMessageTo(
+                params.getToken(),
+                params.getNickname());
+        return ResponseEntity.ok().build().getStatusCodeValue();
 
     }
 
@@ -348,10 +355,14 @@ public class PostController {
 
     // 중고 좋아요 등록
     @PostMapping("/post/usedliked")
-    public Integer saveUsedLikedPost(@RequestBody PostUsedLikedRequest params) throws ApiException {
+    public Integer saveUsedLikedPost(@RequestBody PostUsedLikedRequest params) throws ApiException ,IOException{
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         postService.updateUsedLikedPost(params);
-        return postService.saveUsedLikedPost(params);
+        postService.saveUsedLikedPost(params);
+        firebaseCloudMessageLikedService.sendMessageTo(
+                params.getToken(),
+                params.getNickname());
+        return ResponseEntity.ok().build().getStatusCodeValue();
 
     }
 
@@ -379,10 +390,14 @@ public class PostController {
 
     // 댓글 등록 및 아이디 전송
     @RequestMapping(method = RequestMethod.POST,path ="/post/comments")
-    public ResponseEntity<?> saveComments(@RequestBody PostCommentsRequest params,Model model) throws ApiException {
+    public ResponseEntity<?> saveComments(@RequestBody PostCommentsRequest params,Model model) throws ApiException ,IOException{
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         postService.saveCommentsPost(params);
         postService.updateCommentsCountPost(params);
+        firebaseCloudMessageCommentsService.sendMessageTo(
+                params.getToken(),
+                params.getNickname());
+        ResponseEntity.ok().build().getStatusCodeValue();
         Map<String, Object> obj = new HashMap<>();
         List<PostCommentsIdResponse> posts = postService.findCommentsIdPost();
         model.addAttribute("posts", posts);
@@ -421,10 +436,14 @@ public class PostController {
 
     // 개인 댓글 등록 및 아이디 전송
     @RequestMapping(method = RequestMethod.POST,path ="/post/indicomments")
-    public ResponseEntity<?> saveIndiComments(@RequestBody PostIndiCommentsRequest params,Model model) throws ApiException {
+    public ResponseEntity<?> saveIndiComments(@RequestBody PostIndiCommentsRequest params,Model model) throws ApiException,IOException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         postService.saveIndiCommentsPost(params);
         postService.updateIndiCommentsCountPost(params);
+        firebaseCloudMessageCommentsService.sendMessageTo(
+                params.getToken(),
+                params.getNickname());
+        ResponseEntity.ok().build().getStatusCodeValue();
         Map<String, Object> obj = new HashMap<>();
         List<PostIndiCommentsIdResponse> posts = postService.findIndiCommentsIdPost();
         model.addAttribute("posts", posts);
@@ -463,10 +482,14 @@ public class PostController {
 
     // 단체 댓글 등록 및 아이디 전송
     @RequestMapping(method = RequestMethod.POST,path ="/post/groupcomments")
-    public ResponseEntity<?> saveGroupComments(@RequestBody PostGroupCommentsRequest params,Model model) throws ApiException {
+    public ResponseEntity<?> saveGroupComments(@RequestBody PostGroupCommentsRequest params,Model model) throws ApiException,IOException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         postService.saveGroupCommentsPost(params);
         postService.updateGroupCommentsCountPost(params);
+        firebaseCloudMessageCommentsService.sendMessageTo(
+                params.getToken(),
+                params.getNickname());
+        ResponseEntity.ok().build().getStatusCodeValue();
         Map<String, Object> obj = new HashMap<>();
         List<PostGroupCommentsIdResponse> posts = postService.findGroupCommentsIdPost();
         model.addAttribute("posts", posts);
@@ -506,10 +529,14 @@ public class PostController {
 
     // 중고 댓글 등록 및 아이디 전송
     @RequestMapping(method = RequestMethod.POST,path ="/post/usedcomments")
-    public ResponseEntity<?> saveUsedComments(@RequestBody PostUsedCommentsRequest params,Model model) throws ApiException {
+    public ResponseEntity<?> saveUsedComments(@RequestBody PostUsedCommentsRequest params,Model model) throws ApiException,IOException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         postService.saveUsedCommentsPost(params);
         postService.updateUsedCommentsCountPost(params);
+        firebaseCloudMessageCommentsService.sendMessageTo(
+                params.getToken(),
+                params.getNickname());
+        ResponseEntity.ok().build().getStatusCodeValue();
         Map<String, Object> obj = new HashMap<>();
         List<PostUsedCommentsIdResponse> posts = postService.findUsedCommentsIdPost();
         model.addAttribute("posts", posts);

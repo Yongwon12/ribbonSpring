@@ -170,7 +170,7 @@ public class PostService {
         return params.getInherentid();
     }
     // 좋아요 알림
-    public List<PostLikedRequest> findPostByAlram(final Long inherentid) {
+    public List<ResponseDTO> findPostByAlram(final Long inherentid) {
         return postMapper.findByAlramAll(inherentid);
     }
 

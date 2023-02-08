@@ -14,6 +14,8 @@ public class PostLikedRequest {
         private Integer userid;
 
         private Integer inherentid;
+        private String token;
+        private String nickname;
 
 }
 

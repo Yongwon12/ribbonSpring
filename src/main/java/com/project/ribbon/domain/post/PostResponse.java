@@ -18,4 +18,5 @@ public class PostResponse {
     private Integer likedcount;
     private Integer commentcount;
     private String profileimage;
+    private String token;
 }

@@ -16,13 +16,13 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class FirebaseCloudMessageService {
+public class FirebaseCloudMessageCommentsService {
 
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/sportscommunity-d11ee/messages:send";
     private final ObjectMapper objectMapper;
 
-    public void sendMessageTo(String token, String title, String body) throws IOException {
-        String message = makeMessage(token, title, body);
+    public void sendMessageTo(String token,String nickname) throws IOException {
+        String message = makeMessage(token,nickname);
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message,
@@ -39,13 +39,13 @@ public class FirebaseCloudMessageService {
         System.out.println(response.body().string());
     }
 
-    private String makeMessage(String token, String title, String body) throws JsonParseException, JsonProcessingException {
+    private String makeMessage(String token,String nickname) throws JsonParseException, JsonProcessingException {
         FcmMessage fcmMessage = FcmMessage.builder()
                 .message(FcmMessage.Message.builder()
                         .token(token)
                         .data(FcmMessage.Data.builder()
-                                .title(title)
-                                .body(body)
+                                .title("맺음")
+                                .body(nickname+"님이 댓글을 작성하였습니다.")
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();

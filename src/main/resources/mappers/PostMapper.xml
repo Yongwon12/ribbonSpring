@@ -15,6 +15,7 @@
         , boardid
         , likedcount
         , commentcount
+
     </sql>
 
     <!-- groupwrite 테이블 전체 컬럼 -->
@@ -249,8 +250,8 @@
     <!-- 커뮤니티 게시글  조회 -->
     <select id="findAll1" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
-        id,boardwrite.userid,title,description,img,writedate,user.nickname,
-        boardid,likedcount,commentcount,profileimage
+        id,user.userid,title,description,img,writedate,user.nickname,
+        boardid,likedcount,commentcount,profileimage,token
         FROM boardwrite
         LEFT JOIN user
         ON user.userid=boardwrite.userid
@@ -258,8 +259,8 @@
     </select>
     <select id="findAll2" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage
+            id,user.userid,title,description,img,writedate,user.nickname,
+            boardid,likedcount,commentcount,profileimage,token
         FROM boardwrite
                  LEFT JOIN user
                            ON user.userid=boardwrite.userid
@@ -267,8 +268,8 @@
     </select>
     <select id="findAll3" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage
+            id,user.userid,title,description,img,writedate,user.nickname,
+            boardid,likedcount,commentcount,profileimage,token
         FROM boardwrite
                  LEFT JOIN user
                            ON user.userid=boardwrite.userid
@@ -276,8 +277,8 @@
     </select>
     <select id="findAll4" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage
+            id,user.userid,title,description,img,writedate,user.nickname,
+            boardid,likedcount,commentcount,profileimage,token
         FROM boardwrite
                  LEFT JOIN user
                            ON user.userid=boardwrite.userid
@@ -285,8 +286,8 @@
     </select>
     <select id="findAll5" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage
+            id,user.userid,title,description,img,writedate,user.nickname,
+            boardid,likedcount,commentcount,profileimage,token
         FROM boardwrite
                  LEFT JOIN user
                            ON user.userid=boardwrite.userid
@@ -294,8 +295,8 @@
     </select>
     <select id="findAll6" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage
+            id,user.userid,title,description,img,writedate,user.nickname,
+            boardid,likedcount,commentcount,profileimage,token
         FROM boardwrite
                  LEFT JOIN user
                            ON user.userid=boardwrite.userid
@@ -303,8 +304,8 @@
     </select>
     <select id="findAll7" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage
+            id,user.userid,title,description,img,writedate,user.nickname,
+            boardid,likedcount,commentcount,profileimage,token
         FROM boardwrite
                  LEFT JOIN user
                            ON user.userid=boardwrite.userid
@@ -312,8 +313,8 @@
     </select>
     <select id="findAll8" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage
+            id,user.userid,title,description,img,writedate,user.nickname,
+            boardid,likedcount,commentcount,profileimage,token
         FROM boardwrite
                  LEFT JOIN user
                            ON user.userid=boardwrite.userid
@@ -321,8 +322,8 @@
     </select>
     <select id="findAll9" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage
+            id,user.userid,title,description,img,writedate,user.nickname,
+            boardid,likedcount,commentcount,profileimage,token
         FROM boardwrite
                  LEFT JOIN user
                            ON user.userid=boardwrite.userid
@@ -330,8 +331,8 @@
     </select>
     <select id="findAll10" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage
+            id,user.userid,title,description,img,writedate,user.nickname,
+            boardid,likedcount,commentcount,profileimage,token
         FROM boardwrite
                  LEFT JOIN user
                            ON user.userid=boardwrite.userid
@@ -591,8 +592,8 @@
     <select id="findAll11" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,boardwrite.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage
-        FROM boardwrite
+            boardid,likedcount,commentcount,profileimage,token
+        FROM boardwrite실
                  LEFT JOIN user
                            ON user.userid=boardwrite.userid
         WHERE
@@ -619,7 +620,7 @@
 
     <!-- 좋아요 삽입시 알림-->
     <select id="findByAlramAll" resultType="com.project.ribbon.domain.post.ResponseDTO">
-        SELECT token,title,liked.userid
+        SELECT token
         FROM user
         LEFT JOIN boardwrite
         ON boardwrite.userid = user.userid

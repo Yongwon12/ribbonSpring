@@ -21,6 +21,7 @@ public class PostUsedCommentsRequest {
         private String writedate;
         @Id
         private Long usedcommentsid;
+        private String token;
 
 }
 

@@ -25,6 +25,7 @@ public class FcmMessage {
     @Getter
     public static class Data {
         private String title;
+        private String nickname;
         private String body;
         private String image;
     }

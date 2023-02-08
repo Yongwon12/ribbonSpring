@@ -22,6 +22,7 @@ public class PostGroupCommentsRequest {
         private String writedate;
         @Id
         private Long groupcommentsid;
+        private String token;
 
 }
 
