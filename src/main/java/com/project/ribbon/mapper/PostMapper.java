@@ -77,7 +77,7 @@ public interface PostMapper {
     // 좋아요
     void saveLiked(PostLikedRequest params);
     // 좋아요 알림
-    List<ResponseDTO> findByAlramAll(Long inherentid);
+
 
     // 좋아요 수정
     void updateDeleteLiked(PostLikedRequest params);

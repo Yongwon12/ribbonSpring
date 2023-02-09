@@ -20,5 +20,6 @@ public class PostIndiResponse {
     private Integer likedcount;
     private Integer commentcount;
     private String profileimage;
+    private String token;
 
 }

@@ -20,7 +20,6 @@ public class PostUsedRequest {
         @NotBlank(message="내용은 필수 입력 값입니다.")
         private String description;
         private String usedimage1;
-        @Positive
         @NotBlank(message="가격은 필수 입력 값입니다.")
         private Integer price;
         private Long userid;

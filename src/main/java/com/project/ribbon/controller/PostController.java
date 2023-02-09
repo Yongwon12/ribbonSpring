@@ -238,7 +238,7 @@ public class PostController {
 
     // 중고 글작성
     @PostMapping("/post/writeused")
-    public Long saveUsedPost(@RequestBody @Valid PostUsedRequest params) throws ApiException {
+    public Long saveUsedPost(@RequestBody PostUsedRequest params) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         return postService.saveUsedPost(params);
 

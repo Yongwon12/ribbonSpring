@@ -23,4 +23,5 @@ public class PostGroupResponse {
     private String once;
     private Integer commentcount;
     private String profileimage;
+    private String token;
 }

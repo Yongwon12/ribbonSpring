@@ -18,7 +18,7 @@ public class PostGroupRequest {
         private String title;
         @NotBlank(message="내용은 필수 입력 값입니다.")
         private String description;
-        @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9]{2,30}$", message = "한 줄 설명은 특수문자를 제외한 최대 30자입니다.")
+        @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9\\ ]{2,30}$", message = "한 줄 설명은 특수문자를 제외한 최대 30자입니다.")
         private String line;
         private String peoplenum;
         private String gender;

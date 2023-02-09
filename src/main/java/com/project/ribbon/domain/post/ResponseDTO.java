@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResponseDTO {
 
-    private String token;
+    private String topic;
     private String title;
     private String body;
 }
