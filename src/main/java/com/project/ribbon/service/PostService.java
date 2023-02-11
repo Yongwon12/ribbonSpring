@@ -36,36 +36,10 @@ public class PostService {
     }
 
     // 커뮤니티 게시글 조회
-    public List<PostResponse> findAllPost1() {
-        return postMapper.findAll1();
+    public List<PostResponse> findAllPost() {
+        return postMapper.findAll();
     }
-    public List<PostResponse> findAllPost2() {
-        return postMapper.findAll2();
-    }
-    public List<PostResponse> findAllPost3() {
-        return postMapper.findAll3();
-    }
-    public List<PostResponse> findAllPost4() {
-        return postMapper.findAll4();
-    }
-    public List<PostResponse> findAllPost5() {
-        return postMapper.findAll5();
-    }
-    public List<PostResponse> findAllPost6() {
-        return postMapper.findAll6();
-    }
-    public List<PostResponse> findAllPost7() {
-        return postMapper.findAll7();
-    }
-    public List<PostResponse> findAllPost8() {
-        return postMapper.findAll8();
-    }
-    public List<PostResponse> findAllPost9() {
-        return postMapper.findAll9();
-    }
-    public List<PostResponse> findAllPost10() {
-        return postMapper.findAll10();
-    }
+
     public List<PostResponse> findAllPost11() {
         return postMapper.findAll11();
     }

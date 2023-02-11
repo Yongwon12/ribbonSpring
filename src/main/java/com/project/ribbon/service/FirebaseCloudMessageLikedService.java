@@ -49,7 +49,6 @@ public class FirebaseCloudMessageLikedService {
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();
-
         return objectMapper.writeValueAsString(fcmMessage);
     }
 

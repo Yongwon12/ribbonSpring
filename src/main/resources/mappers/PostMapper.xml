@@ -38,6 +38,7 @@
         , once
         , commentcount
     </sql>
+
     <!-- individualwrite 테이블 전체 컬럼 -->
     <sql id="postIndiColumns">
         id
@@ -55,7 +56,6 @@
         , likedcount
         , commentcount
     </sql>
-
 
     <!-- usedwrite 테이블 전체 컬럼 -->
     <sql id="postUsedColumns">
@@ -95,12 +95,14 @@
             , youtube
             , token
     </sql>
+
     <!-- liked 테이블 전체 컬럼 -->
     <sql id="postLikedColumns">
         categoryid
         , userid
         , inherentid
     </sql>
+
     <!-- comments 테이블 전체 컬럼 -->
     <sql id="postCommentsColumns">
         description
@@ -158,66 +160,13 @@
             , yourprofileimage
     </sql>
 
-
-<!--    &lt;!&ndash; reply 테이블 전체 컬럼 &ndash;&gt;-->
-<!--    <sql id="postReplyColumns">-->
-<!--        description-->
-<!--        , writedate-->
-<!--        , userid-->
-<!--        , nickname-->
-<!--        , categoryid-->
-<!--        , inherentid-->
-<!--        , replyid-->
-<!--        , inherentcommentsid-->
-<!--        , isrecomment-->
-
-<!--    </sql>-->
-
-<!--    &lt;!&ndash; groupreply 테이블 전체 컬럼 &ndash;&gt;-->
-<!--    <sql id="postGroupReplyColumns">-->
-<!--        description-->
-<!--        , writedate-->
-<!--        , userid-->
-<!--        , nickname-->
-<!--        , inherentid-->
-<!--        , groupreplyid-->
-<!--        , inherentcommentsid-->
-<!--        , isrecomment-->
-<!--    </sql>-->
-
-<!--    &lt;!&ndash; individualreply 테이블 전체 컬럼 &ndash;&gt;-->
-<!--    <sql id="postIndividualReplyColumns">-->
-<!--        description-->
-<!--        , writedate-->
-<!--        , userid-->
-<!--        , nickname-->
-<!--        , inherentid-->
-<!--        , individualreplyid-->
-<!--        , inherentcommentsid-->
-<!--        , isrecomment-->
-<!--    </sql>-->
-
-<!--    &lt;!&ndash; usedreply 테이블 전체 컬럼 &ndash;&gt;-->
-<!--    <sql id="postUsedReplyColumns">-->
-<!--        description-->
-<!--        , writedate-->
-<!--        , userid-->
-<!--        , nickname-->
-<!--        , inherentid-->
-<!--        , usedreplyid-->
-<!--        , inherentcommentsid-->
-<!--        , isrecomment-->
-<!--    </sql>-->
-
-
-
     <!-- 커뮤니티 게시글 저장 -->
     <insert id="save" parameterType="com.project.ribbon.domain.post.PostRequest"
     useGeneratedKeys="true" keyProperty="boardid">
         INSERT INTO boardwrite (
         <include refid="postColumns" />
         ) VALUES (
-        #{id}글
+        #{id}
         , #{userid}
         , #{title}
         , #{description}
@@ -245,99 +194,17 @@
     </update>
 
 
-
-
     <!-- 커뮤니티 게시글  조회 -->
-    <select id="findAll1" resultType="com.project.ribbon.domain.post.PostResponse">
+    <select id="findAll" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
         id,user.userid,title,description,img,writedate,user.nickname,
         boardid,likedcount,commentcount,profileimage,token
         FROM boardwrite
         LEFT JOIN user
-        ON user.userid=boardwrite.userid
-        WHERE id = 1
+        ON user.userid = boardwrite.userid
     </select>
-    <select id="findAll2" resultType="com.project.ribbon.domain.post.PostResponse">
-        SELECT
-            id,user.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage,token
-        FROM boardwrite
-                 LEFT JOIN user
-                           ON user.userid=boardwrite.userid
-        WHERE id = 2
-    </select>
-    <select id="findAll3" resultType="com.project.ribbon.domain.post.PostResponse">
-        SELECT
-            id,user.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage,token
-        FROM boardwrite
-                 LEFT JOIN user
-                           ON user.userid=boardwrite.userid
-        WHERE id = 3
-    </select>
-    <select id="findAll4" resultType="com.project.ribbon.domain.post.PostResponse">
-        SELECT
-            id,user.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage,token
-        FROM boardwrite
-                 LEFT JOIN user
-                           ON user.userid=boardwrite.userid
-        WHERE id = 4
-    </select>
-    <select id="findAll5" resultType="com.project.ribbon.domain.post.PostResponse">
-        SELECT
-            id,user.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage,token
-        FROM boardwrite
-                 LEFT JOIN user
-                           ON user.userid=boardwrite.userid
-        WHERE id = 5
-    </select>
-    <select id="findAll6" resultType="com.project.ribbon.domain.post.PostResponse">
-        SELECT
-            id,user.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage,token
-        FROM boardwrite
-                 LEFT JOIN user
-                           ON user.userid=boardwrite.userid
-        WHERE id = 6
-    </select>
-    <select id="findAll7" resultType="com.project.ribbon.domain.post.PostResponse">
-        SELECT
-            id,user.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage,token
-        FROM boardwrite
-                 LEFT JOIN user
-                           ON user.userid=boardwrite.userid
-        WHERE id = 7
-    </select>
-    <select id="findAll8" resultType="com.project.ribbon.domain.post.PostResponse">
-        SELECT
-            id,user.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage,token
-        FROM boardwrite
-                 LEFT JOIN user
-                           ON user.userid=boardwrite.userid
-        WHERE id = 8
-    </select>
-    <select id="findAll9" resultType="com.project.ribbon.domain.post.PostResponse">
-        SELECT
-            id,user.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage,token
-        FROM boardwrite
-                 LEFT JOIN user
-                           ON user.userid=boardwrite.userid
-        WHERE id = 9
-    </select>
-    <select id="findAll10" resultType="com.project.ribbon.domain.post.PostResponse">
-        SELECT
-            id,user.userid,title,description,img,writedate,user.nickname,
-            boardid,likedcount,commentcount,profileimage,token
-        FROM boardwrite
-                 LEFT JOIN user
-                           ON user.userid=boardwrite.userid
-        WHERE id = 10
-    </select>
+
+
     <!-- 커뮤니티 게시글 삭제 -->
     <delete id="deleteById" >
         DELETE
@@ -1470,9 +1337,11 @@
     <!-- 특정 채팅방 정보 조회  -->
     <select id="findByMyId" parameterType="Integer" resultType="com.project.ribbon.domain.post.PostChatRoomResponse">
         SELECT
-            roomname,yourid,yournickname,yourprofileimage,myid
+            roomname,yourid,yournickname,yourprofileimage,myid,token
         FROM
             chatroom
+        LEFT JOIN user
+        ON user.userid = chatroom.yourid
         WHERE
             myid = #{myid}
     </select>

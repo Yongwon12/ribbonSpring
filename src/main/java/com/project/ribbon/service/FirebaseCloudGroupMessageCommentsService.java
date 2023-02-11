@@ -24,7 +24,7 @@ public class FirebaseCloudGroupMessageCommentsService {
 
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/sportscommunity-d11ee/messages:send";
     private final ObjectMapper objectMapper;
-    @Scheduled(fixedRate = 18000000)
+    @Scheduled(cron = "00 00 18 * * *")
     public void sendMessageTo() throws IOException {
         String message = makeMessage();
 
@@ -49,7 +49,7 @@ public class FirebaseCloudGroupMessageCommentsService {
                         .topic("topic")
                         .data(FcmGroupMessage.Data.builder()
                                 .title("맺음")
-                                .body("주기알림 다섯시간 테스트")
+                                .body("지금 바로 운동메이트를 구해보세요!")
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();

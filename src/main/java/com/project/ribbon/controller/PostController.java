@@ -45,105 +45,16 @@ public class PostController {
     }
 
     // 커뮤니티 게시글 조회
-    @GetMapping("/post/board1")
-    public ResponseEntity<?> boardwrite1(Model model) throws ApiException {
+    @GetMapping("/post/board")
+    public ResponseEntity<?> boardwrite(Model model) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         Map<String, Object> obj = new HashMap<>();
-        List<PostResponse> posts = postService.findAllPost1();
+        List<PostResponse> posts = postService.findAllPost();
         model.addAttribute("posts", posts);
-        obj.put("boardwrite1", posts);
+        obj.put("boardwrite", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
 
-    @GetMapping("/post/board2")
-    public ResponseEntity<?> boardwrite2(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostResponse> posts = postService.findAllPost2();
-        model.addAttribute("posts", posts);
-        obj.put("boardwrite2", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-    @GetMapping("/post/board3")
-    public ResponseEntity<?> boardwrite3(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostResponse> posts = postService.findAllPost3();
-        model.addAttribute("posts", posts);
-        obj.put("boardwrite3", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-    @GetMapping("/post/board4")
-    public ResponseEntity<?> boardwrite4(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostResponse> posts = postService.findAllPost4();
-        model.addAttribute("posts", posts);
-        obj.put("boardwrite4", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-    @GetMapping("/post/board5")
-    public ResponseEntity<?> boardwrite5(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostResponse> posts = postService.findAllPost5();
-        model.addAttribute("posts", posts);
-        obj.put("boardwrite5", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-    @GetMapping("/post/board6")
-    public ResponseEntity<?> boardwrite6(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostResponse> posts = postService.findAllPost6();
-        model.addAttribute("posts", posts);
-        obj.put("boardwrite6", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-    @GetMapping("/post/board7")
-    public ResponseEntity<?> boardwrite7(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostResponse> posts = postService.findAllPost7();
-        model.addAttribute("posts", posts);
-        obj.put("boardwrite7", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-    @GetMapping("/post/board8")
-    public ResponseEntity<?> boardwrite8(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostResponse> posts = postService.findAllPost8();
-        model.addAttribute("posts", posts);
-        obj.put("boardwrite8", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-    @GetMapping("/post/board9")
-    public ResponseEntity<?> boardwrite9(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostResponse> posts = postService.findAllPost9();
-        model.addAttribute("posts", posts);
-        obj.put("boardwrite9", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-    @GetMapping("/post/board10")
-    public ResponseEntity<?> boardwrite10(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostResponse> posts = postService.findAllPost10();
-        model.addAttribute("posts", posts);
-        obj.put("boardwrite10", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
 
     // 기존 게시글 수정
     @PostMapping("/post/update")

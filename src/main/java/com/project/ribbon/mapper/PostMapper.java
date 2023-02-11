@@ -23,16 +23,7 @@ public interface PostMapper {
 
     // 커뮤니티 게시글 조회
 
-    List<PostResponse> findAll1();
-    List<PostResponse> findAll2();
-    List<PostResponse> findAll3();
-    List<PostResponse> findAll4();
-    List<PostResponse> findAll5();
-    List<PostResponse> findAll6();
-    List<PostResponse> findAll7();
-    List<PostResponse> findAll8();
-    List<PostResponse> findAll9();
-    List<PostResponse> findAll10();
+    List<PostResponse> findAll();
     List<PostResponse> findAll11();
 
     // 단체 게시글 조회
