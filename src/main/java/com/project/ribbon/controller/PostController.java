@@ -3,6 +3,7 @@ package com.project.ribbon.controller;
 import com.project.ribbon.domain.post.*;
 import com.project.ribbon.enums.ExceptionEnum;
 import com.project.ribbon.response.ApiException;
+import com.project.ribbon.service.FirebaseCloudChatMessageService;
 import com.project.ribbon.service.FirebaseCloudMessageCommentsService;
 import com.project.ribbon.service.FirebaseCloudMessageLikedService;
 import com.project.ribbon.service.PostService;
@@ -10,7 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.codehaus.groovy.tools.shell.IO;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,14 +35,18 @@ public class PostController {
     private final PostService postService;
     private final FirebaseCloudMessageLikedService firebaseCloudMessageLikedService;
     private final FirebaseCloudMessageCommentsService firebaseCloudMessageCommentsService;
+    private final FirebaseCloudChatMessageService firebaseCloudChatMessageService;
 
 
     // 커뮤니티 게시글 작성
     @PostMapping("/post/boardwrite")
-    public Long savePost(@RequestBody @Valid PostRequest params) throws ApiException{
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.savePost(params);
-
+    public ResponseEntity<?> savePost(@RequestBody @Valid PostRequest params) throws ApiException{
+        try {
+            Long postId = postService.savePost(params);
+            return new ResponseEntity<>(postId, HttpStatus.OK);
+        } catch (ApiException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // 커뮤니티 게시글 조회
@@ -83,10 +88,13 @@ public class PostController {
 
     // 단체 글작성
     @PostMapping("/post/writegroup")
-    public Long saveGroupPost(@RequestBody @Valid PostGroupRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.saveGroupPost(params);
-
+    public ResponseEntity<?> saveGroupPost(@RequestBody @Valid PostGroupRequest params) {
+        try {
+            Long id = postService.saveGroupPost(params);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        } catch (ApiException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // 단체 게시글 수정
@@ -116,10 +124,13 @@ public class PostController {
 
     // 개인 글작성
     @PostMapping("/post/writeindividual")
-    public Long saveIndiPost(@RequestBody @Valid PostIndiRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.saveIndiPost(params);
-
+    public ResponseEntity<?> saveIndiPost(@RequestBody @Valid PostIndiRequest params) throws ApiException {
+        try {
+            Long id = postService.saveIndiPost(params);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        } catch (ApiException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // 개인 게시글 수정
@@ -149,9 +160,13 @@ public class PostController {
 
     // 중고 글작성
     @PostMapping("/post/writeused")
-    public Long saveUsedPost(@RequestBody PostUsedRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.saveUsedPost(params);
+    public ResponseEntity<?> saveUsedPost(@RequestBody PostUsedRequest params) throws ApiException {
+        try {
+            Long id = postService.saveUsedPost(params);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        } catch (ApiException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     }
 
@@ -183,28 +198,36 @@ public class PostController {
     // 유저 정보 등록
     @PostMapping("/post/sign")
     public ResponseEntity<?> saveUserPost(@RequestBody @Valid PostUserRequest params, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.saveUserPost(params);
-        Map<String, Object> obj = new HashMap<>();
-        List<PostUserResponse> posts = postService.findUserAllPost();
-        model.addAttribute("posts", posts);
-        obj.put("userid", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
+        try {
+            postService.saveUserPost(params);
+            Map<String, Object> obj = new HashMap<>();
+            List<PostUserResponse> posts = postService.findUserAllPost();
+            model.addAttribute("posts", posts);
+            obj.put("userid", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        } catch (ApiException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
     // 유저 정보 수정
     @PostMapping("/post/updateuser")
-    public Long updateUserPost(@RequestBody @Valid PostUserUpdateRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        List<PostUserResponse> posts = postService.findUserAllPost();
-        return postService.updateUserPost(params);
+    public ResponseEntity<?> updateUserPost(@RequestBody @Valid PostUserUpdateRequest params) {
+        try {
+            List<PostUserResponse> posts = postService.findUserAllPost();
+            return new ResponseEntity<>(postService.updateUserPost(params), HttpStatus.OK);
+        } catch (ApiException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // 유저 정보 삭제
     @PostMapping("/post/deleteuser")
-    public Long deleteUserPost(@RequestBody PostUserRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.deleteUserPost(params);
+    public ResponseEntity<?> deleteUserPost(@RequestBody PostUserRequest params) {
+        try {
+            return new ResponseEntity<>(postService.deleteUserPost(params), HttpStatus.OK);
+        } catch (ApiException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // 실시간 인기글
@@ -773,10 +796,14 @@ public class PostController {
 
     // 채팅 넣기
     @PostMapping("/chat")
-    public String saveChatPost(@RequestBody PostChatMessage params){
-        return postService.saveChatPost(params);
+    public String pushChatPost(@RequestBody ResponseDTO responseDTO)throws IOException{
+        firebaseCloudChatMessageService.sendMessageTo(
+                responseDTO.getToken(),
+                responseDTO.getNickname());
+        return String.valueOf(ResponseEntity.ok().build().getStatusCodeValue());
 
     }
+
 
 
 }

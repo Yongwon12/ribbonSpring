@@ -17,7 +17,7 @@ public class PostUserRequest {
         private String sns;
         @Email(message = "이메일이 잘못되었습니다.")
         private String email;
-        @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9\\*]{2,30}$", message = "닉네임은 특수문자를 제외한 2~30자리여야 합니다.")
+        @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-zA-Z0-9\\*]{2,30}$", message = "닉네임은 특수문자를 제외한 2~30자리여야 합니다.")
         @NotBlank(message = "닉네임은 필수 입력 값입니다.")
         private String nickname;
         private String mobile;
@@ -30,6 +30,7 @@ public class PostUserRequest {
         private String shortinfo;
         private String youtube;
         private String token;
+
 
 }
 
