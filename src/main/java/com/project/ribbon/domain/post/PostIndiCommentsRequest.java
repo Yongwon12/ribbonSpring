@@ -21,7 +21,7 @@ public class PostIndiCommentsRequest {
         private Long inherentid;
         private String writedate;
         @Id
-        private Long individualcommentsid;
+        private Long commentsid;
         private String token;
 
 }

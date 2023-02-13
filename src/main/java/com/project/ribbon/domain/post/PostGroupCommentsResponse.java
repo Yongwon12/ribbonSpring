@@ -10,7 +10,7 @@ public class PostGroupCommentsResponse {
     private String  nickname;
     private Long inherentid;
     private String writedate;
-    private Long groupcommentsid;
+    private Long commentsid;
     private Integer isrecomment;
     private String profileimage;
 

@@ -20,7 +20,7 @@ public class PostUsedCommentsRequest {
         private Long inherentid;
         private String writedate;
         @Id
-        private Long usedcommentsid;
+        private Long commentsid;
         private String token;
 
 }

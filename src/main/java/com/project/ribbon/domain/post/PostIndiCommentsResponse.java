@@ -10,7 +10,7 @@ public class PostIndiCommentsResponse {
     private String  nickname;
     private Long inherentid;
     private String writedate;
-    private Long individualcommentsid;
+    private Long commentsid;
     private Integer isrecomment;
     private String profileimage;
 

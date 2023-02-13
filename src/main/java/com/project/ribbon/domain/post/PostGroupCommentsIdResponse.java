@@ -5,6 +5,6 @@ import lombok.Getter;
 @Getter
 public class PostGroupCommentsIdResponse {
 
-    private Long groupcommentsid;
+    private Long commentsid;
 
 }

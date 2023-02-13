@@ -122,7 +122,7 @@
         , nickname
         , inherentid
         , writedate
-        , groupcommentsid
+        , commentsid
         , isrecomment
     </sql>
 
@@ -133,7 +133,7 @@
         , nickname
         , inherentid
         , writedate
-        , individualcommentsid
+        , commentsid
         , isrecomment
     </sql>
 
@@ -144,7 +144,7 @@
         , nickname
         , inherentid
         , writedate
-        , usedcommentsid
+        , commentsid
         , isrecomment
     </sql>
 
@@ -754,10 +754,10 @@
     <!-- 단체 댓글 작성자 아이디 조회  -->
     <select id="findGroupCommentsId" resultType="com.project.ribbon.domain.post.PostGroupCommentsIdResponse">
         SELECT
-            groupcommentsid
+            commentsid
         FROM
             groupcomments
-        ORDER BY groupcommentsid DESC limit 1
+        ORDER BY commentsid DESC limit 1
     </select>
 
 
@@ -765,7 +765,7 @@
     <select id="findByGroupCommentsInherentId" resultType="com.project.ribbon.domain.post.PostGroupCommentsResponse" fetchSize="1000">
         SELECT
             description,groupcomments.userid,user.nickname,inherentid,
-            writedate,groupcommentsid,isrecomment,profileimage
+            writedate,commentsid,isrecomment,profileimage
         FROM groupcomments
         LEFT JOIN user
         ON user.userid = groupcomments.userid
@@ -775,7 +775,7 @@
 
     <!-- 단체 댓글 작성 -->
     <insert id="saveGroupComments" parameterType="com.project.ribbon.domain.post.PostGroupCommentsRequest"
-            useGeneratedKeys="true" keyProperty="groupcommentsid">
+            useGeneratedKeys="true" keyProperty="commentsid">
         INSERT INTO groupcomments (
         <include refid="postGroupCommentsColumns" />
         ) VALUES (
@@ -784,7 +784,7 @@
         , #{nickname}
         , #{inherentid}
         , #{writedate}
-        , #{groupcommentsid}
+        , #{commentsid}
         , 2
         )
 
@@ -813,7 +813,7 @@
           , nickname = #{nickname}
           , writedate = #{writedate}
         WHERE
-            groupcommentsid = #{groupcommentsid}
+            commentsid = #{commentsid}
     </update>
 
 
@@ -822,7 +822,7 @@
         DELETE
         FROM
             groupcomments
-        WHERE groupcommentsid = #{groupcommentsid}
+        WHERE commentsid = #{commentsid}
     </delete>
 
 
@@ -903,10 +903,10 @@
     <!-- 개인 댓글 작성자 아이디 조회  -->
     <select id="findIndiCommentsId" resultType="com.project.ribbon.domain.post.PostIndiCommentsIdResponse">
         SELECT
-            individualcommentsid
+            commentsid
         FROM
             individualcomments
-        ORDER BY individualcommentsid DESC limit 1
+        ORDER BY commentsid DESC limit 1
     </select>
 
 
@@ -915,7 +915,7 @@
     <select id="findByIndiCommentsInherentId" resultType="com.project.ribbon.domain.post.PostIndiCommentsResponse" fetchSize="1000">
         SELECT
             description,individualcomments.userid,user.nickname,inherentid,
-            writedate,individualcommentsid,isrecomment,profileimage
+            writedate,commentsid,isrecomment,profileimage
         FROM individualcomments
         LEFT JOIN user
         ON user.userid = individualcomments.userid
@@ -925,7 +925,7 @@
 
     <!-- 개인 댓글 작성 -->
     <insert id="saveIndiComments" parameterType="com.project.ribbon.domain.post.PostIndiCommentsRequest"
-            useGeneratedKeys="true" keyProperty="individualcommentsid">
+            useGeneratedKeys="true" keyProperty="commentsid">
         INSERT INTO individualcomments (
         <include refid="postIndividualCommentsColumns" />
         ) VALUES (
@@ -934,7 +934,7 @@
         , #{nickname}
         , #{inherentid}
         , #{writedate}
-        , #{individualcommentsid}
+        , #{commentsid}
         , 2
         )
 
@@ -961,7 +961,7 @@
           , nickname = #{nickname}
           , writedate = #{writedate}
         WHERE
-            individualcommentsid = #{individualcommentsid}
+            commentsid = #{commentsid}
     </update>
 
 
@@ -970,7 +970,7 @@
         DELETE
         FROM
             individualcomments
-        WHERE individualcommentsid = #{individualcommentsid}
+        WHERE commentsid = #{commentsid}
     </delete>
 
 
@@ -1052,10 +1052,10 @@
     <!-- 중고 댓글 작성자 아이디 조회  -->
     <select id="findUsedCommentsId" resultType="com.project.ribbon.domain.post.PostUsedCommentsIdResponse">
         SELECT
-            usedcommentsid
+            commentsid
         FROM
             usedcomments
-        ORDER BY usedcommentsid DESC limit 1
+        ORDER BY commentsid DESC limit 1
     </select>
 
 
@@ -1063,7 +1063,7 @@
     <select id="findByUsedCommentsInherentId" resultType="com.project.ribbon.domain.post.PostUsedCommentsResponse">
         SELECT
             description,usedcomments.userid,user.nickname,inherentid,
-            writedate,usedcommentsid,isrecomment,profileimage
+            writedate,commentsid,isrecomment,profileimage
         FROM usedcomments
         LEFT JOIN user
         ON user.userid = usedcomments.userid
@@ -1073,7 +1073,7 @@
 
     <!-- 중고 댓글 작성 -->
     <insert id="saveUsedComments" parameterType="com.project.ribbon.domain.post.PostUsedCommentsRequest"
-            useGeneratedKeys="true" keyProperty="usedcommentsid">
+            useGeneratedKeys="true" keyProperty="commentsid">
         INSERT INTO usedcomments (
         <include refid="postUsedCommentsColumns" />
         ) VALUES (
@@ -1082,7 +1082,7 @@
         , #{nickname}
         , #{inherentid}
         , #{writedate}
-        , #{usedcommentsid}
+        , #{commentsid}
         , 2
         )
 
@@ -1110,7 +1110,7 @@
           , nickname = #{nickname}
           , writedate = #{writedate}
         WHERE
-            usedcommentsid = #{usedcommentsid}
+            commentsid = #{commentsid}
     </update>
 
 
@@ -1119,7 +1119,7 @@
         DELETE
         FROM
             usedcomments
-        WHERE usedcommentsid = #{usedcommentsid}
+        WHERE commentsid = #{commentsid}
     </delete>
 
 

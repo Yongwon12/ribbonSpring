@@ -5,6 +5,6 @@ import lombok.Getter;
 @Getter
 public class PostUsedCommentsIdResponse {
 
-    private Long usedcommentsid;
+    private Long commentsid;
 
 }
