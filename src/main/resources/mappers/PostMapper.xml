@@ -94,6 +94,8 @@
         , shortinfo
             , youtube
             , token
+            , password
+            , roles
     </sql>
 
     <!-- liked 테이블 전체 컬럼 -->
@@ -408,6 +410,16 @@
         user ORDER BY userid DESC LIMIT 1;
     </select>
 
+<!--    &lt;!&ndash; 유저 로그인  &ndash;&gt;-->
+<!--    <select id="loadUserByUsername" resultType="">-->
+<!--        SELECT-->
+<!--            username-->
+<!--        FROM-->
+<!--            user-->
+<!--    </select>-->
+
+
+
     <!-- 유저 가입 -->
     <insert id="saveUser" parameterType="com.project.ribbon.domain.post.PostUserRequest"
             useGeneratedKeys="true" keyProperty="userid">
@@ -429,6 +441,8 @@
         , #{shortinfo}
         , #{youtube}
         , #{token}
+        , #{password}
+        , #{roles}
         )
 
     </insert>

@@ -25,6 +25,7 @@ public class FirebaseCloudGroupMessageCommentsService {
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/sportscommunity-d11ee/messages:send";
     private final ObjectMapper objectMapper;
     @Scheduled(cron = "00 00 18 * * *")
+    //@Scheduled(fixedRate = 1)
     public void sendMessageTo() throws IOException {
         String message = makeMessage();
 

@@ -2,9 +2,9 @@ package com.project.ribbon.mapper;
 
 import com.project.ribbon.domain.post.*;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.web.socket.TextMessage;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 
@@ -54,6 +54,8 @@ public interface PostMapper {
 
     // 유저 조회
     List<PostUserResponse> findUserAll();
+    // 유저 로그인
+    //Optional<PostUserResponse> findUserInfo(String insertedUserId);
     // 유저 가입
     void saveUser(PostUserRequest params);
     // 유저 수정

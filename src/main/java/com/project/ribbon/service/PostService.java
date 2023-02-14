@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -113,6 +114,11 @@ public class PostService {
     public List<PostUserResponse> findUserAllPost() {
         return postMapper.findUserAll();
     }
+
+//     유저 로그인
+//    public Optional<PostUserResponse> findUserInfoPost(String insertedUserId) {
+//        return postMapper.findUserInfo(insertedUserId);
+//    }
 
     // 유저 정보 가입
     @Transactional
