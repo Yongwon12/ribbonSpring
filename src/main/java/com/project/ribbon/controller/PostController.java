@@ -52,7 +52,7 @@ public class PostController {
     }
 
     // 커뮤니티 게시글 조회
-    @GetMapping("/post/board")
+    @GetMapping("/board")
     public ResponseEntity<?> boardwrite(Model model) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         Map<String, Object> obj = new HashMap<>();
@@ -78,7 +78,7 @@ public class PostController {
     }
 
     // 단체 작성글 조회
-    @GetMapping("/post/group")
+    @GetMapping("/group")
     public ResponseEntity<?> groupWrite(Model model) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         Map<String, Object> obj = new HashMap<>();
@@ -114,7 +114,7 @@ public class PostController {
     }
 
     // 개인 작성글 조회
-    @GetMapping("/post/individual")
+    @GetMapping("/individual")
     public ResponseEntity<?> indiWrite(Model model) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         Map<String, Object> obj = new HashMap<>();
@@ -150,7 +150,7 @@ public class PostController {
     }
 
     // 중고 작성글 조회
-    @GetMapping("/post/used")
+    @GetMapping("/used")
     public ResponseEntity<?> usedWrite(Model model) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         Map<String, Object> obj = new HashMap<>();
@@ -187,7 +187,7 @@ public class PostController {
     }
 
     // 유저 정보 조회
-    @GetMapping("/post/sign")
+    @GetMapping("/sign")
     public ResponseEntity<?> user(Model model) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         Map<String, Object> obj = new HashMap<>();
@@ -238,7 +238,7 @@ public class PostController {
     }
 
     // 실시간 인기글
-    @GetMapping("/post/realtimeup")
+    @GetMapping("/realtimeup")
     public ResponseEntity<?> realTimeUp(Model model) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         Map<String, Object> obj = new HashMap<>();

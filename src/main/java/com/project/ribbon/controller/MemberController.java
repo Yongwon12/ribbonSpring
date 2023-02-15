@@ -19,7 +19,7 @@ public class MemberController {
 
     @PostMapping("/login")
     public TokenInfo login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
-        String username = memberLoginRequestDto.getMemberId();
+        String username = memberLoginRequestDto.getUsername();
         String password = memberLoginRequestDto.getPassword();
         TokenInfo tokenInfo = memberService.login(username, password);
         return tokenInfo;

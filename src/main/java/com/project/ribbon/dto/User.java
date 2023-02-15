@@ -21,17 +21,18 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Entity
 
-public class Member implements UserDetails {
+public class User implements UserDetails {
 
     @Id
     @Column(updatable = false, unique = true, nullable = false)
-    private String memberId;
+    private String userid;
 
     @Column(nullable = false)
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
+    @Column
     private List<String> roles = new ArrayList<>();
 
     @Override
@@ -43,7 +44,7 @@ public class Member implements UserDetails {
 
     @Override
     public String getUsername() {
-        return memberId;
+        return userid;
     }
 
     @Override

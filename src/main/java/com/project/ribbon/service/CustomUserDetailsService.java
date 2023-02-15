@@ -1,6 +1,6 @@
 package com.project.ribbon.service;
 
-import com.project.ribbon.dto.Member;
+import com.project.ribbon.dto.User;
 import com.project.ribbon.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,18 +17,18 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
-        return memberRepository.findByMemberId(memberId)
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return memberRepository.findByUserid(username)
                 .map(this::createUserDetails)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
     }
 
     // 해당하는 User 의 데이터가 존재한다면 UserDetails 객체로 만들어서 리턴
-    private UserDetails createUserDetails(Member Member) {
+    private UserDetails createUserDetails(User User) {
         return org.springframework.security.core.userdetails.User.builder()
-                .username(Member.getUsername())
-                .password(passwordEncoder.encode(Member.getPassword()))
-                .roles(Member.getRoles().toArray(new String[0]))
+                .username(User.getUsername())
+                .password(passwordEncoder.encode(User.getPassword()))
+                .roles(User.getRoles().toArray(new String[0]))
                 .build();
     }
 }
