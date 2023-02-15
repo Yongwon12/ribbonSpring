@@ -77,7 +77,7 @@
         , commentcount
     </sql>
 
-    <!-- user 테이블 전체 컬럼 -->
+    <!-- Member 테이블 전체 컬럼 -->
     <sql id="postUserColumns">
         userid
         , username
@@ -199,11 +199,11 @@
     <!-- 커뮤니티 게시글  조회 -->
     <select id="findAll" resultType="com.project.ribbon.domain.post.PostResponse" fetchSize="1000">
         SELECT
-        id,user.userid,title,description,img,writedate,user.nickname,
+        id,Member.userid,title,description,img,writedate,Member.nickname,
         boardid,likedcount,commentcount,profileimage,token
         FROM boardwrite
-        LEFT JOIN user
-        ON user.userid = boardwrite.userid
+        LEFT JOIN Member
+        ON Member.userid = boardwrite.userid
     </select>
 
 
@@ -222,8 +222,8 @@
         groupwrite.userid,maxage,writedate,peoplenownum,groupwrite.nickname,groupid,once,commentcount,token
         FROM
             groupwrite
-        LEFT JOIN user
-        ON user.userid = groupwrite.userid
+        LEFT JOIN Member
+        ON Member.userid = groupwrite.userid
     </select>
 
     <!-- 단체 게시글 저장 -->
@@ -288,8 +288,8 @@
         individualid,likedcount,commentcount,profileimage,token
         FROM
         individualwrite
-        LEFT JOIN user
-        ON user.userid = individualwrite.userid
+        LEFT JOIN Member
+        ON Member.userid = individualwrite.userid
 
     </select>
 
@@ -343,12 +343,12 @@
     <!-- 중고 게시글 조회  -->
     <select id="findUsedAll" resultType="com.project.ribbon.domain.post.PostUsedResponse" fetchSize="1000">
         SELECT
-        id,region,title,description,usedimage1,price,user.userid,writedate,usedwrite.nickname,
+        id,region,title,description,usedimage1,price,Member.userid,writedate,usedwrite.nickname,
         usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token
         FROM
         usedwrite
-        LEFT JOIN user
-        ON user.userid = usedwrite.userid
+        LEFT JOIN Member
+        ON Member.userid = usedwrite.userid
     </select>
 
     <!-- 중고 게시글 저장 -->
@@ -407,7 +407,7 @@
         SELECT
         userid
         FROM
-        user ORDER BY userid DESC LIMIT 1;
+        Member ORDER BY userid DESC LIMIT 1;
     </select>
 
 <!--    &lt;!&ndash; 유저 로그인  &ndash;&gt;-->
@@ -415,7 +415,7 @@
 <!--        SELECT-->
 <!--            username-->
 <!--        FROM-->
-<!--            user-->
+<!--            Member-->
 <!--    </select>-->
 
 
@@ -423,7 +423,7 @@
     <!-- 유저 가입 -->
     <insert id="saveUser" parameterType="com.project.ribbon.domain.post.PostUserRequest"
             useGeneratedKeys="true" keyProperty="userid">
-        INSERT INTO user (
+        INSERT INTO Member (
         <include refid="postUserColumns" />
         ) VALUES (
         #{userid}
@@ -449,7 +449,7 @@
 
     <!-- 유저 마이페이지 수정 -->
     <update id="updateUser" parameterType="com.project.ribbon.domain.post.PostUserRequest">
-        UPDATE user
+        UPDATE Member
         SET
             sns = #{sns}
           , nickname = #{nickname}
@@ -470,7 +470,7 @@
     <delete id="deleteByUserId" >
         DELETE
         FROM
-            user
+            Member
         WHERE userid = #{userid}
     </delete>
 
@@ -478,11 +478,11 @@
     <!-- 실시간 인기글 -->
     <select id="findAll11" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,user.nickname,
+            id,boardwrite.userid,title,description,img,writedate,Member.nickname,
             boardid,likedcount,commentcount,profileimage,token
         FROM boardwrite
-                 LEFT JOIN user
-                           ON user.userid=boardwrite.userid
+                 LEFT JOIN Member
+                           ON Member.userid=boardwrite.userid
         WHERE
             likedcount
                 = (SELECT max(likedcount) FROM boardwrite)
@@ -621,12 +621,12 @@
     <!-- 댓글 정보 조회  -->
     <select id="findByInherentId" resultType="com.project.ribbon.domain.post.PostCommentsResponse" fetchSize="1000">
         SELECT
-            description,writedate,comments.userid,user.nickname,categoryid,
+            description,writedate,comments.userid,Member.nickname,categoryid,
             inherentid,commentsid,isrecomment,
             profileimage
         FROM comments
-        LEFT JOIN user
-        ON user.userid = comments.userid
+        LEFT JOIN Member
+        ON Member.userid = comments.userid
          WHERE inherentid = #{inherentid}
     </select>
 
@@ -698,12 +698,12 @@
 <!--    &lt;!&ndash; 답글 정보 조회  &ndash;&gt;-->
 <!--    <select id="findByReplyInherentId" resultType="com.project.ribbon.domain.post.PostReplyResponse">-->
 <!--        SELECT-->
-<!--            description,writedate,reply.userid,user.nickname,categoryid,-->
+<!--            description,writedate,reply.userid,Member.nickname,categoryid,-->
 <!--            inherentid,replyid,inherentcommentsid,isrecomment,-->
 <!--            profileimage-->
 <!--        FROM reply-->
-<!--        LEFT JOIN user-->
-<!--        ON user.userid = reply.userid-->
+<!--        LEFT JOIN Member-->
+<!--        ON Member.userid = reply.userid-->
 <!--        WHERE inherentid = #{inherentid}-->
 
 <!--    </select>-->
@@ -778,11 +778,11 @@
     <!-- 단체 댓글 정보 조회  -->
     <select id="findByGroupCommentsInherentId" resultType="com.project.ribbon.domain.post.PostGroupCommentsResponse" fetchSize="1000">
         SELECT
-            description,groupcomments.userid,user.nickname,inherentid,
+            description,groupcomments.userid,Member.nickname,inherentid,
             writedate,commentsid,isrecomment,profileimage
         FROM groupcomments
-        LEFT JOIN user
-        ON user.userid = groupcomments.userid
+        LEFT JOIN Member
+        ON Member.userid = groupcomments.userid
         WHERE inherentid = #{inherentid}
     </select>
 
@@ -852,11 +852,11 @@
 <!--    &lt;!&ndash; 단체 답글 정보 조회  &ndash;&gt;-->
 <!--    <select id="findByGroupReplyInherentId" resultType="com.project.ribbon.domain.post.PostGroupReplyResponse">-->
 <!--        SELECT-->
-<!--            description,writedate,groupreply.userid,user.nickname,-->
+<!--            description,writedate,groupreply.userid,Member.nickname,-->
 <!--            inherentid,groupreplyid,inherentcommentsid,isrecomment,-->
 <!--            profileimage-->
 <!--        FROM groupreply-->
-<!--        LEFT JOIN user-->
+<!--        LEFT JOIN Member-->
 <!--        ON uesr.userid = groupreply.userid-->
 <!--        WHERE inherentid = #{inherentid}-->
 <!--    </select>-->
@@ -928,11 +928,11 @@
     <!-- 개인 댓글 정보 조회  -->
     <select id="findByIndiCommentsInherentId" resultType="com.project.ribbon.domain.post.PostIndiCommentsResponse" fetchSize="1000">
         SELECT
-            description,individualcomments.userid,user.nickname,inherentid,
+            description,individualcomments.userid,Member.nickname,inherentid,
             writedate,commentsid,isrecomment,profileimage
         FROM individualcomments
-        LEFT JOIN user
-        ON user.userid = individualcomments.userid
+        LEFT JOIN Member
+        ON Member.userid = individualcomments.userid
         WHERE inherentid = #{inherentid}
     </select>
 
@@ -1001,12 +1001,12 @@
 <!--    &lt;!&ndash; 개인 답글 정보 조회  &ndash;&gt;-->
 <!--    <select id="findByIndiReplyInherentId" resultType="com.project.ribbon.domain.post.PostIndiReplyResponse">-->
 <!--        SELECT-->
-<!--            description,writedate,individualreply.userid,user.nickname,-->
+<!--            description,writedate,individualreply.userid,Member.nickname,-->
 <!--            inherentid,individualreplyid,inherentcommentsid,isrecomment,-->
 <!--            profileimage-->
 <!--        FROM individualreply-->
-<!--        LEFT JOIN user-->
-<!--        ON user.userid = individualreply.userid-->
+<!--        LEFT JOIN Member-->
+<!--        ON Member.userid = individualreply.userid-->
 <!--        WHERE inherentid = #{inherentid}-->
 <!--    </select>-->
 
@@ -1076,11 +1076,11 @@
     <!-- 중고 댓글 정보 조회  -->
     <select id="findByUsedCommentsInherentId" resultType="com.project.ribbon.domain.post.PostUsedCommentsResponse">
         SELECT
-            description,usedcomments.userid,user.nickname,inherentid,
+            description,usedcomments.userid,Member.nickname,inherentid,
             writedate,commentsid,isrecomment,profileimage
         FROM usedcomments
-        LEFT JOIN user
-        ON user.userid = usedcomments.userid
+        LEFT JOIN Member
+        ON Member.userid = usedcomments.userid
         WHERE inherentid = #{inherentid}
     </select>
 
@@ -1150,12 +1150,12 @@
 <!--    &lt;!&ndash; 중고 답글 정보 조회  &ndash;&gt;-->
 <!--    <select id="findByUsedReplyInherentId" resultType="com.project.ribbon.domain.post.PostUsedReplyResponse">-->
 <!--        SELECT-->
-<!--            description,writedate,usedreply.userid,user.nickname,-->
+<!--            description,writedate,usedreply.userid,Member.nickname,-->
 <!--            inherentid,usedreplyid,inherentcommentsid,isrecomment,-->
 <!--            profileimage-->
 <!--        FROM usedreply-->
-<!--        LEFT JOIN user-->
-<!--        ON user.userid = usedreply.userid-->
+<!--        LEFT JOIN Member-->
+<!--        ON Member.userid = usedreply.userid-->
 <!--        WHERE inherentid = #{inherentid}-->
 <!--    </select>-->
 
@@ -1220,7 +1220,7 @@
         SELECT
         userid,nickname,bestcategory,profileimage,shortinfo,sns,youtube
         FROM
-        user
+        Member
         WHERE
         userid = #{userid}
     </select>
@@ -1229,11 +1229,11 @@
     <!-- 커뮤니티 내가 쓴 글  -->
     <select id="findByMyUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyBoardResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,user.nickname,
+            id,boardwrite.userid,title,description,img,writedate,Member.nickname,
             boardid,likedcount,commentcount,profileimage
         FROM boardwrite
-                 LEFT JOIN user
-                           ON user.userid=boardwrite.userid
+                 LEFT JOIN Member
+                           ON Member.userid=boardwrite.userid
         WHERE
             boardwrite.userid = #{userid}
     </select>
@@ -1244,11 +1244,11 @@
         SELECT
             id,region,title,line,description,peoplenum,
             groupwrite.gender,minage,titleimage,groupwrite.userid,maxage,
-            writedate,peoplenownum,user.nickname,groupid,once,commentcount,profileimage
+            writedate,peoplenownum,Member.nickname,groupid,once,commentcount,profileimage
         FROM
             groupwrite
-        LEFT JOIN user
-        ON user.userid = groupwrite.userid
+        LEFT JOIN Member
+        ON Member.userid = groupwrite.userid
         WHERE
             groupwrite.userid = #{userid}
     </select>
@@ -1258,12 +1258,12 @@
     <select id="findByMyIndividualUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyIndiResponse">
         SELECT
             id,region,meetdate,title,description,individualwrite.gender,
-            individualwrite.userid,writedate,maxage,minage,user.nickname,
+            individualwrite.userid,writedate,maxage,minage,Member.nickname,
             individualid,likedcount,commentcount,profileimage
         FROM
             individualwrite
-                LEFT JOIN user
-                          ON user.userid = individualwrite.userid
+                LEFT JOIN Member
+                          ON Member.userid = individualwrite.userid
         WHERE
             individualwrite.userid = #{userid}
     </select>
@@ -1273,12 +1273,12 @@
     <select id="findByMyUsedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyUsedResponse">
         SELECT
            id,region,title,description,usedimage1,price,usedwrite.userid,
-           writedate,user.nickname,usedid,usedimage2,usedimage3,usedimage4,
+           writedate,Member.nickname,usedid,usedimage2,usedimage3,usedimage4,
            usedimage5,likedcount,commentcount,profileimage
         FROM
             usedwrite
-        LEFT JOIN user
-        ON user.userid = usedwrite.userid
+        LEFT JOIN Member
+        ON Member.userid = usedwrite.userid
         WHERE
             usedwrite.userid = #{userid}
     </select>
@@ -1287,13 +1287,13 @@
     <!-- 내가 좋아요 누른 글 커뮤니티 -->
     <select id="findByMyLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyLikedResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,user.nickname,
+            id,boardwrite.userid,title,description,img,writedate,Member.nickname,
             boardid,likedcount,commentcount,profileimage
         FROM boardwrite
             LEFT JOIN liked
            ON liked.inherentid=boardwrite.boardid
-            LEFT JOIN user
-            ON user.userid = boardwrite.userid
+            LEFT JOIN Member
+            ON Member.userid = boardwrite.userid
             WHERE liked.userid = #{userid}
     </select>
 
@@ -1302,14 +1302,14 @@
     <select id="findByMyIndividualLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyIndividualLikedResponse">
         SELECT
             id,region,meetdate,title,description,individualwrite.gender,
-            individualwrite.userid,writedate,maxage,minage,user.nickname,
+            individualwrite.userid,writedate,maxage,minage,Member.nickname,
             individualid,likedcount,commentcount,profileimage
         FROM
             individualwrite
                 LEFT JOIN individualliked
                     ON individualliked.inherentid=individualwrite.individualid
-                LEFT JOIN user
-                    ON user.userid = individualwrite.userid
+                LEFT JOIN Member
+                    ON Member.userid = individualwrite.userid
         WHERE individualliked.userid = #{userid}
     </select>
 
@@ -1318,14 +1318,14 @@
     <select id="findByMyUsedLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyUsedLikedResponse">
         SELECT
             id,region,title,description,usedimage1,price,usedwrite.userid,
-            writedate,user.nickname,usedid,usedimage2,usedimage3,usedimage4,
+            writedate,Member.nickname,usedid,usedimage2,usedimage3,usedimage4,
             usedimage5,likedcount,commentcount,profileimage
         FROM
             usedwrite
                 LEFT JOIN usedliked
                     ON usedliked.inherentid=usedwrite.usedid
-                LEFT JOIN user
-                    ON user.userid = usedwrite.userid
+                LEFT JOIN Member
+                    ON Member.userid = usedwrite.userid
         WHERE usedliked.userid = #{userid}
     </select>
 
@@ -1354,8 +1354,8 @@
             roomname,yourid,yournickname,yourprofileimage,myid,token
         FROM
             chatroom
-        LEFT JOIN user
-        ON user.userid = chatroom.yourid
+        LEFT JOIN Member
+        ON Member.userid = chatroom.yourid
         WHERE
             myid = #{myid}
     </select>
