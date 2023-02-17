@@ -486,7 +486,7 @@
         WHERE userid = #{userid}
     </delete>
 
-    <!-- 유저 정보 삭제 -->
+    <!-- 유저 권한 정보 삭제 -->
     <delete id="deleteByUserRolesId" >
         DELETE
         FROM
