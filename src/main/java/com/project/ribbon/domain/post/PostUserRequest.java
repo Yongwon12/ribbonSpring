@@ -31,8 +31,8 @@ public class PostUserRequest {
         private String youtube;
         private String token;
         private String password;
+        private Long user_userid;
         private String roles;
 
 
 }
-

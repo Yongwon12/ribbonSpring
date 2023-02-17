@@ -114,11 +114,12 @@ public class PostService {
     public List<PostUserResponse> findUserAllPost() {
         return postMapper.findUserAll();
     }
+    // 기존 유저 정보 조회
+    public List<PostUserRequest> findUserInfoAllPost(String email) {
+        return postMapper.findUserInfoAll(email);
+    }
 
-//     유저 로그인
-//    public Optional<PostUserResponse> findUserInfoPost(String insertedUserId) {
-//        return postMapper.findUserInfo(insertedUserId);
-//    }
+
 
     // 유저 정보 가입
     @Transactional
@@ -126,6 +127,17 @@ public class PostService {
         postMapper.saveUser(params);
         return params.getUserid();
     }
+
+
+
+
+    // 유저 정보 가입
+    @Transactional
+    public Long saveUserRolesPost(final PostUserRequest params) {
+        postMapper.saveUserRoles(params);
+        return params.getUserid();
+    }
+
     // 유저 정보 수정
     @Transactional
     public Long updateUserPost(final PostUserUpdateRequest params) {

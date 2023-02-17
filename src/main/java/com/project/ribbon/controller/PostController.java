@@ -1,6 +1,7 @@
 package com.project.ribbon.controller;
 
 import com.project.ribbon.domain.post.*;
+import com.project.ribbon.dto.TokenInfo;
 import com.project.ribbon.enums.ExceptionEnum;
 
 import com.project.ribbon.response.ApiException;
@@ -36,7 +37,7 @@ public class PostController {
     private final FirebaseCloudMessageCommentsService firebaseCloudMessageCommentsService;
     private final FirebaseCloudChatMessageService firebaseCloudChatMessageService;
 
-
+    private final MemberService memberService;
 
 
 
@@ -186,25 +187,27 @@ public class PostController {
         return postService.deleteUsedPost(params);
     }
 
-    // 유저 정보 조회
-    @GetMapping("/sign")
-    public ResponseEntity<?> user(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostUserResponse> posts = postService.findUserAllPost();
-        model.addAttribute("posts", posts);
-        obj.put("userinfo", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
+//    // 유저 정보 조회
+//    @GetMapping("/sign")
+//    public ResponseEntity<?> user(Model model) throws ApiException {
+//        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+//        Map<String, Object> obj = new HashMap<>();
+//        List<PostUserResponse> posts = postService.findUserAllPost();
+//        model.addAttribute("posts", posts);
+//        obj.put("userinfo", posts);
+//        return new ResponseEntity<>(obj, HttpStatus.OK);
+//    }
 
 
     // 유저 정보 등록
-    @PostMapping("/post/sign")
+    @PostMapping("/sign")
     public ResponseEntity<?> saveUserPost(@RequestBody @Valid PostUserRequest params, Model model) throws ApiException {
         try {
             postService.saveUserPost(params);
+            postService.saveUserRolesPost(params);
+
             Map<String, Object> obj = new HashMap<>();
-            List<PostUserResponse> posts = postService.findUserAllPost();
+            List<PostUserRequest> posts = postService.findUserInfoAllPost(params.getEmail());
             model.addAttribute("posts", posts);
             obj.put("userid", posts);
             return new ResponseEntity<>(obj, HttpStatus.OK);
@@ -213,6 +216,15 @@ public class PostController {
         }
     }
 
+
+    // 유저 모든 POST 요청 대한 권한얻기
+    @PostMapping("/login")
+    public TokenInfo login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
+        String userid = memberLoginRequestDto.getUserid();
+        String password = memberLoginRequestDto.getPassword();
+        TokenInfo tokenInfo = memberService.login(userid, password);
+        return tokenInfo;
+    }
 
 
 

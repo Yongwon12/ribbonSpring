@@ -6,4 +6,5 @@ import lombok.Getter;
 public class PostUserResponse {
 
     private Long userid; //PK
+
 }
