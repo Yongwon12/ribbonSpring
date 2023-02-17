@@ -243,6 +243,7 @@ public class PostController {
     @PostMapping("/post/deleteuser")
     public ResponseEntity<?> deleteUserPost(@RequestBody PostUserRequest params) {
         try {
+            postService.deleteUserRolesPost(params);
             return new ResponseEntity<>(postService.deleteUserPost(params), HttpStatus.OK);
         } catch (ApiException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

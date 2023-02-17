@@ -405,7 +405,7 @@
     <!-- 기존 유저 정보 조회  -->
     <select id="findUserInfoAll" resultType="com.project.ribbon.domain.post.PostUserRequest">
         SELECT
-            userid
+            *
         FROM
             user
         WHERE
@@ -415,7 +415,7 @@
 
     <!-- 유저 가입 -->
     <insert id="saveUser" parameterType="com.project.ribbon.domain.post.PostUserRequest"
-            useGeneratedKeys="true" keyProperty="userid">
+            useGeneratedKeys="true" keyProperty="userid" >
         INSERT INTO User (
         <include refid="postUserColumns" />
         ) VALUES(
@@ -435,23 +435,32 @@
         , #{youtube}
         , #{token}
         , #{password})
+        ON DUPLICATE KEY UPDATE
+        token = VALUES(token),
+        password = VALUES(password)
 
+        <selectKey keyProperty="userid" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
 
     <!-- 유저 가입 -->
     <insert id="saveUserRoles" parameterType="com.project.ribbon.domain.post.PostUserRequest"
-            useGeneratedKeys="true" keyProperty="user_userid">
+    >
         INSERT INTO user_roles (
-        user_userid,roles
+        user_userid,roles,email
         ) VALUES (
-        #{user_userid}
+        #{userid}
         , "USER"
-        )
+        , #{email})
+        ON DUPLICATE KEY UPDATE
+        roles = VALUES(roles)
 
     </insert>
 
-    <!-- 유저 마이페이지 수정 -->
-    <update id="updateUser" parameterType="com.project.ribbon.domain.post.PostUserRequest">
+
+    <!-- 유저 토큰 수정 -->
+    <update id="updateUserToken" parameterType="com.project.ribbon.domain.post.PostUserRequest">
         UPDATE User
         SET
             sns = #{sns}
@@ -476,6 +485,15 @@
             User
         WHERE userid = #{userid}
     </delete>
+
+    <!-- 유저 정보 삭제 -->
+    <delete id="deleteByUserRolesId" >
+        DELETE
+        FROM
+            user_roles
+        WHERE user_userid = #{userid}
+    </delete>
+
 
 
     <!-- 실시간 인기글 -->

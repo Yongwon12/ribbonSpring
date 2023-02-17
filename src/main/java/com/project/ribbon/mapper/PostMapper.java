@@ -68,8 +68,12 @@ public interface PostMapper {
     void updateUser(PostUserUpdateRequest params);
 
 
+
     // 유저 삭제
     void deleteByUserId(PostUserRequest params);
+
+    // 유저 삭제
+    void deleteByUserRolesId(PostUserRequest params);
 
 
 

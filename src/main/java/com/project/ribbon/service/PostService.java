@@ -148,9 +148,16 @@ public class PostService {
 
 
 
+
     // 유저 정보 삭제
     public Long deleteUserPost(final PostUserRequest params) {
         postMapper.deleteByUserId(params);
+        return params.getUserid();
+    }
+
+    // 유저 정보 삭제
+    public Long deleteUserRolesPost(final PostUserRequest params) {
+        postMapper.deleteByUserRolesId(params);
         return params.getUserid();
     }
 
