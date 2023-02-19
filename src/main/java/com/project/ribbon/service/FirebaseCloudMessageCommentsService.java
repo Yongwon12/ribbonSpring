@@ -5,7 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.net.HttpHeaders;
-import com.project.ribbon.domain.post.FcmMessage;
+import com.project.ribbon.domain.post.FcmCommentsMessage;
+import com.project.ribbon.domain.post.FcmLikedMessage;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 import org.springframework.core.io.ClassPathResource;
@@ -40,16 +41,16 @@ public class FirebaseCloudMessageCommentsService {
     }
 
     private String makeMessage(String token,String nickname) throws JsonParseException, JsonProcessingException {
-        FcmMessage fcmMessage = FcmMessage.builder()
-                .message(FcmMessage.Message.builder()
+        FcmCommentsMessage fcmCommentsMessage = FcmCommentsMessage.builder()
+                .message(FcmCommentsMessage.Message.builder()
                         .token(token)
-                        .data(FcmMessage.Data.builder()
+                        .data(FcmCommentsMessage.Data.builder()
                                 .title("맺음")
                                 .body(nickname+"님이 댓글을 작성하였습니다.")
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();
-        return objectMapper.writeValueAsString(fcmMessage);
+        return objectMapper.writeValueAsString(fcmCommentsMessage);
     }
 
     private String getAccessToken() throws IOException {

@@ -26,8 +26,15 @@ public interface PostMapper {
     List<PostResponse> findAll();
     List<PostResponse> findAll11();
 
+    // 커뮤니티 특정 게시글 조회
+
+    List<PostResponse> findOne(Long boardid);
+
     // 단체 게시글 조회
     List<PostGroupResponse> findGroupAll();
+
+    // 단체 특정 게시글 조회
+    List<PostGroupResponse> findGroupOne(Long groupid);
     // 단체 게시글 작성
     void saveGroup(PostGroupRequest params);
     // 단체 게시글 수정
@@ -37,14 +44,23 @@ public interface PostMapper {
 
     // 개인 게시글 조회
     List<PostIndiResponse> findIndiAll();
+
+    // 개인 특정 게시글 조회
+    List<PostIndiResponse> findIndiOne(Long individualid);
+
     // 개인 게시글 작성
     void saveIndi(PostIndiRequest params);
     // 개인 게시글 수정
     void updateIndi(PostIndiRequest params);
     // 개인 게시글 삭제
     void deleteByIndiId(PostIndiRequest params);
+
     // 중고 게시글 조회
     List<PostUsedResponse> findUsedAll();
+
+    // 중고 특정 게시글 조회
+    List<PostUsedResponse> findUsedOne(Long usedid);
+
     // 중고 게시글 작성
     void saveUsed(PostUsedRequest params);
     // 중고 게시글 수정
@@ -66,6 +82,7 @@ public interface PostMapper {
     void saveUserRoles(PostUserRequest params);
     // 유저 수정
     void updateUser(PostUserUpdateRequest params);
+    void updateUserImage(PostUserUpdateImageRequest params);
 
 
 

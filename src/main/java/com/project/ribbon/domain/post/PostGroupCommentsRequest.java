@@ -16,13 +16,13 @@ public class PostGroupCommentsRequest {
         @NotBlank(message="댓글은 필수 입력 값입니다.")
         private String description;
         private Integer userid;
-        @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$", message = "닉네임은 특수문자를 제외한 2~10자리여야 합니다.")
-        private String  nickname;
+
         private Long inherentid;
         private String writedate;
         @Id
         private Long commentsid;
         private String token;
+        private String  nickname;
 
 }
 

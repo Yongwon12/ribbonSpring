@@ -16,12 +16,13 @@ public class PostUsedCommentsRequest {
         @NotBlank(message="댓글은 필수 입력 값입니다.")
         private String description;
         private Integer userid;
-        private String  nickname;
+
         private Long inherentid;
         private String writedate;
         @Id
         private Long commentsid;
         private String token;
+        private String  nickname;
 
 }
 

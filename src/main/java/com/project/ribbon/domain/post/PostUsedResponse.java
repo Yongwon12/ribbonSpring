@@ -22,4 +22,5 @@ public class PostUsedResponse {
     private Integer  likedcount;
     private Integer  commentcount;
     private String token;
+    private String profileimage;
 }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.net.HttpHeaders;
-import com.project.ribbon.domain.post.FcmMessage;
+import com.project.ribbon.domain.post.FcmLikedMessage;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 import org.springframework.core.io.ClassPathResource;
@@ -40,16 +40,16 @@ public class FirebaseCloudMessageLikedService {
     }
 
     private String makeMessage(String token,String nickname) throws JsonParseException, JsonProcessingException {
-        FcmMessage fcmMessage = FcmMessage.builder()
-                .message(FcmMessage.Message.builder()
+        FcmLikedMessage fcmLikedMessage = FcmLikedMessage.builder()
+                .message(FcmLikedMessage.Message.builder()
                         .token(token)
-                        .data(FcmMessage.Data.builder()
+                        .data(FcmLikedMessage.Data.builder()
                                 .title("맺음")
                                 .body(nickname+"님이 좋아요를 눌렀습니다")
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();
-        return objectMapper.writeValueAsString(fcmMessage);
+        return objectMapper.writeValueAsString(fcmLikedMessage);
     }
 
     private String getAccessToken() throws IOException {

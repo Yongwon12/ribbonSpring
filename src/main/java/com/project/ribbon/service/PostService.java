@@ -2,13 +2,11 @@ package com.project.ribbon.service;
 
 import com.project.ribbon.domain.post.*;
 import com.project.ribbon.mapper.PostMapper;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,10 +43,21 @@ public class PostService {
         return postMapper.findAll11();
     }
 
+    // 커뮤니티 특정 게시글 조회
+    public List<PostResponse> findOnePost(Long boardid) {
+        return postMapper.findOne(boardid);
+    }
+
     // 단체 게시글 조회
     public List<PostGroupResponse> findGroupAllPost() {
         return postMapper.findGroupAll();
     }
+
+    // 단체 게시글 조회
+    public List<PostGroupResponse> findGroupOnePost(Long groupid) {
+        return postMapper.findGroupOne(groupid);
+    }
+
     // 단체 게시글 작성
     @Transactional
     public Long saveGroupPost(final PostGroupRequest params) {
@@ -71,6 +80,12 @@ public class PostService {
     public List<PostIndiResponse> findIndiAllPost() {
         return postMapper.findIndiAll();
     }
+
+    // 개인 특정 게시글 조회
+    public List<PostIndiResponse> findIndiOnePost(Long individualid) {
+        return postMapper.findIndiOne(individualid);
+    }
+
     // 개인 게시글 작성
     @Transactional
     public Long saveIndiPost(final PostIndiRequest params) {
@@ -91,6 +106,10 @@ public class PostService {
     // 중고 게시글 조회
     public List<PostUsedResponse> findUsedAllPost() {
         return postMapper.findUsedAll();
+    }
+    // 중고 특정 게시글 조회
+    public List<PostUsedResponse> findUsedOnePost(Long usedid) {
+        return postMapper.findUsedOne(usedid);
     }
     // 중고 게시글 작성
     @Transactional
@@ -131,7 +150,7 @@ public class PostService {
 
 
 
-    // 유저 정보 가입
+    // 유저 권한 정보 가입
     @Transactional
     public Long saveUserRolesPost(final PostUserRequest params) {
         postMapper.saveUserRoles(params);
@@ -142,6 +161,11 @@ public class PostService {
     @Transactional
     public Long updateUserPost(final PostUserUpdateRequest params) {
         postMapper.updateUser(params);
+        return params.getUserid();
+    }
+    @Transactional
+    public Long updateUserImagePost(final PostUserUpdateImageRequest params) {
+        postMapper.updateUserImage(params);
         return params.getUserid();
     }
 

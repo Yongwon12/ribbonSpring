@@ -205,6 +205,17 @@
                            ON User.userid = boardwrite.userid
     </select>
 
+    <!-- 커뮤니티 특정게시글  조회 -->
+    <select id="findOne" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+            id,User.userid,title,description,img,writedate,User.nickname,
+            boardid,likedcount,commentcount,profileimage,token
+        FROM boardwrite
+                 LEFT JOIN User
+                           ON User.userid = boardwrite.userid
+        WHERE boardid = #{boardid}
+    </select>
+
 
     <!-- 커뮤니티 게시글 삭제 -->
     <delete id="deleteById" >
@@ -218,11 +229,23 @@
     <select id="findGroupAll" resultType="com.project.ribbon.domain.post.PostGroupResponse" fetchSize="1000">
         SELECT
             id,region,title,line,description,peoplenum,groupwrite.gender,minage,titleimage,
-            groupwrite.userid,maxage,writedate,peoplenownum,groupwrite.nickname,groupid,once,commentcount,token
+            groupwrite.userid,maxage,writedate,peoplenownum,user.nickname,groupid,once,commentcount,token,profileimage
         FROM
             groupwrite
                 LEFT JOIN User
                           ON User.userid = groupwrite.userid
+    </select>
+
+    <!-- 단체 특정 게시글 조회  -->
+    <select id="findGroupOne" resultType="com.project.ribbon.domain.post.PostGroupResponse">
+        SELECT
+            id,region,title,line,description,peoplenum,groupwrite.gender,minage,titleimage,
+            groupwrite.userid,maxage,writedate,peoplenownum,user.nickname,groupid,once,commentcount,token,profileimage
+        FROM
+            groupwrite
+                LEFT JOIN User
+                          ON User.userid = groupwrite.userid
+        WHERE groupid = #{groupid}
     </select>
 
     <!-- 단체 게시글 저장 -->
@@ -283,13 +306,26 @@
     <select id="findIndiAll" resultType="com.project.ribbon.domain.post.PostIndiResponse" fetchSize="1000">
         SELECT
             id,region,meetdate,title,description,individualwrite.gender,
-            individualwrite.userid,writedate,maxage,minage,individualwrite.nickname,
+            individualwrite.userid,writedate,maxage,minage,user.nickname,
             individualid,likedcount,commentcount,profileimage,token
         FROM
             individualwrite
                 LEFT JOIN User
                           ON User.userid = individualwrite.userid
 
+    </select>
+
+    <!-- 개인 특정 게시글 조회  -->
+    <select id="findIndiOne" resultType="com.project.ribbon.domain.post.PostIndiResponse">
+        SELECT
+            id,region,meetdate,title,description,individualwrite.gender,
+            individualwrite.userid,writedate,maxage,minage,user.nickname,
+            individualid,likedcount,commentcount,profileimage,token
+        FROM
+            individualwrite
+                LEFT JOIN User
+                          ON User.userid = individualwrite.userid
+        WHERE individualid = #{individualid}
     </select>
 
     <!-- 개인 게시글 저장 -->
@@ -342,12 +378,24 @@
     <!-- 중고 게시글 조회  -->
     <select id="findUsedAll" resultType="com.project.ribbon.domain.post.PostUsedResponse" fetchSize="1000">
         SELECT
-            id,region,title,description,usedimage1,price,User.userid,writedate,usedwrite.nickname,
-            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token
+            id,region,title,description,usedimage1,price,User.userid,writedate,user.nickname,
+            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage
         FROM
             usedwrite
                 LEFT JOIN User
                           ON User.userid = usedwrite.userid
+    </select>
+
+    <!-- 중고 특정 게시글 조회  -->
+    <select id="findUsedOne" resultType="com.project.ribbon.domain.post.PostUsedResponse">
+        SELECT
+            id,region,title,description,usedimage1,price,User.userid,writedate,user.nickname,
+            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage
+        FROM
+            usedwrite
+                LEFT JOIN User
+                          ON User.userid = usedwrite.userid
+        WHERE usedid = #{usedid}
     </select>
 
     <!-- 중고 게시글 저장 -->
@@ -459,19 +507,25 @@
     </insert>
 
 
-    <!-- 유저 토큰 수정 -->
-    <update id="updateUserToken" parameterType="com.project.ribbon.domain.post.PostUserRequest">
+    <!-- 유저 프로필 수정 -->
+    <update id="updateUser" parameterType="com.project.ribbon.domain.post.PostUserUpdateRequest">
         UPDATE User
         SET
             sns = #{sns}
           , nickname = #{nickname}
-          , profileimage = #{profileimage}
           , modifydate = #{modifydate}
           , bestcategory = #{bestcategory}
           , shortinfo = #{shortinfo}
-          , birth = #{birth}
           , youtube = #{youtube}
+        WHERE
+            userid = #{userid}
+    </update>
 
+    <!-- 유저 프로필 프사 수정 -->
+    <update id="updateUserImage" parameterType="com.project.ribbon.domain.post.PostUserUpdateRequest">
+        UPDATE User
+        SET
+            profileimage = #{file}
         WHERE
             userid = #{userid}
     </update>
@@ -706,85 +760,6 @@
     </delete>
 
 
-    <!--    &lt;!&ndash; 답글 작성자 아이디 조회  &ndash;&gt;-->
-    <!--    <select id="findReplyId" resultType="com.project.ribbon.domain.post.PostReplyIdResponse">-->
-    <!--        SELECT-->
-    <!--            replyid-->
-    <!--        FROM-->
-    <!--            reply-->
-    <!--        ORDER BY replyid DESC limit 1-->
-    <!--    </select>-->
-
-
-    <!--    &lt;!&ndash; 답글 정보 조회  &ndash;&gt;-->
-    <!--    <select id="findByReplyInherentId" resultType="com.project.ribbon.domain.post.PostReplyResponse">-->
-    <!--        SELECT-->
-    <!--            description,writedate,reply.userid,User.nickname,categoryid,-->
-    <!--            inherentid,replyid,inherentcommentsid,isrecomment,-->
-    <!--            profileimage-->
-    <!--        FROM reply-->
-    <!--        LEFT JOIN User-->
-    <!--        ON User.userid = reply.userid-->
-    <!--        WHERE inherentid = #{inherentid}-->
-
-    <!--    </select>-->
-
-
-    <!--    &lt;!&ndash; 답글 작성 &ndash;&gt;-->
-    <!--    <insert id="saveReply" parameterType="com.project.ribbon.domain.post.PostReplyRequest"-->
-    <!--            useGeneratedKeys="true" keyProperty="replyid">-->
-    <!--        INSERT INTO reply (-->
-    <!--        <include refid="postReplyColumns" />-->
-    <!--        ) VALUES (-->
-    <!--        #{description}-->
-    <!--        , #{writedate}-->
-    <!--        , #{userid}-->
-    <!--        , #{nickname}-->
-    <!--        , #{categoryid}-->
-    <!--        , #{inherentid}-->
-    <!--        , #{replyid}-->
-    <!--        , #{inherentcommentsid}-->
-    <!--        , 1-->
-    <!--        )-->
-
-    <!--    </insert>-->
-
-
-    <!--    &lt;!&ndash; 답글 갯수 카운트 +1 &ndash;&gt;-->
-    <!--    <update id="updateReplyCount" parameterType="com.project.ribbon.domain.post.PostReplyRequest">-->
-
-    <!--        UPDATE boardwrite SET commentcount = commentcount + 1 WHERE boardid = #{inherentid}-->
-
-    <!--    </update>-->
-    <!--    &lt;!&ndash; 답글 갯수 카운트 -1 &ndash;&gt;-->
-    <!--    <update id="updateDeleteReplyCount" parameterType="com.project.ribbon.domain.post.PostReplyRequest">-->
-
-    <!--        UPDATE boardwrite SET commentcount = commentcount - 1 WHERE boardid = #{inherentid}-->
-
-    <!--    </update>-->
-
-
-    <!--    &lt;!&ndash; 답글 수정 &ndash;&gt;-->
-    <!--    <update id="updateReply" parameterType="com.project.ribbon.domain.post.PostReplyRequest">-->
-    <!--        UPDATE reply-->
-    <!--        SET-->
-    <!--            description = #{description}-->
-    <!--          , nickname = #{nickname}-->
-    <!--          , writedate = #{writedate}-->
-    <!--        WHERE-->
-    <!--            reply = #{replyid}-->
-    <!--    </update>-->
-
-
-
-    <!--    &lt;!&ndash; 답글 정보 삭제 &ndash;&gt;-->
-    <!--    <delete id="deleteReply" >-->
-    <!--        DELETE-->
-    <!--        FROM-->
-    <!--            reply-->
-    <!--        WHERE replyid = #{replyid}-->
-    <!--    </delete>-->
-
 
     <!-- 단체 댓글 작성자 아이디 조회  -->
     <select id="findGroupCommentsId" resultType="com.project.ribbon.domain.post.PostGroupCommentsIdResponse">
@@ -861,80 +836,6 @@
     </delete>
 
 
-    <!--    &lt;!&ndash; 단체 답글 작성자 아이디 조회  &ndash;&gt;-->
-    <!--    <select id="findGroupReplyId" resultType="com.project.ribbon.domain.post.PostGroupReplyIdResponse">-->
-    <!--        SELECT-->
-    <!--            groupreplyid-->
-    <!--        FROM-->
-    <!--            groupreply-->
-    <!--        ORDER BY groupreplyid DESC limit 1-->
-    <!--    </select>-->
-
-    <!--    &lt;!&ndash; 단체 답글 정보 조회  &ndash;&gt;-->
-    <!--    <select id="findByGroupReplyInherentId" resultType="com.project.ribbon.domain.post.PostGroupReplyResponse">-->
-    <!--        SELECT-->
-    <!--            description,writedate,groupreply.userid,User.nickname,-->
-    <!--            inherentid,groupreplyid,inherentcommentsid,isrecomment,-->
-    <!--            profileimage-->
-    <!--        FROM groupreply-->
-    <!--        LEFT JOIN User-->
-    <!--        ON uesr.userid = groupreply.userid-->
-    <!--        WHERE inherentid = #{inherentid}-->
-    <!--    </select>-->
-
-    <!--    &lt;!&ndash; 단체 답글 작성 &ndash;&gt;-->
-    <!--    <insert id="saveGroupReply" parameterType="com.project.ribbon.domain.post.PostGroupReplyRequest"-->
-    <!--            useGeneratedKeys="true" keyProperty="groupreplyid">-->
-    <!--        INSERT INTO groupreply (-->
-    <!--        <include refid="postGroupReplyColumns" />-->
-    <!--        ) VALUES (-->
-    <!--        #{description}-->
-    <!--        , #{writedate}-->
-    <!--        , #{userid}-->
-    <!--        , #{nickname}-->
-    <!--        , #{inherentid}-->
-    <!--        , #{groupreplyid}-->
-    <!--        , #{inherentcommentsid}-->
-    <!--        , 1-->
-    <!--        )-->
-
-    <!--    </insert>-->
-
-    <!--    &lt;!&ndash; 단체 답글 갯수 카운트 +1 &ndash;&gt;-->
-    <!--    <update id="updateGroupReplyCount" parameterType="com.project.ribbon.domain.post.PostGroupReplyRequest">-->
-
-    <!--        UPDATE groupwrite SET commentcount = commentcount + 1 WHERE groupid = #{inherentid}-->
-
-    <!--    </update>-->
-    <!--    &lt;!&ndash; 단체 답글 갯수 카운트 -1 &ndash;&gt;-->
-    <!--    <update id="updateDeleteGroupReplyCount" parameterType="com.project.ribbon.domain.post.PostGroupReplyRequest">-->
-
-    <!--        UPDATE groupwrite SET commentcount = commentcount - 1 WHERE groupid = #{inherentid}-->
-
-    <!--    </update>-->
-
-    <!--    &lt;!&ndash; 단체 답글 수정 &ndash;&gt;-->
-    <!--    <update id="updateGroupReply" parameterType="com.project.ribbon.domain.post.PostGroupReplyRequest">-->
-    <!--        UPDATE groupreply-->
-    <!--        SET-->
-    <!--            description = #{description}-->
-    <!--          , nickname = #{nickname}-->
-    <!--          , writedate = #{writedate}-->
-    <!--        WHERE-->
-    <!--            groupreply = #{groupreplyid}-->
-    <!--    </update>-->
-
-
-
-    <!--    &lt;!&ndash; 단체 답글 정보 삭제 &ndash;&gt;-->
-    <!--    <delete id="deleteGroupReply" >-->
-    <!--        DELETE-->
-    <!--        FROM-->
-    <!--            groupreply-->
-    <!--        WHERE groupreplyid = #{groupreplyid}-->
-    <!--    </delete>-->
-
-
     <!-- 개인 댓글 작성자 아이디 조회  -->
     <select id="findIndiCommentsId" resultType="com.project.ribbon.domain.post.PostIndiCommentsIdResponse">
         SELECT
@@ -1009,81 +910,6 @@
     </delete>
 
 
-    <!--    &lt;!&ndash; 개인 답글 작성자 아이디 조회  &ndash;&gt;-->
-    <!--    <select id="findIndiReplyId" resultType="com.project.ribbon.domain.post.PostIndiReplyIdResponse">-->
-    <!--        SELECT-->
-    <!--            individualreplyid-->
-    <!--        FROM-->
-    <!--            individualreply-->
-    <!--        ORDER BY individualreplyid DESC limit 1-->
-    <!--    </select>-->
-
-
-    <!--    &lt;!&ndash; 개인 답글 정보 조회  &ndash;&gt;-->
-    <!--    <select id="findByIndiReplyInherentId" resultType="com.project.ribbon.domain.post.PostIndiReplyResponse">-->
-    <!--        SELECT-->
-    <!--            description,writedate,individualreply.userid,User.nickname,-->
-    <!--            inherentid,individualreplyid,inherentcommentsid,isrecomment,-->
-    <!--            profileimage-->
-    <!--        FROM individualreply-->
-    <!--        LEFT JOIN User-->
-    <!--        ON User.userid = individualreply.userid-->
-    <!--        WHERE inherentid = #{inherentid}-->
-    <!--    </select>-->
-
-    <!--    &lt;!&ndash; 개인 답글 작성 &ndash;&gt;-->
-    <!--    <insert id="saveIndiReply" parameterType="com.project.ribbon.domain.post.PostIndiReplyRequest"-->
-    <!--            useGeneratedKeys="true" keyProperty="individualreplyid">-->
-    <!--        INSERT INTO individualreply (-->
-    <!--        <include refid="postIndividualReplyColumns" />-->
-    <!--        ) VALUES (-->
-    <!--        #{description}-->
-    <!--        , #{writedate}-->
-    <!--        , #{userid}-->
-    <!--        , #{nickname}-->
-    <!--        , #{inherentid}-->
-    <!--        , #{individualreplyid}-->
-    <!--        , #{inherentcommentsid}-->
-    <!--        , 1-->
-    <!--        )-->
-
-    <!--    </insert>-->
-
-    <!--    &lt;!&ndash; 개인 답글 갯수 카운트 +1 &ndash;&gt;-->
-    <!--    <update id="updateIndiReplyCount" parameterType="com.project.ribbon.domain.post.PostIndiReplyRequest">-->
-
-    <!--        UPDATE individualwrite SET commentcount = commentcount + 1 WHERE individualid = #{inherentid}-->
-
-    <!--    </update>-->
-    <!--    &lt;!&ndash; 개인 답글 갯수 카운트 -1 &ndash;&gt;-->
-    <!--    <update id="updateDeleteIndiReplyCount" parameterType="com.project.ribbon.domain.post.PostIndiReplyRequest">-->
-
-    <!--        UPDATE individualwrite SET commentcount = commentcount - 1 WHERE individualid = #{inherentid}-->
-
-    <!--    </update>-->
-
-    <!--    &lt;!&ndash; 개인 답글 수정 &ndash;&gt;-->
-    <!--    <update id="updateIndiReply" parameterType="com.project.ribbon.domain.post.PostIndiReplyRequest">-->
-    <!--        UPDATE individualreply-->
-    <!--        SET-->
-    <!--            description = #{description}-->
-    <!--          , nickname = #{nickname}-->
-    <!--          , writedate = #{writedate}-->
-    <!--        WHERE-->
-    <!--            individualreply = #{individualreplyid}-->
-    <!--    </update>-->
-
-
-
-    <!--    &lt;!&ndash; 개인 답글 정보 삭제 &ndash;&gt;-->
-    <!--    <delete id="deleteIndiReply" >-->
-    <!--        DELETE-->
-    <!--        FROM-->
-    <!--            individualreply-->
-    <!--        WHERE individualreplyid = #{individualreplyid}-->
-    <!--    </delete>-->
-
-
     <!-- 중고 댓글 작성자 아이디 조회  -->
     <select id="findUsedCommentsId" resultType="com.project.ribbon.domain.post.PostUsedCommentsIdResponse">
         SELECT
@@ -1156,84 +982,6 @@
             usedcomments
         WHERE commentsid = #{commentsid}
     </delete>
-
-
-    <!--    &lt;!&ndash; 중고 답글 작성자 아이디 조회  &ndash;&gt;-->
-    <!--    <select id="findUsedReplyId" resultType="com.project.ribbon.domain.post.PostUsedReplyIdResponse">-->
-    <!--        SELECT-->
-    <!--            usedreplyid-->
-    <!--        FROM-->
-    <!--            usedreply-->
-    <!--        ORDER BY usedreplyid DESC limit 1-->
-    <!--    </select>-->
-
-
-    <!--    &lt;!&ndash; 중고 답글 정보 조회  &ndash;&gt;-->
-    <!--    <select id="findByUsedReplyInherentId" resultType="com.project.ribbon.domain.post.PostUsedReplyResponse">-->
-    <!--        SELECT-->
-    <!--            description,writedate,usedreply.userid,User.nickname,-->
-    <!--            inherentid,usedreplyid,inherentcommentsid,isrecomment,-->
-    <!--            profileimage-->
-    <!--        FROM usedreply-->
-    <!--        LEFT JOIN User-->
-    <!--        ON User.userid = usedreply.userid-->
-    <!--        WHERE inherentid = #{inherentid}-->
-    <!--    </select>-->
-
-
-    <!--    &lt;!&ndash; 중고 답글 작성 &ndash;&gt;-->
-    <!--    <insert id="saveUsedReply" parameterType="com.project.ribbon.domain.post.PostUsedReplyRequest"-->
-    <!--            useGeneratedKeys="true" keyProperty="usedreplyid">-->
-    <!--        INSERT INTO usedreply (-->
-    <!--        <include refid="postUsedReplyColumns" />-->
-    <!--        ) VALUES (-->
-    <!--        #{description}-->
-    <!--        , #{writedate}-->
-    <!--        , #{userid}-->
-    <!--        , #{nickname}-->
-    <!--        , #{inherentid}-->
-    <!--        , #{usedreplyid}-->
-    <!--        , #{inherentcommentsid}-->
-    <!--        , 1-->
-    <!--        )-->
-
-    <!--    </insert>-->
-
-    <!--    &lt;!&ndash; 중고 답글 갯수 카운트 +1 &ndash;&gt;-->
-    <!--    <update id="updateUsedReplyCount" parameterType="com.project.ribbon.domain.post.PostUsedReplyRequest">-->
-
-    <!--        UPDATE usedwrite SET commentcount = commentcount + 1 WHERE usedid = #{inherentid}-->
-
-    <!--    </update>-->
-    <!--    &lt;!&ndash; 중고 답글 갯수 카운트 -1 &ndash;&gt;-->
-    <!--    <update id="updateDeleteUsedReplyCount" parameterType="com.project.ribbon.domain.post.PostUsedReplyRequest">-->
-
-    <!--        UPDATE usedwrite SET commentcount = commentcount - 1 WHERE usedid = #{inherentid}-->
-
-    <!--    </update>-->
-
-
-    <!--    &lt;!&ndash; 중고 답글 수정 &ndash;&gt;-->
-    <!--    <update id="updateUsedReply" parameterType="com.project.ribbon.domain.post.PostUsedReplyRequest">-->
-    <!--        UPDATE usedreply-->
-    <!--        SET-->
-    <!--            description = #{description}-->
-    <!--          , nickname = #{nickname}-->
-    <!--          , writedate = #{writedate}-->
-    <!--        WHERE-->
-    <!--            usedreply = #{usedreplyid}-->
-    <!--    </update>-->
-
-
-
-    <!--    &lt;!&ndash; 중고 답글 정보 삭제 &ndash;&gt;-->
-    <!--    <delete id="deleteUsedReply" >-->
-    <!--        DELETE-->
-    <!--        FROM-->
-    <!--            usedreply-->
-    <!--        WHERE usedreplyid = #{usedreplyid}-->
-    <!--    </delete>-->
-
 
 
     <!-- 특정 유저 프로필 조회  -->
@@ -1404,15 +1152,6 @@
                  )
     </insert>
 
-    <!-- 특정 채팅방 채팅정보 조회  -->
-    <!--    <select id="findByMyId" parameterType="Integer" resultType="com.project.ribbon.domain.post.PostChatRoomResponse">-->
-    <!--        SELECT-->
-    <!--            roomid,yourid,yournickname,yourprofileimage-->
-    <!--        FROM-->
-    <!--            chatroom-->
-    <!--        WHERE-->
-    <!--            myid = #{myid}-->
-    <!--    </select>-->
 
 
 </mapper>

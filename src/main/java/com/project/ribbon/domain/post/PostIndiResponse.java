@@ -22,4 +22,5 @@ public class PostIndiResponse {
     private String profileimage;
     private String token;
 
+
 }

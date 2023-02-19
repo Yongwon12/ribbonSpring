@@ -17,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +31,6 @@ import java.util.Map;
 @ResponseBody
 @Slf4j
 @RestController
-
 public class PostController {
 
     private final PostService postService;
@@ -39,6 +40,7 @@ public class PostController {
 
     private final MemberService memberService;
 
+    private final String uploadDir = "/Users/gim-yong-won/Desktop/ribbon";
 
 
     // 커뮤니티 게시글 작성
@@ -54,7 +56,7 @@ public class PostController {
 
     // 커뮤니티 게시글 조회
     @GetMapping("/board")
-    public ResponseEntity<?> boardwrite(Model model) throws ApiException {
+    public ResponseEntity<?> boardWrite(Model model) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findAllPost();
@@ -62,6 +64,18 @@ public class PostController {
         obj.put("boardwrite", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
+
+    // 커뮤니티 특정 게시글 조회
+    @PostMapping("/board")
+    public ResponseEntity<?> boardWriteOne(@RequestBody PostResponse params, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        Map<String, Object> obj = new HashMap<>();
+        List<PostResponse> posts = postService.findOnePost(params.getBoardid());
+        model.addAttribute("posts", posts);
+        obj.put("boardwrite", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
 
 
     // 기존 게시글 수정
@@ -84,6 +98,17 @@ public class PostController {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         Map<String, Object> obj = new HashMap<>();
         List<PostGroupResponse> posts = postService.findGroupAllPost();
+        model.addAttribute("posts", posts);
+        obj.put("groupwrite", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+    // 단체 특정 작성글 조회
+    @PostMapping("/group")
+    public ResponseEntity<?> groupWriteOne(@RequestBody PostGroupResponse params, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        Map<String, Object> obj = new HashMap<>();
+        List<PostGroupResponse> posts = postService.findGroupOnePost(params.getGroupid());
         model.addAttribute("posts", posts);
         obj.put("groupwrite", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
@@ -125,6 +150,17 @@ public class PostController {
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
 
+    // 개인 특정 작성글 조회
+    @PostMapping("/individual")
+    public ResponseEntity<?> indiWriteOne(@RequestBody PostIndiResponse params, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        Map<String, Object> obj = new HashMap<>();
+        List<PostIndiResponse> posts = postService.findIndiOnePost(params.getIndividualid());
+        model.addAttribute("posts", posts);
+        obj.put("individualwrite", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
     // 개인 글작성
     @PostMapping("/post/writeindividual")
     public ResponseEntity<?> saveIndiPost(@RequestBody @Valid PostIndiRequest params) throws ApiException {
@@ -161,6 +197,17 @@ public class PostController {
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
 
+    // 중고 특정 작성글 조회
+    @PostMapping("/used")
+    public ResponseEntity<?> usedWriteOne(@RequestBody PostUsedResponse params, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        Map<String, Object> obj = new HashMap<>();
+        List<PostUsedResponse> posts = postService.findUsedOnePost(params.getUsedid());
+        model.addAttribute("posts", posts);
+        obj.put("usedwrite", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
     // 중고 글작성
     @PostMapping("/post/writeused")
     public ResponseEntity<?> saveUsedPost(@RequestBody PostUsedRequest params) throws ApiException {
@@ -186,17 +233,6 @@ public class PostController {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         return postService.deleteUsedPost(params);
     }
-
-//    // 유저 정보 조회
-//    @GetMapping("/sign")
-//    public ResponseEntity<?> user(Model model) throws ApiException {
-//        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-//        Map<String, Object> obj = new HashMap<>();
-//        List<PostUserResponse> posts = postService.findUserAllPost();
-//        model.addAttribute("posts", posts);
-//        obj.put("userinfo", posts);
-//        return new ResponseEntity<>(obj, HttpStatus.OK);
-//    }
 
 
     // 유저 정보 등록
@@ -230,9 +266,16 @@ public class PostController {
 
     // 유저 정보 수정
     @PostMapping("/post/updateuser")
-    public ResponseEntity<?> updateUserPost(@RequestBody @Valid PostUserUpdateRequest params) {
+    public ResponseEntity<?> updateUserPost(@RequestBody PostUserUpdateRequest params,@ModelAttribute String part,
+                                            @ModelAttribute MultipartFile file) throws IOException{
         try {
-            List<PostUserResponse> posts = postService.findUserAllPost();
+            if (!file.isEmpty()) {
+                String filename = file.getOriginalFilename();
+                log.info("file.getOriginalFilename = {}", filename);
+
+                String fullPath = uploadDir + filename;
+                file.transferTo(new File(fullPath));
+            }
             return new ResponseEntity<>(postService.updateUserPost(params), HttpStatus.OK);
         } catch (ApiException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

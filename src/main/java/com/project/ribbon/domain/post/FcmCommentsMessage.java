@@ -2,13 +2,12 @@ package com.project.ribbon.domain.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 @Builder
 @AllArgsConstructor
 @Getter
-public class FcmMessage {
+public class FcmCommentsMessage {
     private boolean validateOnly;
     private Message message;
 
