@@ -164,9 +164,8 @@ public class PostService {
         return params.getUserid();
     }
     @Transactional
-    public Long updateUserImagePost(final PostUserUpdateImageRequest params) {
-        postMapper.updateUserImage(params);
-        return params.getUserid();
+    public PostUserUpdateImageRequest updateUserImagePost(String filepath,Long userid) {
+        return postMapper.updateUserImage(filepath,userid);
     }
 
 

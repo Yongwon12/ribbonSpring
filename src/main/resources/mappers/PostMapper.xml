@@ -525,7 +525,7 @@
     <update id="updateUserImage" parameterType="com.project.ribbon.domain.post.PostUserUpdateRequest">
         UPDATE User
         SET
-            profileimage = #{file}
+            profileimage = #{filepath}
         WHERE
             userid = #{userid}
     </update>

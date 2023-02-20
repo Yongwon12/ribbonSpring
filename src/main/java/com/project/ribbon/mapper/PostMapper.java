@@ -4,7 +4,6 @@ import com.project.ribbon.domain.post.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
-import java.util.Optional;
 
 @Mapper
 
@@ -82,7 +81,9 @@ public interface PostMapper {
     void saveUserRoles(PostUserRequest params);
     // 유저 수정
     void updateUser(PostUserUpdateRequest params);
-    void updateUserImage(PostUserUpdateImageRequest params);
+
+    PostUserUpdateImageRequest updateUserImage(String filepath,Long userid);
+
 
 
 

@@ -16,7 +16,7 @@ import java.util.List;
 public class PostUserUpdateImageRequest {
 
         private Long userid;
-        private List<MultipartFile> file;
+        private String filepath;
 
 }
 

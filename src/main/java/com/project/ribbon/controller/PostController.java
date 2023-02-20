@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -266,16 +270,17 @@ public class PostController {
 
     // 유저 정보 수정
     @PostMapping("/post/updateuser")
-    public ResponseEntity<?> updateUserPost(@RequestBody PostUserUpdateRequest params,@ModelAttribute String part,
-                                            @ModelAttribute MultipartFile file) throws IOException{
+    public ResponseEntity<?> updateUserPost(@RequestBody PostUserUpdateRequest params,
+                                            @RequestParam("name") MultipartFile file) throws IOException{
         try {
-            if (!file.isEmpty()) {
-                String filename = file.getOriginalFilename();
-                log.info("file.getOriginalFilename = {}", filename);
+            String uploadDir = "/Users/gim-yong-won/Desktop/ribbon";
+            String filename = file.getOriginalFilename();
+            String filepath = Paths.get(uploadDir, filename).toString();
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(filepath);
+            Files.write(path, bytes);
 
-                String fullPath = uploadDir + filename;
-                file.transferTo(new File(fullPath));
-            }
+            postService.updateUserImagePost(filepath,params.getUserid());
             return new ResponseEntity<>(postService.updateUserPost(params), HttpStatus.OK);
         } catch (ApiException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
