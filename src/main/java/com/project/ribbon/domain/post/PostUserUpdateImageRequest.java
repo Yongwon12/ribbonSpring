@@ -1,5 +1,6 @@
 package com.project.ribbon.domain.post;
 
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,12 +11,13 @@ import java.awt.*;
 import java.util.List;
 
 @Data
-@ToString(exclude = {"file"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostUserUpdateImageRequest {
 
-        private Long userid;
+        //private Long userid;
+
+        private String userid;
         private String filepath;
 
 }

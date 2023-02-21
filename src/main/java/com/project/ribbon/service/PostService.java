@@ -5,6 +5,7 @@ import com.project.ribbon.mapper.PostMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
 
@@ -164,8 +165,9 @@ public class PostService {
         return params.getUserid();
     }
     @Transactional
-    public PostUserUpdateImageRequest updateUserImagePost(String filepath,Long userid) {
-        return postMapper.updateUserImage(filepath,userid);
+    public PostUserUpdateImageRequest updateUserImagePost(final String filepath,final String userid) {
+        postMapper.updateUserImage(filepath,userid);
+        return null;
     }
 
 

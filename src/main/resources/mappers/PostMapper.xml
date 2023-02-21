@@ -522,7 +522,7 @@
     </update>
 
     <!-- 유저 프로필 프사 수정 -->
-    <update id="updateUserImage" parameterType="com.project.ribbon.domain.post.PostUserUpdateRequest">
+    <update id="updateUserImage">
         UPDATE User
         SET
             profileimage = #{filepath}

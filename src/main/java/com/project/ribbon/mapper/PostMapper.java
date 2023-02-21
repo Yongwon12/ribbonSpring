@@ -2,6 +2,7 @@ package com.project.ribbon.mapper;
 
 import com.project.ribbon.domain.post.*;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
 
@@ -82,7 +83,7 @@ public interface PostMapper {
     // 유저 수정
     void updateUser(PostUserUpdateRequest params);
 
-    PostUserUpdateImageRequest updateUserImage(String filepath,Long userid);
+    void updateUserImage(String filepath,String userid);
 
 
 

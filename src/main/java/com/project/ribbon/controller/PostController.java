@@ -6,21 +6,25 @@ import com.project.ribbon.enums.ExceptionEnum;
 
 import com.project.ribbon.response.ApiException;
 import com.project.ribbon.service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 
 
-import org.apache.ibatis.session.SqlSession;
+import okhttp3.MultipartBody;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartRequest;
+import org.springframework.web.multipart.MultipartResolver;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,7 +48,7 @@ public class PostController {
 
     private final MemberService memberService;
 
-    private final String uploadDir = "/Users/gim-yong-won/Desktop/ribbon";
+
 
 
     // 커뮤니티 게시글 작성
@@ -270,22 +274,30 @@ public class PostController {
 
     // 유저 정보 수정
     @PostMapping("/post/updateuser")
-    public ResponseEntity<?> updateUserPost(@RequestBody PostUserUpdateRequest params,
-                                            @RequestParam("name") MultipartFile file) throws IOException{
+    public ResponseEntity<?> updateUserPost(@RequestBody PostUserUpdateRequest params) throws IOException{
         try {
-            String uploadDir = "/Users/gim-yong-won/Desktop/ribbon";
-            String filename = file.getOriginalFilename();
-            String filepath = Paths.get(uploadDir, filename).toString();
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(filepath);
-            Files.write(path, bytes);
-
-            postService.updateUserImagePost(filepath,params.getUserid());
             return new ResponseEntity<>(postService.updateUserPost(params), HttpStatus.OK);
         } catch (ApiException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    // 유저 정보 수정
+    @Value("${file.upload.path}")
+    private String uploadPath;
+    @PostMapping("/post/test")
+    public PostUserUpdateImageRequest updateUserPost(@RequestParam("image") MultipartFile file,@RequestParam("userid") String userid) throws IOException{
+
+            String filename = file.getOriginalFilename();
+
+            String filepath = Paths.get(uploadPath, filename).toString();
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(filepath);
+            Files.write(path, bytes);
+        return postService.updateUserImagePost(filepath, userid);
+
+    }
+
 
     // 유저 정보 삭제
     @PostMapping("/post/deleteuser")

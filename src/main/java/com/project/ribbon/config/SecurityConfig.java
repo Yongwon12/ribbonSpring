@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/group").permitAll()
                 .requestMatchers("/api/used").permitAll()
                 .requestMatchers("/api/sign").permitAll()
-                .requestMatchers("/api/test").permitAll()
+                .requestMatchers("/api/post/test").permitAll()
                 .requestMatchers("/api/realtimeup").permitAll()
                 .requestMatchers("/api/post/**").hasRole("USER")
                 .requestMatchers("/api/admin").hasRole("ADMIN")
