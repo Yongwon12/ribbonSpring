@@ -14,14 +14,14 @@ import java.awt.*;
 @AllArgsConstructor
 public class PostUserUpdateRequest {
 
-        private Long userid; //PK
         private String sns;
         private String nickname;
         private String modifydate;
         private String bestcategory;
         private String shortinfo;
         private String youtube;
-
+        private String profileimage;
+        private String userid; //PK
 
 
 }

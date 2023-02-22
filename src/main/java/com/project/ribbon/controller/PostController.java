@@ -6,29 +6,35 @@ import com.project.ribbon.enums.ExceptionEnum;
 
 import com.project.ribbon.response.ApiException;
 import com.project.ribbon.service.*;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 
 
-import okhttp3.MultipartBody;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartRequest;
-import org.springframework.web.multipart.MultipartResolver;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -271,310 +277,323 @@ public class PostController {
     }
 
 
-
-    // 유저 정보 수정
-    @PostMapping("/post/updateuser")
-    public ResponseEntity<?> updateUserPost(@RequestBody PostUserUpdateRequest params) throws IOException{
-        try {
-            return new ResponseEntity<>(postService.updateUserPost(params), HttpStatus.OK);
-        } catch (ApiException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     // 유저 정보 수정
     @Value("${file.upload.path}")
     private String uploadPath;
-    @PostMapping("/post/test")
-    public PostUserUpdateImageRequest updateUserPost(@RequestParam("image") MultipartFile file,@RequestParam("userid") String userid) throws IOException{
+    @PostMapping("/post/updateuser")
+    public ResponseEntity<?> updateUserPost(
+            @RequestParam("sns") String sns
+            ,@RequestParam("nickname") String nickname,@RequestParam("modifydate") String modifydate
+            ,@RequestParam("bestcategory") String bestcategory,@RequestParam("shortinfo") String shortinfo
+            ,@RequestParam("youtube") String youtube, @RequestParam("image") MultipartFile file
+            ,@RequestParam("userid") String userid) throws IOException{
+        String profileimage = file.getOriginalFilename();
+        String filepath = Paths.get(uploadPath, profileimage).toString();
+        byte[] bytes = file.getBytes();
+        Path path = Paths.get(filepath);
+        Files.write(path, bytes);
+        PostUserUpdateRequest params = new PostUserUpdateRequest();
+        params.setSns(sns);
+        params.setNickname(nickname);
+        params.setModifydate(modifydate);
+        params.setBestcategory(bestcategory);
+        params.setShortinfo(shortinfo);
+        params.setYoutube(youtube);
+        params.setProfileimage("http://192.168.0.5:8000/api/userimage/"+profileimage);
+        params.setUserid(userid);
+        postService.updateUserPost(params);
 
-            String filename = file.getOriginalFilename();
+        PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
 
-            String filepath = Paths.get(uploadPath, filename).toString();
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(filepath);
-            Files.write(path, bytes);
-        return postService.updateUserImagePost(filepath, userid);
-
+        return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
 
-    // 유저 정보 삭제
-    @PostMapping("/post/deleteuser")
-    public ResponseEntity<?> deleteUserPost(@RequestBody PostUserRequest params) {
-        try {
-            postService.deleteUserRolesPost(params);
-            return new ResponseEntity<>(postService.deleteUserPost(params), HttpStatus.OK);
-        } catch (ApiException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    // 유저 프로필 사진 조회
+    @GetMapping("/userimage/{imageName:.+}")
+    public ResponseEntity<byte[]> getImage(@PathVariable("imageName") String profileimage) throws IOException {
+        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/userimage/" + profileimage);
+        byte[] imageBytes = Files.readAllBytes(imagePath);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+    }
+
+
+        // 유저 정보 삭제
+        @PostMapping("/post/deleteuser")
+        public ResponseEntity<?> deleteUserPost(@RequestBody PostUserRequest params) {
+            try {
+                postService.deleteUserRolesPost(params);
+                return new ResponseEntity<>(postService.deleteUserPost(params), HttpStatus.OK);
+            } catch (ApiException e) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
-    }
 
-    // 실시간 인기글
-    @GetMapping("/realtimeup")
-    public ResponseEntity<?> realTimeUp(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostResponse> posts = postService.findAllPost11();
-        model.addAttribute("posts", posts);
-        obj.put("bestwrite", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
+        // 실시간 인기글
+        @GetMapping("/realtimeup")
+        public ResponseEntity<?> realTimeUp(Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            Map<String, Object> obj = new HashMap<>();
+            List<PostResponse> posts = postService.findAllPost11();
+            model.addAttribute("posts", posts);
+            obj.put("bestwrite", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
 
 
-    // 좋아요 등록
-    @PostMapping("/post/liked")
-    public Integer saveLikedPost(@RequestBody PostLikedRequest params) throws ApiException,IOException{
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.updateLikedPost(params);
-        postService.saveLikedPost(params);
-        firebaseCloudMessageLikedService.sendMessageTo(
-                params.getToken(),
-                params.getNickname());
-        return ResponseEntity.ok().build().getStatusCodeValue();
+        // 좋아요 등록
+        @PostMapping("/post/liked")
+        public Integer saveLikedPost(@RequestBody PostLikedRequest params) throws ApiException, IOException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.updateLikedPost(params);
+            postService.saveLikedPost(params);
+            firebaseCloudMessageLikedService.sendMessageTo(
+                    params.getToken(),
+                    params.getNickname());
+            return ResponseEntity.ok().build().getStatusCodeValue();
 
-    }
-
-
-    // 좋아요 삭제
-    @RequestMapping("/post/deleteliked")
-    public Integer deleteLikedPost(@RequestBody PostLikedRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.updateDeleteLikedPost(params);
-        return postService.deleteLikedPost(params);
-    }
-
-    // 개인 좋아요 등록
-    @PostMapping("/post/individualliked")
-    public Integer saveIndiLikedPost(@RequestBody PostIndividualLikedRequest params) throws ApiException,IOException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.updateIndividualLikedPost(params);
-        postService.saveIndividualLikedPost(params);
-        firebaseCloudMessageLikedService.sendMessageTo(
-                params.getToken(),
-                params.getNickname());
-        return ResponseEntity.ok().build().getStatusCodeValue();
-
-    }
+        }
 
 
-    // 개인 좋아요 삭제
-    @RequestMapping("/post/deleteindividualliked")
-    public Integer deleteIndiLikedPost(@RequestBody PostIndividualLikedRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.updateDeleteIndividualLikedPost(params);
-        return postService.deleteIndividualLikedPost(params);
-    }
+        // 좋아요 삭제
+        @RequestMapping("/post/deleteliked")
+        public Integer deleteLikedPost(@RequestBody PostLikedRequest params) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.updateDeleteLikedPost(params);
+            return postService.deleteLikedPost(params);
+        }
 
-    // 중고 좋아요 등록
-    @PostMapping("/post/usedliked")
-    public Integer saveUsedLikedPost(@RequestBody PostUsedLikedRequest params) throws ApiException ,IOException{
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.updateUsedLikedPost(params);
-        postService.saveUsedLikedPost(params);
-        firebaseCloudMessageLikedService.sendMessageTo(
-                params.getToken(),
-                params.getNickname());
-        return ResponseEntity.ok().build().getStatusCodeValue();
+        // 개인 좋아요 등록
+        @PostMapping("/post/individualliked")
+        public Integer saveIndiLikedPost(@RequestBody PostIndividualLikedRequest params) throws ApiException, IOException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.updateIndividualLikedPost(params);
+            postService.saveIndividualLikedPost(params);
+            firebaseCloudMessageLikedService.sendMessageTo(
+                    params.getToken(),
+                    params.getNickname());
+            return ResponseEntity.ok().build().getStatusCodeValue();
 
-    }
-
-
-    // 중고 좋아요 삭제
-    @RequestMapping("/post/deleteusedliked")
-    public Integer deleteUsedLikedPost(@RequestBody PostUsedLikedRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.updateDeleteUsedLikedPost(params);
-        return postService.deleteUsedLikedPost(params);
-    }
-
-    // 댓글 조회
-    @RequestMapping("/post/commentsinfo")
-    public ResponseEntity<?> commentsInfo(@RequestBody PostCommentsResponse inherentid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findPostByInherentId(inherentid.getInherentid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostCommentsResponse> posts = postService.findPostByInherentId(inherentid.getInherentid());
-        model.addAttribute("posts", posts);
-        obj.put("comment", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
+        }
 
 
-    // 댓글 등록 및 아이디 전송
-    @RequestMapping(method = RequestMethod.POST,path ="/post/comments")
-    public ResponseEntity<?> saveComments(@RequestBody PostCommentsRequest params,Model model) throws ApiException ,IOException{
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.saveCommentsPost(params);
-        postService.updateCommentsCountPost(params);
-        firebaseCloudMessageCommentsService.sendMessageTo(
-                params.getToken(),
-                params.getNickname());
-        ResponseEntity.ok().build().getStatusCodeValue();
-        Map<String, Object> obj = new HashMap<>();
-        List<PostCommentsIdResponse> posts = postService.findCommentsIdPost();
-        model.addAttribute("posts", posts);
-        obj.put("commentsid", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
+        // 개인 좋아요 삭제
+        @RequestMapping("/post/deleteindividualliked")
+        public Integer deleteIndiLikedPost(@RequestBody PostIndividualLikedRequest params) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.updateDeleteIndividualLikedPost(params);
+            return postService.deleteIndividualLikedPost(params);
+        }
 
-    }
+        // 중고 좋아요 등록
+        @PostMapping("/post/usedliked")
+        public Integer saveUsedLikedPost(@RequestBody PostUsedLikedRequest params) throws ApiException, IOException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.updateUsedLikedPost(params);
+            postService.saveUsedLikedPost(params);
+            firebaseCloudMessageLikedService.sendMessageTo(
+                    params.getToken(),
+                    params.getNickname());
+            return ResponseEntity.ok().build().getStatusCodeValue();
 
-    // 댓글 수정
-    @PostMapping("/post/updatecomments")
-    public Long updateCommentsPost(@RequestBody PostCommentsRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.updateCommentsPost(params);
-    }
-
-    // 댓글 삭제
-    @RequestMapping("/post/deletecomments")
-    public Long deleteCommentsPost(@RequestBody PostCommentsRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.updateDeleteCommentsCountPost(params);
-        return postService.deleteCommentsPost(params);
-    }
-
-    // 개인 댓글 조회
-    @RequestMapping("/post/indicommentsinfo")
-    public ResponseEntity<?> indiCommentsInfo(@RequestBody PostIndiCommentsResponse inherentid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findPostByIndiCommentsInherentId(inherentid.getInherentid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostIndiCommentsResponse> posts = postService.findPostByIndiCommentsInherentId(inherentid.getInherentid());
-        model.addAttribute("posts", posts);
-        obj.put("comment", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
+        }
 
 
-    // 개인 댓글 등록 및 아이디 전송
-    @RequestMapping(method = RequestMethod.POST,path ="/post/indicomments")
-    public ResponseEntity<?> saveIndiComments(@RequestBody PostIndiCommentsRequest params,Model model) throws ApiException,IOException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.saveIndiCommentsPost(params);
-        postService.updateIndiCommentsCountPost(params);
-        firebaseCloudMessageCommentsService.sendMessageTo(
-                params.getToken(),
-                params.getNickname());
-        ResponseEntity.ok().build().getStatusCodeValue();
-        Map<String, Object> obj = new HashMap<>();
-        List<PostIndiCommentsIdResponse> posts = postService.findIndiCommentsIdPost();
-        model.addAttribute("posts", posts);
-        obj.put("commentsid", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
+        // 중고 좋아요 삭제
+        @RequestMapping("/post/deleteusedliked")
+        public Integer deleteUsedLikedPost(@RequestBody PostUsedLikedRequest params) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.updateDeleteUsedLikedPost(params);
+            return postService.deleteUsedLikedPost(params);
+        }
 
-    }
-
-    // 개인 댓글 수정
-    @PostMapping("/post/updateindicomments")
-    public Long updateIndiCommentsPost(@RequestBody PostIndiCommentsRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.updateIndiCommentsPost(params);
-    }
-
-    // 개인 댓글 삭제
-    @RequestMapping("/post/deleteindicomments")
-    public Long deleteIndiCommentsPost(@RequestBody PostIndiCommentsRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.updateDeleteIndiCommentsCountPost(params);
-        return postService.deleteIndiCommentsPost(params);
-    }
-
-    // 단체 댓글 조회
-    @RequestMapping("/post/groupcommentsinfo")
-    public ResponseEntity<?> groupCommentsInfo(@RequestBody PostGroupCommentsResponse inherentid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findPostByGroupCommentsInherentId(inherentid.getInherentid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostGroupCommentsResponse> posts = postService.findPostByGroupCommentsInherentId(inherentid.getInherentid());
-        model.addAttribute("posts", posts);
-        obj.put("comment", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
+        // 댓글 조회
+        @RequestMapping("/post/commentsinfo")
+        public ResponseEntity<?> commentsInfo(@RequestBody PostCommentsResponse inherentid, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.findPostByInherentId(inherentid.getInherentid());
+            Map<String, Object> obj = new HashMap<>();
+            List<PostCommentsResponse> posts = postService.findPostByInherentId(inherentid.getInherentid());
+            model.addAttribute("posts", posts);
+            obj.put("comment", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
 
 
-    // 단체 댓글 등록 및 아이디 전송
-    @RequestMapping(method = RequestMethod.POST,path ="/post/groupcomments")
-    public ResponseEntity<?> saveGroupComments(@RequestBody PostGroupCommentsRequest params,Model model) throws ApiException,IOException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.saveGroupCommentsPost(params);
-        postService.updateGroupCommentsCountPost(params);
-        firebaseCloudMessageCommentsService.sendMessageTo(
-                params.getToken(),
-                params.getNickname());
-        ResponseEntity.ok().build().getStatusCodeValue();
-        Map<String, Object> obj = new HashMap<>();
-        List<PostGroupCommentsIdResponse> posts = postService.findGroupCommentsIdPost();
-        model.addAttribute("posts", posts);
-        obj.put("commentsid", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
+        // 댓글 등록 및 아이디 전송
+        @RequestMapping(method = RequestMethod.POST, path = "/post/comments")
+        public ResponseEntity<?> saveComments(@RequestBody PostCommentsRequest params, Model model) throws ApiException, IOException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.saveCommentsPost(params);
+            postService.updateCommentsCountPost(params);
+            firebaseCloudMessageCommentsService.sendMessageTo(
+                    params.getToken(),
+                    params.getNickname());
+            ResponseEntity.ok().build().getStatusCodeValue();
+            Map<String, Object> obj = new HashMap<>();
+            List<PostCommentsIdResponse> posts = postService.findCommentsIdPost();
+            model.addAttribute("posts", posts);
+            obj.put("commentsid", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
 
-    }
+        }
 
-    // 단체 댓글 수정
-    @PostMapping("/post/updategroupcomments")
-    public Long updateGroupCommentsPost(@RequestBody PostGroupCommentsRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.updateGroupCommentsPost(params);
-    }
+        // 댓글 수정
+        @PostMapping("/post/updatecomments")
+        public Long updateCommentsPost(@RequestBody PostCommentsRequest params) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            return postService.updateCommentsPost(params);
+        }
 
-    // 단체 댓글 삭제
-    @RequestMapping("/post/deletegroupcomments")
-    public Long deleteGroupCommentsPost(@RequestBody PostGroupCommentsRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.updateDeleteGroupCommentsCountPost(params);
-        return postService.deleteGroupCommentsPost(params);
-    }
+        // 댓글 삭제
+        @RequestMapping("/post/deletecomments")
+        public Long deleteCommentsPost(@RequestBody PostCommentsRequest params) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.updateDeleteCommentsCountPost(params);
+            return postService.deleteCommentsPost(params);
+        }
 
-
-    // 중고 댓글 조회
-    @RequestMapping("/post/usedcommentsinfo")
-    public ResponseEntity<?> usedcommentsinfo(@RequestBody PostUsedCommentsResponse inherentid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findPostByUsedCommentsInherentId(inherentid.getInherentid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostUsedCommentsResponse> posts = postService.findPostByUsedCommentsInherentId(inherentid.getInherentid());
-        model.addAttribute("posts", posts);
-        obj.put("comment", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-
-    // 중고 댓글 등록 및 아이디 전송
-    @RequestMapping(method = RequestMethod.POST,path ="/post/usedcomments")
-    public ResponseEntity<?> saveUsedComments(@RequestBody PostUsedCommentsRequest params,Model model) throws ApiException,IOException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.saveUsedCommentsPost(params);
-        postService.updateUsedCommentsCountPost(params);
-        firebaseCloudMessageCommentsService.sendMessageTo(
-                params.getToken(),
-                params.getNickname());
-        ResponseEntity.ok().build().getStatusCodeValue();
-        Map<String, Object> obj = new HashMap<>();
-        List<PostUsedCommentsIdResponse> posts = postService.findUsedCommentsIdPost();
-        model.addAttribute("posts", posts);
-        obj.put("commentsid", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-
-    }
-
-    // 중고 댓글 수정
-    @PostMapping("/post/updateusedcomments")
-    public Long updateUsedCommentsPost(@RequestBody PostUsedCommentsRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.updateUsedCommentsPost(params);
-    }
-
-    // 중고 댓글 삭제
-    @RequestMapping("/post/deleteusedcomments")
-    public Long deleteUsedCommentsPost(@RequestBody PostUsedCommentsRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.updateDeleteUsedCommentsCountPost(params);
-        return postService.deleteUsedCommentsPost(params);
-    }
+        // 개인 댓글 조회
+        @RequestMapping("/post/indicommentsinfo")
+        public ResponseEntity<?> indiCommentsInfo(@RequestBody PostIndiCommentsResponse inherentid, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.findPostByIndiCommentsInherentId(inherentid.getInherentid());
+            Map<String, Object> obj = new HashMap<>();
+            List<PostIndiCommentsResponse> posts = postService.findPostByIndiCommentsInherentId(inherentid.getInherentid());
+            model.addAttribute("posts", posts);
+            obj.put("comment", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
 
 
+        // 개인 댓글 등록 및 아이디 전송
+        @RequestMapping(method = RequestMethod.POST, path = "/post/indicomments")
+        public ResponseEntity<?> saveIndiComments(@RequestBody PostIndiCommentsRequest params, Model model) throws ApiException, IOException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.saveIndiCommentsPost(params);
+            postService.updateIndiCommentsCountPost(params);
+            firebaseCloudMessageCommentsService.sendMessageTo(
+                    params.getToken(),
+                    params.getNickname());
+            ResponseEntity.ok().build().getStatusCodeValue();
+            Map<String, Object> obj = new HashMap<>();
+            List<PostIndiCommentsIdResponse> posts = postService.findIndiCommentsIdPost();
+            model.addAttribute("posts", posts);
+            obj.put("commentsid", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+
+        }
+
+        // 개인 댓글 수정
+        @PostMapping("/post/updateindicomments")
+        public Long updateIndiCommentsPost(@RequestBody PostIndiCommentsRequest params) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            return postService.updateIndiCommentsPost(params);
+        }
+
+        // 개인 댓글 삭제
+        @RequestMapping("/post/deleteindicomments")
+        public Long deleteIndiCommentsPost(@RequestBody PostIndiCommentsRequest params) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.updateDeleteIndiCommentsCountPost(params);
+            return postService.deleteIndiCommentsPost(params);
+        }
+
+        // 단체 댓글 조회
+        @RequestMapping("/post/groupcommentsinfo")
+        public ResponseEntity<?> groupCommentsInfo(@RequestBody PostGroupCommentsResponse inherentid, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.findPostByGroupCommentsInherentId(inherentid.getInherentid());
+            Map<String, Object> obj = new HashMap<>();
+            List<PostGroupCommentsResponse> posts = postService.findPostByGroupCommentsInherentId(inherentid.getInherentid());
+            model.addAttribute("posts", posts);
+            obj.put("comment", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
+
+
+        // 단체 댓글 등록 및 아이디 전송
+        @RequestMapping(method = RequestMethod.POST, path = "/post/groupcomments")
+        public ResponseEntity<?> saveGroupComments(@RequestBody PostGroupCommentsRequest params, Model model) throws ApiException, IOException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.saveGroupCommentsPost(params);
+            postService.updateGroupCommentsCountPost(params);
+            firebaseCloudMessageCommentsService.sendMessageTo(
+                    params.getToken(),
+                    params.getNickname());
+            ResponseEntity.ok().build().getStatusCodeValue();
+            Map<String, Object> obj = new HashMap<>();
+            List<PostGroupCommentsIdResponse> posts = postService.findGroupCommentsIdPost();
+            model.addAttribute("posts", posts);
+            obj.put("commentsid", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+
+        }
+
+        // 단체 댓글 수정
+        @PostMapping("/post/updategroupcomments")
+        public Long updateGroupCommentsPost(@RequestBody PostGroupCommentsRequest params) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            return postService.updateGroupCommentsPost(params);
+        }
+
+        // 단체 댓글 삭제
+        @RequestMapping("/post/deletegroupcomments")
+        public Long deleteGroupCommentsPost(@RequestBody PostGroupCommentsRequest params) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.updateDeleteGroupCommentsCountPost(params);
+            return postService.deleteGroupCommentsPost(params);
+        }
+
+
+        // 중고 댓글 조회
+        @RequestMapping("/post/usedcommentsinfo")
+        public ResponseEntity<?> usedcommentsinfo(@RequestBody PostUsedCommentsResponse inherentid, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.findPostByUsedCommentsInherentId(inherentid.getInherentid());
+            Map<String, Object> obj = new HashMap<>();
+            List<PostUsedCommentsResponse> posts = postService.findPostByUsedCommentsInherentId(inherentid.getInherentid());
+            model.addAttribute("posts", posts);
+            obj.put("comment", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
+
+
+        // 중고 댓글 등록 및 아이디 전송
+        @RequestMapping(method = RequestMethod.POST, path = "/post/usedcomments")
+        public ResponseEntity<?> saveUsedComments(@RequestBody PostUsedCommentsRequest params, Model model) throws ApiException, IOException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.saveUsedCommentsPost(params);
+            postService.updateUsedCommentsCountPost(params);
+            firebaseCloudMessageCommentsService.sendMessageTo(
+                    params.getToken(),
+                    params.getNickname());
+            ResponseEntity.ok().build().getStatusCodeValue();
+            Map<String, Object> obj = new HashMap<>();
+            List<PostUsedCommentsIdResponse> posts = postService.findUsedCommentsIdPost();
+            model.addAttribute("posts", posts);
+            obj.put("commentsid", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+
+        }
+
+        // 중고 댓글 수정
+        @PostMapping("/post/updateusedcomments")
+        public Long updateUsedCommentsPost(@RequestBody PostUsedCommentsRequest params) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            return postService.updateUsedCommentsPost(params);
+        }
+
+        // 중고 댓글 삭제
+        @RequestMapping("/post/deleteusedcomments")
+        public Long deleteUsedCommentsPost(@RequestBody PostUsedCommentsRequest params) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.updateDeleteUsedCommentsCountPost(params);
+            return postService.deleteUsedCommentsPost(params);
+        }
 
 
 //    // 답글 조회
@@ -748,142 +767,141 @@ public class PostController {
 //    }
 
 
+        // 특정 유저 프로필 조회
+        @PostMapping("/post/userinfo")
+        public ResponseEntity<?> openPostView(@RequestBody UserInfoResponse userid, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.findPostById(userid.getUserid());
+            Map<String, Object> obj = new HashMap<>();
+            List<UserInfoResponse> posts = postService.findPostById(userid.getUserid());
+            model.addAttribute("posts", posts);
+            obj.put("userinfo", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
 
 
-    // 특정 유저 프로필 조회
-    @PostMapping("/post/userinfo")
-    public ResponseEntity<?> openPostView(@RequestBody UserInfoResponse userid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findPostById(userid.getUserid());
-        Map<String, Object> obj = new HashMap<>();
-        List<UserInfoResponse> posts = postService.findPostById(userid.getUserid());
-        model.addAttribute("posts", posts);
-        obj.put("userinfo", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
+        // 내가 쓴 글 커뮤니티
+        @PostMapping("/post/myboardwrite")
+        public ResponseEntity<?> myBoardWrite(@RequestBody PostMyBoardResponse userid, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.findPostByMyUserId(userid.getUserid());
+            Map<String, Object> obj = new HashMap<>();
+            List<PostMyBoardResponse> posts = postService.findPostByMyUserId(userid.getUserid());
+            model.addAttribute("posts", posts);
+            obj.put("myboard", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
+
+        // 내가 쓴 글 단체
+        @PostMapping("/post/mygroupwrite")
+        public ResponseEntity<?> myBoardWrite(@RequestBody PostMyGroupResponse userid, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.findPostByMyGroupUserId(userid.getUserid());
+            Map<String, Object> obj = new HashMap<>();
+            List<PostMyGroupResponse> posts = postService.findPostByMyGroupUserId(userid.getUserid());
+            model.addAttribute("posts", posts);
+            obj.put("groupwrite", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
+
+        // 내가 쓴 글 개인
+        @PostMapping("/post/myindividualwrite")
+        public ResponseEntity<?> myBoardWrite(@RequestBody PostMyIndiResponse userid, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.findPostByMyIndividualUserId(userid.getUserid());
+            Map<String, Object> obj = new HashMap<>();
+            List<PostMyIndiResponse> posts = postService.findPostByMyIndividualUserId(userid.getUserid());
+            model.addAttribute("posts", posts);
+            obj.put("individualwrite", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
+
+        // 내가 쓴 글 중고
+        @PostMapping("/post/myusedwrite")
+        public ResponseEntity<?> myBoardWrite(@RequestBody PostMyUsedResponse userid, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.findPostByMyUsedUserId(userid.getUserid());
+            Map<String, Object> obj = new HashMap<>();
+            List<PostMyUsedResponse> posts = postService.findPostByMyUsedUserId(userid.getUserid());
+            model.addAttribute("posts", posts);
+            obj.put("usedwrite", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
+
+        // 내가 좋아요 누른 글 커뮤니티
+        @PostMapping("/post/myboardliked")
+        public ResponseEntity<?> myBoardLiked(@RequestBody PostMyLikedResponse userid, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.findPostByMyLikedUserId(userid.getUserid());
+            Map<String, Object> obj = new HashMap<>();
+            List<PostMyLikedResponse> posts = postService.findPostByMyLikedUserId(userid.getUserid());
+            model.addAttribute("posts", posts);
+            obj.put("myboard", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
+
+        // 내가 좋아요 누른 글 개인
+        @PostMapping("/post/myindividualliked")
+        public ResponseEntity<?> myIndividualLiked(@RequestBody PostMyIndividualLikedResponse userid, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.findPostByMyIndividualLikedUserId(userid.getUserid());
+            Map<String, Object> obj = new HashMap<>();
+            List<PostMyIndividualLikedResponse> posts = postService.findPostByMyIndividualLikedUserId(userid.getUserid());
+            model.addAttribute("posts", posts);
+            obj.put("individualwrite", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
+
+        // 내가 좋아요 누른 글 중고
+        @PostMapping("/post/myusedliked")
+        public ResponseEntity<?> myUsedLiked(@RequestBody PostMyUsedLikedResponse userid, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            postService.findPostByMyUsedLikedUserId(userid.getUserid());
+            Map<String, Object> obj = new HashMap<>();
+            List<PostMyUsedLikedResponse> posts = postService.findPostByMyUsedLikedUserId(userid.getUserid());
+            model.addAttribute("posts", posts);
+            obj.put("usedwrite", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
 
 
+        // 채팅방 넣기
+        @PostMapping("/post/chatroom")
+        public Long saveChatRoomPost(@RequestBody PostChatRoomRequest params) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            return postService.saveChatRoomPost(params);
 
-    // 내가 쓴 글 커뮤니티
-    @PostMapping("/post/myboardwrite")
-    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyBoardResponse userid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findPostByMyUserId(userid.getUserid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostMyBoardResponse> posts = postService.findPostByMyUserId(userid.getUserid());
-        model.addAttribute("posts", posts);
-        obj.put("myboard", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
+        }
 
-    // 내가 쓴 글 단체
-    @PostMapping("/post/mygroupwrite")
-    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyGroupResponse userid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findPostByMyGroupUserId(userid.getUserid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostMyGroupResponse> posts = postService.findPostByMyGroupUserId(userid.getUserid());
-        model.addAttribute("posts", posts);
-        obj.put("groupwrite", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-    // 내가 쓴 글 개인
-    @PostMapping("/post/myindividualwrite")
-    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyIndiResponse userid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findPostByMyIndividualUserId(userid.getUserid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostMyIndiResponse> posts = postService.findPostByMyIndividualUserId(userid.getUserid());
-        model.addAttribute("posts", posts);
-        obj.put("individualwrite", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-    // 내가 쓴 글 중고
-    @PostMapping("/post/myusedwrite")
-    public ResponseEntity<?> myBoardWrite(@RequestBody PostMyUsedResponse userid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findPostByMyUsedUserId(userid.getUserid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostMyUsedResponse> posts = postService.findPostByMyUsedUserId(userid.getUserid());
-        model.addAttribute("posts", posts);
-        obj.put("usedwrite", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-    // 내가 좋아요 누른 글 커뮤니티
-    @PostMapping("/post/myboardliked")
-    public ResponseEntity<?> myBoardLiked(@RequestBody PostMyLikedResponse userid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findPostByMyLikedUserId(userid.getUserid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostMyLikedResponse> posts = postService.findPostByMyLikedUserId(userid.getUserid());
-        model.addAttribute("posts", posts);
-        obj.put("myboard", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-    // 내가 좋아요 누른 글 개인
-    @PostMapping("/post/myindividualliked")
-    public ResponseEntity<?> myIndividualLiked(@RequestBody PostMyIndividualLikedResponse userid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findPostByMyIndividualLikedUserId(userid.getUserid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostMyIndividualLikedResponse> posts = postService.findPostByMyIndividualLikedUserId(userid.getUserid());
-        model.addAttribute("posts", posts);
-        obj.put("individualwrite", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-    // 내가 좋아요 누른 글 중고
-    @PostMapping("/post/myusedliked")
-    public ResponseEntity<?> myUsedLiked(@RequestBody PostMyUsedLikedResponse userid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findPostByMyUsedLikedUserId(userid.getUserid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostMyUsedLikedResponse> posts = postService.findPostByMyUsedLikedUserId(userid.getUserid());
-        model.addAttribute("posts", posts);
-        obj.put("usedwrite", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-
-
-    // 채팅방 넣기
-    @PostMapping("/post/chatroom")
-    public Long saveChatRoomPost(@RequestBody  PostChatRoomRequest params) throws ApiException{
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.saveChatRoomPost(params);
-
-    }
-
-    // 특정 채팅방 조회
-    @PostMapping("/post/chatroominfo")
-    public ResponseEntity<?> viewChatRoomPost(@RequestBody PostChatRoomResponse myid,Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        // 특정 채팅방 조회
+        @PostMapping("/post/chatroominfo")
+        public ResponseEntity<?> viewChatRoomPost(@RequestBody PostChatRoomResponse myid, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.findPostByMyId(myid.getMyid());
             Map<String, Object> obj = new HashMap<>();
             List<PostChatRoomResponse> posts = postService.findPostByMyId(myid.getMyid());
             model.addAttribute("posts", posts);
             obj.put("chatroom", posts);
             return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
+        }
 
 
+        // 특정 채팅방 삭제
+        @RequestMapping("/post/deleteroom")
+        public String deleteChatRoomPost(@RequestBody PostChatRoomDeleteRequest params) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            return postService.deleteChatRoomPost(params);
+        }
 
-    // 특정 채팅방 삭제
-    @RequestMapping("/post/deleteroom")
-    public String deleteChatRoomPost(@RequestBody PostChatRoomDeleteRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.deleteChatRoomPost(params);
-    }
+        // 채팅 넣기
+        @PostMapping("/chat")
+        public String pushChatPost(@RequestBody ResponseDTO responseDTO) throws IOException {
+            firebaseCloudChatMessageService.sendMessageTo(
+                    responseDTO.getToken(),
+                    responseDTO.getNickname());
+            return String.valueOf(ResponseEntity.ok().build().getStatusCodeValue());
 
-    // 채팅 넣기
-    @PostMapping("/chat")
-    public String pushChatPost(@RequestBody ResponseDTO responseDTO)throws IOException{
-        firebaseCloudChatMessageService.sendMessageTo(
-                responseDTO.getToken(),
-                responseDTO.getNickname());
-        return String.valueOf(ResponseEntity.ok().build().getStatusCodeValue());
-
-    }
-
-
+        }
 
 }
+

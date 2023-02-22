@@ -517,19 +517,19 @@
           , bestcategory = #{bestcategory}
           , shortinfo = #{shortinfo}
           , youtube = #{youtube}
+          , profileimage = #{profileimage}
         WHERE
             userid = #{userid}
     </update>
 
-    <!-- 유저 프로필 프사 수정 -->
-    <update id="updateUserImage">
-        UPDATE User
-        SET
-            profileimage = #{filepath}
-        WHERE
-            userid = #{userid}
-    </update>
-
+    <!-- 유저 수정된 프사 조회  -->
+    <select id="findUserImage" resultType="com.project.ribbon.domain.post.PostUserUpdateRequest">
+        SELECT
+            *
+        FROM
+            user
+        WHERE userid = #{userid}
+    </select>
 
 
     <!-- 유저 정보 삭제 -->
