@@ -24,6 +24,7 @@ public class PostService {
         return params.getBoardid();
     }
 
+
     // 커뮤니티 게시글 수정
     @Transactional
     public Long updatePost(final PostRequest params) {
@@ -167,7 +168,7 @@ public class PostService {
         return null;
     }
     // 유저 수정된 프로필 사진
-    public PostUserUpdateRequest findUserImagePost(String  userid) {
+    public PostUserUpdateRequest findUserImagePost(Long userid) {
         return postMapper.findUserImage(userid);
     }
 

@@ -21,7 +21,7 @@ public class PostUserUpdateRequest {
         private String shortinfo;
         private String youtube;
         private String profileimage;
-        private String userid; //PK
+        private Long userid; //PK
 
 
 }

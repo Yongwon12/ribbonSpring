@@ -56,16 +56,44 @@ public class PostController {
 
 
 
+    @Value("${file.upload.path}")
+    private String uploadPath;
+
 
     // 커뮤니티 게시글 작성
     @PostMapping("/post/boardwrite")
-    public ResponseEntity<?> savePost(@RequestBody @Valid PostRequest params) throws ApiException{
-        try {
-            Long postId = postService.savePost(params);
-            return new ResponseEntity<>(postId, HttpStatus.OK);
-        } catch (ApiException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<?> savePost(@RequestParam("id") Integer id
+            ,@RequestParam("userid") Long userid,@RequestParam("title") String title
+            ,@RequestParam("description") String description,@RequestParam("image") MultipartFile file
+            , @RequestParam("writedate") String writedate
+            ,@RequestParam("nickname") String nickname) throws IOException{
+        String img = file.getOriginalFilename();
+        String fileboardpath = Paths.get(uploadPath, img).toString();
+        byte[] bytes = file.getBytes();
+        Path boardimagepath = Paths.get(fileboardpath);
+        Files.write(boardimagepath, bytes);
+        PostRequest params = new PostRequest();
+        params.setId(id);
+        params.setUserid(userid);
+        params.setTitle(title);
+        params.setDescription(description);
+        params.setImg("http://192.168.219.161:8000/api/image/"+img);
+        params.setWritedate(writedate);
+        params.setNickname(nickname);
+
+        return new ResponseEntity<>(postService.savePost(params), HttpStatus.OK);
+
+    }
+
+    // 커뮤니티 프로필 사진 조회
+    @GetMapping("/boardimage/{imageName:.+}")
+    public ResponseEntity<byte[]> getBoardImage(@PathVariable("imageName") String img) throws IOException {
+        Path imageBoardPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + img);
+        byte[] imageBytes = Files.readAllBytes(imageBoardPath);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
     }
 
     // 커뮤니티 게시글 조회
@@ -117,6 +145,7 @@ public class PostController {
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
 
+
     // 단체 특정 작성글 조회
     @PostMapping("/group")
     public ResponseEntity<?> groupWriteOne(@RequestBody PostGroupResponse params, Model model) throws ApiException {
@@ -130,13 +159,49 @@ public class PostController {
 
     // 단체 글작성
     @PostMapping("/post/writegroup")
-    public ResponseEntity<?> saveGroupPost(@RequestBody @Valid PostGroupRequest params) {
-        try {
-            Long id = postService.saveGroupPost(params);
-            return new ResponseEntity<>(id, HttpStatus.OK);
-        } catch (ApiException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<?> saveGroupPost(@RequestParam("id") Integer id
+            ,@RequestParam("region") String region,@RequestParam("title") String title
+            ,@RequestParam("line") String line
+            , @RequestParam("description") String description
+            ,@RequestParam("peoplenum") String peoplenum,@RequestParam("gender") String gender
+            ,@RequestParam("minage") String minage,@RequestParam("image") MultipartFile file
+            ,@RequestParam("userid") Long userid,@RequestParam("maxage") String maxage
+            ,@RequestParam("writedate") String writedate,@RequestParam("peoplenownum") String peoplenownum
+            ,@RequestParam("nickname") String nickname) throws IOException{
+        String titleimage = file.getOriginalFilename();
+        String filegrouppath = Paths.get(uploadPath, titleimage).toString();
+        byte[] bytes = file.getBytes();
+        Path groupimagepath = Paths.get(filegrouppath);
+        Files.write(groupimagepath, bytes);
+        PostGroupRequest params = new PostGroupRequest();
+        params.setId(id);
+        params.setRegion(region);
+        params.setTitle(title);
+        params.setLine(line);
+        params.setDescription(description);
+        params.setPeoplenum(peoplenum);
+        params.setGender(gender);
+        params.setMinage(minage);
+        params.setTitleimage("http://192.168.219.161:8000/api/image/"+titleimage);
+        params.setUserid(userid);
+        params.setMaxage(maxage);
+        params.setWritedate(writedate);
+        params.setPeoplenownum(peoplenownum);
+        params.setNickname(nickname);
+
+        return new ResponseEntity<>(postService.saveGroupPost(params), HttpStatus.OK);
+
+    }
+
+    // 단체 프로필 사진 조회
+    @GetMapping("/groupimage/{imageName:.+}")
+    public ResponseEntity<byte[]> getGroupImage(@PathVariable("imageName") String titleimage) throws IOException {
+        Path imageGroupPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + titleimage);
+        byte[] imageBytes = Files.readAllBytes(imageGroupPath);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
     }
 
     // 단체 게시글 수정
@@ -224,14 +289,67 @@ public class PostController {
 
     // 중고 글작성
     @PostMapping("/post/writeused")
-    public ResponseEntity<?> saveUsedPost(@RequestBody PostUsedRequest params) throws ApiException {
-        try {
-            Long id = postService.saveUsedPost(params);
-            return new ResponseEntity<>(id, HttpStatus.OK);
-        } catch (ApiException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<?> saveUsedPost(@RequestParam("id") Integer id
+            ,@RequestParam("region") String region,@RequestParam("title") String title
+            ,@RequestParam("description") String description
+            ,@RequestParam("usedimage1") MultipartFile file1,@RequestParam("price") Integer price
+            ,@RequestParam("userid") Long userid,@RequestParam("writedate") String  writedate
+            ,@RequestParam("nickname") String nickname,@RequestParam("usedimage2") MultipartFile file2
+            ,@RequestParam("usedimage3") MultipartFile file3,@RequestParam("usedimage4") MultipartFile file4
+            ,@RequestParam("usedimage5") MultipartFile file5) throws IOException{
 
+        String usedimage1 = file1.getOriginalFilename();
+        String usedimage2 = file2.getOriginalFilename();
+        String usedimage3 = file3.getOriginalFilename();
+        String usedimage4 = file4.getOriginalFilename();
+        String usedimage5 = file5.getOriginalFilename();
+        String fileused1path = Paths.get(uploadPath, usedimage1).toString();
+        byte[] bytes1 = file1.getBytes();
+        Path groupimage1path = Paths.get(fileused1path);
+        Files.write(groupimage1path, bytes1);
+        String fileused2path = Paths.get(uploadPath, usedimage1).toString();
+        byte[] bytes2 = file2.getBytes();
+        Path groupimage2path = Paths.get(fileused2path);
+        Files.write(groupimage2path, bytes2);
+        String fileused3path = Paths.get(uploadPath, usedimage1).toString();
+        byte[] bytes3 = file3.getBytes();
+        Path groupimage3path = Paths.get(fileused3path);
+        Files.write(groupimage3path, bytes3);
+        String fileused4path = Paths.get(uploadPath, usedimage1).toString();
+        byte[] bytes4 = file4.getBytes();
+        Path groupimage4path = Paths.get(fileused4path);
+        Files.write(groupimage4path, bytes4);
+        String fileused5path = Paths.get(uploadPath, usedimage1).toString();
+        byte[] bytes5 = file5.getBytes();
+        Path groupimage5path = Paths.get(fileused5path);
+        Files.write(groupimage5path, bytes5);
+        PostUsedRequest params = new PostUsedRequest();
+        params.setId(id);
+        params.setRegion(region);
+        params.setTitle(title);
+        params.setDescription(description);
+        params.setUsedimage1("http://192.168.219.161:8000/api/image/"+usedimage1);
+        params.setPrice(price);
+        params.setUserid(userid);
+        params.setWritedate(writedate);
+        params.setNickname(nickname);
+        params.setUsedimage2("http://192.168.219.161:8000/api/image/"+usedimage2);
+        params.setUsedimage3("http://192.168.219.161:8000/api/image/"+usedimage3);
+        params.setUsedimage4("http://192.168.219.161:8000/api/image/"+usedimage4);
+        params.setUsedimage5("http://192.168.219.161:8000/api/image/"+usedimage5);
+        return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
+
+    }
+
+    // 중고 사진 조회
+    @GetMapping("/usedimage/{imageName:.+}")
+    public ResponseEntity<byte[]> getUsedImage(@PathVariable("imageName") String usedimage) throws IOException {
+        Path imageUsedPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + usedimage);
+        byte[] imageBytes = Files.readAllBytes(imageUsedPath);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
     }
 
     // 중고 게시글 수정
@@ -278,15 +396,13 @@ public class PostController {
 
 
     // 유저 정보 수정
-    @Value("${file.upload.path}")
-    private String uploadPath;
     @PostMapping("/post/updateuser")
     public ResponseEntity<?> updateUserPost(
             @RequestParam("sns") String sns
             ,@RequestParam("nickname") String nickname,@RequestParam("modifydate") String modifydate
             ,@RequestParam("bestcategory") String bestcategory,@RequestParam("shortinfo") String shortinfo
             ,@RequestParam("youtube") String youtube, @RequestParam("image") MultipartFile file
-            ,@RequestParam("userid") String userid) throws IOException{
+            ,@RequestParam("userid") Long userid) throws IOException{
         String profileimage = file.getOriginalFilename();
         String filepath = Paths.get(uploadPath, profileimage).toString();
         byte[] bytes = file.getBytes();
@@ -299,7 +415,7 @@ public class PostController {
         params.setBestcategory(bestcategory);
         params.setShortinfo(shortinfo);
         params.setYoutube(youtube);
-        params.setProfileimage("http://192.168.0.5:8000/api/userimage/"+profileimage);
+        params.setProfileimage("http://192.168.219.161:8000/api/userimage/"+profileimage);
         params.setUserid(userid);
         postService.updateUserPost(params);
 
@@ -312,7 +428,7 @@ public class PostController {
     // 유저 프로필 사진 조회
     @GetMapping("/userimage/{imageName:.+}")
     public ResponseEntity<byte[]> getImage(@PathVariable("imageName") String profileimage) throws IOException {
-        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/userimage/" + profileimage);
+        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + profileimage);
         byte[] imageBytes = Files.readAllBytes(imagePath);
 
         final HttpHeaders headers = new HttpHeaders();

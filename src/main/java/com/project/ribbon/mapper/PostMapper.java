@@ -85,8 +85,7 @@ public interface PostMapper {
     // 유저 수정
     void updateUser(PostUserUpdateRequest params);
     // 유저 수정된 프사
-
-    PostUserUpdateRequest findUserImage(String userid);
+    PostUserUpdateRequest findUserImage(Long userid);
 
 
 

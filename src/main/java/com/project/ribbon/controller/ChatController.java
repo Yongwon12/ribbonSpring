@@ -11,6 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/chat")
 public class ChatController {
+
     private final ChatService chatService;
 
     @PostMapping
