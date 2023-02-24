@@ -1153,5 +1153,11 @@
     </insert>
 
 
+    <!-- 신고 유저 조회 -->
+    <select id="findReportUserAll" resultType="com.project.ribbon.domain.post.PostUserRequest">
+        SELECT
+            *
+        FROM reportuser
 
+    </select>
 </mapper>

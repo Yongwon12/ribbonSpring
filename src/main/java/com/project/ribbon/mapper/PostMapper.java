@@ -279,6 +279,9 @@ public interface PostMapper {
     // 채팅 입력
     void saveChat(PostChatMessage params);
 
+    // 신고 유저 조회
+    List<PostReportUserResponse> findReportUserAll();
+
     // 게시글 갯수 카운트
     int count();
 

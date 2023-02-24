@@ -634,5 +634,10 @@ public class PostService {
         return postMapper.findAllTest(id);
     }
 
+    // 커뮤니티 게시글 조회
+    public List<PostReportUserResponse> findReportUserAllPost() {
+        return postMapper.findReportUserAll();
+    }
+
 
 }

@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.springframework.context.annotation.Bean;
 
+import javax.annotation.Nullable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,6 +20,7 @@ public class PostRequest {
         private String title;
         @NotBlank(message="내용은 필수 입력 값입니다.")
         private String description;
+
         private String img;
         private String writedate;
         @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9\\*]{2,30}$", message = "닉네임은 특수문자를 제외한 2~30자리여야 합니다.")

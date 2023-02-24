@@ -13,31 +13,24 @@ import lombok.extern.slf4j.Slf4j;
 
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.google.api.gax.httpjson.HttpHeadersUtils.setHeader;
 
 @Controller
 @RequiredArgsConstructor
@@ -55,6 +48,10 @@ public class PostController {
     private final MemberService memberService;
 
 
+    String userip = "http://192.168.0.4:8000/api/userimage/";
+    String boardip = "http://192.168.0.4:8000/api/boardimage/";
+    String groupip = "http://192.168.0.4:8000/api/groupimage/";
+    String usedip = "http://192.168.0.4:8000/api/usedimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -64,25 +61,38 @@ public class PostController {
     @PostMapping("/post/boardwrite")
     public ResponseEntity<?> savePost(@RequestParam("id") Integer id
             ,@RequestParam("userid") Long userid,@RequestParam("title") String title
-            ,@RequestParam("description") String description,@RequestParam("image") MultipartFile file
-            , @RequestParam("writedate") String writedate
+            ,@RequestParam("description") String description,@RequestParam(value = "image",required = false) MultipartFile file
+            ,@RequestParam("writedate") String writedate
             ,@RequestParam("nickname") String nickname) throws IOException{
-        String img = file.getOriginalFilename();
-        String fileboardpath = Paths.get(uploadPath, img).toString();
-        byte[] bytes = file.getBytes();
-        Path boardimagepath = Paths.get(fileboardpath);
-        Files.write(boardimagepath, bytes);
-        PostRequest params = new PostRequest();
-        params.setId(id);
-        params.setUserid(userid);
-        params.setTitle(title);
-        params.setDescription(description);
-        params.setImg("http://192.168.219.161:8000/api/image/"+img);
-        params.setWritedate(writedate);
-        params.setNickname(nickname);
+        if (file != null){
+            String img = file.getOriginalFilename();
+            String fileboardpath = Paths.get(uploadPath, img).toString();
+            byte[] bytes = file.getBytes();
+            Path boardimagepath = Paths.get(fileboardpath);
+            Files.write(boardimagepath, bytes);
+            PostRequest params = new PostRequest();
+            params.setId(id);
+            params.setUserid(userid);
+            params.setTitle(title);
+            params.setDescription(description);
+            params.setImg(boardip+img);
+            params.setWritedate(writedate);
+            params.setNickname(nickname);
 
-        return new ResponseEntity<>(postService.savePost(params), HttpStatus.OK);
+            return new ResponseEntity<>(postService.savePost(params), HttpStatus.OK);
+        } else if (file == null) {
+            PostRequest params = new PostRequest();
+            params.setId(id);
+            params.setUserid(userid);
+            params.setTitle(title);
+            params.setDescription(description);
+            params.setImg(null);
+            params.setWritedate(writedate);
+            params.setNickname(nickname);
 
+            return new ResponseEntity<>(postService.savePost(params), HttpStatus.OK);
+        }
+        return null;
     }
 
     // 커뮤니티 프로필 사진 조회
@@ -164,33 +174,55 @@ public class PostController {
             ,@RequestParam("line") String line
             , @RequestParam("description") String description
             ,@RequestParam("peoplenum") String peoplenum,@RequestParam("gender") String gender
-            ,@RequestParam("minage") String minage,@RequestParam("image") MultipartFile file
+            ,@RequestParam("minage") String minage,@RequestParam(value = "image",required = false) MultipartFile file
             ,@RequestParam("userid") Long userid,@RequestParam("maxage") String maxage
             ,@RequestParam("writedate") String writedate,@RequestParam("peoplenownum") String peoplenownum
-            ,@RequestParam("nickname") String nickname) throws IOException{
-        String titleimage = file.getOriginalFilename();
-        String filegrouppath = Paths.get(uploadPath, titleimage).toString();
-        byte[] bytes = file.getBytes();
-        Path groupimagepath = Paths.get(filegrouppath);
-        Files.write(groupimagepath, bytes);
-        PostGroupRequest params = new PostGroupRequest();
-        params.setId(id);
-        params.setRegion(region);
-        params.setTitle(title);
-        params.setLine(line);
-        params.setDescription(description);
-        params.setPeoplenum(peoplenum);
-        params.setGender(gender);
-        params.setMinage(minage);
-        params.setTitleimage("http://192.168.219.161:8000/api/image/"+titleimage);
-        params.setUserid(userid);
-        params.setMaxage(maxage);
-        params.setWritedate(writedate);
-        params.setPeoplenownum(peoplenownum);
-        params.setNickname(nickname);
+            ,@RequestParam("nickname") String nickname,@RequestParam("once") String once) throws IOException{
+        if (file != null){
+            String titleimage = file.getOriginalFilename();
+            String filegrouppath = Paths.get(uploadPath, titleimage).toString();
+            byte[] bytes = file.getBytes();
+            Path groupimagepath = Paths.get(filegrouppath);
+            Files.write(groupimagepath, bytes);
+            PostGroupRequest params = new PostGroupRequest();
+            params.setId(id);
+            params.setRegion(region);
+            params.setTitle(title);
+            params.setLine(line);
+            params.setDescription(description);
+            params.setPeoplenum(peoplenum);
+            params.setGender(gender);
+            params.setMinage(minage);
+            params.setTitleimage(groupip+titleimage);
+            params.setUserid(userid);
+            params.setMaxage(maxage);
+            params.setWritedate(writedate);
+            params.setPeoplenownum(peoplenownum);
+            params.setNickname(nickname);
+            params.setOnce(once);
 
-        return new ResponseEntity<>(postService.saveGroupPost(params), HttpStatus.OK);
+            return new ResponseEntity<>(postService.saveGroupPost(params), HttpStatus.OK);
+        } else if (file == null) {
+            PostGroupRequest params = new PostGroupRequest();
+            params.setId(id);
+            params.setRegion(region);
+            params.setTitle(title);
+            params.setLine(line);
+            params.setDescription(description);
+            params.setPeoplenum(peoplenum);
+            params.setGender(gender);
+            params.setMinage(minage);
+            params.setTitleimage(null);
+            params.setUserid(userid);
+            params.setMaxage(maxage);
+            params.setWritedate(writedate);
+            params.setPeoplenownum(peoplenownum);
+            params.setNickname(nickname);
+            params.setOnce(once);
 
+            return new ResponseEntity<>(postService.saveGroupPost(params), HttpStatus.OK);
+        }
+        return null;
     }
 
     // 단체 프로필 사진 조회
@@ -292,53 +324,185 @@ public class PostController {
     public ResponseEntity<?> saveUsedPost(@RequestParam("id") Integer id
             ,@RequestParam("region") String region,@RequestParam("title") String title
             ,@RequestParam("description") String description
-            ,@RequestParam("usedimage1") MultipartFile file1,@RequestParam("price") Integer price
+            ,@RequestParam(value = "usedimage1",required = false) MultipartFile file1,@RequestParam("price") Integer price
             ,@RequestParam("userid") Long userid,@RequestParam("writedate") String  writedate
-            ,@RequestParam("nickname") String nickname,@RequestParam("usedimage2") MultipartFile file2
-            ,@RequestParam("usedimage3") MultipartFile file3,@RequestParam("usedimage4") MultipartFile file4
-            ,@RequestParam("usedimage5") MultipartFile file5) throws IOException{
+            ,@RequestParam("nickname") String nickname,@RequestParam(value = "usedimage2",required = false) MultipartFile file2
+            ,@RequestParam(value = "usedimage3",required = false) MultipartFile file3,@RequestParam(value = "usedimage4",required = false) MultipartFile file4
+            ,@RequestParam(value = "usedimage5",required = false) MultipartFile file5) throws IOException{
 
-        String usedimage1 = file1.getOriginalFilename();
-        String usedimage2 = file2.getOriginalFilename();
-        String usedimage3 = file3.getOriginalFilename();
-        String usedimage4 = file4.getOriginalFilename();
-        String usedimage5 = file5.getOriginalFilename();
-        String fileused1path = Paths.get(uploadPath, usedimage1).toString();
-        byte[] bytes1 = file1.getBytes();
-        Path groupimage1path = Paths.get(fileused1path);
-        Files.write(groupimage1path, bytes1);
-        String fileused2path = Paths.get(uploadPath, usedimage1).toString();
-        byte[] bytes2 = file2.getBytes();
-        Path groupimage2path = Paths.get(fileused2path);
-        Files.write(groupimage2path, bytes2);
-        String fileused3path = Paths.get(uploadPath, usedimage1).toString();
-        byte[] bytes3 = file3.getBytes();
-        Path groupimage3path = Paths.get(fileused3path);
-        Files.write(groupimage3path, bytes3);
-        String fileused4path = Paths.get(uploadPath, usedimage1).toString();
-        byte[] bytes4 = file4.getBytes();
-        Path groupimage4path = Paths.get(fileused4path);
-        Files.write(groupimage4path, bytes4);
-        String fileused5path = Paths.get(uploadPath, usedimage1).toString();
-        byte[] bytes5 = file5.getBytes();
-        Path groupimage5path = Paths.get(fileused5path);
-        Files.write(groupimage5path, bytes5);
-        PostUsedRequest params = new PostUsedRequest();
-        params.setId(id);
-        params.setRegion(region);
-        params.setTitle(title);
-        params.setDescription(description);
-        params.setUsedimage1("http://192.168.219.161:8000/api/image/"+usedimage1);
-        params.setPrice(price);
-        params.setUserid(userid);
-        params.setWritedate(writedate);
-        params.setNickname(nickname);
-        params.setUsedimage2("http://192.168.219.161:8000/api/image/"+usedimage2);
-        params.setUsedimage3("http://192.168.219.161:8000/api/image/"+usedimage3);
-        params.setUsedimage4("http://192.168.219.161:8000/api/image/"+usedimage4);
-        params.setUsedimage5("http://192.168.219.161:8000/api/image/"+usedimage5);
-        return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
-
+        if (file1 !=null && file2 != null && file3 != null && file4 != null && file5 != null){
+            String usedimage1 = file1.getOriginalFilename();
+            String usedimage2 = file2.getOriginalFilename();
+            String usedimage3 = file3.getOriginalFilename();
+            String usedimage4 = file4.getOriginalFilename();
+            String usedimage5 = file5.getOriginalFilename();
+            String fileused1path = Paths.get(uploadPath, usedimage1).toString();
+            byte[] bytes1 = file1.getBytes();
+            Path groupimage1path = Paths.get(fileused1path);
+            Files.write(groupimage1path, bytes1);
+            String fileused2path = Paths.get(uploadPath, usedimage2).toString();
+            byte[] bytes2 = file2.getBytes();
+            Path groupimage2path = Paths.get(fileused2path);
+            Files.write(groupimage2path, bytes2);
+            String fileused3path = Paths.get(uploadPath, usedimage3).toString();
+            byte[] bytes3 = file3.getBytes();
+            Path groupimage3path = Paths.get(fileused3path);
+            Files.write(groupimage3path, bytes3);
+            String fileused4path = Paths.get(uploadPath, usedimage4).toString();
+            byte[] bytes4 = file4.getBytes();
+            Path groupimage4path = Paths.get(fileused4path);
+            Files.write(groupimage4path, bytes4);
+            String fileused5path = Paths.get(uploadPath, usedimage5).toString();
+            byte[] bytes5 = file5.getBytes();
+            Path groupimage5path = Paths.get(fileused5path);
+            Files.write(groupimage5path, bytes5);
+            PostUsedRequest params = new PostUsedRequest();
+            params.setId(id);
+            params.setRegion(region);
+            params.setTitle(title);
+            params.setDescription(description);
+            params.setUsedimage1(usedip+usedimage1);
+            params.setPrice(price);
+            params.setUserid(userid);
+            params.setWritedate(writedate);
+            params.setNickname(nickname);
+            params.setUsedimage2(usedip+usedimage2);
+            params.setUsedimage3(usedip+usedimage3);
+            params.setUsedimage4(usedip+usedimage4);
+            params.setUsedimage5(usedip+usedimage5);
+            return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
+        } else if (file1 ==null && file2 == null && file3 == null && file4 == null && file5 == null) {
+            PostUsedRequest params = new PostUsedRequest();
+            params.setId(id);
+            params.setRegion(region);
+            params.setTitle(title);
+            params.setDescription(description);
+            params.setUsedimage1(null);
+            params.setPrice(price);
+            params.setUserid(userid);
+            params.setWritedate(writedate);
+            params.setNickname(nickname);
+            params.setUsedimage2(null);
+            params.setUsedimage3(null);
+            params.setUsedimage4(null);
+            params.setUsedimage5(null);
+            return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
+        } else if (file1 !=null && file2 == null && file3 == null && file4 == null && file5 == null) {
+            String usedimage1 = file1.getOriginalFilename();
+            String fileused1path = Paths.get(uploadPath, usedimage1).toString();
+            byte[] bytes1 = file1.getBytes();
+            Path groupimage1path = Paths.get(fileused1path);
+            Files.write(groupimage1path, bytes1);
+            PostUsedRequest params = new PostUsedRequest();
+            params.setId(id);
+            params.setRegion(region);
+            params.setTitle(title);
+            params.setDescription(description);
+            params.setUsedimage1(usedip+usedimage1);
+            params.setPrice(price);
+            params.setUserid(userid);
+            params.setWritedate(writedate);
+            params.setNickname(nickname);
+            params.setUsedimage2(null);
+            params.setUsedimage3(null);
+            params.setUsedimage4(null);
+            params.setUsedimage5(null);
+            return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
+        } else if (file1 !=null && file2 != null && file3 == null && file4 == null && file5 == null) {
+            String usedimage1 = file1.getOriginalFilename();
+            String usedimage2 = file2.getOriginalFilename();
+            String fileused1path = Paths.get(uploadPath, usedimage1).toString();
+            byte[] bytes1 = file1.getBytes();
+            Path groupimage1path = Paths.get(fileused1path);
+            Files.write(groupimage1path, bytes1);
+            String fileused2path = Paths.get(uploadPath, usedimage2).toString();
+            byte[] bytes2 = file2.getBytes();
+            Path groupimage2path = Paths.get(fileused2path);
+            Files.write(groupimage2path, bytes2);
+            PostUsedRequest params = new PostUsedRequest();
+            params.setId(id);
+            params.setRegion(region);
+            params.setTitle(title);
+            params.setDescription(description);
+            params.setUsedimage1(usedip+usedimage1);
+            params.setPrice(price);
+            params.setUserid(userid);
+            params.setWritedate(writedate);
+            params.setNickname(nickname);
+            params.setUsedimage2(usedip+usedimage2);
+            params.setUsedimage3(null);
+            params.setUsedimage4(null);
+            params.setUsedimage5(null);
+            return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
+        } else if (file1 !=null && file2 != null && file3 != null && file4 == null && file5 == null) {
+            String usedimage1 = file1.getOriginalFilename();
+            String usedimage2 = file2.getOriginalFilename();
+            String usedimage3 = file3.getOriginalFilename();
+            String fileused1path = Paths.get(uploadPath, usedimage1).toString();
+            byte[] bytes1 = file1.getBytes();
+            Path groupimage1path = Paths.get(fileused1path);
+            Files.write(groupimage1path, bytes1);
+            String fileused2path = Paths.get(uploadPath, usedimage2).toString();
+            byte[] bytes2 = file2.getBytes();
+            Path groupimage2path = Paths.get(fileused2path);
+            Files.write(groupimage2path, bytes2);
+            String fileused3path = Paths.get(uploadPath, usedimage3).toString();
+            byte[] bytes3 = file3.getBytes();
+            Path groupimage3path = Paths.get(fileused3path);
+            Files.write(groupimage3path, bytes3);
+            PostUsedRequest params = new PostUsedRequest();
+            params.setId(id);
+            params.setRegion(region);
+            params.setTitle(title);
+            params.setDescription(description);
+            params.setUsedimage1(usedip+usedimage1);
+            params.setPrice(price);
+            params.setUserid(userid);
+            params.setWritedate(writedate);
+            params.setNickname(nickname);
+            params.setUsedimage2(usedip+usedimage2);
+            params.setUsedimage3(usedip+usedimage3);
+            params.setUsedimage4(null);
+            params.setUsedimage5(null);
+            return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
+        } else if (file1 !=null && file2 != null && file3 != null && file4 != null && file5 == null) {
+            String usedimage1 = file1.getOriginalFilename();
+            String usedimage2 = file2.getOriginalFilename();
+            String usedimage3 = file3.getOriginalFilename();
+            String usedimage4 = file4.getOriginalFilename();
+            String fileused1path = Paths.get(uploadPath, usedimage1).toString();
+            byte[] bytes1 = file1.getBytes();
+            Path groupimage1path = Paths.get(fileused1path);
+            Files.write(groupimage1path, bytes1);
+            String fileused2path = Paths.get(uploadPath, usedimage2).toString();
+            byte[] bytes2 = file2.getBytes();
+            Path groupimage2path = Paths.get(fileused2path);
+            Files.write(groupimage2path, bytes2);
+            String fileused3path = Paths.get(uploadPath, usedimage3).toString();
+            byte[] bytes3 = file3.getBytes();
+            Path groupimage3path = Paths.get(fileused3path);
+            Files.write(groupimage3path, bytes3);
+            String fileused4path = Paths.get(uploadPath, usedimage4).toString();
+            byte[] bytes4 = file4.getBytes();
+            Path groupimage4path = Paths.get(fileused4path);
+            Files.write(groupimage4path, bytes4);
+            PostUsedRequest params = new PostUsedRequest();
+            params.setId(id);
+            params.setRegion(region);
+            params.setTitle(title);
+            params.setDescription(description);
+            params.setUsedimage1(usedip+usedimage1);
+            params.setPrice(price);
+            params.setUserid(userid);
+            params.setWritedate(writedate);
+            params.setNickname(nickname);
+            params.setUsedimage2(usedip+usedimage2);
+            params.setUsedimage3(usedip+usedimage3);
+            params.setUsedimage4(usedip+usedimage4);
+            params.setUsedimage5(null);
+            return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
+        }
+        return null;
     }
 
     // 중고 사진 조회
@@ -401,27 +565,47 @@ public class PostController {
             @RequestParam("sns") String sns
             ,@RequestParam("nickname") String nickname,@RequestParam("modifydate") String modifydate
             ,@RequestParam("bestcategory") String bestcategory,@RequestParam("shortinfo") String shortinfo
-            ,@RequestParam("youtube") String youtube, @RequestParam("image") MultipartFile file
+            ,@RequestParam("youtube") String youtube, @RequestParam(value = "image",required = false) MultipartFile file
             ,@RequestParam("userid") Long userid) throws IOException{
-        String profileimage = file.getOriginalFilename();
-        String filepath = Paths.get(uploadPath, profileimage).toString();
-        byte[] bytes = file.getBytes();
-        Path path = Paths.get(filepath);
-        Files.write(path, bytes);
-        PostUserUpdateRequest params = new PostUserUpdateRequest();
-        params.setSns(sns);
-        params.setNickname(nickname);
-        params.setModifydate(modifydate);
-        params.setBestcategory(bestcategory);
-        params.setShortinfo(shortinfo);
-        params.setYoutube(youtube);
-        params.setProfileimage("http://192.168.219.161:8000/api/userimage/"+profileimage);
-        params.setUserid(userid);
-        postService.updateUserPost(params);
+        if (file!=null) {
+            PostUserUpdateRequest params = new PostUserUpdateRequest();
+            String profileimage = file.getOriginalFilename();
+            String filepath = Paths.get(uploadPath, profileimage).toString();
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(filepath);
+            Files.write(path, bytes);
+            params.setSns(sns);
+            params.setNickname(nickname);
+            params.setModifydate(modifydate);
+            params.setBestcategory(bestcategory);
+            params.setShortinfo(shortinfo);
+            params.setYoutube(youtube);
+            params.setProfileimage(userip+profileimage);
+            params.setUserid(userid);
+            postService.updateUserPost(params);
 
-        PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
+            PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
+            return new ResponseEntity<>(posts, HttpStatus.OK);
 
-        return new ResponseEntity<>(posts, HttpStatus.OK);
+        } else if (file == null) {
+
+
+            PostUserUpdateRequest params = new PostUserUpdateRequest();
+            params.setSns(sns);
+            params.setNickname(nickname);
+            params.setModifydate(modifydate);
+            params.setBestcategory(bestcategory);
+            params.setShortinfo(shortinfo);
+            params.setYoutube(youtube);
+            params.setProfileimage(null);
+            params.setUserid(userid);
+            postService.updateUserPost(params);
+
+            PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
+
+            return new ResponseEntity<>(posts, HttpStatus.OK);
+        }
+        return null;
     }
 
 
@@ -438,7 +622,7 @@ public class PostController {
 
 
         // 유저 정보 삭제
-        @PostMapping("/post/deleteuser")
+        @RequestMapping("/post/deleteuser")
         public ResponseEntity<?> deleteUserPost(@RequestBody PostUserRequest params) {
             try {
                 postService.deleteUserRolesPost(params);
