@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Login</title>
+  <title>User Login</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     $(document).ready(function() {
@@ -20,14 +20,11 @@
         // send JSON data to server using AJAX
         $.ajax({
           type: 'POST',
-          url: '/admin/login',
+          url: '/ribbon/admin/post/commentslogin',
           data: JSON.stringify(jsonData),
           contentType: 'application/json',
-          beforeSend: function(xhr) {
-            xhr.setRequestHeader("Authorization", "Bearer " + tokenInfo.getAccessToken());
-          },
           success: function(data) {
-            window.location.href = "/admin/report";
+            window.location.href = "/ribbon/admin/reportcomments";
           },
           error: function(xhr, status, error) {
             // handle error response
@@ -39,12 +36,12 @@
   </script>
 </head>
 <body>
-<h1>Admin Login</h1>
-<form id="form-id" th:action="@{/admin/login}" method="post">
-  <label for="userid">Username:</label>
+<h1>Comments Report Login</h1>
+<form id="form-id" th:action="@{/admin/post/commentslogin}" method="post">
+  <label for="userid">Admin:</label>
   <input type="text" id="userid" name="userid" required>
   <br>
-  <label for="password">Password:</label>
+  <label for="password">Key:</label>
   <input type="password" id="password" name="password" required>
   <br>
   <input type="submit" value="Login">

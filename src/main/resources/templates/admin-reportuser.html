@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>User Report</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #ccc;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+<h1>User Report</h1>
+<button type="button" onclick="deleteSelectedUsers()">Delete Selected User Report</button>
+<table>
+  <thead>
+  <tr>
+    <th><input type="checkbox" id="selectAll"/></th>
+    <th>Report User ID</th>
+    <th>Report User Email</th>
+    <th>Report Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="user : ${userList}">
+    <td><input type="checkbox" name="selectedUsers" th:value="${user.getUserid()}" onclick="selectRow(this)"/></td>
+    <td th:text="${user.getUserid()}"></td>
+    <td th:text="${user.getEmail()}"></td>
+    <td th:text="${user.getDescription()}"></td>
+  </tr>
+  </tbody>
+</table>
+<script>
+  // select all checkboxes when "select all" checkbox is clicked
+  const selectAllCheckbox = document.getElementById('selectAll');
+  const checkboxes = document.getElementsByName('selectedUsers');
+  selectAllCheckbox.addEventListener('click', function() {
+    for (let i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = selectAllCheckbox.checked;
+    }
+  });
+  function selectRow(checkbox) {
+    const inputs = checkbox.parentNode.parentNode.getElementsByTagName('input');
+    for (let i = 0; i < inputs.length; i++) {
+      if (inputs[i].type === 'checkbox') {
+        inputs[i].checked = checkbox.checked;
+      }
+    }
+  }
+  function deleteSelectedUsers() {
+    const selectedUsers = Array.from(document.getElementsByName('selectedUsers'))
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => ({ "userid": checkbox.value }));
+    if (selectedUsers.length === 0) {
+      alert('Please select at least one user.');
+      return;
+    }
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/ribbon/admin/post/reportuserdelete');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(selectedUsers[0]));
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        window.location.reload();
+      }
+    }
+  }
+
+</script>
+</body>
+</html>

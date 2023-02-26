@@ -43,17 +43,24 @@ public class SecurityConfig {
                 .requestMatchers("/api/group").hasRole("USER")
                 .requestMatchers("/api/used").hasRole("USER")
                 .requestMatchers("/api/post/**").hasRole("USER")
-                .requestMatchers("/admin/login").permitAll()
-                //.requestMatchers("/admin/report").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/ribbon/admin/report").permitAll()
+                .requestMatchers("/ribbon/admin/boardlogin").permitAll()
+                .requestMatchers("/ribbon/admin/userlogin").permitAll()
+                .requestMatchers("/ribbon/admin/commentslogin").permitAll()
+                .requestMatchers("/ribbon/admin/post/commentslogin").permitAll()
+                .requestMatchers("/ribbon/admin/post/userlogin").permitAll()
+                .requestMatchers("/ribbon/admin/post/boardlogin").permitAll()
+                .requestMatchers("/ribbon/admin/reportcomments").hasRole("ADMIN")
+                .requestMatchers("/ribbon/admin/reportuser").hasRole("ADMIN")
+                .requestMatchers("/ribbon/admin/reportboard").hasRole("ADMIN")
+                .requestMatchers("/ribbon/admin/post/reportuserdelete").hasRole("ADMIN")
                 .anyRequest().authenticated()
+                .and()
+                .httpBasic()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

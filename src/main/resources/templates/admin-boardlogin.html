@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>User Login</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#form-id').submit(function(event) {
+        // prevent default form submission
+        event.preventDefault();
+
+        // serialize form data to JSON string
+        const formData = $(this).serializeArray();
+        const jsonData = {};
+        $.each(formData, function(index, field) {
+          jsonData[field.name] = field.value;
+        });
+
+        // send JSON data to server using AJAX
+        $.ajax({
+          type: 'POST',
+          url: '/ribbon/admin/post/boardlogin',
+          data: JSON.stringify(jsonData),
+          contentType: 'application/json',
+          success: function(data) {
+            window.location.href = "/ribbon/admin/reportboard";
+          },
+          error: function(xhr, status, error) {
+            // handle error response
+          }
+        });
+      });
+    });
+
+  </script>
+</head>
+<body>
+<h1>Board Report Login</h1>
+<form id="form-id" th:action="@{/admin/post/boardlogin}" method="post">
+  <label for="userid">Admin:</label>
+  <input type="text" id="userid" name="userid" required>
+  <br>
+  <label for="password">Key:</label>
+  <input type="password" id="password" name="password" required>
+  <br>
+  <input type="submit" value="Login">
+</form>
+</body>
+</html>

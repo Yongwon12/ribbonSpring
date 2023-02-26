@@ -1154,10 +1154,18 @@
 
 
     <!-- 신고 유저 조회 -->
-    <select id="findReportUserAll" resultType="com.project.ribbon.domain.post.PostUserRequest">
+    <select id="findReportUserAll" resultType="com.project.ribbon.domain.post.PostReportUserResponse">
         SELECT
             *
         FROM reportuser
 
     </select>
+
+    <!-- 채팅룸 삭제 -->
+    <delete id="deleteUserReport" >
+        DELETE
+        FROM
+            reportuser
+        WHERE userid = #{userid}
+    </delete>
 </mapper>

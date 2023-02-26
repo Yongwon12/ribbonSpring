@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -409,164 +410,6 @@ public class PostService {
 
 
 
-
-//    // 답글 정보 조회
-//    public List<PostReplyResponse> findPostByReplyInherentId(final Long inherentid) {
-//        return postMapper.findByReplyInherentId(inherentid);
-//    }
-//    // 답글 작성자 아이디 조회
-//    public List<PostReplyIdResponse> findReplyIdPost() {
-//        return postMapper.findReplyId();
-//    }
-//
-//    // 답글 기입
-//    @Transactional
-//    public Long saveReplyPost(final PostReplyRequest params) {
-//        postMapper.saveReply(params);
-//        return params.getInherentid();
-//    }
-//    // 답글 정보 수정
-//    @Transactional
-//    public Long updateReplyPost(final PostReplyRequest params) {
-//        postMapper.updateReply(params);
-//        return params.getInherentid();
-//    }
-//    @Transactional
-//    public Long updateReplyCountPost(final PostReplyRequest params) {
-//        postMapper.updateReplyCount(params);
-//        return params.getInherentid();
-//    }
-//    @Transactional
-//    public Long updateDeleteReplyCountPost(final PostReplyRequest params) {
-//        postMapper.updateDeleteReplyCount(params);
-//        return params.getInherentid();
-//    }
-//
-//    // 답글 정보 삭제
-//    public Long deleteReplyPost(final PostReplyRequest params) {
-//        postMapper.deleteReply(params);
-//        return params.getInherentid();
-//    }
-//
-//    // 개인 답글 정보 조회
-//    public List<PostIndiReplyResponse> findPostByIndiReplyInherentId(final Long inherentid) {
-//        return postMapper.findByIndiReplyInherentId(inherentid);
-//    }
-//    // 개인 답글 작성자 아이디 조회
-//    public List<PostIndiReplyIdResponse> findIndiReplyIdPost() {
-//        return postMapper.findIndiReplyId();
-//    }
-//
-//    // 개인 답글 기입
-//    @Transactional
-//    public Long saveIndiReplyPost(final PostIndiReplyRequest params) {
-//        postMapper.saveIndiReply(params);
-//        return params.getInherentid();
-//    }
-//    // 개인 답글 정보 수정
-//    @Transactional
-//    public Long updateIndiReplyPost(final PostIndiReplyRequest params) {
-//        postMapper.updateIndiReply(params);
-//        return params.getInherentid();
-//    }
-//    @Transactional
-//    public Long updateIndiReplyCountPost(final PostIndiReplyRequest params) {
-//        postMapper.updateIndiReplyCount(params);
-//        return params.getInherentid();
-//    }
-//    @Transactional
-//    public Long updateDeleteIndiReplyCountPost(final PostIndiReplyRequest params) {
-//        postMapper.updateDeleteIndiReplyCount(params);
-//        return params.getInherentid();
-//    }
-//
-//    // 개인 답글 정보 삭제
-//    public Long deleteIndiReplyPost(final PostIndiReplyRequest params) {
-//        postMapper.deleteIndiReply(params);
-//        return params.getInherentid();
-//    }
-//
-//
-//    // 단체 답글 정보 조회
-//    public List<PostGroupReplyResponse> findPostByGroupReplyInherentId(final Long inherentid) {
-//        return postMapper.findByGroupReplyInherentId(inherentid);
-//    }
-//    // 단체 답글 작성자 아이디 조회
-//    public List<PostGroupReplyIdResponse> findGroupReplyIdPost() {
-//        return postMapper.findGroupReplyId();
-//    }
-//
-//    // 단체 답글 기입
-//    @Transactional
-//    public Long saveGroupReplyPost(final PostGroupReplyRequest params) {
-//        postMapper.saveGroupReply(params);
-//        return params.getInherentid();
-//    }
-//    // 단체 답글 정보 수정
-//    @Transactional
-//    public Long updateGroupReplyPost(final PostGroupReplyRequest params) {
-//        postMapper.updateGroupReply(params);
-//        return params.getInherentid();
-//    }
-//    @Transactional
-//    public Long updateGroupReplyCountPost(final PostGroupReplyRequest params) {
-//        postMapper.updateGroupReplyCount(params);
-//        return params.getInherentid();
-//    }
-//    @Transactional
-//    public Long updateDeleteGroupReplyCountPost(final PostGroupReplyRequest params) {
-//        postMapper.updateDeleteGroupReplyCount(params);
-//        return params.getInherentid();
-//    }
-//
-//    // 단체 답글 정보 삭제
-//    public Long deleteGroupReplyPost(final PostGroupReplyRequest params) {
-//        postMapper.deleteGroupReply(params);
-//        return params.getInherentid();
-//    }
-//
-//
-//
-//    // 중고 답글 정보 조회
-//    public List<PostUsedReplyResponse> findPostByUsedReplyInherentId(final Long inherentid) {
-//        return postMapper.findByUsedReplyInherentId(inherentid);
-//    }
-//    // 중고 답글 작성자 아이디 조회
-//    public List<PostUsedReplyIdResponse> findUsedReplyIdPost() {
-//        return postMapper.findUsedReplyId();
-//    }
-//
-//    // 중고 답글 기입
-//    @Transactional
-//    public Long saveUsedReplyPost(final PostUsedReplyRequest params) {
-//        postMapper.saveUsedReply(params);
-//        return params.getInherentid();
-//    }
-//    // 중고 답글 정보 수정
-//    @Transactional
-//    public Long updateUsedReplyPost(final PostUsedReplyRequest params) {
-//        postMapper.updateUsedReply(params);
-//        return params.getInherentid();
-//    }
-//    @Transactional
-//    public Long updateUsedReplyCountPost(final PostUsedReplyRequest params) {
-//        postMapper.updateUsedReplyCount(params);
-//        return params.getInherentid();
-//    }
-//    @Transactional
-//    public Long updateDeleteUsedReplyCountPost(final PostUsedReplyRequest params) {
-//        postMapper.updateDeleteUsedReplyCount(params);
-//        return params.getInherentid();
-//    }
-//
-//    // 중고 답글 정보 삭제
-//    public Long deleteUsedReplyPost(final PostUsedReplyRequest params) {
-//        postMapper.deleteUsedReply(params);
-//        return params.getInherentid();
-//    }
-
-
-
     // 특정 유저 프로필 조회
     public List<UserInfoResponse> findPostById(final Long id) {
         return postMapper.findById(id);
@@ -634,10 +477,14 @@ public class PostService {
         return postMapper.findAllTest(id);
     }
 
-    // 커뮤니티 게시글 조회
+    // 신고 유저 조회
     public List<PostReportUserResponse> findReportUserAllPost() {
         return postMapper.findReportUserAll();
     }
-
+    // 신고 유저 삭제
+    public String deleteUserReportPost(final PostUserRequest params) {
+        postMapper.deleteUserReport(params);
+        return null;
+    }
 
 }
