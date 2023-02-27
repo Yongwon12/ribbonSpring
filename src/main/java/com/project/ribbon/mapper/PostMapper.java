@@ -225,6 +225,22 @@ public interface PostMapper {
 
     // 신고 유저 조회
     List<PostReportUserResponse> findReportUserAll();
+    // 신고 커뮤니티 게시글 조회
+    List<PostReportBoardResponse> findReportBoardAll();
+    // 신고 개인 게시글 조회
+    List<PostReportIndividualResponse> findReportIndividualAll();
+    // 신고 단체 게시글 조회
+    List<PostReportGroupResponse> findReportGroupAll();
+    // 신고 중고 게시글 조회
+    List<PostReportUsedResponse> findReportUsedAll();
+    // 신고 커뮤니티 댓글 조회
+    List<PostReportCommentsResponse> findReportCommentsAll();
+    // 신고 개인 댓글 조회
+    List<PostReportCommentsResponse> findReportIndividualCommentsAll();
+    // 신고 단체 댓글 조회
+    List<PostReportCommentsResponse> findReportGroupCommentsAll();
+    // 신고 중고 댓글 조회
+    List<PostReportCommentsResponse> findReportUsedcommentsAll();
 
     // 신고 유저 삭제
     // 커뮤니티 게시글 삭제

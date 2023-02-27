@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>User Login</title>
+  <title>UsedComments Login</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     $(document).ready(function() {
@@ -20,11 +20,11 @@
         // send JSON data to server using AJAX
         $.ajax({
           type: 'POST',
-          url: '/ribbon/admin/post/boardlogin',
+          url: '/ribbon/admin/post/usedcommentslogin',
           data: JSON.stringify(jsonData),
           contentType: 'application/json',
           success: function(data) {
-            window.location.href = "/ribbon/admin/reportboard";
+            window.location.href = "/ribbon/admin/reportusedcomments";
           },
           error: function(xhr, status, error) {
             // handle error response
@@ -36,8 +36,8 @@
   </script>
 </head>
 <body>
-<h1>Board Report Login</h1>
-<form id="form-id" th:action="@{/ribbon/admin/post/boardlogin}" method="post">
+<h1>UsedComments Report Login</h1>
+<form id="form-id" th:action="@{/ribbon/admin/post/usedcommentslogin}" method="post">
   <label for="userid">Admin:</label>
   <input type="text" id="userid" name="userid" required>
   <br>

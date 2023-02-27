@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Board Report</title>
+  <title>Group Report</title>
   <style>
     table, th, td {
       border: 1px solid black;
@@ -21,30 +21,32 @@
   </style>
 </head>
 <body>
-<h1>Board Report</h1>
-<button type="button" onclick="deleteSelectedBoards()">Delete Selected Board Report</button>
+<h1>Group Report</h1>
+<button type="button" onclick="deleteSelectedGroups()">Delete Selected Group Report</button>
 <table>
   <thead>
   <tr>
     <th><input type="checkbox" id="selectAll"/></th>
-    <th>Report Comments ID</th>
+    <th>Report Group ID</th>
     <th>Report User Id</th>
+    <th>Report Title</th>
     <th>Report Description</th>
   </tr>
   </thead>
   <tbody>
-  <tr th:each="comments : ${commentsList}">
-    <td><input type="checkbox" name="selectedBoards" th:value="${comments.getCommentsid()}" onclick="selectRow(this)"/></td>
-    <td th:text="${comments.getCommentsid()}"></td>
-    <td th:text="${comments.getUserid()}"></td>
-    <td th:text="${comments.getDescription()}"></td>
+  <tr th:each="group : ${groupList}">
+    <td><input type="checkbox" name="selectedGroups" th:value="${group.getGroupid()}" onclick="selectRow(this)"/></td>
+    <td th:text="${group.getGroupid()}"></td>
+    <td th:text="${group.getUserid()}"></td>
+    <td th:text="${group.getTitle()}"></td>
+    <td th:text="${group.getDescription()}"></td>
   </tr>
   </tbody>
 </table>
 <script>
   // select all checkboxes when "select all" checkbox is clicked
   const selectAllCheckbox = document.getElementById('selectAll');
-  const checkboxes = document.getElementsByName('selectedBoards');
+  const checkboxes = document.getElementsByName('selectedGroups');
   selectAllCheckbox.addEventListener('click', function() {
     for (let i = 0; i < checkboxes.length; i++) {
       checkboxes[i].checked = selectAllCheckbox.checked;
@@ -58,18 +60,18 @@
       }
     }
   }
-  function deleteSelectedBoards() {
-    const selectedBoards = Array.from(document.getElementsByName('selectedBoards'))
+  function deleteSelectedGroups() {
+    const selectedGroups = Array.from(document.getElementsByName('selectedGroups'))
             .filter(checkbox => checkbox.checked)
-            .map(checkbox => ({ "commentsid": checkbox.value }));
-    if (selectedBoards.length === 0) {
+            .map(checkbox => ({ "groupid": checkbox.value }));
+    if (selectedGroups.length === 0) {
       alert('Please select at least one user.');
       return;
     }
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/ribbon/admin/post/reportcommentsdelete');
+    xhr.open('POST', '/ribbon/admin/post/reportgroupdelete');
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify(selectedBoards));
+    xhr.send(JSON.stringify(selectedGroups));
     xhr.onload = function() {
       if (xhr.status === 200) {
         window.location.reload();

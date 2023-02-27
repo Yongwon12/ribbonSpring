@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Board Report</title>
+  <title>Used Report</title>
   <style>
     table, th, td {
       border: 1px solid black;
@@ -21,30 +21,32 @@
   </style>
 </head>
 <body>
-<h1>Board Report</h1>
-<button type="button" onclick="deleteSelectedBoards()">Delete Selected Board Report</button>
+<h1>Used Report</h1>
+<button type="button" onclick="deleteSelectedUseds()">Delete Selected Used Report</button>
 <table>
   <thead>
   <tr>
     <th><input type="checkbox" id="selectAll"/></th>
-    <th>Report Comments ID</th>
+    <th>Report Used ID</th>
     <th>Report User Id</th>
+    <th>Report Title</th>
     <th>Report Description</th>
   </tr>
   </thead>
   <tbody>
-  <tr th:each="comments : ${commentsList}">
-    <td><input type="checkbox" name="selectedBoards" th:value="${comments.getCommentsid()}" onclick="selectRow(this)"/></td>
-    <td th:text="${comments.getCommentsid()}"></td>
-    <td th:text="${comments.getUserid()}"></td>
-    <td th:text="${comments.getDescription()}"></td>
+  <tr th:each="used : ${usedList}">
+    <td><input type="checkbox" name="selectedUseds" th:value="${used.getUsedid()}" onclick="selectRow(this)"/></td>
+    <td th:text="${used.getUsedid()}"></td>
+    <td th:text="${used.getUserid()}"></td>
+    <td th:text="${used.getTitle()}"></td>
+    <td th:text="${used.getDescription()}"></td>
   </tr>
   </tbody>
 </table>
 <script>
   // select all checkboxes when "select all" checkbox is clicked
   const selectAllCheckbox = document.getElementById('selectAll');
-  const checkboxes = document.getElementsByName('selectedBoards');
+  const checkboxes = document.getElementsByName('selectedUseds');
   selectAllCheckbox.addEventListener('click', function() {
     for (let i = 0; i < checkboxes.length; i++) {
       checkboxes[i].checked = selectAllCheckbox.checked;
@@ -58,18 +60,18 @@
       }
     }
   }
-  function deleteSelectedBoards() {
-    const selectedBoards = Array.from(document.getElementsByName('selectedBoards'))
+  function deleteSelectedUseds() {
+    const selectedUseds = Array.from(document.getElementsByName('selectedUseds'))
             .filter(checkbox => checkbox.checked)
-            .map(checkbox => ({ "commentsid": checkbox.value }));
-    if (selectedBoards.length === 0) {
+            .map(checkbox => ({ "usedid": checkbox.value }));
+    if (selectedUseds.length === 0) {
       alert('Please select at least one user.');
       return;
     }
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/ribbon/admin/post/reportcommentsdelete');
+    xhr.open('POST', '/ribbon/admin/post/reportuseddelete');
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify(selectedBoards));
+    xhr.send(JSON.stringify(selectedUseds));
     xhr.onload = function() {
       if (xhr.status === 200) {
         window.location.reload();

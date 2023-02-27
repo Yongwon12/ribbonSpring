@@ -481,6 +481,40 @@ public class PostService {
     public List<PostReportUserResponse> findReportUserAllPost() {
         return postMapper.findReportUserAll();
     }
+
+    // 신고 커뮤니티글 조회
+    public List<PostReportBoardResponse> findReportBoardAllPost() {
+        return postMapper.findReportBoardAll();
+    }
+    // 신고 개인글 조회
+    public List<PostReportIndividualResponse> findReportIndividualAllPost() {
+        return postMapper.findReportIndividualAll();
+    }
+    // 신고 단체글 조회
+    public List<PostReportGroupResponse> findReportGroupAllPost() {
+        return postMapper.findReportGroupAll();
+    }
+    // 신고 중고글 조회
+    public List<PostReportUsedResponse> findReportUsedAllPost() {
+        return postMapper.findReportUsedAll();
+    }
+    // 신고 커뮤니티댓글 조회
+    public List<PostReportCommentsResponse> findReportCommentsAllPost() {
+        return postMapper.findReportCommentsAll();
+    }
+    // 신고 개인댓글 조회
+    public List<PostReportCommentsResponse> findReportIndividualCommentsAllPost() {
+        return postMapper.findReportIndividualCommentsAll();
+    }
+    // 신고 단체댓글 조회
+    public List<PostReportCommentsResponse> findReportGroupCommentsAllPost() {
+        return postMapper.findReportGroupCommentsAll();
+    }
+    // 신고 중고댓글 조회
+    public List<PostReportCommentsResponse> findReportUsedCommentsAllPost() {
+        return postMapper.findReportUsedcommentsAll();
+    }
+
     // 신고 유저 삭제
     public String deleteUserReportPost(final PostUserRequest params) {
         postMapper.deleteUserReport(params);

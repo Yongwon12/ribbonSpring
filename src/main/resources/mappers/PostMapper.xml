@@ -1161,6 +1161,63 @@
 
     </select>
 
+    <!-- 신고 커뮤니티글 조회 -->
+    <select id="findReportBoardAll" resultType="com.project.ribbon.domain.post.PostReportBoardResponse">
+        SELECT
+            *
+        FROM reportboard
+
+    </select>
+    <!-- 신고 개인글 조회 -->
+    <select id="findReportIndividualAll" resultType="com.project.ribbon.domain.post.PostReportIndividualResponse">
+        SELECT
+            *
+        FROM reportindividual
+
+    </select>
+    <!-- 신고 단체글 조회 -->
+    <select id="findReportGroupAll" resultType="com.project.ribbon.domain.post.PostReportGroupResponse">
+        SELECT
+            *
+        FROM reportgroup
+
+    </select>
+    <!-- 신고 중고글 조회 -->
+    <select id="findReportUsedAll" resultType="com.project.ribbon.domain.post.PostReportUsedResponse">
+        SELECT
+            *
+        FROM reportused
+
+    </select>
+    <!-- 신고 커뮤니티댓글 조회 -->
+    <select id="findReportCommentsAll" resultType="com.project.ribbon.domain.post.PostReportCommentsResponse">
+        SELECT
+            *
+        FROM reportcomments
+
+    </select>
+    <!-- 신고 개인댓글 조회 -->
+    <select id="findReportIndividualCommentsAll" resultType="com.project.ribbon.domain.post.PostReportCommentsResponse">
+        SELECT
+            *
+        FROM reportindividualcomments
+
+    </select>
+    <!-- 신고 단체댓글 조회 -->
+    <select id="findReportGroupCommentsAll" resultType="com.project.ribbon.domain.post.PostReportCommentsResponse">
+        SELECT
+            *
+        FROM reportgroupcomments
+
+    </select>
+    <!-- 신고 중고댓글 조회 -->
+    <select id="findReportUsedcommentsAll" resultType="com.project.ribbon.domain.post.PostReportCommentsResponse">
+        SELECT
+            *
+        FROM reportusedcomments
+
+    </select>
+
     <!-- 채팅룸 삭제 -->
     <delete id="deleteUserReport" >
         DELETE

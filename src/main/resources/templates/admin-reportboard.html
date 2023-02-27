@@ -1,10 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>맺음 신고 페이지</title>
+  <title>Board Report</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #ccc;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  </style>
 </head>
 <body>
-<h1>게시글 신고정보</h1>
+<h1>Board Report</h1>
+<button type="button" onclick="deleteSelectedBoards()">Delete Selected Board Report</button>
+<table>
+  <thead>
+  <tr>
+    <th><input type="checkbox" id="selectAll"/></th>
+    <th>Report Board ID</th>
+    <th>Report User Id</th>
+    <th>Report Title</th>
+    <th>Report Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="board : ${boardList}">
+    <td><input type="checkbox" name="selectedBoards" th:value="${board.getBoardid()}" onclick="selectRow(this)"/></td>
+    <td th:text="${board.getBoardid()}"></td>
+    <td th:text="${board.getUserid()}"></td>
+    <td th:text="${board.getTitle()}"></td>
+    <td th:text="${board.getDescription()}"></td>
+  </tr>
+  </tbody>
+</table>
+<script>
+  // select all checkboxes when "select all" checkbox is clicked
+  const selectAllCheckbox = document.getElementById('selectAll');
+  const checkboxes = document.getElementsByName('selectedBoards');
+  selectAllCheckbox.addEventListener('click', function() {
+    for (let i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = selectAllCheckbox.checked;
+    }
+  });
+  function selectRow(checkbox) {
+    const inputs = checkbox.parentNode.parentNode.getElementsByTagName('input');
+    for (let i = 0; i < inputs.length; i++) {
+      if (inputs[i].type === 'checkbox') {
+        inputs[i].checked = checkbox.checked;
+      }
+    }
+  }
+  function deleteSelectedBoards() {
+    const selectedBoards = Array.from(document.getElementsByName('selectedBoards'))
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => ({ "boardid": checkbox.value }));
+    if (selectedBoards.length === 0) {
+      alert('Please select at least one user.');
+      return;
+    }
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/ribbon/admin/post/reportboarddelete');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(selectedBoards));
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        window.location.reload();
+      }
+    }
+  }
+
+</script>
 </body>
 </html>
