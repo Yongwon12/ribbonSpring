@@ -9,6 +9,11 @@ public class PostReportUsedResponse {
     private Long userid;
     private String title;
     private String description;
+    private String usedimage1;
+    private String usedimage2;
+    private String usedimage3;
+    private String usedimage4;
+    private String usedimage5;
 
 
 }

@@ -26,6 +26,11 @@ public class LoginController {
     private final MemberService memberService;
     private final PostService postService;
     String ip = "http://192.168.0.5:8000/ribbon/admin";
+    // 맺음 홈페이지
+    @GetMapping("/ribbon")
+    public String showRibbonForm() {
+        return "index";
+    }
     // 커뮤니티 글 신고 로그인 폼
     @GetMapping("/ribbon/admin/boardlogin")
     public String showBoardLoginForm() {
@@ -82,12 +87,22 @@ public class LoginController {
         model.addAttribute("userList", userList);
         return "admin-reportpostdeleteuser";
     }
+    // 신고 유저 정보 저장
+    @PostMapping("/ribbon/admin/reportinsertuser")
+    public ResponseEntity<?> userReportInsert(@RequestBody PostReportUserResponse params) {
+        return new ResponseEntity<>(postService.saveReportUserPost(params),HttpStatus.OK);
+    }
     // 신고 커뮤니티글 정보 조회
     @GetMapping("/ribbon/admin/reportboard")
     public String boardReport(Model model) {
         List<PostReportBoardResponse> boardList = postService.findReportBoardAllPost();
         model.addAttribute("boardList", boardList);
         return "admin-reportpostdeleteboard";
+    }
+    // 신고 커뮤니티글 정보 저장
+    @PostMapping("/ribbon/admin/reportinsertboard")
+    public ResponseEntity<?> boardReportInsert(@RequestBody PostReportBoardResponse params) {
+        return new ResponseEntity<>(postService.saveReportBoardPost(params), HttpStatus.OK);
     }
     // 신고 개인글 정보 조회
     @GetMapping("/ribbon/admin/reportindividual")
@@ -96,12 +111,22 @@ public class LoginController {
         model.addAttribute("individualList", individualList);
         return "admin-reportpostdeleteindividual";
     }
+    // 신고 개인글 정보 저장
+    @PostMapping("/ribbon/admin/reportinsertindividual")
+    public ResponseEntity<?> individualReportInsert(@RequestBody PostReportIndividualResponse params) {
+        return new ResponseEntity<>(postService.saveReportIndividualPost(params),HttpStatus.OK);
+    }
     // 신고 단체글 정보 조회
     @GetMapping("/ribbon/admin/reportgroup")
     public String groupReport(Model model) {
         List<PostReportGroupResponse> groupList = postService.findReportGroupAllPost();
         model.addAttribute("groupList", groupList);
         return "admin-reportpostdeletegroup";
+    }
+    // 신고 단체글 정보 저장
+    @PostMapping("/ribbon/admin/reportinsertgroup")
+    public ResponseEntity<?> groupReportInsert(@RequestBody PostReportGroupResponse params) {
+        return new ResponseEntity<>(postService.saveReportGroupPost(params),HttpStatus.OK);
     }
     // 신고 중고글 정보 조회
     @GetMapping("/ribbon/admin/reportused")
@@ -110,12 +135,23 @@ public class LoginController {
         model.addAttribute("usedList", usedList);
         return "admin-reportpostdeleteused";
     }
+    // 신고 중고글 정보 저장
+    @PostMapping("/ribbon/admin/reportinsertused")
+    public ResponseEntity<?> usedReportInsert(@RequestBody PostReportUsedResponse params) {
+
+        return new ResponseEntity<>(postService.saveReportUsedPost(params),HttpStatus.OK);
+    }
     // 신고 커뮤니티 댓글 정보 조회
     @GetMapping("/ribbon/admin/reportcomments")
     public String commentsReport(Model model) {
         List<PostReportCommentsResponse> commentsList = postService.findReportCommentsAllPost();
         model.addAttribute("commentsList", commentsList);
         return "admin-reportcomments";
+    }
+    // 신고 커뮤니티 댓글 정보 저장
+    @PostMapping("/ribbon/admin/reportinsertcomments")
+    public ResponseEntity<?> commentsReportInsert(@RequestBody PostReportCommentsResponse params) {
+        return new ResponseEntity<>(postService.saveReportCommentsPost(params),HttpStatus.OK);
     }
     // 신고 개인 댓글 정보 조회
     @GetMapping("/ribbon/admin/reportindividualcomments")
@@ -124,6 +160,11 @@ public class LoginController {
         model.addAttribute("individualcommentsList", individualcommentsList);
         return "admin-reportindividualcomments";
     }
+    // 신고 개인 댓글 정보 저장
+    @PostMapping("/ribbon/admin/reportinsertindividualcomments")
+    public ResponseEntity<?> individualcommentsReportInsert(@RequestBody PostReportCommentsResponse params) {
+        return new ResponseEntity<>(postService.saveReportIndividualCommentsPost(params),HttpStatus.OK);
+    }
     // 신고 단체 댓글 정보 조회
     @GetMapping("/ribbon/admin/reportgroupcomments")
     public String groupcommentsReport(Model model) {
@@ -131,12 +172,22 @@ public class LoginController {
         model.addAttribute("groupcommentsList", groupcommentsList);
         return "admin-reportgroupcomments";
     }
+    // 신고 단체 댓글 정보 저장
+    @PostMapping("/ribbon/admin/reportinsertgroupcomments")
+    public ResponseEntity<?> groupcommentsReportInsert(@RequestBody PostReportCommentsResponse params) {
+        return new ResponseEntity<>(postService.saveReportGroupCommentsPost(params),HttpStatus.OK);
+    }
     // 신고 중고 댓글 정보 조회
     @GetMapping("/ribbon/admin/reportusedcomments")
     public String usedcommentsReport(Model model) {
         List<PostReportCommentsResponse> usedcommentsList = postService.findReportUsedCommentsAllPost();
         model.addAttribute("usedcommentsList", usedcommentsList);
         return "admin-reportusedcomments";
+    }
+    // 신고 중고 댓글 정보 저장
+    @PostMapping("/ribbon/admin/reportinsertusedcomments")
+    public ResponseEntity<?> usedcommentsReportInsert(@RequestBody PostReportCommentsResponse params) {
+        return new ResponseEntity<>(postService.saveReportUsedCommentsPost(params),HttpStatus.OK);
     }
     // 신고 유저 정보 삭제
     @RequestMapping("/ribbon/admin/post/reportuserdelete")
@@ -200,6 +251,8 @@ public class LoginController {
         System.out.println(params);
         for (Map<String, String> comments : params) {
             String commentsId = comments.get("commentsid");
+            String boardId = comments.get("inherentid");
+            postService.updateDeleteReportCommentsCountPost(boardId);
             postService.deleteBoardCommentsWriteReportPost(commentsId);
             postService.deleteBoardCommentsReportPost(commentsId);
         }
@@ -211,6 +264,8 @@ public class LoginController {
         System.out.println(params);
         for (Map<String, String> individualcomments : params) {
             String commentsId = individualcomments.get("commentsid");
+            String individualId = individualcomments.get("inherentid");
+            postService.updateDeleteReportIndividualCommentsCountPost(individualId);
             postService.deleteIndividualCommentsWriteReportPost(commentsId);
             postService.deleteIndividualCommentsReportPost(commentsId);
         }
@@ -222,6 +277,8 @@ public class LoginController {
         System.out.println(params);
         for (Map<String, String> groupcomments : params) {
             String commentsId = groupcomments.get("commentsid");
+            String groupId = groupcomments.get("inherentid");
+            postService.updateDeleteReportGroupCommentsCountPost(groupId);
             postService.deleteGroupCommentsWriteReportPost(commentsId);
             postService.deleteGroupCommentsReportPost(commentsId);
         }
@@ -233,6 +290,8 @@ public class LoginController {
         System.out.println(params);
         for (Map<String, String> usedcomments : params) {
             String commentsId = usedcomments.get("commentsid");
+            String usedId = usedcomments.get("inherentid");
+            postService.updateDeleteReportUsedCommentsCountPost(usedId);
             postService.deleteUsedCommentsWriteReportPost(commentsId);
             postService.deleteUsedCommentsReportPost(commentsId);
         }

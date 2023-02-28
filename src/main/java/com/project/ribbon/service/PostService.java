@@ -481,38 +481,91 @@ public class PostService {
     public List<PostReportUserResponse> findReportUserAllPost() {
         return postMapper.findReportUserAll();
     }
-
+    // 신고 유저 저장
+    @Transactional
+    public Long saveReportUserPost(final PostReportUserResponse params) {
+        postMapper.saveReportUser(params);
+        return params.getUserid();
+    }
     // 신고 커뮤니티글 조회
     public List<PostReportBoardResponse> findReportBoardAllPost() {
         return postMapper.findReportBoardAll();
+    }
+    // 신고 커뮤니티글 저장
+    @Transactional
+    public Long saveReportBoardPost(final PostReportBoardResponse params) {
+        postMapper.saveReportBoard(params);
+        return params.getBoardid();
     }
     // 신고 개인글 조회
     public List<PostReportIndividualResponse> findReportIndividualAllPost() {
         return postMapper.findReportIndividualAll();
     }
+    // 신고 개인글 저장
+    @Transactional
+    public Long saveReportIndividualPost(final PostReportIndividualResponse params) {
+        postMapper.saveReportIndividual(params);
+        return params.getIndividualid();
+    }
     // 신고 단체글 조회
     public List<PostReportGroupResponse> findReportGroupAllPost() {
         return postMapper.findReportGroupAll();
+    }
+    // 신고 단체글 저장
+    @Transactional
+    public Long saveReportGroupPost(final PostReportGroupResponse params) {
+        postMapper.saveReportGroup(params);
+        return params.getGroupid();
     }
     // 신고 중고글 조회
     public List<PostReportUsedResponse> findReportUsedAllPost() {
         return postMapper.findReportUsedAll();
     }
+    // 신고 중고글 저장
+    @Transactional
+    public Long saveReportUsedPost(final PostReportUsedResponse params) {
+        postMapper.saveReportUsed(params);
+        return params.getUsedid();
+    }
     // 신고 커뮤니티댓글 조회
     public List<PostReportCommentsResponse> findReportCommentsAllPost() {
         return postMapper.findReportCommentsAll();
+    }
+    // 신고 커뮤니티 댓글 저장
+    @Transactional
+    public Long saveReportCommentsPost(final PostReportCommentsResponse params) {
+        postMapper.saveReportComments(params);
+        return params.getCommentsid();
     }
     // 신고 개인댓글 조회
     public List<PostReportCommentsResponse> findReportIndividualCommentsAllPost() {
         return postMapper.findReportIndividualCommentsAll();
     }
+    // 신고 개인 댓글 저장
+    @Transactional
+    public Long saveReportIndividualCommentsPost(final PostReportCommentsResponse params) {
+        postMapper.saveReportIndividualComments(params);
+        return params.getCommentsid();
+    }
     // 신고 단체댓글 조회
     public List<PostReportCommentsResponse> findReportGroupCommentsAllPost() {
         return postMapper.findReportGroupCommentsAll();
     }
+    // 신고 단체 댓글 저장
+    @Transactional
+    public Long saveReportGroupCommentsPost(final PostReportCommentsResponse params) {
+        postMapper.saveReportGroupComments(params);
+        return params.getCommentsid();
+    }
     // 신고 중고댓글 조회
     public List<PostReportCommentsResponse> findReportUsedCommentsAllPost() {
-        return postMapper.findReportUsedcommentsAll();
+        return postMapper.findReportUsedCommentsAll();
+    }
+    // 신고 중고 댓글 저장
+    @Transactional
+    public Long saveReportUsedCommentsPost(final PostReportCommentsResponse params) {
+        postMapper.saveReportUsedComments(params);
+        return params.getCommentsid();
     }
 
     // 관리자페이지 신고 유저 삭제
@@ -584,6 +637,10 @@ public class PostService {
         postMapper.deleteBoardCommentsWriteReport(params);
         return null;
     }
+    public PostReportCommentsCountRequest updateDeleteReportCommentsCountPost(final String params) {
+        postMapper.updateDeleteReportCommentsCount(params);
+        return null;
+    }
     // 관리자페이지 신고 개인댓글 삭제
     public PostReportIndividualCommentsRequest deleteIndividualCommentsReportPost(final String params) {
         postMapper.deleteIndividualCommentsReport(params);
@@ -592,6 +649,11 @@ public class PostService {
     // 신고 개인댓글 삭제
     public PostReportIndividualCommentsRequest deleteIndividualCommentsWriteReportPost(final String params) {
         postMapper.deleteIndividualCommentsWriteReport(params);
+        return null;
+    }
+    @Transactional
+    public PostReportIndividualCommentsCountRequest updateDeleteReportIndividualCommentsCountPost(final String params) {
+        postMapper.updateDeleteReportIndividualCommentsCount(params);
         return null;
     }
     // 관리자페이지 신고 단체댓글 삭제
@@ -604,6 +666,11 @@ public class PostService {
         postMapper.deleteGroupCommentsWriteReport(params);
         return null;
     }
+    @Transactional
+    public PostReportGroupCommentsCountRequest updateDeleteReportGroupCommentsCountPost(final String params) {
+        postMapper.updateDeleteReportGroupCommentsCount(params);
+        return null;
+    }
     // 관리자페이지 신고 중고댓글 삭제
     public PostReportUsedCommentsRequest deleteUsedCommentsReportPost(final String params) {
         postMapper.deleteUsedCommentsReport(params);
@@ -612,6 +679,11 @@ public class PostService {
     // 신고 중고댓글 삭제
     public PostReportUsedCommentsRequest deleteUsedCommentsWriteReportPost(final String params) {
         postMapper.deleteUsedCommentsWriteReport(params);
+        return null;
+    }
+    @Transactional
+    public PostReportUsedCommentsCountRequest updateDeleteReportUsedCommentsCountPost(final String params) {
+        postMapper.updateDeleteReportUsedCommentsCount(params);
         return null;
     }
 

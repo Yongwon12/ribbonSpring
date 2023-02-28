@@ -4,19 +4,59 @@
   <meta charset="UTF-8">
   <title>Used Report</title>
   <style>
-    table, th, td {
-      border: 1px solid black;
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f2f2f2;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
+    table {
       border-collapse: collapse;
+      width: 80%;
+      margin: auto;
+      height: 100px; /* 원하는 세로 크기로 지정 */
+      overflow-y: scroll; /* 내용이 넘칠 경우 스크롤 표시 */
+      margin-top: 20px;
+      margin-bottom: 50px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
     }
     th, td {
+      text-align: center;
       padding: 10px;
-      text-align: left;
+      border: 1px solid #ddd;
+    }
+    img {
+      max-width: 50%;
+      height: 100px;
     }
     th {
       background-color: #ccc;
     }
     tr:nth-child(even) {
       background-color: #f2f2f2;
+    }
+    button {
+      margin-top: 20px;
+      margin-left: 20px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3e8e41;
+    }
+    #selectAll {
+      margin-top: 5px;
     }
   </style>
 </head>
@@ -31,6 +71,12 @@
     <th>Report User ID</th>
     <th>Report Title</th>
     <th>Report Description</th>
+    <th>Report UsedImage1</th>
+    <th>Report UsedImage2</th>
+    <th>Report UsedImage3</th>
+    <th>Report UsedImage4</th>
+    <th>Report UsedImage5</th>
+
   </tr>
   </thead>
   <tbody>
@@ -40,6 +86,11 @@
     <td th:text="${used.getUserid()}"></td>
     <td th:text="${used.getTitle()}"></td>
     <td th:text="${used.getDescription()}"></td>
+    <td><img th:src="${used.getUsedimage1()}" /></td>
+    <td><img th:src="${used.getUsedimage2()}" /></td>
+    <td><img th:src="${used.getUsedimage3()}" /></td>
+    <td><img th:src="${used.getUsedimage4()}" /></td>
+    <td><img th:src="${used.getUsedimage5()}" /></td>
   </tr>
   </tbody>
 </table>

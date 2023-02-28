@@ -9,6 +9,7 @@ public class PostReportGroupResponse {
     private Long userid;
     private String title;
     private String description;
+    private String titleimage;
 
 
 }

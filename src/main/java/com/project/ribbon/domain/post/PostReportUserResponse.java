@@ -14,8 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 public class PostReportUserResponse {
         private Long userid; //PK
-        private String email;
+        private String nickname;
         private String description;
+        private String profileimage;
 
 
 

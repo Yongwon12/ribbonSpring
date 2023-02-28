@@ -9,6 +9,7 @@ public class PostReportBoardResponse {
     private Long userid;
     private String title;
     private String description;
+    private String img;
 
 
 }

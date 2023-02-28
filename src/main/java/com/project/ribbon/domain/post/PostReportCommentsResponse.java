@@ -8,6 +8,7 @@ public class PostReportCommentsResponse {
    private Long commentsid;
     private Long userid;
     private String description;
+    private Long inherentid;
 
 
 }

@@ -196,7 +196,7 @@
 
 
     <!-- 커뮤니티 게시글  조회 -->
-    <select id="findAll" resultType="com.project.ribbon.domain.post.PostResponse" fetchSize="1000">
+    <select id="findAll" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,User.userid,title,description,img,writedate,User.nickname,
             boardid,likedcount,commentcount,profileimage,token
@@ -226,7 +226,7 @@
     </delete>
 
     <!-- 단체 게시글 조회  -->
-    <select id="findGroupAll" resultType="com.project.ribbon.domain.post.PostGroupResponse" fetchSize="1000">
+    <select id="findGroupAll" resultType="com.project.ribbon.domain.post.PostGroupResponse" >
         SELECT
             id,region,title,line,description,peoplenum,groupwrite.gender,minage,titleimage,
             groupwrite.userid,maxage,writedate,peoplenownum,user.nickname,groupid,once,commentcount,token,profileimage
@@ -303,7 +303,7 @@
 
 
     <!-- 개인 게시글 조회  -->
-    <select id="findIndiAll" resultType="com.project.ribbon.domain.post.PostIndiResponse" fetchSize="1000">
+    <select id="findIndiAll" resultType="com.project.ribbon.domain.post.PostIndiResponse">
         SELECT
             id,region,meetdate,title,description,individualwrite.gender,
             individualwrite.userid,writedate,maxage,minage,user.nickname,
@@ -376,7 +376,7 @@
     </delete>
 
     <!-- 중고 게시글 조회  -->
-    <select id="findUsedAll" resultType="com.project.ribbon.domain.post.PostUsedResponse" fetchSize="1000">
+    <select id="findUsedAll" resultType="com.project.ribbon.domain.post.PostUsedResponse">
         SELECT
             id,region,title,description,usedimage1,price,User.userid,writedate,user.nickname,
             usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage
@@ -694,7 +694,7 @@
 
 
     <!-- 댓글 정보 조회  -->
-    <select id="findByInherentId" resultType="com.project.ribbon.domain.post.PostCommentsResponse" fetchSize="1000">
+    <select id="findByInherentId" resultType="com.project.ribbon.domain.post.PostCommentsResponse">
         SELECT
             description,writedate,comments.userid,User.nickname,categoryid,
             inherentid,commentsid,isrecomment,
@@ -772,7 +772,7 @@
 
 
     <!-- 단체 댓글 정보 조회  -->
-    <select id="findByGroupCommentsInherentId" resultType="com.project.ribbon.domain.post.PostGroupCommentsResponse" fetchSize="1000">
+    <select id="findByGroupCommentsInherentId" resultType="com.project.ribbon.domain.post.PostGroupCommentsResponse">
         SELECT
             description,groupcomments.userid,User.nickname,inherentid,
             writedate,commentsid,isrecomment,profileimage
@@ -848,7 +848,7 @@
 
 
     <!-- 개인 댓글 정보 조회  -->
-    <select id="findByIndiCommentsInherentId" resultType="com.project.ribbon.domain.post.PostIndiCommentsResponse" fetchSize="1000">
+    <select id="findByIndiCommentsInherentId" resultType="com.project.ribbon.domain.post.PostIndiCommentsResponse">
         SELECT
             description,individualcomments.userid,User.nickname,inherentid,
             writedate,commentsid,isrecomment,profileimage
@@ -1161,6 +1161,18 @@
 
     </select>
 
+    <!-- 신고 유저 저장 -->
+    <insert id="saveReportUser" parameterType="com.project.ribbon.domain.post.PostReportUserResponse">
+        INSERT INTO reportuser (
+            userid,nickname,description,profileimage
+        ) VALUES (
+                     #{userid}
+                 , #{nickname}
+                 , #{description}
+                 , #{profileimage}
+                 )
+    </insert>
+
     <!-- 신고 커뮤니티글 조회 -->
     <select id="findReportBoardAll" resultType="com.project.ribbon.domain.post.PostReportBoardResponse">
         SELECT
@@ -1168,6 +1180,18 @@
         FROM reportboard
 
     </select>
+    <!-- 신고 커뮤니티  저장 -->
+    <insert id="saveReportBoard" parameterType="com.project.ribbon.domain.post.PostReportBoardResponse">
+        INSERT INTO reportboard (
+            boardid,userid,title,description,img
+        ) VALUES (
+                     #{boardid}
+                 , #{userid}
+                 , #{title}
+                 , #{description}
+                 , #{img}
+                 )
+    </insert>
     <!-- 신고 개인글 조회 -->
     <select id="findReportIndividualAll" resultType="com.project.ribbon.domain.post.PostReportIndividualResponse">
         SELECT
@@ -1175,6 +1199,17 @@
         FROM reportindividual
 
     </select>
+    <!-- 신고 개인 글 저장 -->
+    <insert id="saveReportIndividual" parameterType="com.project.ribbon.domain.post.PostReportIndividualResponse">
+        INSERT INTO reportindividual (
+            individualid,userid,title,description
+        ) VALUES (
+                     #{individualid}
+                 , #{userid}
+                 , #{title}
+                 , #{description}
+                 )
+    </insert>
     <!-- 신고 단체글 조회 -->
     <select id="findReportGroupAll" resultType="com.project.ribbon.domain.post.PostReportGroupResponse">
         SELECT
@@ -1182,6 +1217,18 @@
         FROM reportgroup
 
     </select>
+    <!-- 신고 단체 글 저장 -->
+    <insert id="saveReportGroup" parameterType="com.project.ribbon.domain.post.PostReportGroupResponse">
+        INSERT INTO reportgroup (
+            groupid,userid,title,description,titleimage
+        ) VALUES (
+                     #{groupid}
+                 , #{userid}
+                 , #{title}
+                 , #{description}
+                 , #{titleimage}
+                 )
+    </insert>
     <!-- 신고 중고글 조회 -->
     <select id="findReportUsedAll" resultType="com.project.ribbon.domain.post.PostReportUsedResponse">
         SELECT
@@ -1189,6 +1236,22 @@
         FROM reportused
 
     </select>
+    <!-- 신고 중고 글 저장 -->
+    <insert id="saveReportUsed" parameterType="com.project.ribbon.domain.post.PostReportUsedResponse">
+        INSERT INTO reportused (
+            usedid,userid,title,description,usedimage1,usedimage2,usedimage3,usedimage4,usedimage5
+        ) VALUES (
+                     #{usedid}
+                 , #{userid}
+                 , #{title}
+                 , #{description}
+                 , #{usedimage1}
+                 , #{usedimage2}
+                 , #{usedimage3}
+                 , #{usedimage4}
+                 , #{usedimage5}
+                 )
+    </insert>
     <!-- 신고 커뮤니티댓글 조회 -->
     <select id="findReportCommentsAll" resultType="com.project.ribbon.domain.post.PostReportCommentsResponse">
         SELECT
@@ -1196,6 +1259,17 @@
         FROM reportcomments
 
     </select>
+    <!-- 신고 커뮤니티 댓글 저장 -->
+    <insert id="saveReportComments" parameterType="com.project.ribbon.domain.post.PostReportCommentsResponse">
+        INSERT INTO reportcomments (
+            commentsid,userid,description,inherentid
+        ) VALUES (
+                     #{commentsid}
+                 , #{userid}
+                 , #{description}
+                 , #{inherentid}
+                 )
+    </insert>
     <!-- 신고 개인댓글 조회 -->
     <select id="findReportIndividualCommentsAll" resultType="com.project.ribbon.domain.post.PostReportCommentsResponse">
         SELECT
@@ -1203,6 +1277,17 @@
         FROM reportindividualcomments
 
     </select>
+    <!-- 신고 개인 댓글 저장 -->
+    <insert id="saveReportIndividualComments" parameterType="com.project.ribbon.domain.post.PostReportCommentsResponse">
+        INSERT INTO reportindividualcomments (
+            commentsid,userid,description,inherentid
+        ) VALUES (
+                     #{commentsid}
+                 , #{userid}
+                 , #{description}
+                 , #{inherentid}
+                 )
+    </insert>
     <!-- 신고 단체댓글 조회 -->
     <select id="findReportGroupCommentsAll" resultType="com.project.ribbon.domain.post.PostReportCommentsResponse">
         SELECT
@@ -1210,13 +1295,35 @@
         FROM reportgroupcomments
 
     </select>
+    <!-- 신고 단체 댓글 저장 -->
+    <insert id="saveReportGroupComments" parameterType="com.project.ribbon.domain.post.PostReportCommentsResponse">
+        INSERT INTO reportgroupcomments (
+            commentsid,userid,description,inherentid
+        ) VALUES (
+                     #{commentsid}
+                 , #{userid}
+                 , #{description}
+                 , #{inherentid}
+                 )
+    </insert>
     <!-- 신고 중고댓글 조회 -->
-    <select id="findReportUsedcommentsAll" resultType="com.project.ribbon.domain.post.PostReportCommentsResponse">
+    <select id="findReportUsedCommentsAll" resultType="com.project.ribbon.domain.post.PostReportCommentsResponse">
         SELECT
             *
         FROM reportusedcomments
 
     </select>
+    <!-- 신고 중고 댓글 저장 -->
+    <insert id="saveReportUsedComments" parameterType="com.project.ribbon.domain.post.PostReportCommentsResponse">
+        INSERT INTO reportusedcomments (
+            commentsid,userid,description,inherentid
+        ) VALUES (
+                     #{commentsid}
+                 , #{userid}
+                 , #{description}
+                 , #{inherentid}
+                 )
+    </insert>
 
     <!-- 신고 관리자페이지 유저 삭제 -->
     <delete id="deleteUserReport" >
@@ -1319,6 +1426,12 @@
             comments
         WHERE commentsid = #{commentsid}
     </delete>
+    <!-- 커뮤니티 댓글 갯수 카운트 -1 -->
+    <update id="updateDeleteReportCommentsCount" parameterType="com.project.ribbon.domain.post.PostReportCommentsCountRequest">
+
+        UPDATE boardwrite SET commentcount = commentcount - 1 WHERE boardid = #{boardid}
+
+    </update>
     <!-- 신고 관리자페이지 개인댓글 삭제 -->
     <delete id="deleteIndividualCommentsReport" >
         DELETE
@@ -1334,6 +1447,12 @@
             individualcomments
         WHERE commentsid = #{commentsid}
     </delete>
+    <!-- 개인 댓글 갯수 카운트 -1 -->
+    <update id="updateDeleteReportIndividualCommentsCount" parameterType="com.project.ribbon.domain.post.PostReportIndividualCommentsCountRequest">
+
+        UPDATE individualwrite SET commentcount = commentcount - 1 WHERE individualid = #{individualid}
+
+    </update>
     <!-- 신고 관리자페이지 단체댓글 삭제 -->
     <delete id="deleteGroupCommentsReport" >
         DELETE
@@ -1349,6 +1468,12 @@
             groupcomments
         WHERE commentsid = #{commentsid}
     </delete>
+    <!-- 단체 댓글 갯수 카운트 -1 -->
+    <update id="updateDeleteReportGroupCommentsCount" parameterType="com.project.ribbon.domain.post.PostReportGroupCommentsCountRequest">
+
+        UPDATE groupwrite SET commentcount = commentcount - 1 WHERE groupid = #{groupid}
+
+    </update>
     <!-- 신고 관리자페이지 중고댓글 삭제 -->
     <delete id="deleteUsedCommentsReport" >
         DELETE
@@ -1364,4 +1489,10 @@
             usedcomments
         WHERE commentsid = #{commentsid}
     </delete>
+    <!-- 중고 댓글 갯수 카운트 -1 -->
+    <update id="updateDeleteReportUsedCommentsCount" parameterType="com.project.ribbon.domain.post.PostReportUsedCommentsCountRequest">
+
+        UPDATE usedwrite SET commentcount = commentcount - 1 WHERE usedid = #{usedid}
+
+    </update>
 </mapper>

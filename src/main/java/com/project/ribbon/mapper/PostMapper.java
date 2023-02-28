@@ -225,22 +225,40 @@ public interface PostMapper {
 
     // 신고 유저 조회
     List<PostReportUserResponse> findReportUserAll();
+    // 신고 유저 저장
+    void saveReportUser(PostReportUserResponse params);
     // 신고 커뮤니티 게시글 조회
     List<PostReportBoardResponse> findReportBoardAll();
+    // 신고 커뮤니티 게시글 저장
+    void saveReportBoard(PostReportBoardResponse params);
     // 신고 개인 게시글 조회
     List<PostReportIndividualResponse> findReportIndividualAll();
+    // 신고 개인 게시글 저장
+    void saveReportIndividual(PostReportIndividualResponse params);
     // 신고 단체 게시글 조회
     List<PostReportGroupResponse> findReportGroupAll();
+    // 신고 단체 게시글 저장
+    void saveReportGroup(PostReportGroupResponse params);
     // 신고 중고 게시글 조회
     List<PostReportUsedResponse> findReportUsedAll();
+    // 신고 중고 게시글 저장
+    void saveReportUsed(PostReportUsedResponse params);
     // 신고 커뮤니티 댓글 조회
     List<PostReportCommentsResponse> findReportCommentsAll();
+    // 신고 커뮤니티 댓글 저장
+    void saveReportComments(PostReportCommentsResponse params);
     // 신고 개인 댓글 조회
     List<PostReportCommentsResponse> findReportIndividualCommentsAll();
+    // 신고 개인 댓글 저장
+    void saveReportIndividualComments(PostReportCommentsResponse params);
     // 신고 단체 댓글 조회
     List<PostReportCommentsResponse> findReportGroupCommentsAll();
+    // 신고 단체 댓글 저장
+    void saveReportGroupComments(PostReportCommentsResponse params);
     // 신고 중고 댓글 조회
-    List<PostReportCommentsResponse> findReportUsedcommentsAll();
+    List<PostReportCommentsResponse> findReportUsedCommentsAll();
+    // 신고 중고 댓글 저장
+    void saveReportUsedComments(PostReportCommentsResponse params);
 
     // 관리자페이지 신고 유저 삭제
     void deleteUserReport(String params);
@@ -278,23 +296,26 @@ public interface PostMapper {
     void deleteBoardCommentsReport(String params);
     // 신고 커뮤니티댓글 삭제
     void deleteBoardCommentsWriteReport(String params);
+    void updateDeleteReportCommentsCount(String params);
 
 
     // 관리자페이지 신고 개인댓글 삭제
     void deleteIndividualCommentsReport(String params);
     // 신고 개인댓글 삭제
     void deleteIndividualCommentsWriteReport(String params);
+    void updateDeleteReportIndividualCommentsCount(String params);
 
     // 관리자페이지 신고 단체댓글 삭제
     void deleteGroupCommentsReport(String params);
-
     // 신고 단체댓글 삭제
     void deleteGroupCommentsWriteReport(String params);
+    void updateDeleteReportGroupCommentsCount(String  params);
+
     // 관리자페이지 신고 중고댓글 삭제
     void deleteUsedCommentsReport(String params);
-
     // 신고 중고댓글 삭제
     void deleteUsedCommentsWriteReport(String params);
+    void updateDeleteReportUsedCommentsCount(String params);
 
     // 게시글 갯수 카운트
     int count();
