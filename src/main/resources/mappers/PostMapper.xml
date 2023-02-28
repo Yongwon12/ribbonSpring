@@ -205,6 +205,16 @@
                            ON User.userid = boardwrite.userid
     </select>
 
+    <!-- 커뮤니티 특정 게시글 조회  -->
+    <select id="findOne" resultType="com.project.ribbon.domain.post.PostResponse">
+        SELECT
+            id,User.userid,title,description,img,writedate,User.nickname,
+            boardid,likedcount,commentcount,profileimage,token
+        FROM boardwrite
+                 LEFT JOIN User
+                           ON User.userid = boardwrite.userid
+        WHERE boardid = #{boardid}
+    </select>
 
 
     <!-- 커뮤니티 게시글 삭제 -->

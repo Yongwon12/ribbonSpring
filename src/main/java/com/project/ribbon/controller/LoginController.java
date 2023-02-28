@@ -25,6 +25,7 @@ import java.util.Map;
 public class LoginController {
     private final MemberService memberService;
     private final PostService postService;
+    String ip = "http://192.168.0.5:8000/ribbon/admin";
     // 커뮤니티 글 신고 로그인 폼
     @GetMapping("/ribbon/admin/boardlogin")
     public String showBoardLoginForm() {
@@ -250,7 +251,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportboard", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportboard", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/boardlogin");
@@ -267,7 +268,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportindividual", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportindividual", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/individuallogin");
@@ -284,7 +285,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportgroup", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportgroup", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/grouplogin");
@@ -301,7 +302,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportused", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportused", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/usedlogin");
@@ -319,7 +320,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
                 HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-                ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportuser", HttpMethod.GET, entity, String.class);
+                ResponseEntity<String> result = restTemplate.exchange(ip+"/reportuser", HttpMethod.GET, entity, String.class);
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.sendRedirect("/ribbon/admin/login");
@@ -337,7 +338,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
                 HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-                ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportcomments", HttpMethod.GET, entity, String.class);
+                ResponseEntity<String> result = restTemplate.exchange(ip+"/reportcomments", HttpMethod.GET, entity, String.class);
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.sendRedirect("/ribbon/admin/login");
@@ -354,7 +355,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportindividualcomments", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportindividualcomments", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/login");
@@ -371,7 +372,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportgroupcomments", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportgroupcomments", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/login");
@@ -388,7 +389,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportusedcomments", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportusedcomments", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/login");
