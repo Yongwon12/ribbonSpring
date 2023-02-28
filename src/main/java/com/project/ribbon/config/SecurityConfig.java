@@ -51,6 +51,7 @@ public class SecurityConfig {
                 .requestMatchers("/ribbon/admin/post/userlogin").permitAll()
                 .requestMatchers("/ribbon/admin/post/boardlogin").permitAll()
                 .requestMatchers("/ribbon").permitAll()
+                .requestMatchers("/ribbon/ribbon.png").permitAll()
                 .requestMatchers("/ribbon/admin/reportuser").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/reportboard").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/reportindividual").hasRole("ADMIN")

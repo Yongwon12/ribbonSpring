@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -25,11 +28,20 @@ import java.util.Map;
 public class LoginController {
     private final MemberService memberService;
     private final PostService postService;
-    String ip = "http://192.168.0.5:8000/ribbon/admin";
+    String ip = "http://192.168.219.161:8000/ribbon/admin";
     // 맺음 홈페이지
     @GetMapping("/ribbon")
     public String showRibbonForm() {
-        return "index";
+        return "ribbonhome";
+    }
+    @GetMapping("/ribbon/ribbon.png")
+    public ResponseEntity<byte[]> getRibbonImage() throws IOException {
+        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.png" );
+        byte[] imageBytes = Files.readAllBytes(imagePath);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
     }
     // 커뮤니티 글 신고 로그인 폼
     @GetMapping("/ribbon/admin/boardlogin")

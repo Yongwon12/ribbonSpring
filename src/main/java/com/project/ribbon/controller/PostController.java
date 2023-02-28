@@ -48,10 +48,10 @@ public class PostController {
     private final MemberService memberService;
 
 
-    String userip = "http://192.168.0.5:8000/api/userimage/";
-    String boardip = "http://192.168.0.5:8000/api/boardimage/";
-    String groupip = "http://192.168.0.5:8000/api/groupimage/";
-    String usedip = "http://192.168.0.5:8000/api/usedimage/";
+    String userip = "http://192.168.219.161:8000/api/userimage/";
+    String boardip = "http://192.168.219.161:8000/api/boardimage/";
+    String groupip = "http://192.168.219.161:8000/api/groupimage/";
+    String usedip = "http://192.168.219.161:8000/api/usedimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -60,8 +60,8 @@ public class PostController {
     // 커뮤니티 게시글 작성
     @PostMapping("/post/boardwrite")
     public ResponseEntity<?> savePost(@RequestParam("id") Integer id
-            ,@RequestParam("userid") Long userid,@RequestParam("title") String title
-            ,@RequestParam("description") String description,@RequestParam(value = "image",required = false) MultipartFile file
+            ,@RequestParam("userid") Long userid,@RequestParam("title") @Valid String title
+            ,@RequestParam("description") @Valid String description,@RequestParam(value = "image",required = false) MultipartFile file
             ,@RequestParam("writedate") String writedate
             ,@RequestParam("nickname") String nickname) throws IOException{
         if (file != null){
@@ -170,9 +170,9 @@ public class PostController {
     // 단체 글작성
     @PostMapping("/post/writegroup")
     public ResponseEntity<?> saveGroupPost(@RequestParam("id") Integer id
-            ,@RequestParam("region") String region,@RequestParam("title") String title
-            ,@RequestParam("line") String line
-            , @RequestParam("description") String description
+            ,@RequestParam("region") String region,@RequestParam("title") @Valid String title
+            ,@RequestParam("line") @Valid String line
+            ,@RequestParam("description") @Valid String description
             ,@RequestParam("peoplenum") String peoplenum,@RequestParam("gender") String gender
             ,@RequestParam("minage") String minage,@RequestParam(value = "image",required = false) MultipartFile file
             ,@RequestParam("userid") Long userid,@RequestParam("maxage") String maxage
@@ -322,8 +322,8 @@ public class PostController {
     // 중고 글작성
     @PostMapping("/post/writeused")
     public ResponseEntity<?> saveUsedPost(@RequestParam("id") Integer id
-            ,@RequestParam("region") String region,@RequestParam("title") String title
-            ,@RequestParam("description") String description
+            ,@RequestParam("region") String region,@RequestParam("title") @Valid String title
+            ,@RequestParam("description") @Valid String description
             ,@RequestParam(value = "usedimage1",required = false) MultipartFile file1,@RequestParam("price") Integer price
             ,@RequestParam("userid") Long userid,@RequestParam("writedate") String  writedate
             ,@RequestParam("nickname") String nickname,@RequestParam(value = "usedimage2",required = false) MultipartFile file2
@@ -563,8 +563,8 @@ public class PostController {
     @PostMapping("/post/updateuser")
     public ResponseEntity<?> updateUserPost(
             @RequestParam("sns") String sns
-            ,@RequestParam("nickname") String nickname,@RequestParam("modifydate") String modifydate
-            ,@RequestParam("bestcategory") String bestcategory,@RequestParam("shortinfo") String shortinfo
+            ,@RequestParam("nickname") @Valid String nickname,@RequestParam("modifydate") String modifydate
+            ,@RequestParam("bestcategory") String bestcategory,@RequestParam("shortinfo") @Valid String shortinfo
             ,@RequestParam("youtube") String youtube, @RequestParam(value = "image",required = false) MultipartFile file
             ,@RequestParam("userid") Long userid) throws IOException{
         if (file!=null) {
