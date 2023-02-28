@@ -515,10 +515,105 @@ public class PostService {
         return postMapper.findReportUsedcommentsAll();
     }
 
-    // 신고 유저 삭제
-    public String deleteUserReportPost(final PostUserRequest params) {
+    // 관리자페이지 신고 유저 삭제
+    public PostReportUserRequest deleteUserReportPost(final String params) {
         postMapper.deleteUserReport(params);
         return null;
     }
+    // 신고유저 정보 삭제
+    public PostReportUserRequest deleteReportUserPost(final String params) {
+        postMapper.deleteByReportUserId(params);
+        return null;
+    }
+
+    // 신고유저 권한정보 삭제
+    public PostReportUserRequest deleteReportUserRolesPost(final String params) {
+        postMapper.deleteByReportUserRolesId(params);
+        return null;
+    }
+    // 관리자페이지 신고 커뮤니티글 삭제
+    public PostReportBoardRequest deleteBoardReportPost(final String params) {
+        postMapper.deleteBoardReport(params);
+        return null;
+    }
+    // 신고 커뮤니티글 삭제
+    public PostReportBoardRequest deleteBoardWriteReportPost(final String params) {
+        postMapper.deleteBoardWriteReport(params);
+        return null;
+    }
+    // 관리자페이지 신고 개인글 삭제
+    public PostReportIndividualRequest deleteIndividualReportPost(final String params) {
+        postMapper.deleteIndividualReport(params);
+        return null;
+    }
+    // 신고 개인글 삭제
+    public PostReportIndividualRequest deleteIndividualWriteReportPost(final String params) {
+        postMapper.deleteIndividualWriteReport(params);
+        return null;
+    }
+    // 관리자페이지 신고 단체글 삭제
+    public PostReportGroupRequest deleteGroupReportPost(final String params) {
+        postMapper.deleteGroupReport(params);
+        return null;
+    }
+    // 신고 단체글 삭제
+    public PostReportGroupRequest deleteGroupWriteReportPost(final String params) {
+        postMapper.deleteGroupWriteReport(params);
+        return null;
+    }
+    // 관리자페이지 신고 중고글 삭제
+    public PostReportUsedRequest deleteUsedReportPost(final String params) {
+        postMapper.deleteUsedReport(params);
+        return null;
+    }
+    // 신고 중고글 삭제
+    public PostReportUsedRequest deleteUsedWriteReportPost(final String params) {
+        postMapper.deleteUsedWriteReport(params);
+        return null;
+    }
+
+
+
+    // 관리자페이지 신고 커뮤니티댓글 삭제
+    public PostReportBoardCommentsRequest deleteBoardCommentsReportPost(final String params) {
+        postMapper.deleteBoardCommentsReport(params);
+        return null;
+    }
+    // 신고 커뮤니티댓글 삭제
+    public PostReportBoardCommentsRequest deleteBoardCommentsWriteReportPost(final String params) {
+        postMapper.deleteBoardCommentsWriteReport(params);
+        return null;
+    }
+    // 관리자페이지 신고 개인댓글 삭제
+    public PostReportIndividualCommentsRequest deleteIndividualCommentsReportPost(final String params) {
+        postMapper.deleteIndividualCommentsReport(params);
+        return null;
+    }
+    // 신고 개인댓글 삭제
+    public PostReportIndividualCommentsRequest deleteIndividualCommentsWriteReportPost(final String params) {
+        postMapper.deleteIndividualCommentsWriteReport(params);
+        return null;
+    }
+    // 관리자페이지 신고 단체댓글 삭제
+    public PostReportGroupCommentsRequest deleteGroupCommentsReportPost(final String params) {
+        postMapper.deleteGroupCommentsReport(params);
+        return null;
+    }
+    // 신고 단체댓글 삭제
+    public PostReportGroupCommentsRequest deleteGroupCommentsWriteReportPost(final String params) {
+        postMapper.deleteGroupCommentsWriteReport(params);
+        return null;
+    }
+    // 관리자페이지 신고 중고댓글 삭제
+    public PostReportUsedCommentsRequest deleteUsedCommentsReportPost(final String params) {
+        postMapper.deleteUsedCommentsReport(params);
+        return null;
+    }
+    // 신고 중고댓글 삭제
+    public PostReportUsedCommentsRequest deleteUsedCommentsWriteReportPost(final String params) {
+        postMapper.deleteUsedCommentsWriteReport(params);
+        return null;
+    }
+
 
 }

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Group Report</title>
+  <title>Board Report</title>
   <style>
     table, th, td {
       border: 1px solid black;
@@ -21,32 +21,32 @@
   </style>
 </head>
 <body>
-<h1>Group Report</h1>
-<button type="button" onclick="deleteSelectedGroups()">Delete Selected Group Report</button>
+<h1>Board Report</h1>
+<button type="button" onclick="deleteSelectedBoards()">Delete Selected Board Report</button>
 <table>
   <thead>
   <tr>
     <th><input type="checkbox" id="selectAll"/></th>
-    <th>Report Group ID</th>
-    <th>Report User Id</th>
+    <th>Report Board ID</th>
+    <th>Report User ID</th>
     <th>Report Title</th>
     <th>Report Description</th>
   </tr>
   </thead>
   <tbody>
-  <tr th:each="group : ${groupList}">
-    <td><input type="checkbox" name="selectedGroups" th:value="${group.getGroupid()}" onclick="selectRow(this)"/></td>
-    <td th:text="${group.getGroupid()}"></td>
-    <td th:text="${group.getUserid()}"></td>
-    <td th:text="${group.getTitle()}"></td>
-    <td th:text="${group.getDescription()}"></td>
+  <tr th:each="board : ${boardList}">
+    <td><input type="checkbox" name="selectedBoards" th:value="${board.getBoardid()}" onclick="selectRow(this)"/></td>
+    <td th:text="${board.getBoardid()}"></td>
+    <td th:text="${board.getUserid()}"></td>
+    <td th:text="${board.getTitle()}"></td>
+    <td th:text="${board.getDescription()}"></td>
   </tr>
   </tbody>
 </table>
 <script>
   // select all checkboxes when "select all" checkbox is clicked
   const selectAllCheckbox = document.getElementById('selectAll');
-  const checkboxes = document.getElementsByName('selectedGroups');
+  const checkboxes = document.getElementsByName('selectedBoards');
   selectAllCheckbox.addEventListener('click', function() {
     for (let i = 0; i < checkboxes.length; i++) {
       checkboxes[i].checked = selectAllCheckbox.checked;
@@ -60,21 +60,23 @@
       }
     }
   }
-  function deleteSelectedGroups() {
-    const selectedGroups = Array.from(document.getElementsByName('selectedGroups'))
+  function deleteSelectedBoards() {
+    const selectedBoards = Array.from(document.getElementsByName('selectedBoards'))
             .filter(checkbox => checkbox.checked)
-            .map(checkbox => ({ "groupid": checkbox.value }));
-    if (selectedGroups.length === 0) {
-      alert('Please select at least one user.');
+            .map(checkbox => ({ "boardid": checkbox.value }));
+    if (selectedBoards.length === 0) {
+      alert('Please select at least one boardid.');
       return;
     }
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/ribbon/admin/post/reportgroupdelete');
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify(selectedGroups));
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        window.location.reload();
+    if (confirm('정말로 삭제하시겠습니까?')) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/ribbon/admin/post/reportboarddelete');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify(selectedBoards));
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          window.location.reload();
+        }
       }
     }
   }

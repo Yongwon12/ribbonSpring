@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -85,28 +86,28 @@ public class LoginController {
     public String boardReport(Model model) {
         List<PostReportBoardResponse> boardList = postService.findReportBoardAllPost();
         model.addAttribute("boardList", boardList);
-        return "admin-reportboard";
+        return "admin-reportpostdeleteboard";
     }
     // 신고 개인글 정보 조회
     @GetMapping("/ribbon/admin/reportindividual")
     public String individualReport(Model model) {
         List<PostReportIndividualResponse> individualList = postService.findReportIndividualAllPost();
         model.addAttribute("individualList", individualList);
-        return "admin-reportindividual";
+        return "admin-reportpostdeleteindividual";
     }
     // 신고 단체글 정보 조회
     @GetMapping("/ribbon/admin/reportgroup")
     public String groupReport(Model model) {
         List<PostReportGroupResponse> groupList = postService.findReportGroupAllPost();
         model.addAttribute("groupList", groupList);
-        return "admin-reportgroup";
+        return "admin-reportpostdeletegroup";
     }
     // 신고 중고글 정보 조회
     @GetMapping("/ribbon/admin/reportused")
     public String usedReport(Model model) {
         List<PostReportUsedResponse> usedList = postService.findReportUsedAllPost();
         model.addAttribute("usedList", usedList);
-        return "admin-reportused";
+        return "admin-reportpostdeleteused";
     }
     // 신고 커뮤니티 댓글 정보 조회
     @GetMapping("/ribbon/admin/reportcomments")
@@ -138,12 +139,106 @@ public class LoginController {
     }
     // 신고 유저 정보 삭제
     @RequestMapping("/ribbon/admin/post/reportuserdelete")
-    public String userReportDelete(@RequestBody PostUserRequest params) {
-        postService.deleteUserRolesPost(params);
-        postService.deleteUserPost(params);
-        postService.deleteUserReportPost(params);
+    public String userReportDelete(@RequestBody List<Map<String,String>> params) {
+        for (Map<String,String> user:params) {
+            String userId = user.get("userid");
+            postService.deleteReportUserRolesPost(userId);
+            postService.deleteReportUserPost(userId);
+            postService.deleteUserReportPost(userId);
+        }
         return "admin-reportpostdeleteuser";
     }
+    // 관리자페이지 신고 커뮤니티글 정보 삭제
+    @RequestMapping("/ribbon/admin/post/reportboarddelete")
+    public String boardReportDelete(@RequestBody List<Map<String,String>> params) {
+        System.out.println(params);
+        for (Map<String, String> board : params) {
+            String boardId = board.get("boardid");
+            postService.deleteBoardWriteReportPost(boardId);
+            postService.deleteBoardReportPost(boardId);
+        }
+        return "admin-reportpostdeleteboard";
+    }
+    // 관리자페이지 신고 개인글 정보 삭제
+    @RequestMapping("/ribbon/admin/post/reportindividualdelete")
+    public String individualReportDelete(@RequestBody List<Map<String,String>> params) {
+        System.out.println(params);
+        for (Map<String, String> individual : params) {
+            String individualId = individual.get("individualid");
+            postService.deleteIndividualWriteReportPost(individualId);
+            postService.deleteIndividualReportPost(individualId);
+        }
+        return "admin-reportpostdeleteindividual";
+    }
+    // 관리자페이지 신고 단체글 정보 삭제
+    @RequestMapping("/ribbon/admin/post/reportgroupdelete")
+    public String groupReportDelete(@RequestBody List<Map<String,String>> params) {
+        System.out.println(params);
+        for (Map<String, String> group : params) {
+            String groupId = group.get("groupid");
+            postService.deleteGroupWriteReportPost(groupId);
+            postService.deleteGroupReportPost(groupId);
+        }
+        return "admin-reportpostdeletegroup";
+    }
+    // 관리자페이지 신고 중고글 정보 삭제
+    @RequestMapping("/ribbon/admin/post/reportuseddelete")
+    public String usedReportDelete(@RequestBody List<Map<String,String>> params) {
+        System.out.println(params);
+        for (Map<String, String> used : params) {
+            String usedId = used.get("usedid");
+            postService.deleteUsedWriteReportPost(usedId);
+            postService.deleteUsedReportPost(usedId);
+        }
+        return "admin-reportpostdeleteused";
+    }
+
+    // 관리자페이지 신고 커뮤니티 댓글 정보 삭제
+    @RequestMapping("/ribbon/admin/post/reportcommentsdelete")
+    public String commentsReportDelete(@RequestBody List<Map<String,String>> params) {
+        System.out.println(params);
+        for (Map<String, String> comments : params) {
+            String commentsId = comments.get("commentsid");
+            postService.deleteBoardCommentsWriteReportPost(commentsId);
+            postService.deleteBoardCommentsReportPost(commentsId);
+        }
+        return "admin-reportcomments";
+    }
+    // 관리자페이지 신고 개인 댓글 정보 삭제
+    @RequestMapping("/ribbon/admin/post/reportindividualcommentsdelete")
+    public String individualCommentsReportDelete(@RequestBody List<Map<String,String>> params) {
+        System.out.println(params);
+        for (Map<String, String> individualcomments : params) {
+            String commentsId = individualcomments.get("commentsid");
+            postService.deleteIndividualCommentsWriteReportPost(commentsId);
+            postService.deleteIndividualCommentsReportPost(commentsId);
+        }
+        return "admin-reportindividualcomments";
+    }
+    // 관리자페이지 신고 단체 댓글 정보 삭제
+    @RequestMapping("/ribbon/admin/post/reportgroupcommentsdelete")
+    public String groupCommentsReportDelete(@RequestBody List<Map<String,String>> params) {
+        System.out.println(params);
+        for (Map<String, String> groupcomments : params) {
+            String commentsId = groupcomments.get("commentsid");
+            postService.deleteGroupCommentsWriteReportPost(commentsId);
+            postService.deleteGroupCommentsReportPost(commentsId);
+        }
+        return "admin-reportgroupcomments";
+    }
+    // 관리자페이지 신고 중고 댓글 정보 삭제
+    @RequestMapping("/ribbon/admin/post/reportusedcommentsdelete")
+    public String usedCommentsReportDelete(@RequestBody List<Map<String,String>> params) {
+        System.out.println(params);
+        for (Map<String, String> usedcomments : params) {
+            String commentsId = usedcomments.get("commentsid");
+            postService.deleteUsedCommentsWriteReportPost(commentsId);
+            postService.deleteUsedCommentsReportPost(commentsId);
+        }
+        return "admin-reportusedcomments";
+    }
+
+
 //  커뮤니티글 신고 관리자 권한 조회
 @PostMapping("/ribbon/admin/post/boardlogin")
 public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
@@ -155,7 +250,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.219.161:8000/ribbon/admin/reportboard", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportboard", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/boardlogin");
@@ -172,7 +267,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.219.161:8000/ribbon/admin/reportindividual", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportindividual", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/individuallogin");
@@ -189,7 +284,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.219.161:8000/ribbon/admin/reportgroup", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportgroup", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/grouplogin");
@@ -206,7 +301,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.219.161:8000/ribbon/admin/reportused", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportused", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/usedlogin");
@@ -224,7 +319,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
                 HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-                ResponseEntity<String> result = restTemplate.exchange("http://192.168.219.161:8000/ribbon/admin/reportuser", HttpMethod.GET, entity, String.class);
+                ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportuser", HttpMethod.GET, entity, String.class);
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.sendRedirect("/ribbon/admin/login");
@@ -242,7 +337,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
                 HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-                ResponseEntity<String> result = restTemplate.exchange("http://192.168.219.161:8000/ribbon/admin/reportcomments", HttpMethod.GET, entity, String.class);
+                ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportcomments", HttpMethod.GET, entity, String.class);
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.sendRedirect("/ribbon/admin/login");
@@ -259,7 +354,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.219.161:8000/ribbon/admin/reportindividualcomments", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportindividualcomments", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/login");
@@ -276,7 +371,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.219.161:8000/ribbon/admin/reportgroupcomments", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportgroupcomments", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/login");
@@ -293,7 +388,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange("http://192.168.219.161:8000/ribbon/admin/reportusedcomments", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange("http://192.168.0.5:8000/ribbon/admin/reportusedcomments", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/login");

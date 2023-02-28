@@ -205,16 +205,6 @@
                            ON User.userid = boardwrite.userid
     </select>
 
-    <!-- 커뮤니티 특정게시글  조회 -->
-    <select id="findOne" resultType="com.project.ribbon.domain.post.PostResponse">
-        SELECT
-            id,User.userid,title,description,img,writedate,User.nickname,
-            boardid,likedcount,commentcount,profileimage,token
-        FROM boardwrite
-                 LEFT JOIN User
-                           ON User.userid = boardwrite.userid
-        WHERE boardid = #{boardid}
-    </select>
 
 
     <!-- 커뮤니티 게시글 삭제 -->
@@ -222,7 +212,7 @@
         DELETE
         FROM
             boardwrite
-        where boardid = #{boardid}
+        WHERE boardid = #{boardid}
     </delete>
 
     <!-- 단체 게시글 조회  -->
@@ -1218,11 +1208,150 @@
 
     </select>
 
-    <!-- 채팅룸 삭제 -->
+    <!-- 신고 관리자페이지 유저 삭제 -->
     <delete id="deleteUserReport" >
         DELETE
         FROM
             reportuser
         WHERE userid = #{userid}
+    </delete>
+
+    <!-- 신고 유저 정보 삭제 -->
+    <delete id="deleteByReportUserId" >
+        DELETE
+        FROM
+            User
+        WHERE userid = #{userid}
+    </delete>
+
+    <!-- 신고 유저 권한 정보 삭제 -->
+    <delete id="deleteByReportUserRolesId" >
+        DELETE
+        FROM
+            user_roles
+        WHERE user_userid = #{userid}
+    </delete>
+
+    <!-- 신고 관리자페이지 커뮤니티글 삭제 -->
+    <delete id="deleteBoardReport" >
+        DELETE
+        FROM
+            reportboard
+        WHERE boardid = #{boardid}
+    </delete>
+
+    <!-- 신고 커뮤니티 게시글 삭제 -->
+    <delete id="deleteBoardWriteReport" >
+        DELETE
+        FROM
+            boardwrite
+        WHERE boardid = #{boardid}
+    </delete>
+    <!-- 신고 관리자페이지 개인글 삭제 -->
+    <delete id="deleteIndividualReport" >
+        DELETE
+        FROM
+            reportindividual
+        WHERE individualid = #{individualid}
+    </delete>
+
+    <!-- 신고 개인 게시글 삭제 -->
+    <delete id="deleteIndividualWriteReport" >
+        DELETE
+        FROM
+            individualwrite
+        WHERE individualid = #{individualid}
+    </delete>
+    <!-- 신고 관리자페이지 단체글 삭제 -->
+    <delete id="deleteGroupReport" >
+        DELETE
+        FROM
+            reportgroup
+        WHERE groupid = #{groupid}
+    </delete>
+
+    <!-- 신고 단체 게시글 삭제 -->
+    <delete id="deleteGroupWriteReport" >
+        DELETE
+        FROM
+            groupwrite
+        WHERE groupid = #{groupid}
+    </delete>
+    <!-- 신고 관리자페이지 중고글 삭제 -->
+    <delete id="deleteUsedReport" >
+        DELETE
+        FROM
+            reportused
+        WHERE usedid = #{usedid}
+    </delete>
+
+    <!-- 신고 중고 게시글 삭제 -->
+    <delete id="deleteUsedWriteReport" >
+        DELETE
+        FROM
+            usedwrite
+        WHERE usedid = #{usedid}
+    </delete>
+
+
+    <!-- 신고 관리자페이지 커뮤니티댓글 삭제 -->
+    <delete id="deleteBoardCommentsReport" >
+        DELETE
+        FROM
+            reportcomments
+        WHERE commentsid = #{commentsid}
+    </delete>
+
+    <!-- 신고 커뮤니티 게시댓글 삭제 -->
+    <delete id="deleteBoardCommentsWriteReport" >
+        DELETE
+        FROM
+            comments
+        WHERE commentsid = #{commentsid}
+    </delete>
+    <!-- 신고 관리자페이지 개인댓글 삭제 -->
+    <delete id="deleteIndividualCommentsReport" >
+        DELETE
+        FROM
+            reportindividualcomments
+        WHERE commentsid = #{commentsid}
+    </delete>
+
+    <!-- 신고 개인 게시댓글 삭제 -->
+    <delete id="deleteIndividualCommentsWriteReport" >
+        DELETE
+        FROM
+            individualcomments
+        WHERE commentsid = #{commentsid}
+    </delete>
+    <!-- 신고 관리자페이지 단체댓글 삭제 -->
+    <delete id="deleteGroupCommentsReport" >
+        DELETE
+        FROM
+            reportgroupcomments
+        WHERE commentsid = #{commentsid}
+    </delete>
+
+    <!-- 신고 단체 게시댓글 삭제 -->
+    <delete id="deleteGroupCommentsWriteReport" >
+        DELETE
+        FROM
+            groupcomments
+        WHERE commentsid = #{commentsid}
+    </delete>
+    <!-- 신고 관리자페이지 중고댓글 삭제 -->
+    <delete id="deleteUsedCommentsReport" >
+        DELETE
+        FROM
+            reportusedcomments
+        WHERE commentsid = #{commentsid}
+    </delete>
+
+    <!-- 신고 중고 게시댓글 삭제 -->
+    <delete id="deleteUsedCommentsWriteReport" >
+        DELETE
+        FROM
+            usedcomments
+        WHERE commentsid = #{commentsid}
     </delete>
 </mapper>

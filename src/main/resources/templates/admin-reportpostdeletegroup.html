@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Used Report</title>
+  <title>Group Report</title>
   <style>
     table, th, td {
       border: 1px solid black;
@@ -21,32 +21,32 @@
   </style>
 </head>
 <body>
-<h1>Used Report</h1>
-<button type="button" onclick="deleteSelectedUseds()">Delete Selected Used Report</button>
+<h1>Group Report</h1>
+<button type="button" onclick="deleteSelectedGroups()">Delete Selected Group Report</button>
 <table>
   <thead>
   <tr>
     <th><input type="checkbox" id="selectAll"/></th>
-    <th>Report Used ID</th>
-    <th>Report User Id</th>
+    <th>Report Group ID</th>
+    <th>Report User ID</th>
     <th>Report Title</th>
     <th>Report Description</th>
   </tr>
   </thead>
   <tbody>
-  <tr th:each="used : ${usedList}">
-    <td><input type="checkbox" name="selectedUseds" th:value="${used.getUsedid()}" onclick="selectRow(this)"/></td>
-    <td th:text="${used.getUsedid()}"></td>
-    <td th:text="${used.getUserid()}"></td>
-    <td th:text="${used.getTitle()}"></td>
-    <td th:text="${used.getDescription()}"></td>
+  <tr th:each="group : ${groupList}">
+    <td><input type="checkbox" name="selectedGroups" th:value="${group.getGroupid()}" onclick="selectRow(this)"/></td>
+    <td th:text="${group.getGroupid()}"></td>
+    <td th:text="${group.getUserid()}"></td>
+    <td th:text="${group.getTitle()}"></td>
+    <td th:text="${group.getDescription()}"></td>
   </tr>
   </tbody>
 </table>
 <script>
   // select all checkboxes when "select all" checkbox is clicked
   const selectAllCheckbox = document.getElementById('selectAll');
-  const checkboxes = document.getElementsByName('selectedUseds');
+  const checkboxes = document.getElementsByName('selectedGroups');
   selectAllCheckbox.addEventListener('click', function() {
     for (let i = 0; i < checkboxes.length; i++) {
       checkboxes[i].checked = selectAllCheckbox.checked;
@@ -60,21 +60,23 @@
       }
     }
   }
-  function deleteSelectedUseds() {
-    const selectedUseds = Array.from(document.getElementsByName('selectedUseds'))
+  function deleteSelectedGroups() {
+    const selectedGroups = Array.from(document.getElementsByName('selectedGroups'))
             .filter(checkbox => checkbox.checked)
-            .map(checkbox => ({ "usedid": checkbox.value }));
-    if (selectedUseds.length === 0) {
-      alert('Please select at least one user.');
+            .map(checkbox => ({ "groupid": checkbox.value }));
+    if (selectedGroups.length === 0) {
+      alert('Please select at least one groupid.');
       return;
     }
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/ribbon/admin/post/reportuseddelete');
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify(selectedUseds));
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        window.location.reload();
+    if (confirm('정말로 삭제하시겠습니까?')) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/ribbon/admin/post/reportgroupdelete');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify(selectedGroups));
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          window.location.reload();
+        }
       }
     }
   }

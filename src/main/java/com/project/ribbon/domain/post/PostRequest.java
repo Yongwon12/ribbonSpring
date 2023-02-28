@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostRequest {
-
+        private Long boardid;   // PK
         private Integer id;
         private Long userid;
         @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_\\ ]{2,30}$", message = "제목은 특수문자를 제외한 최소 2자, 최대 30자입니다.")
@@ -26,7 +26,6 @@ public class PostRequest {
         @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9\\*]{2,30}$", message = "닉네임은 특수문자를 제외한 2~30자리여야 합니다.")
         @NotBlank(message = "닉네임은 필수 입력 값입니다.")
         private String nickname;
-        private Long boardid;   // PK
         private Integer likedcount;
         private Integer commentcount;
 

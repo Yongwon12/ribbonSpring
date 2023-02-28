@@ -242,9 +242,59 @@ public interface PostMapper {
     // 신고 중고 댓글 조회
     List<PostReportCommentsResponse> findReportUsedcommentsAll();
 
-    // 신고 유저 삭제
-    // 커뮤니티 게시글 삭제
-    void deleteUserReport(PostUserRequest params);
+    // 관리자페이지 신고 유저 삭제
+    void deleteUserReport(String params);
+    // 신고유저 삭제
+    void deleteByReportUserId(String params);
+
+    // 신고유저권한 삭제
+    void deleteByReportUserRolesId(String params);
+
+
+    // 관리자페이지 신고 커뮤니티글 삭제
+    void deleteBoardReport(String params);
+    // 신고 커뮤니티글 삭제
+    void deleteBoardWriteReport(String params);
+
+    // 관리자페이지 신고 개인글 삭제
+    void deleteIndividualReport(String params);
+    // 신고 개인글 삭제
+    void deleteIndividualWriteReport(String params);
+
+    // 관리자페이지 신고 단체글 삭제
+    void deleteGroupReport(String params);
+
+    // 신고 단체글 삭제
+    void deleteGroupWriteReport(String params);
+    // 관리자페이지 신고 중고글 삭제
+    void deleteUsedReport(String params);
+
+    // 신고 중고글 삭제
+    void deleteUsedWriteReport(String params);
+
+
+
+    // 관리자페이지 신고 커뮤니티댓글 삭제
+    void deleteBoardCommentsReport(String params);
+    // 신고 커뮤니티댓글 삭제
+    void deleteBoardCommentsWriteReport(String params);
+
+
+    // 관리자페이지 신고 개인댓글 삭제
+    void deleteIndividualCommentsReport(String params);
+    // 신고 개인댓글 삭제
+    void deleteIndividualCommentsWriteReport(String params);
+
+    // 관리자페이지 신고 단체댓글 삭제
+    void deleteGroupCommentsReport(String params);
+
+    // 신고 단체댓글 삭제
+    void deleteGroupCommentsWriteReport(String params);
+    // 관리자페이지 신고 중고댓글 삭제
+    void deleteUsedCommentsReport(String params);
+
+    // 신고 중고댓글 삭제
+    void deleteUsedCommentsWriteReport(String params);
 
     // 게시글 갯수 카운트
     int count();

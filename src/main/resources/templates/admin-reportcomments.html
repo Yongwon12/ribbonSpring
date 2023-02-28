@@ -28,16 +28,16 @@
   <tr>
     <th><input type="checkbox" id="selectAll"/></th>
     <th>Report Comments ID</th>
-    <th>Report User Id</th>
+    <th>Report User ID</th>
     <th>Report Description</th>
   </tr>
   </thead>
   <tbody>
-  <tr th:each="comments : ${commentsList}">
-    <td><input type="checkbox" name="selectedBoards" th:value="${comments.getCommentsid()}" onclick="selectRow(this)"/></td>
-    <td th:text="${comments.getCommentsid()}"></td>
-    <td th:text="${comments.getUserid()}"></td>
-    <td th:text="${comments.getDescription()}"></td>
+  <tr th:each="board : ${commentsList}">
+    <td><input type="checkbox" name="selectedBoards" th:value="${board.getCommentsid()}" onclick="selectRow(this)"/></td>
+    <td th:text="${board.getCommentsid()}"></td>
+    <td th:text="${board.getUserid()}"></td>
+    <td th:text="${board.getDescription()}"></td>
   </tr>
   </tbody>
 </table>
@@ -63,16 +63,18 @@
             .filter(checkbox => checkbox.checked)
             .map(checkbox => ({ "commentsid": checkbox.value }));
     if (selectedBoards.length === 0) {
-      alert('Please select at least one user.');
+      alert('Please select at least one commentsid.');
       return;
     }
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/ribbon/admin/post/reportcommentsdelete');
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify(selectedBoards));
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        window.location.reload();
+    if (confirm('정말로 삭제하시겠습니까?')) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/ribbon/admin/post/reportcommentsdelete');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify(selectedBoards));
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          window.location.reload();
+        }
       }
     }
   }
