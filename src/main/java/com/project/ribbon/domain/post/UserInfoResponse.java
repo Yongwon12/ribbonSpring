@@ -14,6 +14,7 @@ public class UserInfoResponse {
     private String shortinfo;
     private String sns;
     private String youtube;
+    private String gender;
 
 
 

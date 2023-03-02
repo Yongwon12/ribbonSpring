@@ -92,7 +92,7 @@
         , gender
         , bestcategory
         , shortinfo
-            , youtube
+            <!--, youtube-->
             , token
             , password
     </sql>
@@ -203,6 +203,7 @@
         FROM boardwrite
                  LEFT JOIN User
                            ON User.userid = boardwrite.userid
+        ORDER BY writedate DESC
     </select>
 
     <!-- 커뮤니티 특정 게시글 조회  -->
@@ -234,6 +235,7 @@
             groupwrite
                 LEFT JOIN User
                           ON User.userid = groupwrite.userid
+        ORDER BY writedate DESC
     </select>
 
     <!-- 단체 특정 게시글 조회  -->
@@ -312,7 +314,7 @@
             individualwrite
                 LEFT JOIN User
                           ON User.userid = individualwrite.userid
-
+        ORDER BY writedate DESC
     </select>
 
     <!-- 개인 특정 게시글 조회  -->
@@ -384,6 +386,7 @@
             usedwrite
                 LEFT JOIN User
                           ON User.userid = usedwrite.userid
+        ORDER BY writedate DESC
     </select>
 
     <!-- 중고 특정 게시글 조회  -->
@@ -480,7 +483,7 @@
         , #{gender}
         , #{bestcategory}
         , #{shortinfo}
-        , #{youtube}
+        <!--, #{youtube}-->
         , #{token}
         , #{password})
         ON DUPLICATE KEY UPDATE
@@ -516,7 +519,7 @@
           , modifydate = #{modifydate}
           , bestcategory = #{bestcategory}
           , shortinfo = #{shortinfo}
-          , youtube = #{youtube}
+          <!--, youtube = #{youtube}-->
           , profileimage = #{profileimage}
         WHERE
             userid = #{userid}
@@ -987,7 +990,7 @@
     <!-- 특정 유저 프로필 조회  -->
     <select id="findById" parameterType="Long" resultType="com.project.ribbon.domain.post.UserInfoResponse">
         SELECT
-            userid,nickname,bestcategory,profileimage,shortinfo,sns,youtube
+            userid,nickname,bestcategory,profileimage,shortinfo,sns,youtube,gender
         FROM
             User
         WHERE

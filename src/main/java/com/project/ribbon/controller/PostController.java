@@ -7,6 +7,10 @@ import com.project.ribbon.enums.ExceptionEnum;
 import com.project.ribbon.response.ApiException;
 import com.project.ribbon.service.*;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,6 +43,7 @@ import static com.google.api.gax.httpjson.HttpHeadersUtils.setHeader;
 @ResponseBody
 @Slf4j
 @RestController
+@Validated
 public class PostController {
 
     private final PostService postService;
@@ -47,11 +53,12 @@ public class PostController {
 
     private final MemberService memberService;
 
-
-    String userip = "http://192.168.219.161:8000/api/userimage/";
-    String boardip = "http://192.168.219.161:8000/api/boardimage/";
-    String groupip = "http://192.168.219.161:8000/api/groupimage/";
-    String usedip = "http://192.168.219.161:8000/api/usedimage/";
+    // 외부 서버 ip : 112.148.33.214
+    // 내부 서버 Ip : 192.168.219.161
+    String userip = "http://112.148.33.214:8000/api/userimage/";
+    String boardip = "http://112.148.33.214:8000/api/boardimage/";
+    String groupip = "http://112.148.33.214:8000/api/groupimage/";
+    String usedip = "http://112.148.33.214:8000/api/usedimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -59,11 +66,13 @@ public class PostController {
 
     // 커뮤니티 게시글 작성
     @PostMapping("/post/boardwrite")
-    public ResponseEntity<?> savePost(@RequestParam("id") Integer id
-            ,@RequestParam("userid") Long userid,@RequestParam("title") @Valid String title
-            ,@RequestParam("description") @Valid String description,@RequestParam(value = "image",required = false) MultipartFile file
-            ,@RequestParam("writedate") String writedate
-            ,@RequestParam("nickname") String nickname) throws IOException{
+    public ResponseEntity<?> savePost(@RequestParam("id") @NotNull(message = "카테고리는 필수 입력값입니다.") Integer id
+            , @RequestParam("userid") @NotNull(message = "유저아이디는 필수 입력값입니다.") Long userid
+            , @RequestParam("title") @NotBlank(message = "제목은 필수 입력 값입니다.") @Size(min = 2, max = 30, message = "제목은 2~30자리여야 합니다.") String title
+            , @RequestParam("description") @NotBlank(message="내용은 필수 입력 값입니다.") @Size(min = 2, max = 50, message = "내용은 2~50자리여야 합니다.")String description
+            , @RequestParam(value = "image",required = false) MultipartFile file
+            , @RequestParam("writedate") @Size(min = 2, max = 30, message = "작성날짜는 2~30자리여야 합니다.") String writedate
+            , @RequestParam("nickname")@NotBlank(message = "닉네임은 필수 입력 값입니다.") String nickname) throws IOException{
         if (file != null){
             String img = file.getOriginalFilename();
             String fileboardpath = Paths.get(uploadPath, img).toString();
@@ -169,15 +178,21 @@ public class PostController {
 
     // 단체 글작성
     @PostMapping("/post/writegroup")
-    public ResponseEntity<?> saveGroupPost(@RequestParam("id") Integer id
-            ,@RequestParam("region") String region,@RequestParam("title") @Valid String title
-            ,@RequestParam("line") @Valid String line
-            ,@RequestParam("description") @Valid String description
-            ,@RequestParam("peoplenum") String peoplenum,@RequestParam("gender") String gender
-            ,@RequestParam("minage") String minage,@RequestParam(value = "image",required = false) MultipartFile file
-            ,@RequestParam("userid") Long userid,@RequestParam("maxage") String maxage
-            ,@RequestParam("writedate") String writedate,@RequestParam("peoplenownum") String peoplenownum
-            ,@RequestParam("nickname") String nickname,@RequestParam("once") String once) throws IOException{
+    public ResponseEntity<?> saveGroupPost(@RequestParam("id") @NotNull(message = "카테고리는 필수 입력값입니다.") Integer id
+            ,@RequestParam("region") @NotBlank(message = "지역은 필수 입력 값입니다.") String region
+            ,@RequestParam("title") @Size(min = 2, max = 30, message = "제목은 2~30자리여야 합니다.") @NotBlank(message="제목은 필수 입력 값입니다.") String title
+            ,@RequestParam("line") @Size(min = 2, max = 40, message = "한 줄 설명은 2~40자리여야 합니다.") String line
+            ,@RequestParam("description") @NotBlank(message="내용은 필수 입력값입니다.") String description
+            ,@RequestParam("peoplenum") @NotNull(message = "인원수는 필수 입력값입니다.") String peoplenum
+            ,@RequestParam("gender") @NotBlank(message = "성별은 필수 입력값입니다.") String gender
+            ,@RequestParam("minage") @NotNull(message = "최소 인원수는 필수 입력값입니다.") String minage
+            ,@RequestParam(value = "image",required = false) MultipartFile file
+            ,@RequestParam("userid") @NotNull(message = "유저 아이디는 필수 입력값입니다.") Long userid
+            ,@RequestParam("maxage") @NotNull(message = "최대 인원수는 필수 입력값입니다.") String maxage
+            ,@RequestParam("writedate") @NotBlank(message = "작성날짜는 필수 입력 값입니다.") String writedate
+            ,@RequestParam("peoplenownum") @NotBlank(message = "현재 인원수는 필수 입력 값입니다.")String peoplenownum
+            ,@RequestParam("nickname") @NotBlank(message = "닉네임은 필수 입력 값입니다.") String nickname
+            ,@RequestParam("once") @NotBlank(message = "once은 필수 입력 값입니다.") String once) throws IOException{
         if (file != null){
             String titleimage = file.getOriginalFilename();
             String filegrouppath = Paths.get(uploadPath, titleimage).toString();
@@ -321,13 +336,18 @@ public class PostController {
 
     // 중고 글작성
     @PostMapping("/post/writeused")
-    public ResponseEntity<?> saveUsedPost(@RequestParam("id") Integer id
-            ,@RequestParam("region") String region,@RequestParam("title") @Valid String title
-            ,@RequestParam("description") @Valid String description
-            ,@RequestParam(value = "usedimage1",required = false) MultipartFile file1,@RequestParam("price") Integer price
-            ,@RequestParam("userid") Long userid,@RequestParam("writedate") String  writedate
-            ,@RequestParam("nickname") String nickname,@RequestParam(value = "usedimage2",required = false) MultipartFile file2
-            ,@RequestParam(value = "usedimage3",required = false) MultipartFile file3,@RequestParam(value = "usedimage4",required = false) MultipartFile file4
+    public ResponseEntity<?> saveUsedPost(@RequestParam("id") @NotNull(message = "카테고리는 필수 입력값입니다.") Integer id
+            ,@RequestParam("region") @NotBlank(message = "지역은 필수 입력값입니다.") String region
+            ,@RequestParam("title") @Size(min = 2, max = 30, message = "제목은 2~30자리여야 합니다.") @NotBlank(message="제목은 필수 입력 값입니다.") String title
+            ,@RequestParam("description") @NotBlank(message="내용은 필수 입력 값입니다.") String description
+            ,@RequestParam(value = "usedimage1",required = false) MultipartFile file1
+            ,@RequestParam("price") @NotNull(message = "가격은 필수 입력값입니다.") Integer price
+            ,@RequestParam("userid") @NotNull(message = "유저아이디는 필수 입력값입니다.") Long userid
+            ,@RequestParam("writedate") @NotBlank(message = "작성날짜는 필수 입력값입니다.") String  writedate
+            ,@RequestParam("nickname") @NotBlank(message = "닉네임은 필수 입력 값입니다.") String nickname
+            ,@RequestParam(value = "usedimage2",required = false) MultipartFile file2
+            ,@RequestParam(value = "usedimage3",required = false) MultipartFile file3
+            ,@RequestParam(value = "usedimage4",required = false) MultipartFile file4
             ,@RequestParam(value = "usedimage5",required = false) MultipartFile file5) throws IOException{
 
         if (file1 !=null && file2 != null && file3 != null && file4 != null && file5 != null){
@@ -542,6 +562,7 @@ public class PostController {
             List<PostUserRequest> posts = postService.findUserInfoAllPost(params.getEmail());
             model.addAttribute("posts", posts);
             obj.put("userid", posts);
+            System.out.println(posts);
             return new ResponseEntity<>(obj, HttpStatus.OK);
         } catch (ApiException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -563,10 +584,13 @@ public class PostController {
     @PostMapping("/post/updateuser")
     public ResponseEntity<?> updateUserPost(
             @RequestParam("sns") String sns
-            ,@RequestParam("nickname") @Valid String nickname,@RequestParam("modifydate") String modifydate
-            ,@RequestParam("bestcategory") String bestcategory,@RequestParam("shortinfo") @Valid String shortinfo
-            ,@RequestParam("youtube") String youtube, @RequestParam(value = "image",required = false) MultipartFile file
-            ,@RequestParam("userid") Long userid) throws IOException{
+            ,@RequestParam("nickname") @Size(min = 2, max = 10, message = "닉네임은 2~10자리여야 합니다.") @NotBlank(message = "닉네임은 필수 입력값입니다.") String nickname
+            ,@RequestParam("modifydate") @NotNull String modifydate
+            ,@RequestParam("bestcategory") String bestcategory
+            ,@RequestParam("shortinfo") @Size(min = 2, max = 40, message = "한 줄 설명은 2~40자리여야 합니다.") String shortinfo
+            //,@RequestParam("youtube") String youtube
+            ,@RequestParam(value = "image",required = false) MultipartFile file
+            ,@RequestParam("userid") @NotNull Long userid) throws IOException{
         if (file!=null) {
             PostUserUpdateRequest params = new PostUserUpdateRequest();
             String profileimage = file.getOriginalFilename();
@@ -579,7 +603,7 @@ public class PostController {
             params.setModifydate(modifydate);
             params.setBestcategory(bestcategory);
             params.setShortinfo(shortinfo);
-            params.setYoutube(youtube);
+            //params.setYoutube(youtube);
             params.setProfileimage(userip+profileimage);
             params.setUserid(userid);
             postService.updateUserPost(params);
@@ -596,7 +620,7 @@ public class PostController {
             params.setModifydate(modifydate);
             params.setBestcategory(bestcategory);
             params.setShortinfo(shortinfo);
-            params.setYoutube(youtube);
+            //params.setYoutube(youtube);
             params.setProfileimage(null);
             params.setUserid(userid);
             postService.updateUserPost(params);

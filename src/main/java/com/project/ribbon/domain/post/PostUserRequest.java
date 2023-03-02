@@ -28,7 +28,7 @@ public class PostUserRequest {
         private String gender;
         private String bestcategory;
         private String shortinfo;
-        private String youtube;
+        //private String youtube;
         private String token;
         private String password;
         private Long user_userid;

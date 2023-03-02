@@ -19,7 +19,7 @@ public class PostUserUpdateRequest {
         private String modifydate;
         private String bestcategory;
         private String shortinfo;
-        private String youtube;
+        //private String youtube;
         private String profileimage;
         private Long userid; //PK
 
