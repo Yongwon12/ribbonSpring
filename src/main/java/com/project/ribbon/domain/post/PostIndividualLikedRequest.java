@@ -15,6 +15,7 @@ public class PostIndividualLikedRequest {
         private Integer inherentid;
         private String token;
         private String nickname;
+        private String type;
 
 }
 

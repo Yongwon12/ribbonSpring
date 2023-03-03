@@ -21,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -66,43 +67,37 @@ public class PostController {
 
     // 커뮤니티 게시글 작성
     @PostMapping("/post/boardwrite")
-    public ResponseEntity<?> savePost(@RequestParam("id") @NotNull(message = "카테고리는 필수 입력값입니다.") Integer id
-            , @RequestParam("userid") @NotNull(message = "유저아이디는 필수 입력값입니다.") Long userid
-            , @RequestParam("title") @NotBlank(message = "제목은 필수 입력 값입니다.") @Size(min = 2, max = 30, message = "제목은 2~30자리여야 합니다.") String title
-            , @RequestParam("description") @NotBlank(message="내용은 필수 입력 값입니다.") @Size(min = 2, max = 50, message = "내용은 2~50자리여야 합니다.")String description
-            , @RequestParam(value = "image",required = false) MultipartFile file
-            , @RequestParam("writedate") @Size(min = 2, max = 30, message = "작성날짜는 2~30자리여야 합니다.") String writedate
-            , @RequestParam("nickname")@NotBlank(message = "닉네임은 필수 입력 값입니다.") String nickname) throws IOException{
-        if (file != null){
-            String img = file.getOriginalFilename();
-            String fileboardpath = Paths.get(uploadPath, img).toString();
+    public ResponseEntity<?> savePost(
+            @RequestParam("id") @NotNull Integer id,
+            @RequestParam("userid") @NotNull Long userId,
+            @RequestParam("title") @NotBlank @Size(min = 2, max = 30) String title,
+            @RequestParam("description") @NotBlank @Size(min = 2, max = 50) String description,
+            @RequestParam(value = "image", required = false) MultipartFile file,
+            @RequestParam("writedate") @Size(min = 2, max = 30) String writeDate,
+            @RequestParam("nickname") @NotBlank String nickname
+    ) throws IOException {
+        PostRequest params = new PostRequest();
+        params.setId(id);
+        params.setUserid(userId);
+        params.setTitle(title);
+        params.setDescription(description);
+        params.setWritedate(writeDate);
+        params.setNickname(nickname);
+
+        if (file != null) {
+            String filename = file.getOriginalFilename();
+            String imagePath = Paths.get(uploadPath, filename).toString();
             byte[] bytes = file.getBytes();
-            Path boardimagepath = Paths.get(fileboardpath);
-            Files.write(boardimagepath, bytes);
-            PostRequest params = new PostRequest();
-            params.setId(id);
-            params.setUserid(userid);
-            params.setTitle(title);
-            params.setDescription(description);
-            params.setImg(boardip+img);
-            params.setWritedate(writedate);
-            params.setNickname(nickname);
-
-            return new ResponseEntity<>(postService.savePost(params), HttpStatus.OK);
-        } else if (file == null) {
-            PostRequest params = new PostRequest();
-            params.setId(id);
-            params.setUserid(userid);
-            params.setTitle(title);
-            params.setDescription(description);
+            Path filePath = Paths.get(imagePath);
+            Files.write(filePath, bytes);
+            params.setImg(boardip + filename);
+        } else {
             params.setImg(null);
-            params.setWritedate(writedate);
-            params.setNickname(nickname);
-
-            return new ResponseEntity<>(postService.savePost(params), HttpStatus.OK);
         }
-        return null;
+
+        return ResponseEntity.ok(postService.savePost(params));
     }
+
 
     // 커뮤니티 프로필 사진 조회
     @GetMapping("/boardimage/{imageName:.+}")
@@ -178,66 +173,51 @@ public class PostController {
 
     // 단체 글작성
     @PostMapping("/post/writegroup")
-    public ResponseEntity<?> saveGroupPost(@RequestParam("id") @NotNull(message = "카테고리는 필수 입력값입니다.") Integer id
-            ,@RequestParam("region") @NotBlank(message = "지역은 필수 입력 값입니다.") String region
-            ,@RequestParam("title") @Size(min = 2, max = 30, message = "제목은 2~30자리여야 합니다.") @NotBlank(message="제목은 필수 입력 값입니다.") String title
-            ,@RequestParam("line") @Size(min = 2, max = 40, message = "한 줄 설명은 2~40자리여야 합니다.") String line
-            ,@RequestParam("description") @NotBlank(message="내용은 필수 입력값입니다.") String description
-            ,@RequestParam("peoplenum") @NotNull(message = "인원수는 필수 입력값입니다.") String peoplenum
-            ,@RequestParam("gender") @NotBlank(message = "성별은 필수 입력값입니다.") String gender
-            ,@RequestParam("minage") @NotNull(message = "최소 인원수는 필수 입력값입니다.") String minage
-            ,@RequestParam(value = "image",required = false) MultipartFile file
-            ,@RequestParam("userid") @NotNull(message = "유저 아이디는 필수 입력값입니다.") Long userid
-            ,@RequestParam("maxage") @NotNull(message = "최대 인원수는 필수 입력값입니다.") String maxage
-            ,@RequestParam("writedate") @NotBlank(message = "작성날짜는 필수 입력 값입니다.") String writedate
-            ,@RequestParam("peoplenownum") @NotBlank(message = "현재 인원수는 필수 입력 값입니다.")String peoplenownum
-            ,@RequestParam("nickname") @NotBlank(message = "닉네임은 필수 입력 값입니다.") String nickname
-            ,@RequestParam("once") @NotBlank(message = "once은 필수 입력 값입니다.") String once) throws IOException{
-        if (file != null){
+    public ResponseEntity<?> saveGroupPost(
+            @RequestParam("id") @NotNull Integer id,
+            @RequestParam("region") @NotBlank String region,
+            @RequestParam("title") @Size(min = 2, max = 30) @NotBlank String title,
+            @RequestParam("line") @Size(min = 2, max = 40) String line,
+            @RequestParam("description") @NotBlank String description,
+            @RequestParam("peoplenum") @NotNull String peoplenum,
+            @RequestParam("gender") @NotBlank String gender,
+            @RequestParam("minage") @NotNull String minage,
+            @RequestParam(value = "image",required = false) MultipartFile file,
+            @RequestParam("userid") @NotNull Long userid,
+            @RequestParam("maxage") @NotNull String maxage,
+            @RequestParam("writedate") @NotBlank String writedate,
+            @RequestParam("peoplenownum") @NotBlank String peoplenownum,
+            @RequestParam("nickname") @NotBlank String nickname,
+            @RequestParam("once") @NotBlank String once
+    ) throws IOException {
+        PostGroupRequest params = new PostGroupRequest();
+        params.setId(id);
+        params.setRegion(region);
+        params.setTitle(title);
+        params.setLine(line);
+        params.setDescription(description);
+        params.setPeoplenum(peoplenum);
+        params.setGender(gender);
+        params.setMinage(minage);
+        params.setUserid(userid);
+        params.setMaxage(maxage);
+        params.setWritedate(writedate);
+        params.setPeoplenownum(peoplenownum);
+        params.setNickname(nickname);
+        params.setOnce(once);
+
+        if (file != null) {
             String titleimage = file.getOriginalFilename();
             String filegrouppath = Paths.get(uploadPath, titleimage).toString();
             byte[] bytes = file.getBytes();
             Path groupimagepath = Paths.get(filegrouppath);
             Files.write(groupimagepath, bytes);
-            PostGroupRequest params = new PostGroupRequest();
-            params.setId(id);
-            params.setRegion(region);
-            params.setTitle(title);
-            params.setLine(line);
-            params.setDescription(description);
-            params.setPeoplenum(peoplenum);
-            params.setGender(gender);
-            params.setMinage(minage);
             params.setTitleimage(groupip+titleimage);
-            params.setUserid(userid);
-            params.setMaxage(maxage);
-            params.setWritedate(writedate);
-            params.setPeoplenownum(peoplenownum);
-            params.setNickname(nickname);
-            params.setOnce(once);
-
-            return new ResponseEntity<>(postService.saveGroupPost(params), HttpStatus.OK);
-        } else if (file == null) {
-            PostGroupRequest params = new PostGroupRequest();
-            params.setId(id);
-            params.setRegion(region);
-            params.setTitle(title);
-            params.setLine(line);
-            params.setDescription(description);
-            params.setPeoplenum(peoplenum);
-            params.setGender(gender);
-            params.setMinage(minage);
+        } else {
             params.setTitleimage(null);
-            params.setUserid(userid);
-            params.setMaxage(maxage);
-            params.setWritedate(writedate);
-            params.setPeoplenownum(peoplenownum);
-            params.setNickname(nickname);
-            params.setOnce(once);
-
-            return new ResponseEntity<>(postService.saveGroupPost(params), HttpStatus.OK);
         }
-        return null;
+
+        return new ResponseEntity<>(postService.saveGroupPost(params), HttpStatus.OK);
     }
 
     // 단체 프로필 사진 조회
@@ -572,12 +552,19 @@ public class PostController {
 
     // 유저 모든 POST 요청 대한 권한얻기
     @PostMapping("/login")
-    public TokenInfo login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
+    public ResponseEntity<TokenInfo> login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
         String userid = memberLoginRequestDto.getUserid();
         String password = memberLoginRequestDto.getPassword();
-        TokenInfo tokenInfo = memberService.login(userid, password);
-        return tokenInfo;
+        try {
+            TokenInfo tokenInfo = memberService.login(userid, password);
+            return ResponseEntity.ok(tokenInfo);
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
 
 
     // 유저 정보 수정
@@ -591,45 +578,49 @@ public class PostController {
             //,@RequestParam("youtube") String youtube
             ,@RequestParam(value = "image",required = false) MultipartFile file
             ,@RequestParam("userid") @NotNull Long userid) throws IOException{
-        if (file!=null) {
-            PostUserUpdateRequest params = new PostUserUpdateRequest();
-            String profileimage = file.getOriginalFilename();
-            String filepath = Paths.get(uploadPath, profileimage).toString();
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(filepath);
-            Files.write(path, bytes);
-            params.setSns(sns);
-            params.setNickname(nickname);
-            params.setModifydate(modifydate);
-            params.setBestcategory(bestcategory);
-            params.setShortinfo(shortinfo);
-            //params.setYoutube(youtube);
-            params.setProfileimage(userip+profileimage);
-            params.setUserid(userid);
-            postService.updateUserPost(params);
+        try {
+            if (file != null) {
+                PostUserUpdateRequest params = new PostUserUpdateRequest();
+                String profileimage = file.getOriginalFilename();
+                String filepath = Paths.get(uploadPath, profileimage).toString();
+                byte[] bytes = file.getBytes();
+                Path path = Paths.get(filepath);
+                Files.write(path, bytes);
+                params.setSns(sns);
+                params.setNickname(nickname);
+                params.setModifydate(modifydate);
+                params.setBestcategory(bestcategory);
+                params.setShortinfo(shortinfo);
+                //params.setYoutube(youtube);
+                params.setProfileimage(userip + profileimage);
+                params.setUserid(userid);
+                postService.updateUserPost(params);
 
-            PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
-            return new ResponseEntity<>(posts, HttpStatus.OK);
+                PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
+                return new ResponseEntity<>(posts, HttpStatus.OK);
 
-        } else if (file == null) {
+            } else {
+                PostUserUpdateRequest params = new PostUserUpdateRequest();
+                params.setSns(sns);
+                params.setNickname(nickname);
+                params.setModifydate(modifydate);
+                params.setBestcategory(bestcategory);
+                params.setShortinfo(shortinfo);
+                //params.setYoutube(youtube);
+                params.setProfileimage(null);
+                params.setUserid(userid);
+                postService.updateUserPost(params);
 
+                PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
 
-            PostUserUpdateRequest params = new PostUserUpdateRequest();
-            params.setSns(sns);
-            params.setNickname(nickname);
-            params.setModifydate(modifydate);
-            params.setBestcategory(bestcategory);
-            params.setShortinfo(shortinfo);
-            //params.setYoutube(youtube);
-            params.setProfileimage(null);
-            params.setUserid(userid);
-            postService.updateUserPost(params);
-
-            PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
-
-            return new ResponseEntity<>(posts, HttpStatus.OK);
+                return new ResponseEntity<>(posts, HttpStatus.OK);
+            }
+        } catch (IOException e) {
+            // 예외 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
 
@@ -676,7 +667,8 @@ public class PostController {
             postService.saveLikedPost(params);
             firebaseCloudMessageLikedService.sendMessageTo(
                     params.getToken(),
-                    params.getNickname());
+                    params.getNickname(),
+                    params.getType());
             return ResponseEntity.ok().build().getStatusCodeValue();
 
         }
@@ -698,7 +690,8 @@ public class PostController {
             postService.saveIndividualLikedPost(params);
             firebaseCloudMessageLikedService.sendMessageTo(
                     params.getToken(),
-                    params.getNickname());
+                    params.getNickname(),
+                    params.getType());
             return ResponseEntity.ok().build().getStatusCodeValue();
 
         }
@@ -720,7 +713,8 @@ public class PostController {
             postService.saveUsedLikedPost(params);
             firebaseCloudMessageLikedService.sendMessageTo(
                     params.getToken(),
-                    params.getNickname());
+                    params.getNickname(),
+                    params.getType());
             return ResponseEntity.ok().build().getStatusCodeValue();
 
         }
