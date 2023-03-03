@@ -54,11 +54,11 @@ public class PostController {
     private final MemberService memberService;
 
     // 외부 서버 ip : 112.148.33.214
-    // 내부 서버 Ip : 192.168.219.161
-    String userip = "http://112.148.33.214:8000/api/userimage/";
-    String boardip = "http://112.148.33.214:8000/api/boardimage/";
-    String groupip = "http://112.148.33.214:8000/api/groupimage/";
-    String usedip = "http://112.148.33.214:8000/api/usedimage/";
+
+    String userip = "http://192.168.0.4:8000/api/userimage/";
+    String boardip = "http://192.168.0.4:8000/api/boardimage/";
+    String groupip = "http://192.168.0.4:8000/api/groupimage/";
+    String usedip = "http://192.168.0.4:8000/api/usedimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;

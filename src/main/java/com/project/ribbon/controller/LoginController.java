@@ -28,7 +28,8 @@ import java.util.Map;
 public class LoginController {
     private final MemberService memberService;
     private final PostService postService;
-    String ip = "http://192.168.219.161:8000/ribbon/admin";
+    // 내부 서버 Ip : 192.168.219.161
+    String ip = "http://192.168.0.4:8000/ribbon/admin";
     // 맺음 홈페이지
     @GetMapping("/ribbon")
     public String showRibbonForm() {
