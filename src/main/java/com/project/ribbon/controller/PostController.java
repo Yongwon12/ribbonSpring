@@ -623,6 +623,20 @@ public class PostController {
         }
     }
 
+    // 강사 정보 수정
+    @PostMapping("/post/updateinstructoruser")
+    public ResponseEntity<?> updateUserPost(@RequestBody PostInstructorUserUpdateRequest params) {
+        try {
+            postService.updateInstructorUserPost(params);
+            return ResponseEntity.ok().build();
+        } catch (IOException e) {
+            // IOException 발생 시 500 에러 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            // 그 외 예외 발생 시 400 에러와 함께 에러 메시지 반환
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
     // 유저 프로필 사진 조회
     @GetMapping("/userimage/{imageName:.+}")

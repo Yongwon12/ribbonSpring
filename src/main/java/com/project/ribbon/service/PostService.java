@@ -275,9 +275,6 @@ public class PostService {
         return params.getUserid();
     }
 
-
-
-
     // 유저 권한 정보 가입
     @Transactional
     public Long saveUserRolesPost(final PostUserRequest params) {
@@ -297,6 +294,15 @@ public class PostService {
             postMapper.updateUser(params);
         } catch (Exception e) {
             throw new Exception("유저 정보 업데이트에 실패하였습니다.");
+        }
+    }
+    // 강사 정보 수정
+    @Transactional
+    public void updateInstructorUserPost(final PostInstructorUserUpdateRequest params) throws Exception {
+        try {
+            postMapper.updateInstructorUser(params);
+        } catch (Exception e) {
+            throw new Exception("강사 정보 업데이트에 실패하였습니다.");
         }
     }
 

@@ -525,6 +525,15 @@
             userid = #{userid}
     </update>
 
+    <!-- 유저 프로필 수정 -->
+    <update id="updateInstructorUser" parameterType="com.project.ribbon.domain.post.PostInstructorUserUpdateRequest">
+        UPDATE user_roles
+        SET
+        roles = "INSTRUCTOR"
+        WHERE
+        userid = #{userid}
+    </update>
+
     <!-- 유저 수정된 프사 조회  -->
     <select id="findUserImage" resultType="com.project.ribbon.domain.post.PostUserUpdateRequest">
         SELECT

@@ -85,6 +85,8 @@ public interface PostMapper {
     void saveUserRoles(PostUserRequest params);
     // 유저 수정
     void updateUser(PostUserUpdateRequest params);
+    // 강사 수정
+    void updateInstructorUser(PostInstructorUserUpdateRequest params);
     // 유저 수정된 프사
     PostUserUpdateRequest findUserImage(Long userid);
 
