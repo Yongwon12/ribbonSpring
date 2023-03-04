@@ -29,7 +29,7 @@ public class LoginController {
     private final MemberService memberService;
     private final PostService postService;
     // 내부 서버 Ip : 192.168.219.161
-    String ip = "http://192.168.0.4:8000/ribbon/admin";
+    String ip = "http://192.168.219.161:8000/ribbon/admin";
     // 맺음 홈페이지
     @GetMapping("/ribbon")
     public String showRibbonForm() {
@@ -219,8 +219,8 @@ public class LoginController {
         System.out.println(params);
         for (Map<String, String> board : params) {
             String boardId = board.get("boardid");
-            postService.deleteBoardWriteReportPost(boardId);
             postService.deleteBoardReportPost(boardId);
+            postService.deleteBoardWriteReportPost(boardId);
         }
         return "admin-reportpostdeleteboard";
     }
@@ -230,8 +230,8 @@ public class LoginController {
         System.out.println(params);
         for (Map<String, String> individual : params) {
             String individualId = individual.get("individualid");
-            postService.deleteIndividualWriteReportPost(individualId);
             postService.deleteIndividualReportPost(individualId);
+            postService.deleteIndividualWriteReportPost(individualId);
         }
         return "admin-reportpostdeleteindividual";
     }
@@ -241,8 +241,8 @@ public class LoginController {
         System.out.println(params);
         for (Map<String, String> group : params) {
             String groupId = group.get("groupid");
-            postService.deleteGroupWriteReportPost(groupId);
             postService.deleteGroupReportPost(groupId);
+            postService.deleteGroupWriteReportPost(groupId);
         }
         return "admin-reportpostdeletegroup";
     }
@@ -252,8 +252,8 @@ public class LoginController {
         System.out.println(params);
         for (Map<String, String> used : params) {
             String usedId = used.get("usedid");
-            postService.deleteUsedWriteReportPost(usedId);
             postService.deleteUsedReportPost(usedId);
+            postService.deleteUsedWriteReportPost(usedId);
         }
         return "admin-reportpostdeleteused";
     }
@@ -265,9 +265,9 @@ public class LoginController {
         for (Map<String, String> comments : params) {
             String commentsId = comments.get("commentsid");
             String boardId = comments.get("inherentid");
+            postService.deleteBoardCommentsReportPost(commentsId);
             postService.updateDeleteReportCommentsCountPost(boardId);
             postService.deleteBoardCommentsWriteReportPost(commentsId);
-            postService.deleteBoardCommentsReportPost(commentsId);
         }
         return "admin-reportcomments";
     }
@@ -278,9 +278,9 @@ public class LoginController {
         for (Map<String, String> individualcomments : params) {
             String commentsId = individualcomments.get("commentsid");
             String individualId = individualcomments.get("inherentid");
+            postService.deleteIndividualCommentsReportPost(commentsId);
             postService.updateDeleteReportIndividualCommentsCountPost(individualId);
             postService.deleteIndividualCommentsWriteReportPost(commentsId);
-            postService.deleteIndividualCommentsReportPost(commentsId);
         }
         return "admin-reportindividualcomments";
     }
@@ -291,9 +291,9 @@ public class LoginController {
         for (Map<String, String> groupcomments : params) {
             String commentsId = groupcomments.get("commentsid");
             String groupId = groupcomments.get("inherentid");
+            postService.deleteGroupCommentsReportPost(commentsId);
             postService.updateDeleteReportGroupCommentsCountPost(groupId);
             postService.deleteGroupCommentsWriteReportPost(commentsId);
-            postService.deleteGroupCommentsReportPost(commentsId);
         }
         return "admin-reportgroupcomments";
     }
@@ -304,9 +304,9 @@ public class LoginController {
         for (Map<String, String> usedcomments : params) {
             String commentsId = usedcomments.get("commentsid");
             String usedId = usedcomments.get("inherentid");
+            postService.deleteUsedCommentsReportPost(commentsId);
             postService.updateDeleteReportUsedCommentsCountPost(usedId);
             postService.deleteUsedCommentsWriteReportPost(commentsId);
-            postService.deleteUsedCommentsReportPost(commentsId);
         }
         return "admin-reportusedcomments";
     }
