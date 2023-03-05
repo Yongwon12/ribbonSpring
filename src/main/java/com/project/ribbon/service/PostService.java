@@ -54,6 +54,24 @@ public class PostService {
         }
         return params.getBoardid();
     }
+    public Long deleteBoardWriteCommentsPost(final PostRequest params) {
+        try {
+            postMapper.deleteBoardWriteComments(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("댓글 삭제에 실패했습니다.", e);
+        }
+        return params.getBoardid();
+    }
+    public Long deleteBoardWriteLikedPost(final PostRequest params) {
+        try {
+            postMapper.deleteBoardWriteByLikedId(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("좋아요 삭제에 실패했습니다.", e);
+        }
+        return params.getBoardid();
+    }
 
 
     // 커뮤니티 게시글 조회
@@ -137,7 +155,15 @@ public class PostService {
         }
         return params.getGroupid();
     }
-
+    public Long deleteGroupWriteCommentsPost(final PostGroupRequest params) {
+        try {
+            postMapper.deleteGroupWriteComments(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("댓글 삭제에 실패했습니다.", e);
+        }
+        return params.getGroupid();
+    }
     // 개인 게시글 조회
     public List<PostIndiResponse> findIndiAllPost() {
         try {
@@ -190,6 +216,24 @@ public class PostService {
         }
         return params.getIndividualid();
     }
+    public Long deleteIndiWriteCommentsPost(final PostIndiRequest params) {
+        try {
+            postMapper.deleteIndiWriteComments(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("댓글 삭제에 실패했습니다.", e);
+        }
+        return params.getIndividualid();
+    }
+    public Long deleteIndiWriteLikedPost(final PostIndiRequest params) {
+        try {
+            postMapper.deleteIndiWriteByLikedId(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("좋아요 삭제에 실패했습니다.", e);
+        }
+        return params.getIndividualid();
+    }
     // 중고 게시글 조회
     public List<PostUsedResponse> findUsedAllPost() {
         try {
@@ -237,6 +281,24 @@ public class PostService {
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("중고게시글 삭제에 실패했습니다.", e);
+        }
+        return params.getUsedid();
+    }
+    public Long deleteUsedWriteCommentsPost(final PostUsedRequest params) {
+        try {
+            postMapper.deleteUsedWriteComments(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("댓글 삭제에 실패했습니다.", e);
+        }
+        return params.getUsedid();
+    }
+    public Long deleteUsedWriteLikedPost(final PostUsedRequest params) {
+        try {
+            postMapper.deleteUsedWriteByLikedId(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("좋아요 삭제에 실패했습니다.", e);
         }
         return params.getUsedid();
     }
@@ -1288,5 +1350,35 @@ public class PostService {
         return null;
     }
 
+    // 공지사항 작성
+    @Transactional
+    public Long saveAnnouncementPost(final PostAnnouncementRequest params) {
+        try {
+            postMapper.saveAnnouncement(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("공지사항 저장에 실패했습니다.", e);
+        }
+        return params.getId();
+    }
 
+    // 공지사항 조회
+    public List<PostAnnouncementRequest> findAnnouncementAllPost() {
+        try {
+            return postMapper.findAnnouncementAll();
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("공지사 조회에 실패했습니다.", e);
+        }
+    }
+    // 관리자페이지 공지사항삭제
+    public PostAdminAnnouncementRequest deleteAdminAnnouncementPost(final String params) {
+        try {
+            postMapper.deleteAnnouncement(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("관리자페이지 공지사항 삭제에 실패했습니다.", e);
+        }
+        return null;
+    }
 }

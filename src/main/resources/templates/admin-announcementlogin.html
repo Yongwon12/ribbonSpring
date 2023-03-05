@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Announcement Login</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      background-color: #f2f2f2;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      text-align: center;
+    }
+    form {
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      margin: 50px auto;
+      max-width: 500px;
+      padding: 20px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    input[type="text"],
+    input[type="password"] {
+      border-radius: 3px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 16px;
+      padding: 10px;
+      width: 100%;
+    }
+    input[type="submit"] {
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 3px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+    }
+    input[type="submit"]:hover {
+      background-color: #3e8e41;
+    }
+  </style>
+  <script>
+    $(document).ready(function() {
+      $('#form-id').submit(function(event) {
+        // prevent default form submission
+        event.preventDefault();
+
+        // serialize form data to JSON string
+        const formData = $(this).serializeArray();
+        const jsonData = {};
+        $.each(formData, function(index, field) {
+          jsonData[field.name] = field.value;
+        });
+
+        // send JSON data to server using AJAX
+        $.ajax({
+          type: 'POST',
+          url: '/ribbon/admin/post/announcement',
+          data: JSON.stringify(jsonData),
+          contentType: 'application/json',
+          success: function(data) {
+            window.location.href = "/ribbon/admin/insertannouncement";
+          },
+          error: function(xhr, status, error) {
+            // handle error response
+          }
+        });
+      });
+    });
+
+  </script>
+</head>
+<body>
+<h1>Announcement Login</h1>
+<form id="form-id" th:action="@{/ribbon/admin/post/announcement}" method="post">
+  <label for="userid">Admin:</label>
+  <input type="text" id="userid" name="userid" required>
+  <br>
+  <label for="password">Key:</label>
+  <input type="password" id="password" name="password" required>
+  <br>
+  <input type="submit" value="Login">
+</form>
+</body>
+</html>

@@ -3,6 +3,8 @@ package com.project.ribbon.controller;
 
 import com.project.ribbon.domain.post.*;
 import com.project.ribbon.dto.TokenInfo;
+import com.project.ribbon.enums.ExceptionEnum;
+import com.project.ribbon.response.ApiException;
 import com.project.ribbon.service.MemberService;
 import com.project.ribbon.service.PostService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +46,11 @@ public class LoginController {
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_PNG);
         return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+    }
+    // 공지사항 로그인 폼
+    @GetMapping("/ribbon/admin/announcement")
+    public String showAnnouncementLoginForm() {
+        return "admin-announcementlogin";
     }
     // 커뮤니티 글 신고 로그인 폼
     @GetMapping("/ribbon/admin/boardlogin")
@@ -93,6 +101,44 @@ public class LoginController {
     public String showReportForm() {
         return "admin-report";
     }
+
+    // 공지사항 정보 저장
+    @PostMapping("/ribbon/admin/postinsertannouncement")
+    public ResponseEntity<?> announcementInsert(@RequestBody PostAnnouncementRequest params) {
+        return new ResponseEntity<>(postService.saveAnnouncementPost(params),HttpStatus.OK);
+    }
+    // 공지사항 입력 폼
+    @GetMapping("/ribbon/admin/insertannouncement")
+    public String announcementInsert() {
+        return "admin-announcement";
+    }
+    // 공지사항 조회
+    @GetMapping("/ribbon/admin/announcementinfo")
+    public ResponseEntity<?> announcementInfo(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        Map<String, Object> obj = new HashMap<>();
+        List<PostAnnouncementRequest> posts = postService.findAnnouncementAllPost();
+        model.addAttribute("posts", posts);
+        obj.put("announcementinfo", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 관리자 페이지 공지사항 조회
+    @GetMapping("/ribbon/admin/adminannouncementinfo")
+    public String adminannouncementInfo(Model model) {
+        List<PostAnnouncementRequest> announcementList = postService.findAnnouncementAllPost();
+        model.addAttribute("announcementList", announcementList);
+        return "admin-adminannouncement";
+    }
+    // 관리자페이지 공지사항 삭제
+    @RequestMapping("/ribbon/admin/post/adminannouncementdelete")
+    public String adminannouncementInfoDelete(@RequestBody List<Map<String,String>> params) {
+        for (Map<String,String> announcement:params) {
+            String id = announcement.get("id");
+            postService.deleteAdminAnnouncementPost(id);
+        }
+        return "admin-adminannouncement";
+    }
+
     // 신고 유저 정보 조회
     @GetMapping("/ribbon/admin/reportuser")
     public String userReport(Model model) {
@@ -462,6 +508,24 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
             ResponseEntity<String> result = restTemplate.exchange(ip+"/reportusedcomments", HttpMethod.GET, entity, String.class);
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.sendRedirect("/ribbon/admin/login");
+        }
+    }
+
+    //  공지사항 관리자 권한 조회
+    @PostMapping("/ribbon/admin/post/announcement")
+    public void adminAnnouncementLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
+        String userid = adminLoginRequestDto.getUserid();
+        String password = adminLoginRequestDto.getPassword();
+        TokenInfo tokenInfo = memberService.login(userid, password);
+        if (tokenInfo != null) {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
+            HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+            ResponseEntity<String> result = restTemplate.exchange(ip+"/insertannouncement", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/login");

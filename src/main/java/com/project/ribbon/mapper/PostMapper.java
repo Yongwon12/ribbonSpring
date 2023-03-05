@@ -23,6 +23,8 @@ public interface PostMapper {
 
     // 커뮤니티 게시글 삭제
     void deleteById(PostRequest params);
+    void deleteBoardWriteByLikedId(PostRequest params);
+    void deleteBoardWriteComments(PostRequest params);
 
     // 커뮤니티 게시글 조회
 
@@ -44,6 +46,7 @@ public interface PostMapper {
     void updateGroup(PostGroupRequest params);
     // 단체 게시글 삭제
     void deleteByGroupId(PostGroupRequest params);
+    void deleteGroupWriteComments(PostGroupRequest params);
 
     // 개인 게시글 조회
     List<PostIndiResponse> findIndiAll();
@@ -57,6 +60,8 @@ public interface PostMapper {
     void updateIndi(PostIndiRequest params);
     // 개인 게시글 삭제
     void deleteByIndiId(PostIndiRequest params);
+    void deleteIndiWriteByLikedId(PostIndiRequest params);
+    void deleteIndiWriteComments(PostIndiRequest params);
 
     // 중고 게시글 조회
     List<PostUsedResponse> findUsedAll();
@@ -70,6 +75,8 @@ public interface PostMapper {
     void updateUsed(PostUsedRequest params);
     // 중고 게시글 삭제
     void deleteByUsedId(PostUsedRequest params);
+    void deleteUsedWriteByLikedId(PostUsedRequest params);
+    void deleteUsedWriteComments(PostUsedRequest params);
 
     // 유저 조회
     List<PostUserResponse> findUserAll();
@@ -319,6 +326,13 @@ public interface PostMapper {
     void deleteUsedCommentsWriteReport(String params);
     void updateDeleteReportUsedCommentsCount(String params);
 
+    // 공지사항 저장
+    void saveAnnouncement(PostAnnouncementRequest params);
+    // 공지사항 조회
+    List<PostAnnouncementRequest> findAnnouncementAll();
+
+    // 관리자페이지 공지사항 삭제
+    void deleteAnnouncement(String params);
     // 게시글 갯수 카운트
     int count();
 

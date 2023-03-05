@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Announcement</title>
+  <style>
+    /* styling for the form */
+    body {
+      background-color: #f1f1f1;
+    }
+    form {
+      width: 80%;
+      margin: auto;
+      margin-top: 20px;
+      background-color: #fff;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border-radius: 5px;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      resize: vertical;
+    }
+    input[type="submit"] {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    input[type="submit"]:hover {
+      background-color: #3e8e41;
+    }
+    button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 20px;
+    }
+    button:hover {
+      background-color: #3e8e41;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#announcement-form').submit(function(event) {
+        // prevent default form submission
+        event.preventDefault();
+
+        // serialize form data to JSON string
+        const formData = $(this).serializeArray();
+        const jsonData = {};
+        $.each(formData, function(index, field) {
+          jsonData[field.name] = field.value;
+        });
+
+        // confirm before sending data to server using AJAX
+        if(confirm("공지 올리기 전에 한번 더 생각했나요??")) {
+          // send JSON data to server using AJAX
+          $.ajax({
+            type: 'POST',
+            url: '/ribbon/admin/postinsertannouncement',
+            data: JSON.stringify(jsonData),
+            contentType: 'application/json',
+            success: function(data) {
+              alert('공지 성공!');
+              // redirect to adminannouncementinfo page
+              window.location.href = '/ribbon/admin/adminannouncementinfo';
+            },
+            error: function(xhr, status, error) {
+              alert('공지 실패!');
+            }
+          });
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+<button onclick="location.href='http://192.168.219.161:8000/ribbon/admin/adminannouncementinfo'">공지 목록</button>
+<form id="announcement-form">
+  <label for="title">Title</label>
+  <input type="text" id="title" name="title" placeholder="Enter the title" required>
+  <label for="content">Content</label>
+  <textarea id="content" name="content" placeholder="Enter the content" rows="10" required></textarea>
+  <!-- 자동증가키와 작성날짜 변수 추가 -->
+  <input type="hidden" id="id" name="id" value="">
+  <input type="hidden" id="writedate" name="writedate" value="">
+  <input type="submit" value="Create Announcement">
+</form>
+</body>
+</html>

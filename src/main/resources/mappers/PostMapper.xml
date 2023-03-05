@@ -225,6 +225,18 @@
             boardwrite
         WHERE boardid = #{boardid}
     </delete>
+    <delete id="deleteBoardWriteByLikedId" >
+        DELETE
+        FROM
+            liked
+        WHERE inherentid = #{boardid}
+    </delete>
+    <delete id="deleteBoardWriteComments" >
+        DELETE
+        FROM
+            comments
+        WHERE inherentid = #{boardid}
+    </delete>
 
     <!-- 단체 게시글 조회  -->
     <select id="findGroupAll" resultType="com.project.ribbon.domain.post.PostGroupResponse" >
@@ -302,6 +314,12 @@
             groupwrite
         WHERE groupid = #{groupid}
     </delete>
+    <delete id="deleteGroupWriteComments" >
+        DELETE
+        FROM
+            groupcomments
+        WHERE inherentid = #{groupid}
+    </delete>
 
 
     <!-- 개인 게시글 조회  -->
@@ -375,6 +393,18 @@
         FROM
             individualwrite
         WHERE individualid = #{individualid}
+    </delete>
+    <delete id="deleteIndiWriteByLikedId" >
+        DELETE
+        FROM
+            individualliked
+        WHERE inherentid = #{individualid}
+    </delete>
+    <delete id="deleteIndiWriteComments" >
+        DELETE
+        FROM
+            individualcomments
+        WHERE inherentid = #{individualid}
     </delete>
 
     <!-- 중고 게시글 조회  -->
@@ -450,6 +480,18 @@
         FROM
             usedwrite
         where usedid = #{usedid}
+    </delete>
+    <delete id="deleteUsedWriteByLikedId" >
+        DELETE
+        FROM
+            usedliked
+        WHERE inherentid = #{usedid}
+    </delete>
+    <delete id="deleteUsedWriteComments" >
+        DELETE
+        FROM
+            usedcomments
+        WHERE inherentid = #{usedid}
     </delete>
 
 
@@ -1507,4 +1549,33 @@
         UPDATE usedwrite SET commentcount = commentcount - 1 WHERE usedid = #{usedid}
 
     </update>
+
+    <!-- 공지사 저장 -->
+    <insert id="saveAnnouncement" parameterType="com.project.ribbon.domain.post.PostAnnouncementRequest"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO announcement (
+            id,title,content,writedate
+        ) VALUES (
+                     #{id}
+                 , #{title}
+                 , #{content}
+                 , NOW()
+                 )
+    </insert>
+
+    <!-- 공지사항 조회 -->
+    <select id="findAnnouncementAll" resultType="com.project.ribbon.domain.post.PostAnnouncementRequest">
+        SELECT
+            *
+        FROM announcement
+        ORDER BY writedate DESC
+    </select>
+
+    <!-- 관리자 공지사항 삭제 -->
+    <delete id="deleteAnnouncement" >
+    DELETE
+    FROM
+        announcement
+    WHERE id = #{id}
+    </delete>
 </mapper>

@@ -145,6 +145,8 @@ public class PostController {
     @RequestMapping("/post/delete")
     public Long deletePost(@RequestBody PostRequest params) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        postService.deleteBoardWriteCommentsPost(params);
+        postService.deleteBoardWriteLikedPost(params);
         return postService.deletePost(params);
     }
 
@@ -242,6 +244,7 @@ public class PostController {
     @RequestMapping("/post/deletegroup")
     public Long deleteGroupPost(@RequestBody PostGroupRequest params) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        postService.deleteGroupWriteCommentsPost(params);
         return postService.deleteGroupPost(params);
     }
 
@@ -289,6 +292,8 @@ public class PostController {
     @RequestMapping("/post/deleteindividual")
     public Long deleteIndiPost(@RequestBody PostIndiRequest params) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        postService.deleteIndiWriteCommentsPost(params);
+        postService.deleteIndiWriteLikedPost(params);
         return postService.deleteIndiPost(params);
     }
 
@@ -527,6 +532,8 @@ public class PostController {
     @RequestMapping("/post/deleteused")
     public Long deleteUsedPost(@RequestBody PostUsedRequest params) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        postService.deleteUsedWriteCommentsPost(params);
+        postService.deleteUsedWriteLikedPost(params);
         return postService.deleteUsedPost(params);
     }
 

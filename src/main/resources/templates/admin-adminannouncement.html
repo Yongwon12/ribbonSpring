@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f2f2f2;
+  }
+  h1 {
+    text-align: center;
+    margin-top: 20px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 80%;
+    margin: auto;
+    height: 100px; /* 원하는 세로 크기로 지정 */
+    overflow-y: scroll; /* 내용이 넘칠 경우 스크롤 표시 */
+    margin-top: 20px;
+    margin-bottom: 50px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  th, td {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  th {
+    background-color: #ccc;
+  }
+  img {
+    max-width: 50%;
+    height: 100px;
+  }
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  button {
+    margin-top: 20px;
+    margin-left: 20px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #3e8e41;
+  }
+  #selectAll {
+    margin-top: 5px;
+  }
+</style>
+<head>
+  <meta charset="UTF-8">
+  <title>Announcement Report</title>
+
+</head>
+<body>
+<h1>Announcement Report</h1>
+<button type="button" onclick="deleteSelectedAnnouncements()">Delete Selected Announcement Report</button>
+<table>
+  <thead>
+  <tr>
+    <th><input type="checkbox" id="selectAll"/></th>
+    <th>ID</th>
+    <th>Title</th>
+    <th>Content</th>
+    <th>Writedate</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="announcement : ${announcementList}">
+    <td><input type="checkbox" name="selectedAnnouncements" th:value="${announcement.getId()}" onclick="selectRow(this)"/></td>
+    <td th:text="${announcement.getId()}"></td>
+    <td th:text="${announcement.getTitle()}"></td>
+    <td th:text="${announcement.getContent()}"></td>
+    <td th:text="${announcement.getWritedate()}"></td>
+  </tr>
+  </tbody>
+</table>
+<script>
+  // select all checkboxes when "select all" checkbox is clicked
+  const selectAllCheckbox = document.getElementById('selectAll');
+  const checkboxes = document.getElementsByName('selectedAnnouncements');
+  selectAllCheckbox.addEventListener('click', function() {
+    for (let i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = selectAllCheckbox.checked;
+    }
+  });
+  function selectRow(checkbox) {
+    const inputs = checkbox.parentNode.parentNode.getElementsByTagName('input');
+    for (let i = 0; i < inputs.length; i++) {
+      if (inputs[i].type === 'checkbox') {
+        inputs[i].checked = checkbox.checked;
+      }
+    }
+  }
+  function deleteSelectedAnnouncements() {
+    const selectedAnnouncements = Array.from(document.getElementsByName('selectedAnnouncements'))
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => ({ "id": checkbox.value }));
+    if (selectedAnnouncements.length === 0) {
+      alert('Please select at least one id.');
+      return;
+    }
+    if (confirm('정말로 삭제하시겠습니까?')) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/ribbon/admin/post/adminannouncementdelete');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify(selectedAnnouncements));
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          window.location.reload();
+        }
+      }
+    }
+  }
+
+</script>
+</body>
+</html>
