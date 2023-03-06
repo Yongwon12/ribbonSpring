@@ -113,8 +113,12 @@ public interface PostMapper {
 
     // 좋아요
     void saveLiked(PostLikedRequest params);
-    // 좋아요 알림
-
+    // 좋아요 알림 조회
+    List<PostLikedRequest> findLikedAlarm(Long userid);
+    // 개인 좋아요 알림 조회
+    List<PostIndividualLikedRequest> findIndiLikedAlarm(Long userid);
+    // 중고 좋아요 알림 조회
+    List<PostUsedLikedRequest> findUsedLikedAlarm(Long userid);
 
     // 좋아요 수정
     void updateDeleteLiked(PostLikedRequest params);

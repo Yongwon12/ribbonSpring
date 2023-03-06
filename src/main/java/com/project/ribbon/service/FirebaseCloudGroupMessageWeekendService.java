@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @EnableScheduling
-public class FirebaseCloudGroupMessageWeekendCommentsService {
+public class FirebaseCloudGroupMessageWeekendService {
 
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/sportscommunity-d11ee/messages:send";
     private final ObjectMapper objectMapper;

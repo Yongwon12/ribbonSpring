@@ -23,6 +23,7 @@ public class PostGroupCommentsRequest {
         private Long commentsid;
         private String token;
         private String  nickname;
+        private Integer commentcategory;
 
 }
 

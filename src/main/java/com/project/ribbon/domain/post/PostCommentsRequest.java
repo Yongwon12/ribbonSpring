@@ -24,6 +24,7 @@ public class PostCommentsRequest {
         private Integer isrecomment;
         private String token;
         private String  nickname;
+        private Integer commentcategory;
 
 
 }

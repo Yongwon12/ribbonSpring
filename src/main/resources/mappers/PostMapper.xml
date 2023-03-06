@@ -100,8 +100,10 @@
     <!-- liked 테이블 전체 컬럼 -->
     <sql id="postLikedColumns">
         categoryid
-        , userid
+        , nickname
         , inherentid
+            , id
+            , userid
     </sql>
 
     <!-- comments 테이블 전체 컬럼 -->
@@ -114,6 +116,7 @@
         , writedate
         , commentsid
         , isrecomment
+        , commentcategory
     </sql>
 
     <!-- groupcomments 테이블 전체 컬럼 -->
@@ -125,6 +128,7 @@
         , writedate
         , commentsid
         , isrecomment
+            , commentcategory
     </sql>
 
     <!-- individualcomments 테이블 전체 컬럼 -->
@@ -136,6 +140,7 @@
         , writedate
         , commentsid
         , isrecomment
+            , commentcategory
     </sql>
 
     <!-- usedcomments 테이블 전체 컬럼 -->
@@ -147,6 +152,7 @@
         , writedate
         , commentsid
         , isrecomment
+            , commentcategory
     </sql>
 
     <!-- chatroom 테이블 전체 컬럼 -->
@@ -624,16 +630,60 @@
 
     <!-- 좋아요 삽입 -->
     <insert id="saveLiked" parameterType="com.project.ribbon.domain.post.PostLikedRequest"
-    >
+            useGeneratedKeys="true" keyProperty="id">
         INSERT INTO liked (
         <include refid="postLikedColumns" />
         ) VALUES (
         #{categoryid}
-        , #{userid}
+        , #{nickname}
         , #{inherentid}
+        , #{id}
+        , #{userid}
         )
     </insert>
 
+    <!-- 좋아요 알림 조회  -->
+    <select id="findLikedAlarm" resultType="com.project.ribbon.domain.post.PostLikedRequest">
+        SELECT
+            categoryid,title,description,liked.nickname,
+            liked.inherentid
+        FROM
+            boardwrite
+                LEFT JOIN liked
+                ON liked.inherentid = boardwrite.boardid
+                LEFT JOIN User
+                ON User.userid = boardwrite.userid
+        WHERE user.userid = #{userid}
+        ORDER BY writedate DESC limit 2
+    </select>
+    <!-- 개인 좋아요 알림 조회  -->
+    <select id="findIndividualLikedAlarm" resultType="com.project.ribbon.domain.post.PostIndividualLikedRequest">
+        SELECT
+            categoryid,title,description,individualliked.nickname,
+            individualliked.inherentid
+        FROM
+            boardwrite
+                LEFT JOIN individualliked
+                          ON individualliked.inherentid = boardwrite.boardid
+                LEFT JOIN User
+                          ON User.userid = boardwrite.userid
+        WHERE user.userid = #{userid}
+        ORDER BY writedate DESC limit 2
+    </select>
+    <!-- 중고 좋아요 알림 조회  -->
+    <select id="findUsedLikedAlarm" resultType="com.project.ribbon.domain.post.PostUsedLikedRequest">
+        SELECT
+            categoryid,title,description,usedliked.nickname,
+            usedliked.inherentid
+        FROM
+            boardwrite
+                LEFT JOIN usedliked
+                          ON usedliked.inherentid = boardwrite.boardid
+                LEFT JOIN User
+                          ON User.userid = boardwrite.userid
+        WHERE user.userid = #{userid}
+        ORDER BY writedate DESC limit 2
+    </select>
 
 
     <!-- 좋아요 갯수 카운트 +1 -->
@@ -656,20 +706,23 @@
         FROM
             liked
         WHERE categoryid = #{categoryid}
-          AND userid = #{userid}
+          AND nickname = #{nickname}
           AND inherentid = #{inherentid}
+          AND userid = #{userid}
     </delete>
 
 
     <!-- 개인 좋아요 삽입 -->
     <insert id="saveIndividualLiked" parameterType="com.project.ribbon.domain.post.PostIndividualLikedRequest"
-    >
+            useGeneratedKeys="true" keyProperty="id">
         INSERT INTO individualliked (
         <include refid="postLikedColumns" />
         ) VALUES (
         #{categoryid}
-        , #{userid}
+        , #{nickname}
         , #{inherentid}
+        , #{id}
+        , #{userid}
         )
 
     </insert>
@@ -694,20 +747,23 @@
         FROM
             individualliked
         WHERE categoryid = #{categoryid}
-          AND userid = #{userid}
+          AND nickname = #{nickname}
           AND inherentid = #{inherentid}
+          AND userid = #{userid}
     </delete>
 
 
     <!-- 중고 좋아요 삽입 -->
     <insert id="saveUsedLiked" parameterType="com.project.ribbon.domain.post.PostUsedLikedRequest"
-    >
+            useGeneratedKeys="true" keyProperty="id">
         INSERT INTO usedliked (
         <include refid="postLikedColumns" />
         ) VALUES (
         #{categoryid}
-        , #{userid}
+        , #{nickname}
         , #{inherentid}
+        , #{id}
+        , #{userid}
         )
     </insert>
 
@@ -732,8 +788,9 @@
         FROM
             usedliked
         WHERE categoryid = #{categoryid}
-          AND userid = #{userid}
+          AND nickname = #{nickname}
           AND inherentid = #{inherentid}
+          AND userid = #{userid}
     </delete>
 
 
@@ -751,7 +808,7 @@
     <select id="findByInherentId" resultType="com.project.ribbon.domain.post.PostCommentsResponse">
         SELECT
             description,writedate,comments.userid,User.nickname,categoryid,
-            inherentid,commentsid,isrecomment,
+            inherentid,commentsid,isrecomment
             profileimage
         FROM comments
                  LEFT JOIN User
@@ -774,6 +831,7 @@
         , #{writedate}
         , #{commentsid}
         , 2
+        , #{commentcategory}
         )
 
     </insert>
@@ -850,6 +908,7 @@
         , #{writedate}
         , #{commentsid}
         , 2
+        , #{commentcategory}
         )
 
     </insert>
@@ -926,6 +985,7 @@
         , #{writedate}
         , #{commentsid}
         , 2
+        , #{commentcategory}
         )
 
     </insert>
@@ -999,6 +1059,7 @@
         , #{writedate}
         , #{commentsid}
         , 2
+        , #{commentcategory}
         )
 
     </insert>

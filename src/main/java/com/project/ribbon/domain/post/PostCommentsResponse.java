@@ -14,6 +14,7 @@ public class PostCommentsResponse {
     private Long commentsid;
     private Integer isrecomment;
     private String profileimage;
+    private Integer commentcategory;
 
 
 }

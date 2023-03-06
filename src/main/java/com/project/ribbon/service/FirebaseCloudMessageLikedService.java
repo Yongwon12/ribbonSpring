@@ -21,8 +21,8 @@ public class FirebaseCloudMessageLikedService {
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/sportscommunity-d11ee/messages:send";
     private final ObjectMapper objectMapper;
 
-    public void sendMessageTo(String token,String nickname,String type) throws IOException {
-        String message = makeMessage(token,nickname,type);
+    public void sendMessageTo(String token,String nickname) throws IOException {
+        String message = makeMessage(token,nickname);
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message,
@@ -39,13 +39,13 @@ public class FirebaseCloudMessageLikedService {
         System.out.println(response.body().string());
     }
 
-    private String makeMessage(String token,String nickname,String type) throws JsonParseException, JsonProcessingException {
+    private String makeMessage(String token,String nickname) throws JsonParseException, JsonProcessingException {
         FcmLikedMessage fcmLikedMessage = FcmLikedMessage.builder()
                 .message(FcmLikedMessage.Message.builder()
                         .token(token)
                         .data(FcmLikedMessage.Data.builder()
                                 .title("맺음")
-                                .body(nickname+"님이 "+type+"를 눌렀습니다")
+                                .body(nickname+"님이 좋아요를 눌렀습니다")
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();

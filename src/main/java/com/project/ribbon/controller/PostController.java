@@ -56,10 +56,10 @@ public class PostController {
 
     // 외부 서버 ip : 112.148.33.214
 
-    String userip = "http://112.148.33.214:8000/api/userimage/";
-    String boardip = "http://112.148.33.214:8000/api/boardimage/";
-    String groupip = "http://112.148.33.214:8000/api/groupimage/";
-    String usedip = "http://112.148.33.214:8000/api/usedimage/";
+    String userip = "http://192.168.0.5:8000/api/userimage/";
+    String boardip = "http://192.168.0.5:8000/api/boardimage/";
+    String groupip = "http://192.168.0.5:8000/api/groupimage/";
+    String usedip = "http://192.168.0.5:8000/api/usedimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -688,16 +688,45 @@ public class PostController {
             postService.saveLikedPost(params);
             firebaseCloudMessageLikedService.sendMessageTo(
                     params.getToken(),
-                    params.getNickname(),
-                    params.getType());
+                    params.getNickname());
             return ResponseEntity.ok().build().getStatusCodeValue();
 
         }
+        // 좋아요 알림 조회
+        @PostMapping("/post/likedalarm")
+        public ResponseEntity<?> likedAlarm(@RequestBody PostLikedRequest params, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            Map<String, Object> obj = new HashMap<>();
+            List<PostLikedRequest> posts = postService.findLikedAlarmPost(params.getUserid());
+            model.addAttribute("posts", posts);
+            obj.put("liked", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
+    // 개인 좋아요 알림 조회
+    @PostMapping("/post/individuallikedalarm")
+    public ResponseEntity<?> individualLikedAlarm(@RequestBody PostIndividualLikedRequest params, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        Map<String, Object> obj = new HashMap<>();
+        List<PostIndividualLikedRequest> posts = postService.findIndiLikedAlarmPost(params.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("liked", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 중고 좋아요 알림 조회
+    @PostMapping("/post/usedlikedalarm")
+    public ResponseEntity<?> usedLikedAlarm(@RequestBody PostUsedLikedRequest params, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        Map<String, Object> obj = new HashMap<>();
+        List<PostUsedLikedRequest> posts = postService.findUsedLikedAlarmPost(params.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("liked", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
 
 
         // 좋아요 삭제
         @RequestMapping("/post/deleteliked")
-        public Integer deleteLikedPost(@RequestBody PostLikedRequest params) throws ApiException {
+        public Long deleteLikedPost(@RequestBody PostLikedRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.updateDeleteLikedPost(params);
             return postService.deleteLikedPost(params);
@@ -711,8 +740,7 @@ public class PostController {
             postService.saveIndividualLikedPost(params);
             firebaseCloudMessageLikedService.sendMessageTo(
                     params.getToken(),
-                    params.getNickname(),
-                    params.getType());
+                    params.getNickname());
             return ResponseEntity.ok().build().getStatusCodeValue();
 
         }
@@ -720,7 +748,7 @@ public class PostController {
 
         // 개인 좋아요 삭제
         @RequestMapping("/post/deleteindividualliked")
-        public Integer deleteIndiLikedPost(@RequestBody PostIndividualLikedRequest params) throws ApiException {
+        public Long deleteIndiLikedPost(@RequestBody PostIndividualLikedRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.updateDeleteIndividualLikedPost(params);
             return postService.deleteIndividualLikedPost(params);
@@ -734,8 +762,7 @@ public class PostController {
             postService.saveUsedLikedPost(params);
             firebaseCloudMessageLikedService.sendMessageTo(
                     params.getToken(),
-                    params.getNickname(),
-                    params.getType());
+                    params.getNickname());
             return ResponseEntity.ok().build().getStatusCodeValue();
 
         }
@@ -743,7 +770,7 @@ public class PostController {
 
         // 중고 좋아요 삭제
         @RequestMapping("/post/deleteusedliked")
-        public Integer deleteUsedLikedPost(@RequestBody PostUsedLikedRequest params) throws ApiException {
+        public Long deleteUsedLikedPost(@RequestBody PostUsedLikedRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.updateDeleteUsedLikedPost(params);
             return postService.deleteUsedLikedPost(params);

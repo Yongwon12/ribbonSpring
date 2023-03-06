@@ -406,7 +406,7 @@ public class PostService {
 
     // 좋아요 삽입
     @Transactional
-    public Integer saveLikedPost(final PostLikedRequest params) {
+    public Long saveLikedPost(final PostLikedRequest params) {
         try {
             postMapper.saveLiked(params);
         } catch (Exception e) {
@@ -415,11 +415,39 @@ public class PostService {
         }
         return params.getInherentid();
     }
+    // 좋아요 알림 조회
+    public List<PostLikedRequest> findLikedAlarmPost(Long userid) {
+        try {
+            return postMapper.findLikedAlarm(userid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("좋아요 알림 조회에 실패했습니다.", e);
+        }
+    }
+    // 개인 좋아요 알림 조회
+    public List<PostIndividualLikedRequest> findIndiLikedAlarmPost(Long userid) {
+        try {
+            return postMapper.findIndiLikedAlarm(userid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("개인 좋아요 알림 조회에 실패했습니다.", e);
+        }
+    }
+    // 중고 좋아요 알림 조회
+    public List<PostUsedLikedRequest> findUsedLikedAlarmPost(Long userid) {
+        try {
+            return postMapper.findUsedLikedAlarm(userid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("중고 좋아요 알림 조회에 실패했습니다.", e);
+        }
+    }
+
 
 
     // 좋아요 정보 수정
     @Transactional
-    public Integer updateLikedPost(final PostLikedRequest params) {
+    public Long updateLikedPost(final PostLikedRequest params) {
         try {
             postMapper.updateLiked(params);
         } catch (Exception e) {
@@ -429,7 +457,7 @@ public class PostService {
         return params.getInherentid();
     }
     @Transactional
-    public Integer updateDeleteLikedPost(final PostLikedRequest params) {
+    public Long updateDeleteLikedPost(final PostLikedRequest params) {
         try {
             postMapper.updateDeleteLiked(params);
         } catch (Exception e) {
@@ -439,7 +467,7 @@ public class PostService {
         return params.getInherentid();
     }
     // 좋아요 정보 삭제
-    public Integer deleteLikedPost(final PostLikedRequest params) {
+    public Long deleteLikedPost(final PostLikedRequest params) {
         try {
             postMapper.deleteByLikedId(params);
         } catch (Exception e) {
@@ -450,7 +478,7 @@ public class PostService {
     }
     // 좋아요 개인 삽입
     @Transactional
-    public Integer saveIndividualLikedPost(final PostIndividualLikedRequest params) {
+    public Long saveIndividualLikedPost(final PostIndividualLikedRequest params) {
         try {
             postMapper.saveIndividualLiked(params);
         } catch (Exception e) {
@@ -461,7 +489,7 @@ public class PostService {
     }
     // 좋아요 개인 정보 수정
     @Transactional
-    public Integer updateIndividualLikedPost(final PostIndividualLikedRequest params) {
+    public Long updateIndividualLikedPost(final PostIndividualLikedRequest params) {
         try {
             postMapper.updateIndividualLiked(params);
         } catch (Exception e) {
@@ -471,7 +499,7 @@ public class PostService {
         return params.getInherentid();
     }
     @Transactional
-    public Integer updateDeleteIndividualLikedPost(final PostIndividualLikedRequest params) {
+    public Long updateDeleteIndividualLikedPost(final PostIndividualLikedRequest params) {
         try {
             postMapper.updateDeleteIndividualLiked(params);
         } catch (Exception e) {
@@ -481,7 +509,7 @@ public class PostService {
         return params.getInherentid();
     }
     // 좋아요 개인 정보 삭제
-    public Integer deleteIndividualLikedPost(final PostIndividualLikedRequest params) {
+    public Long deleteIndividualLikedPost(final PostIndividualLikedRequest params) {
         try {
             postMapper.deleteByIndividualLikedId(params);
         } catch (Exception e) {
@@ -492,7 +520,7 @@ public class PostService {
     }
     // 좋아요 중고 삽입
     @Transactional
-    public Integer saveUsedLikedPost(final PostUsedLikedRequest params) {
+    public Long saveUsedLikedPost(final PostUsedLikedRequest params) {
         try {
             postMapper.saveUsedLiked(params);
         } catch (Exception e) {
@@ -503,7 +531,7 @@ public class PostService {
     }
     // 좋아요 중고 정보 수정
     @Transactional
-    public Integer updateUsedLikedPost(final PostUsedLikedRequest params) {
+    public Long updateUsedLikedPost(final PostUsedLikedRequest params) {
         try {
             postMapper.updateUsedLiked(params);
         } catch (Exception e) {
@@ -513,7 +541,7 @@ public class PostService {
         return params.getInherentid();
     }
     @Transactional
-    public Integer updateDeleteUsedLikedPost(final PostUsedLikedRequest params) {
+    public Long updateDeleteUsedLikedPost(final PostUsedLikedRequest params) {
         try {
             postMapper.updateDeleteUsedLiked(params);
         } catch (Exception e) {
@@ -523,7 +551,7 @@ public class PostService {
         return params.getInherentid();
     }
     // 좋아요 중고 정보 삭제
-    public Integer deleteUsedLikedPost(final PostUsedLikedRequest params) {
+    public Long deleteUsedLikedPost(final PostUsedLikedRequest params) {
         try {
             postMapper.deleteByUsedLikedId(params);
         } catch (Exception e) {

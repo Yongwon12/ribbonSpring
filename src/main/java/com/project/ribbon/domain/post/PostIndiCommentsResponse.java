@@ -13,5 +13,6 @@ public class PostIndiCommentsResponse {
     private Long commentsid;
     private Integer isrecomment;
     private String profileimage;
+    private Integer commentcategory;
 
 }

@@ -26,7 +26,6 @@ public class FcmLikedMessage {
         private String title;
         private String nickname;
         private String body;
-        private String type;
         private String image;
     }
 }
