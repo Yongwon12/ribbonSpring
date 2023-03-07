@@ -1,5 +1,6 @@
 package com.project.ribbon.domain.post;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Id;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostIndiRequest {
 
         @NotNull(message = "카테고리는 필수 입력값입니다.")

@@ -56,10 +56,10 @@ public class PostController {
 
     // 외부 서버 ip : 112.148.33.214
 
-    String userip = "http://192.168.0.5:8000/api/userimage/";
-    String boardip = "http://192.168.0.5:8000/api/boardimage/";
-    String groupip = "http://192.168.0.5:8000/api/groupimage/";
-    String usedip = "http://192.168.0.5:8000/api/usedimage/";
+    String userip = "http://112.148.33.214:8000/api/userimage/";
+    String boardip = "http://112.148.33.214:8000/api/boardimage/";
+    String groupip = "http://112.148.33.214:8000/api/groupimage/";
+    String usedip = "http://112.148.33.214:8000/api/usedimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -604,6 +604,7 @@ public class PostController {
                 postService.updateUserPost(params);
 
                 PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
+                System.out.println(posts);
                 return new ResponseEntity<>(posts, HttpStatus.OK);
 
             } else {
@@ -614,12 +615,12 @@ public class PostController {
                 params.setBestcategory(bestcategory);
                 params.setShortinfo(shortinfo);
                 //params.setYoutube(youtube);
-                params.setProfileimage(null);
+                params.setProfileimage("null");
                 params.setUserid(userid);
                 postService.updateUserPost(params);
 
                 PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
-
+                System.out.println(posts);
                 return new ResponseEntity<>(posts, HttpStatus.OK);
             }
         } catch (IOException e) {
@@ -692,36 +693,36 @@ public class PostController {
             return ResponseEntity.ok().build().getStatusCodeValue();
 
         }
-        // 좋아요 알림 조회
+        // 커뮤니티 좋아요 알림 조회
         @PostMapping("/post/likedalarm")
         public ResponseEntity<?> likedAlarm(@RequestBody PostLikedRequest params, Model model) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             Map<String, Object> obj = new HashMap<>();
             List<PostLikedRequest> posts = postService.findLikedAlarmPost(params.getUserid());
             model.addAttribute("posts", posts);
-            obj.put("liked", posts);
+            obj.put("liked1", posts);
             return new ResponseEntity<>(obj, HttpStatus.OK);
         }
-    // 개인 좋아요 알림 조회
-    @PostMapping("/post/individuallikedalarm")
-    public ResponseEntity<?> individualLikedAlarm(@RequestBody PostIndividualLikedRequest params, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostIndividualLikedRequest> posts = postService.findIndiLikedAlarmPost(params.getUserid());
-        model.addAttribute("posts", posts);
-        obj.put("liked", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
-    // 중고 좋아요 알림 조회
-    @PostMapping("/post/usedlikedalarm")
-    public ResponseEntity<?> usedLikedAlarm(@RequestBody PostUsedLikedRequest params, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostUsedLikedRequest> posts = postService.findUsedLikedAlarmPost(params.getUserid());
-        model.addAttribute("posts", posts);
-        obj.put("liked", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    }
+        // 개인 좋아요 알림 조회
+        @PostMapping("/post/individuallikedalarm")
+        public ResponseEntity<?> usedLikedAlarm(@RequestBody PostIndividualLikedRequest params, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            Map<String, Object> obj = new HashMap<>();
+            List<PostIndividualLikedRequest> posts = postService.findIndividualLikedAlarmPost(params.getUserid());
+            model.addAttribute("posts", posts);
+            obj.put("liked2", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
+        // 중고 좋아요 알림 조회
+        @PostMapping("/post/usedlikedalarm")
+        public ResponseEntity<?> usedLikedAlarm(@RequestBody PostUsedLikedRequest params, Model model) throws ApiException {
+            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+            Map<String, Object> obj = new HashMap<>();
+            List<PostUsedLikedRequest> posts = postService.findUsedLikedAlarmPost(params.getUserid());
+            model.addAttribute("posts", posts);
+            obj.put("liked3", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }
 
 
         // 좋아요 삭제
@@ -775,6 +776,47 @@ public class PostController {
             postService.updateDeleteUsedLikedPost(params);
             return postService.deleteUsedLikedPost(params);
         }
+
+    // 커뮤니티 댓글 알림 조회
+    @PostMapping("/post/commentalarm")
+    public ResponseEntity<?> commentsAlarm(@RequestBody PostCommentsRequest params, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        Map<String, Object> obj = new HashMap<>();
+        List<PostCommentsRequest> posts = postService.findCommentsAlarmPost(params.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("comment1", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 개인 댓글 알림 조회
+    @PostMapping("/post/individualcommentalarm")
+    public ResponseEntity<?> usedLikedAlarm(@RequestBody PostIndiCommentsRequest params, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        Map<String, Object> obj = new HashMap<>();
+        List<PostIndiCommentsRequest> posts = postService.findIndiCommentsAlarmPost(params.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("comment2", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 단체 댓글 알림 조회
+    @PostMapping("/post/groupcommentalarm")
+    public ResponseEntity<?> usedLikedAlarm(@RequestBody PostGroupCommentsRequest params, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        Map<String, Object> obj = new HashMap<>();
+        List<PostGroupCommentsRequest> posts = postService.findGroupCommentsAlarmPost(params.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("comment3", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 중고 댓글 알림 조회
+    @PostMapping("/post/usedcommentalarm")
+    public ResponseEntity<?> usedLikedAlarm(@RequestBody PostUsedCommentsRequest params, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        Map<String, Object> obj = new HashMap<>();
+        List<PostUsedCommentsRequest> posts = postService.findUsedCommentsAlarmPost(params.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("comment4", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
 
         // 댓글 조회
         @RequestMapping("/post/commentsinfo")

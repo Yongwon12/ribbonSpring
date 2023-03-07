@@ -104,6 +104,7 @@
         , inherentid
             , id
             , userid
+            , myid
     </sql>
 
     <!-- comments 테이블 전체 컬럼 -->
@@ -116,7 +117,7 @@
         , writedate
         , commentsid
         , isrecomment
-        , commentcategory
+        , commentscategory
     </sql>
 
     <!-- groupcomments 테이블 전체 컬럼 -->
@@ -128,7 +129,7 @@
         , writedate
         , commentsid
         , isrecomment
-            , commentcategory
+            , commentscategory
     </sql>
 
     <!-- individualcomments 테이블 전체 컬럼 -->
@@ -140,7 +141,7 @@
         , writedate
         , commentsid
         , isrecomment
-            , commentcategory
+            , commentscategory
     </sql>
 
     <!-- usedcomments 테이블 전체 컬럼 -->
@@ -152,7 +153,7 @@
         , writedate
         , commentsid
         , isrecomment
-            , commentcategory
+            , commentscategory
     </sql>
 
     <!-- chatroom 테이블 전체 컬럼 -->
@@ -639,50 +640,76 @@
         , #{inherentid}
         , #{id}
         , #{userid}
+        , #{myid}
         )
     </insert>
 
     <!-- 좋아요 알림 조회  -->
     <select id="findLikedAlarm" resultType="com.project.ribbon.domain.post.PostLikedRequest">
         SELECT
-            categoryid,title,description,liked.nickname,
-            liked.inherentid
+            boardliked.categoryid,
+            boardwrite.title,
+            boardwrite.description,
+            liker.nickname,
+            boardliked.inherentid
         FROM
             boardwrite
-                LEFT JOIN liked
-                ON liked.inherentid = boardwrite.boardid
-                LEFT JOIN User
-                ON User.userid = boardwrite.userid
-        WHERE user.userid = #{userid}
-        ORDER BY writedate DESC limit 2
+                LEFT JOIN liked AS boardliked
+                          ON boardliked.inherentid = boardwrite.boardid
+                LEFT JOIN User AS writer
+                          ON writer.userid = boardwrite.userid
+                LEFT JOIN User AS liker
+                          ON liker.userid = boardliked.myid
+        WHERE
+            writer.userid = #{userid}
+        ORDER BY
+            boardwrite.writedate DESC
+            LIMIT 1;
+
     </select>
     <!-- 개인 좋아요 알림 조회  -->
     <select id="findIndividualLikedAlarm" resultType="com.project.ribbon.domain.post.PostIndividualLikedRequest">
         SELECT
-            categoryid,title,description,individualliked.nickname,
-            individualliked.inherentid
+            liked.categoryid,
+            individualwrite.title,
+            individualwrite.description,
+            liker.nickname,
+            liked.inherentid
         FROM
-            boardwrite
-                LEFT JOIN individualliked
-                          ON individualliked.inherentid = boardwrite.boardid
-                LEFT JOIN User
-                          ON User.userid = boardwrite.userid
-        WHERE user.userid = #{userid}
-        ORDER BY writedate DESC limit 2
+            individualwrite
+                LEFT JOIN individualliked AS liked
+                          ON liked.inherentid = individualwrite.individualid
+                LEFT JOIN User AS writer
+                          ON writer.userid = individualwrite.userid
+                LEFT JOIN User AS liker
+                          ON liker.userid = liked.myid
+        WHERE
+            writer.userid = #{userid}
+        ORDER BY
+            individualwrite.writedate DESC
+            LIMIT 1;
     </select>
     <!-- 중고 좋아요 알림 조회  -->
     <select id="findUsedLikedAlarm" resultType="com.project.ribbon.domain.post.PostUsedLikedRequest">
         SELECT
-            categoryid,title,description,usedliked.nickname,
-            usedliked.inherentid
+            liked.categoryid,
+            usedwrite.title,
+            usedwrite.description,
+            liker.nickname,
+            liked.inherentid
         FROM
-            boardwrite
-                LEFT JOIN usedliked
-                          ON usedliked.inherentid = boardwrite.boardid
-                LEFT JOIN User
-                          ON User.userid = boardwrite.userid
-        WHERE user.userid = #{userid}
-        ORDER BY writedate DESC limit 2
+            usedwrite
+                LEFT JOIN usedliked AS liked
+                          ON liked.inherentid = usedwrite.usedid
+                LEFT JOIN User AS writer
+                          ON writer.userid = usedwrite.userid
+                LEFT JOIN User AS liker
+                          ON liker.userid = liked.myid
+        WHERE
+            writer.userid = #{userid}
+        ORDER BY
+            usedwrite.writedate DESC
+            LIMIT 1;
     </select>
 
 
@@ -723,6 +750,7 @@
         , #{inherentid}
         , #{id}
         , #{userid}
+        , #{myid}
         )
 
     </insert>
@@ -764,6 +792,7 @@
         , #{inherentid}
         , #{id}
         , #{userid}
+        , #{myid}
         )
     </insert>
 
@@ -793,6 +822,96 @@
           AND userid = #{userid}
     </delete>
 
+    <!-- 커뮤니티 댓글 알림 조회  -->
+    <select id="findCommentsAlarm" resultType="com.project.ribbon.domain.post.PostCommentsRequest">
+        SELECT
+            comments.categoryid,
+            boardwrite.title,
+            comments.description,
+            commenter.nickname,
+            comments.inherentid,
+            comments.commentscategory
+        FROM
+            boardwrite
+                LEFT JOIN comments
+                          ON comments.inherentid = boardwrite.boardid
+                LEFT JOIN User AS writer
+                          ON writer.userid = boardwrite.userid
+                LEFT JOIN User AS commenter
+                          ON commenter.userid = comments.userid
+        WHERE
+            writer.userid = #{userid}
+        ORDER BY
+            comments.writedate DESC
+            LIMIT 1;
+
+    </select>
+    <!-- 개인 댓글 알림 조회  -->
+    <select id="findIndiCommentsAlarm" resultType="com.project.ribbon.domain.post.PostIndiCommentsRequest">
+        SELECT
+            individualwrite.title,
+            individualcomments.description,
+            commenter.nickname,
+            individualcomments.inherentid,
+            individualcomments.commentscategory
+        FROM
+            individualwrite
+                LEFT JOIN individualcomments
+                          ON individualcomments.inherentid = individualwrite.individualid
+                LEFT JOIN User AS writer
+                          ON writer.userid = individualwrite.userid
+                LEFT JOIN User AS commenter
+                          ON commenter.userid = individualcomments.userid
+        WHERE
+            writer.userid = #{userid}
+        ORDER BY
+            individualcomments.writedate DESC
+            LIMIT 1;
+    </select>
+    <!-- 단체 댓글 알림 조회  -->
+    <select id="findGroupCommentsAlarm" resultType="com.project.ribbon.domain.post.PostGroupCommentsRequest">
+        SELECT
+            groupwrite.title,
+            groupcomments.description,
+            commenter.nickname,
+            groupcomments.inherentid,
+            groupcomments.commentscategory
+        FROM
+            groupwrite
+                LEFT JOIN groupcomments
+                          ON groupcomments.inherentid = groupwrite.groupid
+                LEFT JOIN User AS writer
+                          ON writer.userid = groupwrite.userid
+                LEFT JOIN User AS commenter
+                          ON commenter.userid = groupcomments.userid
+        WHERE
+            writer.userid = #{userid}
+        ORDER BY
+            groupcomments.writedate DESC
+            LIMIT 1;
+    </select>
+    <!-- 중고 댓글 알림 조회  -->
+    <select id="findUsedCommentsAlarm" resultType="com.project.ribbon.domain.post.PostUsedCommentsRequest">
+        SELECT
+            usedwrite.title,
+            usedcomments.description,
+            commenter.nickname,
+            usedcomments.inherentid,
+            usedcomments.commentscategory
+        FROM
+            usedwrite
+                LEFT JOIN usedcomments
+                          ON usedcomments.inherentid = usedwrite.usedid
+                LEFT JOIN User AS writer
+                          ON writer.userid = usedwrite.userid
+                LEFT JOIN User AS commenter
+                          ON commenter.userid = usedcomments.userid
+        WHERE
+            writer.userid = #{userid}
+        ORDER BY
+            usedcomments.writedate DESC
+            LIMIT 1;
+    </select>
 
     <!-- 댓글 작성자 아이디 조회  -->
     <select id="findCommentsId" resultType="com.project.ribbon.domain.post.PostCommentsIdResponse">
@@ -831,7 +950,7 @@
         , #{writedate}
         , #{commentsid}
         , 2
-        , #{commentcategory}
+        , #{commentscategory}
         )
 
     </insert>
@@ -908,7 +1027,7 @@
         , #{writedate}
         , #{commentsid}
         , 2
-        , #{commentcategory}
+        , #{commentscategory}
         )
 
     </insert>
@@ -985,7 +1104,7 @@
         , #{writedate}
         , #{commentsid}
         , 2
-        , #{commentcategory}
+        , #{commentscategory}
         )
 
     </insert>
@@ -1059,7 +1178,7 @@
         , #{writedate}
         , #{commentsid}
         , 2
-        , #{commentcategory}
+        , #{commentscategory}
         )
 
     </insert>

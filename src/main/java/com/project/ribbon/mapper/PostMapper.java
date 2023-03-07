@@ -116,7 +116,7 @@ public interface PostMapper {
     // 좋아요 알림 조회
     List<PostLikedRequest> findLikedAlarm(Long userid);
     // 개인 좋아요 알림 조회
-    List<PostIndividualLikedRequest> findIndiLikedAlarm(Long userid);
+    List<PostIndividualLikedRequest> findIndividualLikedAlarm(Long userid);
     // 중고 좋아요 알림 조회
     List<PostUsedLikedRequest> findUsedLikedAlarm(Long userid);
 
@@ -140,6 +140,14 @@ public interface PostMapper {
     // 중고 좋아요 삭제
     void deleteByUsedLikedId(PostUsedLikedRequest params);
 
+    // 커뮤니티 댓글 알림 조회
+    List<PostCommentsRequest> findCommentsAlarm(Long userid);
+    // 개인 댓글 알림 조회
+    List<PostIndiCommentsRequest> findIndiCommentsAlarm(Long userid);
+    // 단체 댓글 알림 조회
+    List<PostGroupCommentsRequest> findGroupCommentsAlarm(Long userid);
+    // 중고 댓글 알림 조회
+    List<PostUsedCommentsRequest> findUsedCommentsAlarm(Long userid);
 
     // 댓글 조회
     List<PostCommentsResponse> findByInherentId(Long inherentid);

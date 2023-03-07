@@ -51,6 +51,19 @@
     input[type="submit"]:hover {
       background-color: #3e8e41;
     }
+    button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 20px;
+    }
   </style>
   <script>
     $(document).ready(function() {
@@ -85,6 +98,7 @@
 </head>
 <body>
 <h1>Announcement Login</h1>
+<button onclick="location.href='/ribbon/admin/report'">맺음 신고 및 공지 목록</button>
 <form id="form-id" th:action="@{/ribbon/admin/post/announcement}" method="post">
   <label for="userid">Admin:</label>
   <input type="text" id="userid" name="userid" required>

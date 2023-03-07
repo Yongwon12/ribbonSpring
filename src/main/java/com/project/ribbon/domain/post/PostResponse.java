@@ -1,10 +1,12 @@
 package com.project.ribbon.domain.post;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostResponse {
 
     private Integer id;             // PK

@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Getter
+
 public class ChatRoom {
     private String roomname;
     private String name;

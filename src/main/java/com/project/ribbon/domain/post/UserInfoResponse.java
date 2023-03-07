@@ -1,10 +1,12 @@
 package com.project.ribbon.domain.post;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Id;
 import lombok.Getter;
 
 
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserInfoResponse {
 
     private Long userid;

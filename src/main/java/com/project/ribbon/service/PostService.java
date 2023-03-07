@@ -425,9 +425,9 @@ public class PostService {
         }
     }
     // 개인 좋아요 알림 조회
-    public List<PostIndividualLikedRequest> findIndiLikedAlarmPost(Long userid) {
+    public List<PostIndividualLikedRequest> findIndividualLikedAlarmPost(Long userid) {
         try {
-            return postMapper.findIndiLikedAlarm(userid);
+            return postMapper.findIndividualLikedAlarm(userid);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("개인 좋아요 알림 조회에 실패했습니다.", e);
@@ -559,6 +559,43 @@ public class PostService {
             throw new RuntimeException("중고좋아요 삭제에 실패했습니다.", e);
         }
         return params.getInherentid();
+    }
+
+    // 커뮤니티 댓글 알림 조회
+    public List<PostCommentsRequest> findCommentsAlarmPost(Long userid) {
+        try {
+            return postMapper.findCommentsAlarm(userid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("커뮤니티 댓글 알림 조회에 실패했습니다.", e);
+        }
+    }
+    // 개인 댓글 알림 조회
+    public List<PostIndiCommentsRequest> findIndiCommentsAlarmPost(Long userid) {
+        try {
+            return postMapper.findIndiCommentsAlarm(userid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("개인 단체 알림 조회에 실패했습니다.", e);
+        }
+    }
+    // 단체 댓글 알림 조회
+    public List<PostGroupCommentsRequest> findGroupCommentsAlarmPost(Long userid) {
+        try {
+            return postMapper.findGroupCommentsAlarm(userid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("단체 댓글 알림 조회에 실패했습니다.", e);
+        }
+    }
+    // 중 댓글 알림 조회
+    public List<PostUsedCommentsRequest> findUsedCommentsAlarmPost(Long userid) {
+        try {
+            return postMapper.findUsedCommentsAlarm(userid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("중고 댓글 알림 조회에 실패했습니다.", e);
+        }
     }
 
 
