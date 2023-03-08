@@ -63,6 +63,8 @@
 </head>
 <body>
 <h1>Announcement Report</h1>
+<button onclick="location.href='/ribbon/admin/report'">맺음 신고 및 공지 목록</button>
+<button onclick="location.href='/ribbon/admin/insertannouncement'">공지 쓰기</button>
 <button type="button" onclick="deleteSelectedAnnouncements()">Delete Selected Announcement Report</button>
 <table>
   <thead>
@@ -116,6 +118,7 @@
       xhr.send(JSON.stringify(selectedAnnouncements));
       xhr.onload = function() {
         if (xhr.status === 200) {
+          alert("공지 삭제 성공!");
           window.location.reload();
         }
       }

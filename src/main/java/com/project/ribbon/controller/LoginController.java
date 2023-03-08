@@ -5,6 +5,8 @@ import com.project.ribbon.domain.post.*;
 import com.project.ribbon.dto.TokenInfo;
 import com.project.ribbon.enums.ExceptionEnum;
 import com.project.ribbon.response.ApiException;
+import com.project.ribbon.service.FirebaseAnnouncementMessageService;
+import com.project.ribbon.service.FirebaseCloudMessageLikedService;
 import com.project.ribbon.service.MemberService;
 import com.project.ribbon.service.PostService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,6 +33,7 @@ import java.util.Map;
 public class LoginController {
     private final MemberService memberService;
     private final PostService postService;
+    private final FirebaseAnnouncementMessageService firebaseAnnouncementMessageService;
     // 내부 서버 Ip : 192.168.219.161
     String ip = "http://192.168.219.161:8000/ribbon/admin";
     // 맺음 홈페이지
@@ -104,7 +107,11 @@ public class LoginController {
 
     // 공지사항 정보 저장
     @PostMapping("/ribbon/admin/postinsertannouncement")
-    public ResponseEntity<?> announcementInsert(@RequestBody PostAnnouncementRequest params) {
+    public ResponseEntity<?> announcementInsert(@RequestBody PostAnnouncementRequest params) throws IOException{
+        firebaseAnnouncementMessageService.sendMessageTo(
+                params.getTitle(),
+                params.getContent());
+        ResponseEntity.ok().build().getStatusCodeValue();
         return new ResponseEntity<>(postService.saveAnnouncementPost(params),HttpStatus.OK);
     }
     // 공지사항 입력 폼

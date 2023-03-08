@@ -651,7 +651,8 @@
             boardwrite.title,
             boardwrite.description,
             liker.nickname,
-            boardliked.inherentid
+            boardliked.inherentid,
+            boardliked.id
         FROM
             boardwrite
                 LEFT JOIN liked AS boardliked
@@ -662,9 +663,9 @@
                           ON liker.userid = boardliked.myid
         WHERE
             writer.userid = #{userid}
+          AND liker.nickname IS NOT NULL
         ORDER BY
-            boardwrite.writedate DESC
-            LIMIT 1;
+            boardwrite.writedate DESC LIMIT 1;
 
     </select>
     <!-- 개인 좋아요 알림 조회  -->
@@ -674,7 +675,8 @@
             individualwrite.title,
             individualwrite.description,
             liker.nickname,
-            liked.inherentid
+            liked.inherentid,
+            liked.id
         FROM
             individualwrite
                 LEFT JOIN individualliked AS liked
@@ -685,9 +687,9 @@
                           ON liker.userid = liked.myid
         WHERE
             writer.userid = #{userid}
+          AND liker.nickname IS NOT NULL
         ORDER BY
-            individualwrite.writedate DESC
-            LIMIT 1;
+            individualwrite.writedate DESC LIMIT 1;
     </select>
     <!-- 중고 좋아요 알림 조회  -->
     <select id="findUsedLikedAlarm" resultType="com.project.ribbon.domain.post.PostUsedLikedRequest">
@@ -696,7 +698,8 @@
             usedwrite.title,
             usedwrite.description,
             liker.nickname,
-            liked.inherentid
+            liked.inherentid,
+            liked.id
         FROM
             usedwrite
                 LEFT JOIN usedliked AS liked
@@ -707,9 +710,9 @@
                           ON liker.userid = liked.myid
         WHERE
             writer.userid = #{userid}
+          AND liker.nickname IS NOT NULL
         ORDER BY
-            usedwrite.writedate DESC
-            LIMIT 1;
+            usedwrite.writedate DESC LIMIT 1;
     </select>
 
 
@@ -841,9 +844,9 @@
                           ON commenter.userid = comments.userid
         WHERE
             writer.userid = #{userid}
+          AND commenter.nickname IS NOT NULL
         ORDER BY
-            comments.writedate DESC
-            LIMIT 1;
+            comments.writedate DESC LIMIT 1;
 
     </select>
     <!-- 개인 댓글 알림 조회  -->
@@ -864,9 +867,9 @@
                           ON commenter.userid = individualcomments.userid
         WHERE
             writer.userid = #{userid}
+          AND commenter.nickname IS NOT NULL
         ORDER BY
-            individualcomments.writedate DESC
-            LIMIT 1;
+            individualcomments.writedate DESC LIMIT 1;
     </select>
     <!-- 단체 댓글 알림 조회  -->
     <select id="findGroupCommentsAlarm" resultType="com.project.ribbon.domain.post.PostGroupCommentsRequest">
@@ -886,9 +889,9 @@
                           ON commenter.userid = groupcomments.userid
         WHERE
             writer.userid = #{userid}
+          AND commenter.nickname IS NOT NULL
         ORDER BY
-            groupcomments.writedate DESC
-            LIMIT 1;
+            groupcomments.writedate DESC LIMIT 1;
     </select>
     <!-- 중고 댓글 알림 조회  -->
     <select id="findUsedCommentsAlarm" resultType="com.project.ribbon.domain.post.PostUsedCommentsRequest">
@@ -908,9 +911,9 @@
                           ON commenter.userid = usedcomments.userid
         WHERE
             writer.userid = #{userid}
+          AND commenter.nickname IS NOT NULL
         ORDER BY
-            usedcomments.writedate DESC
-            LIMIT 1;
+            usedcomments.writedate DESC LIMIT 1;
     </select>
 
     <!-- 댓글 작성자 아이디 조회  -->

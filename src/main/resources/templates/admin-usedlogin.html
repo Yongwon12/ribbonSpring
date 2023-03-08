@@ -85,10 +85,11 @@
           data: JSON.stringify(jsonData),
           contentType: 'application/json',
           success: function(data) {
+            alert("로그인 성공!");
             window.location.href = "/ribbon/admin/reportused";
           },
           error: function(xhr, status, error) {
-            // handle error response
+            alert("로그인 실패!");
           }
         });
       });

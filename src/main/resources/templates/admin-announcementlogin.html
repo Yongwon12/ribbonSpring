@@ -78,21 +78,22 @@
           jsonData[field.name] = field.value;
         });
 
-        // send JSON data to server using AJAX
         $.ajax({
           type: 'POST',
           url: '/ribbon/admin/post/announcement',
           data: JSON.stringify(jsonData),
           contentType: 'application/json',
           success: function(data) {
+            alert("로그인 성공!");
             window.location.href = "/ribbon/admin/insertannouncement";
           },
           error: function(xhr, status, error) {
-            // handle error response
+            alert("로그인 실패!");
           }
         });
       });
     });
+
 
   </script>
 </head>

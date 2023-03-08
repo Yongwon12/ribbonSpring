@@ -78,17 +78,17 @@
           jsonData[field.name] = field.value;
         });
 
-        // send JSON data to server using AJAX
         $.ajax({
           type: 'POST',
           url: '/ribbon/admin/post/boardlogin',
           data: JSON.stringify(jsonData),
           contentType: 'application/json',
           success: function(data) {
+            alert("로그인 성공!");
             window.location.href = "/ribbon/admin/reportboard";
           },
           error: function(xhr, status, error) {
-            // handle error response
+            alert("로그인 실패!");
           }
         });
       });
