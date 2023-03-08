@@ -1,6 +1,7 @@
 package com.project.ribbon.domain.post;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
@@ -27,6 +28,7 @@ public class PostUsedRequest {
         private String writedate;
 
         private String nickname;
+        @Id
         private Long usedid;      // PK
         private String  usedimage2;
         private String  usedimage3;

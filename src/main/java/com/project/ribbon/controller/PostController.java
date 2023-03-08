@@ -32,9 +32,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.google.api.gax.httpjson.HttpHeadersUtils.setHeader;
 
@@ -68,13 +66,13 @@ public class PostController {
     // 커뮤니티 게시글 작성
     @PostMapping("/post/boardwrite")
     public ResponseEntity<?> savePost(
-            @RequestParam("id") @NotNull Integer id,
-            @RequestParam("userid") @NotNull Long userId,
-            @RequestParam("title") @NotBlank @Size(min = 2, max = 30) String title,
-            @RequestParam("description") @NotBlank @Size(min = 2, max = 50) String description,
+            @RequestParam("id") @NotNull(message = "카테고리 필수입력값입니다.") Integer id,
+            @RequestParam("userid") @NotNull(message = "유저아이디 필수입력값입니다.") Long userId,
+            @RequestParam("title") @NotBlank(message = "제목 필수입력값입니다.") @Size(min = 2, max = 30) String title,
+            @RequestParam("description") @NotBlank(message = "내용 필수입력값입니다.") @Size(min = 2, max = 50) String description,
             @RequestParam(value = "image", required = false) MultipartFile file,
             @RequestParam("writedate") @Size(min = 2, max = 30) String writeDate,
-            @RequestParam("nickname") @NotBlank String nickname
+            @RequestParam("nickname") @NotBlank(message = "닉네임 필수입력값입니다.") String nickname
     ) throws IOException {
         PostRequest params = new PostRequest();
         params.setId(id);
@@ -176,21 +174,21 @@ public class PostController {
     // 단체 글작성
     @PostMapping("/post/writegroup")
     public ResponseEntity<?> saveGroupPost(
-            @RequestParam("id") @NotNull Integer id,
-            @RequestParam("region") @NotBlank String region,
-            @RequestParam("title") @Size(min = 2, max = 30) @NotBlank String title,
+            @RequestParam("id") @NotNull(message = "카테고리 필수입력값입니다.") Integer id,
+            @RequestParam("region") @NotBlank(message = "지역 필수입력값입니다.") String region,
+            @RequestParam("title") @Size(min = 2, max = 30) @NotBlank(message = "제목 필수입력값입니다.") String title,
             @RequestParam("line") @Size(min = 2, max = 40) String line,
-            @RequestParam("description") @NotBlank String description,
-            @RequestParam("peoplenum") @NotNull String peoplenum,
-            @RequestParam("gender") @NotBlank String gender,
-            @RequestParam("minage") @NotNull String minage,
+            @RequestParam("description") @NotBlank(message = "내용 필수입력값입니다.") String description,
+            @RequestParam("peoplenum") @NotNull(message = "인원수 필수입력값입니다.") String peoplenum,
+            @RequestParam("gender") @NotBlank(message = "성별 필수입력값입니다.") String gender,
+            @RequestParam("minage") @NotNull(message = "최소나이 필수입력값입니다.") String minage,
             @RequestParam(value = "image",required = false) MultipartFile file,
-            @RequestParam("userid") @NotNull Long userid,
-            @RequestParam("maxage") @NotNull String maxage,
-            @RequestParam("writedate") @NotBlank String writedate,
-            @RequestParam("peoplenownum") @NotBlank String peoplenownum,
-            @RequestParam("nickname") @NotBlank String nickname,
-            @RequestParam("once") @NotBlank String once
+            @RequestParam("userid") @NotNull(message = "유저아이디 필수입력값입니다.") Long userid,
+            @RequestParam("maxage") @NotNull(message = "최대나이 필수입력값입니다.") String maxage,
+            @RequestParam("writedate") @NotBlank(message = "작성날짜 필수입력값입니다.") String writedate,
+            @RequestParam("peoplenownum") @NotBlank(message = "현재인원 필수입력값입니다.") String peoplenownum,
+            @RequestParam("nickname") @NotBlank(message = "닉네임 필수입력값입니다.") String nickname,
+            @RequestParam("once") @NotBlank(message = "일,다회성 필수입력값입니다.") String once
     ) throws IOException {
         PostGroupRequest params = new PostGroupRequest();
         params.setId(id);
@@ -321,194 +319,60 @@ public class PostController {
 
     // 중고 글작성
     @PostMapping("/post/writeused")
-    public ResponseEntity<?> saveUsedPost(@RequestParam("id") @NotNull(message = "카테고리는 필수 입력값입니다.") Integer id
-            ,@RequestParam("region") @NotBlank(message = "지역은 필수 입력값입니다.") String region
-            ,@RequestParam("title") @Size(min = 2, max = 30, message = "제목은 2~30자리여야 합니다.") @NotBlank(message="제목은 필수 입력 값입니다.") String title
-            ,@RequestParam("description") @NotBlank(message="내용은 필수 입력 값입니다.") String description
-            ,@RequestParam(value = "usedimage1",required = false) MultipartFile file1
-            ,@RequestParam("price") @NotNull(message = "가격은 필수 입력값입니다.") Integer price
-            ,@RequestParam("userid") @NotNull(message = "유저아이디는 필수 입력값입니다.") Long userid
-            ,@RequestParam("writedate") @NotBlank(message = "작성날짜는 필수 입력값입니다.") String  writedate
-            ,@RequestParam("nickname") @NotBlank(message = "닉네임은 필수 입력 값입니다.") String nickname
-            ,@RequestParam(value = "usedimage2",required = false) MultipartFile file2
-            ,@RequestParam(value = "usedimage3",required = false) MultipartFile file3
-            ,@RequestParam(value = "usedimage4",required = false) MultipartFile file4
-            ,@RequestParam(value = "usedimage5",required = false) MultipartFile file5) throws IOException{
+    public ResponseEntity<?> saveUsedPost(
+            @RequestParam("id") @NotNull(message = "카테고리는 필수 입력값입니다.") Integer id,
+            @RequestParam("region") @NotBlank(message = "지역은 필수 입력값입니다.") String region,
+            @RequestParam("title") @Size(min = 2, max = 30, message = "제목은 2~30자리여야 합니다.") @NotBlank(message = "제목은 필수 입력 값입니다.") String title,
+            @RequestParam("description") @NotBlank(message = "내용은 필수 입력 값입니다.") String description,
+            @RequestParam(value = "usedimage1", required = false) MultipartFile file1,
+            @RequestParam("price") @NotNull(message = "가격은 필수 입력값입니다.") Integer price,
+            @RequestParam("userid") @NotNull(message = "유저아이디는 필수 입력값입니다.") Long userid,
+            @RequestParam("writedate") @NotBlank(message = "작성날짜는 필수 입력값입니다.") String writedate,
+            @RequestParam("nickname") @NotBlank(message = "닉네임은 필수 입력 값입니다.") String nickname,
+            @RequestParam(value = "usedimage2", required = false) MultipartFile file2,
+            @RequestParam(value = "usedimage3", required = false) MultipartFile file3,
+            @RequestParam(value = "usedimage4", required = false) MultipartFile file4,
+            @RequestParam(value = "usedimage5", required = false) MultipartFile file5) throws IOException {
 
-        if (file1 !=null && file2 != null && file3 != null && file4 != null && file5 != null){
-            String usedimage1 = file1.getOriginalFilename();
-            String usedimage2 = file2.getOriginalFilename();
-            String usedimage3 = file3.getOriginalFilename();
-            String usedimage4 = file4.getOriginalFilename();
-            String usedimage5 = file5.getOriginalFilename();
-            String fileused1path = Paths.get(uploadPath, usedimage1).toString();
-            byte[] bytes1 = file1.getBytes();
-            Path groupimage1path = Paths.get(fileused1path);
-            Files.write(groupimage1path, bytes1);
-            String fileused2path = Paths.get(uploadPath, usedimage2).toString();
-            byte[] bytes2 = file2.getBytes();
-            Path groupimage2path = Paths.get(fileused2path);
-            Files.write(groupimage2path, bytes2);
-            String fileused3path = Paths.get(uploadPath, usedimage3).toString();
-            byte[] bytes3 = file3.getBytes();
-            Path groupimage3path = Paths.get(fileused3path);
-            Files.write(groupimage3path, bytes3);
-            String fileused4path = Paths.get(uploadPath, usedimage4).toString();
-            byte[] bytes4 = file4.getBytes();
-            Path groupimage4path = Paths.get(fileused4path);
-            Files.write(groupimage4path, bytes4);
-            String fileused5path = Paths.get(uploadPath, usedimage5).toString();
-            byte[] bytes5 = file5.getBytes();
-            Path groupimage5path = Paths.get(fileused5path);
-            Files.write(groupimage5path, bytes5);
-            PostUsedRequest params = new PostUsedRequest();
-            params.setId(id);
-            params.setRegion(region);
-            params.setTitle(title);
-            params.setDescription(description);
-            params.setUsedimage1(usedip+usedimage1);
-            params.setPrice(price);
-            params.setUserid(userid);
-            params.setWritedate(writedate);
-            params.setNickname(nickname);
-            params.setUsedimage2(usedip+usedimage2);
-            params.setUsedimage3(usedip+usedimage3);
-            params.setUsedimage4(usedip+usedimage4);
-            params.setUsedimage5(usedip+usedimage5);
-            return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
-        } else if (file1 ==null && file2 == null && file3 == null && file4 == null && file5 == null) {
-            PostUsedRequest params = new PostUsedRequest();
-            params.setId(id);
-            params.setRegion(region);
-            params.setTitle(title);
-            params.setDescription(description);
-            params.setUsedimage1(null);
-            params.setPrice(price);
-            params.setUserid(userid);
-            params.setWritedate(writedate);
-            params.setNickname(nickname);
-            params.setUsedimage2(null);
-            params.setUsedimage3(null);
-            params.setUsedimage4(null);
-            params.setUsedimage5(null);
-            return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
-        } else if (file1 !=null && file2 == null && file3 == null && file4 == null && file5 == null) {
-            String usedimage1 = file1.getOriginalFilename();
-            String fileused1path = Paths.get(uploadPath, usedimage1).toString();
-            byte[] bytes1 = file1.getBytes();
-            Path groupimage1path = Paths.get(fileused1path);
-            Files.write(groupimage1path, bytes1);
-            PostUsedRequest params = new PostUsedRequest();
-            params.setId(id);
-            params.setRegion(region);
-            params.setTitle(title);
-            params.setDescription(description);
-            params.setUsedimage1(usedip+usedimage1);
-            params.setPrice(price);
-            params.setUserid(userid);
-            params.setWritedate(writedate);
-            params.setNickname(nickname);
-            params.setUsedimage2(null);
-            params.setUsedimage3(null);
-            params.setUsedimage4(null);
-            params.setUsedimage5(null);
-            return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
-        } else if (file1 !=null && file2 != null && file3 == null && file4 == null && file5 == null) {
-            String usedimage1 = file1.getOriginalFilename();
-            String usedimage2 = file2.getOriginalFilename();
-            String fileused1path = Paths.get(uploadPath, usedimage1).toString();
-            byte[] bytes1 = file1.getBytes();
-            Path groupimage1path = Paths.get(fileused1path);
-            Files.write(groupimage1path, bytes1);
-            String fileused2path = Paths.get(uploadPath, usedimage2).toString();
-            byte[] bytes2 = file2.getBytes();
-            Path groupimage2path = Paths.get(fileused2path);
-            Files.write(groupimage2path, bytes2);
-            PostUsedRequest params = new PostUsedRequest();
-            params.setId(id);
-            params.setRegion(region);
-            params.setTitle(title);
-            params.setDescription(description);
-            params.setUsedimage1(usedip+usedimage1);
-            params.setPrice(price);
-            params.setUserid(userid);
-            params.setWritedate(writedate);
-            params.setNickname(nickname);
-            params.setUsedimage2(usedip+usedimage2);
-            params.setUsedimage3(null);
-            params.setUsedimage4(null);
-            params.setUsedimage5(null);
-            return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
-        } else if (file1 !=null && file2 != null && file3 != null && file4 == null && file5 == null) {
-            String usedimage1 = file1.getOriginalFilename();
-            String usedimage2 = file2.getOriginalFilename();
-            String usedimage3 = file3.getOriginalFilename();
-            String fileused1path = Paths.get(uploadPath, usedimage1).toString();
-            byte[] bytes1 = file1.getBytes();
-            Path groupimage1path = Paths.get(fileused1path);
-            Files.write(groupimage1path, bytes1);
-            String fileused2path = Paths.get(uploadPath, usedimage2).toString();
-            byte[] bytes2 = file2.getBytes();
-            Path groupimage2path = Paths.get(fileused2path);
-            Files.write(groupimage2path, bytes2);
-            String fileused3path = Paths.get(uploadPath, usedimage3).toString();
-            byte[] bytes3 = file3.getBytes();
-            Path groupimage3path = Paths.get(fileused3path);
-            Files.write(groupimage3path, bytes3);
-            PostUsedRequest params = new PostUsedRequest();
-            params.setId(id);
-            params.setRegion(region);
-            params.setTitle(title);
-            params.setDescription(description);
-            params.setUsedimage1(usedip+usedimage1);
-            params.setPrice(price);
-            params.setUserid(userid);
-            params.setWritedate(writedate);
-            params.setNickname(nickname);
-            params.setUsedimage2(usedip+usedimage2);
-            params.setUsedimage3(usedip+usedimage3);
-            params.setUsedimage4(null);
-            params.setUsedimage5(null);
-            return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
-        } else if (file1 !=null && file2 != null && file3 != null && file4 != null && file5 == null) {
-            String usedimage1 = file1.getOriginalFilename();
-            String usedimage2 = file2.getOriginalFilename();
-            String usedimage3 = file3.getOriginalFilename();
-            String usedimage4 = file4.getOriginalFilename();
-            String fileused1path = Paths.get(uploadPath, usedimage1).toString();
-            byte[] bytes1 = file1.getBytes();
-            Path groupimage1path = Paths.get(fileused1path);
-            Files.write(groupimage1path, bytes1);
-            String fileused2path = Paths.get(uploadPath, usedimage2).toString();
-            byte[] bytes2 = file2.getBytes();
-            Path groupimage2path = Paths.get(fileused2path);
-            Files.write(groupimage2path, bytes2);
-            String fileused3path = Paths.get(uploadPath, usedimage3).toString();
-            byte[] bytes3 = file3.getBytes();
-            Path groupimage3path = Paths.get(fileused3path);
-            Files.write(groupimage3path, bytes3);
-            String fileused4path = Paths.get(uploadPath, usedimage4).toString();
-            byte[] bytes4 = file4.getBytes();
-            Path groupimage4path = Paths.get(fileused4path);
-            Files.write(groupimage4path, bytes4);
-            PostUsedRequest params = new PostUsedRequest();
-            params.setId(id);
-            params.setRegion(region);
-            params.setTitle(title);
-            params.setDescription(description);
-            params.setUsedimage1(usedip+usedimage1);
-            params.setPrice(price);
-            params.setUserid(userid);
-            params.setWritedate(writedate);
-            params.setNickname(nickname);
-            params.setUsedimage2(usedip+usedimage2);
-            params.setUsedimage3(usedip+usedimage3);
-            params.setUsedimage4(usedip+usedimage4);
-            params.setUsedimage5(null);
-            return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
+        List<MultipartFile> files = Arrays.asList(file1, file2, file3, file4, file5);
+        List<String> usedImages = new ArrayList<>();
+        for (MultipartFile file : files) {
+            if (file != null) {
+                String usedimage = file.getOriginalFilename();
+                String fileusedpath = Paths.get(uploadPath, usedimage).toString();
+                byte[] bytes = file.getBytes();
+                Path groupimagepath = Paths.get(fileusedpath);
+                Files.write(groupimagepath, bytes);
+                usedImages.add(usedip + usedimage);
+            }
         }
-        return null;
+        PostUsedRequest params = new PostUsedRequest();
+        params.setId(id);
+        params.setRegion(region);
+        params.setTitle(title);
+        params.setDescription(description);
+        params.setPrice(price);
+        params.setUserid(userid);
+        params.setWritedate(writedate);
+        params.setNickname(nickname);
+        if (!usedImages.isEmpty()) {
+            params.setUsedimage1(usedImages.get(0));
+        }
+        if (usedImages.size() > 1) {
+            params.setUsedimage2(usedImages.get(1));
+        }
+        if (usedImages.size() > 2) {
+            params.setUsedimage3(usedImages.get(2));
+        }
+        if (usedImages.size() > 3) {
+            params.setUsedimage4(usedImages.get(3));
+        }
+        if (usedImages.size() > 4) {
+            params.setUsedimage5(usedImages.get(4));
+        }
+        return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
     }
+
 
     // 중고 사진 조회
     @GetMapping("/usedimage/{imageName:.+}")
@@ -579,57 +443,42 @@ public class PostController {
     public ResponseEntity<?> updateUserPost(
             @RequestParam("sns") String sns
             ,@RequestParam("nickname") @Size(min = 2, max = 10, message = "닉네임은 2~10자리여야 합니다.") @NotBlank(message = "닉네임은 필수 입력값입니다.") String nickname
-            ,@RequestParam("modifydate") @NotNull String modifydate
+            ,@RequestParam("modifydate") @NotNull(message = "수정날짜는 필수입력값입니다.") String modifydate
             ,@RequestParam("bestcategory") String bestcategory
-            ,@RequestParam("shortinfo") @Size(min = 2, max = 40, message = "한 줄 설명은 2~40자리여야 합니다.") String shortinfo
+            ,@RequestParam("shortinfo") @Size(min = 2, max = 20, message = "한 줄 설명은 2~20자리여야 합니다.") String shortinfo
             //,@RequestParam("youtube") String youtube
             ,@RequestParam(value = "image",required = false) MultipartFile file
-            ,@RequestParam("userid") @NotNull Long userid) throws IOException{
+            ,@RequestParam("userid") @NotNull(message = "유저아이디는 필수입력값입니다.") Long userid) throws IOException{
         try {
+            PostUserUpdateRequest params = new PostUserUpdateRequest();
             if (file != null) {
-                PostUserUpdateRequest params = new PostUserUpdateRequest();
                 String profileimage = file.getOriginalFilename();
                 String filepath = Paths.get(uploadPath, profileimage).toString();
                 byte[] bytes = file.getBytes();
                 Path path = Paths.get(filepath);
                 Files.write(path, bytes);
-                params.setSns(sns);
-                params.setNickname(nickname);
-                params.setModifydate(modifydate);
-                params.setBestcategory(bestcategory);
-                params.setShortinfo(shortinfo);
-                //params.setYoutube(youtube);
                 params.setProfileimage(userip + profileimage);
-                params.setUserid(userid);
-                postService.updateUserPost(params);
-
-                PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
-                System.out.println(posts);
-                return new ResponseEntity<>(posts, HttpStatus.OK);
-
             } else {
-                PostUserUpdateRequest params = new PostUserUpdateRequest();
-                params.setSns(sns);
-                params.setNickname(nickname);
-                params.setModifydate(modifydate);
-                params.setBestcategory(bestcategory);
-                params.setShortinfo(shortinfo);
-                //params.setYoutube(youtube);
                 params.setProfileimage("null");
-                params.setUserid(userid);
-                postService.updateUserPost(params);
-
-                PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
-                System.out.println(posts);
-                return new ResponseEntity<>(posts, HttpStatus.OK);
             }
+            params.setSns(sns);
+            params.setNickname(nickname);
+            params.setModifydate(modifydate);
+            params.setBestcategory(bestcategory);
+            params.setShortinfo(shortinfo);
+            params.setUserid(userid);
+            postService.updateUserPost(params);
+
+            PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
+            System.out.println(posts);
+            return new ResponseEntity<>(posts, HttpStatus.OK);
         } catch (IOException e) {
-            // 예외 처리
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 
     // 강사 정보 수정
     @PostMapping("/post/updateinstructoruser")
