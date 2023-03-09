@@ -1293,7 +1293,7 @@
     <!-- 내가 좋아요 누른 글 커뮤니티 -->
     <select id="findByMyLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyLikedResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,User.nickname,
+            boardwrite.id,boardwrite.userid,title,description,img,writedate,User.nickname,
             boardid,likedcount,commentcount,profileimage
         FROM boardwrite
                  LEFT JOIN liked
@@ -1307,7 +1307,7 @@
     <!-- 내가 좋아요 누른 글 개인 -->
     <select id="findByMyIndividualLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyIndividualLikedResponse">
         SELECT
-            id,region,meetdate,title,description,individualwrite.gender,
+            individualwrite.id,region,meetdate,title,description,individualwrite.gender,
             individualwrite.userid,writedate,maxage,minage,User.nickname,
             individualid,likedcount,commentcount,profileimage
         FROM
@@ -1323,7 +1323,7 @@
     <!-- 내가 좋아요 누른 글 중고 -->
     <select id="findByMyUsedLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyUsedLikedResponse">
         SELECT
-            id,region,title,description,usedimage1,price,usedwrite.userid,
+            usedwrite.id,region,title,description,usedimage1,price,usedwrite.userid,
             writedate,User.nickname,usedid,usedimage2,usedimage3,usedimage4,
             usedimage5,likedcount,commentcount,profileimage
         FROM
