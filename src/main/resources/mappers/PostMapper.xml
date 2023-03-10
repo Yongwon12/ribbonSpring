@@ -930,7 +930,7 @@
     <select id="findByInherentId" resultType="com.project.ribbon.domain.post.PostCommentsResponse">
         SELECT
             description,writedate,comments.userid,User.nickname,categoryid,
-            inherentid,commentsid,isrecomment
+            inherentid,commentsid,isrecomment,User.profileimage
             profileimage
         FROM comments
                  LEFT JOIN User
@@ -1009,7 +1009,7 @@
     <select id="findByGroupCommentsInherentId" resultType="com.project.ribbon.domain.post.PostGroupCommentsResponse">
         SELECT
             description,groupcomments.userid,User.nickname,inherentid,
-            writedate,commentsid,isrecomment,profileimage
+            writedate,commentsid,isrecomment,User.profileimage
         FROM groupcomments
                  LEFT JOIN User
                            ON User.userid = groupcomments.userid
@@ -1086,7 +1086,7 @@
     <select id="findByIndiCommentsInherentId" resultType="com.project.ribbon.domain.post.PostIndiCommentsResponse">
         SELECT
             description,individualcomments.userid,User.nickname,inherentid,
-            writedate,commentsid,isrecomment,profileimage
+            writedate,commentsid,isrecomment,User.profileimage
         FROM individualcomments
                  LEFT JOIN User
                            ON User.userid = individualcomments.userid
@@ -1160,7 +1160,7 @@
     <select id="findByUsedCommentsInherentId" resultType="com.project.ribbon.domain.post.PostUsedCommentsResponse">
         SELECT
             description,usedcomments.userid,User.nickname,inherentid,
-            writedate,commentsid,isrecomment,profileimage
+            writedate,commentsid,isrecomment,User.profileimage
         FROM usedcomments
                  LEFT JOIN User
                            ON User.userid = usedcomments.userid

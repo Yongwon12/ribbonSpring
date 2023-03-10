@@ -6,6 +6,8 @@ import com.project.ribbon.enums.ExceptionEnum;
 
 import com.project.ribbon.response.ApiException;
 import com.project.ribbon.service.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -54,10 +56,10 @@ public class PostController {
 
     // 외부 서버 ip : 112.148.33.214
 
-    String userip = "http://112.148.33.214:8000/api/userimage/";
-    String boardip = "http://112.148.33.214:8000/api/boardimage/";
-    String groupip = "http://112.148.33.214:8000/api/groupimage/";
-    String usedip = "http://112.148.33.214:8000/api/usedimage/";
+    String userip = "http://192.168.0.6:8000/api/userimage/";
+    String boardip = "http://192.168.0.6:8000/api/boardimage/";
+    String groupip = "http://192.168.0.6:8000/api/groupimage/";
+    String usedip = "http://192.168.0.6:8000/api/usedimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -92,7 +94,7 @@ public class PostController {
         } else {
             params.setImg(null);
         }
-
+        System.out.println(params);
         return ResponseEntity.ok(postService.savePost(params));
     }
 
@@ -414,21 +416,24 @@ public class PostController {
             model.addAttribute("posts", posts);
             obj.put("userid", posts);
             System.out.println(posts);
-            return new ResponseEntity<>(obj, HttpStatus.OK);
+            return ResponseEntity.ok(obj);
         } catch (ApiException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
 
+
+
+
     // 유저 모든 POST 요청 대한 권한얻기
     @PostMapping("/login")
-    public ResponseEntity<TokenInfo> login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
+    public ResponseEntity<?> login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
         String userid = memberLoginRequestDto.getUserid();
         String password = memberLoginRequestDto.getPassword();
         try {
-            TokenInfo tokenInfo = memberService.login(userid, password);
-            return ResponseEntity.ok(tokenInfo);
+                TokenInfo tokenInfo = memberService.login(userid, password);
+                return ResponseEntity.ok(tokenInfo);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (Exception e) {
