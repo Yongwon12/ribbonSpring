@@ -210,6 +210,7 @@
         FROM boardwrite
                  LEFT JOIN User
                            ON User.userid = boardwrite.userid
+                              WHERE User.userid IS NOT NULL
         ORDER BY writedate DESC
     </select>
 
@@ -222,6 +223,7 @@
                  LEFT JOIN User
                            ON User.userid = boardwrite.userid
         WHERE boardid = #{boardid}
+          AND User.userid IS NOT NULL
     </select>
 
 
@@ -254,6 +256,7 @@
             groupwrite
                 LEFT JOIN User
                           ON User.userid = groupwrite.userid
+        WHERE User.userid IS NOT NULL
         ORDER BY writedate DESC
     </select>
 
@@ -267,6 +270,7 @@
                 LEFT JOIN User
                           ON User.userid = groupwrite.userid
         WHERE groupid = #{groupid}
+            AND User.userid IS NOT NULL
     </select>
 
     <!-- 단체 게시글 저장 -->
@@ -339,6 +343,7 @@
             individualwrite
                 LEFT JOIN User
                           ON User.userid = individualwrite.userid
+        WHERE User.userid IS NOT NULL
         ORDER BY writedate DESC
     </select>
 
@@ -353,6 +358,7 @@
                 LEFT JOIN User
                           ON User.userid = individualwrite.userid
         WHERE individualid = #{individualid}
+            AND User.userid IS NOT NULL
     </select>
 
     <!-- 개인 게시글 저장 -->
@@ -423,6 +429,7 @@
             usedwrite
                 LEFT JOIN User
                           ON User.userid = usedwrite.userid
+        WHERE User.userid IS NOT NULL
         ORDER BY writedate DESC
     </select>
 
@@ -436,6 +443,7 @@
                 LEFT JOIN User
                           ON User.userid = usedwrite.userid
         WHERE usedid = #{usedid}
+            AND User.userid IS NOT NULL
     </select>
 
     <!-- 중고 게시글 저장 -->
@@ -622,6 +630,7 @@
         WHERE
                 likedcount
                 = (SELECT max(likedcount) FROM boardwrite)
+            AND User.userid IS NOT NULL
         ORDER BY
             boardid
                 DESC
@@ -931,11 +940,11 @@
         SELECT
             description,writedate,comments.userid,User.nickname,categoryid,
             inherentid,commentsid,isrecomment,User.profileimage
-            profileimage
         FROM comments
                  LEFT JOIN User
                            ON User.userid = comments.userid
         WHERE inherentid = #{inherentid}
+            AND User.userid IS NOT NULL
     </select>
 
 
@@ -1014,6 +1023,7 @@
                  LEFT JOIN User
                            ON User.userid = groupcomments.userid
         WHERE inherentid = #{inherentid}
+          AND User.userid IS NOT NULL
     </select>
 
 
@@ -1091,6 +1101,7 @@
                  LEFT JOIN User
                            ON User.userid = individualcomments.userid
         WHERE inherentid = #{inherentid}
+          AND User.userid IS NOT NULL
     </select>
 
 
@@ -1165,6 +1176,7 @@
                  LEFT JOIN User
                            ON User.userid = usedcomments.userid
         WHERE inherentid = #{inherentid}
+          AND User.userid IS NOT NULL
     </select>
 
 

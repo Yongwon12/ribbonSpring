@@ -35,7 +35,7 @@ public class LoginController {
     private final PostService postService;
     private final FirebaseAnnouncementMessageService firebaseAnnouncementMessageService;
     // 내부 서버 Ip : 192.168.219.161
-    String ip = "http://192.168.0.6:8000/ribbon/admin";
+    String ip = "http://192.168.219.161:8000/ribbon/admin";
     // 맺음 홈페이지
     @GetMapping("/ribbon")
     public String showRibbonForm() {
