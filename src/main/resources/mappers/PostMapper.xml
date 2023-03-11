@@ -15,6 +15,7 @@
         , boardid
         , likedcount
         , commentcount
+        , inquirycount
 
     </sql>
 
@@ -37,6 +38,7 @@
         , groupid
         , once
         , commentcount
+        , inquirycount
     </sql>
 
     <!-- individualwrite 테이블 전체 컬럼 -->
@@ -55,6 +57,7 @@
         , individualid
         , likedcount
         , commentcount
+        , inquirycount
     </sql>
 
     <!-- usedwrite 테이블 전체 컬럼 -->
@@ -75,6 +78,7 @@
         , usedimage5
         , likedcount
         , commentcount
+        , inquirycount
     </sql>
 
     <!-- User 테이블 전체 컬럼 -->
@@ -184,6 +188,7 @@
         , #{boardid}
         , 0
         , 0
+        , 0
         )
     </insert>
 
@@ -206,7 +211,7 @@
     <select id="findAll" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,User.userid,title,description,img,writedate,User.nickname,
-            boardid,likedcount,commentcount,profileimage,token
+            boardid,likedcount,commentcount,profileimage,token,inquirycount
         FROM boardwrite
                  LEFT JOIN User
                            ON User.userid = boardwrite.userid
@@ -218,13 +223,19 @@
     <select id="findOne" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
             id,User.userid,title,description,img,writedate,User.nickname,
-            boardid,likedcount,commentcount,profileimage,token
+            boardid,likedcount,commentcount,profileimage,token,inquirycount
         FROM boardwrite
                  LEFT JOIN User
                            ON User.userid = boardwrite.userid
         WHERE boardid = #{boardid}
           AND User.userid IS NOT NULL
     </select>
+    <!-- 커뮤니티 특정 게시글 조회수 카운트 +1 -->
+    <update id="updateBoardInquiry" parameterType="com.project.ribbon.domain.post.PostResponse">
+
+        UPDATE boardwrite SET inquirycount = inquirycount + 1 WHERE boardid = #{boardid}
+
+    </update>
 
 
     <!-- 커뮤니티 게시글 삭제 -->
@@ -251,7 +262,7 @@
     <select id="findGroupAll" resultType="com.project.ribbon.domain.post.PostGroupResponse" >
         SELECT
             id,region,title,line,description,peoplenum,groupwrite.gender,minage,titleimage,
-            groupwrite.userid,maxage,writedate,peoplenownum,user.nickname,groupid,once,commentcount,token,profileimage
+            groupwrite.userid,maxage,writedate,peoplenownum,user.nickname,groupid,once,commentcount,token,profileimage,inquirycount
         FROM
             groupwrite
                 LEFT JOIN User
@@ -264,7 +275,7 @@
     <select id="findGroupOne" resultType="com.project.ribbon.domain.post.PostGroupResponse">
         SELECT
             id,region,title,line,description,peoplenum,groupwrite.gender,minage,titleimage,
-            groupwrite.userid,maxage,writedate,peoplenownum,user.nickname,groupid,once,commentcount,token,profileimage
+            groupwrite.userid,maxage,writedate,peoplenownum,user.nickname,groupid,once,commentcount,token,profileimage,inquirycount
         FROM
             groupwrite
                 LEFT JOIN User
@@ -272,6 +283,12 @@
         WHERE groupid = #{groupid}
             AND User.userid IS NOT NULL
     </select>
+    <!-- 단체 특정 게시글 조회수 카운트 +1 -->
+    <update id="updateGroupInquiry" parameterType="com.project.ribbon.domain.post.PostGroupResponse">
+
+        UPDATE groupwrite SET inquirycount = inquirycount + 1 WHERE groupid = #{groupid}
+
+    </update>
 
     <!-- 단체 게시글 저장 -->
     <insert id="saveGroup" parameterType="com.project.ribbon.domain.post.PostGroupRequest"
@@ -295,6 +312,7 @@
         , #{nickname}
         , #{groupid}
         , #{once}
+        , 0
         , 0
         )
     </insert>
@@ -338,7 +356,7 @@
         SELECT
             id,region,meetdate,title,description,individualwrite.gender,
             individualwrite.userid,writedate,maxage,minage,user.nickname,
-            individualid,likedcount,commentcount,profileimage,token
+            individualid,likedcount,commentcount,profileimage,token,inquirycount
         FROM
             individualwrite
                 LEFT JOIN User
@@ -352,7 +370,7 @@
         SELECT
             id,region,meetdate,title,description,individualwrite.gender,
             individualwrite.userid,writedate,maxage,minage,user.nickname,
-            individualid,likedcount,commentcount,profileimage,token
+            individualid,likedcount,commentcount,profileimage,token,inquirycount
         FROM
             individualwrite
                 LEFT JOIN User
@@ -360,6 +378,12 @@
         WHERE individualid = #{individualid}
             AND User.userid IS NOT NULL
     </select>
+    <!-- 개인 특정 게시글 조회수 카운트 +1 -->
+    <update id="updateIndiInquiry" parameterType="com.project.ribbon.domain.post.PostIndiResponse">
+
+        UPDATE individualwrite SET inquirycount = inquirycount + 1 WHERE individualid = #{individualid}
+
+    </update>
 
     <!-- 개인 게시글 저장 -->
     <insert id="saveIndi" parameterType="com.project.ribbon.domain.post.PostIndiRequest"
@@ -379,6 +403,7 @@
         , #{minage}
         , #{nickname}
         , #{individualid}
+        , 0
         , 0
         , 0
         )
@@ -424,7 +449,7 @@
     <select id="findUsedAll" resultType="com.project.ribbon.domain.post.PostUsedResponse">
         SELECT
             id,region,title,description,usedimage1,price,User.userid,writedate,user.nickname,
-            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage
+            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount
         FROM
             usedwrite
                 LEFT JOIN User
@@ -437,7 +462,7 @@
     <select id="findUsedOne" resultType="com.project.ribbon.domain.post.PostUsedResponse">
         SELECT
             id,region,title,description,usedimage1,price,User.userid,writedate,user.nickname,
-            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage
+            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount
         FROM
             usedwrite
                 LEFT JOIN User
@@ -445,6 +470,12 @@
         WHERE usedid = #{usedid}
             AND User.userid IS NOT NULL
     </select>
+    <!-- 중고 특정 게시글 조회수 카운트 +1 -->
+    <update id="updateUsedInquiry" parameterType="com.project.ribbon.domain.post.PostUsedResponse">
+
+        UPDATE usedwrite SET inquirycount = inquirycount + 1 WHERE usedid = #{usedid}
+
+    </update>
 
     <!-- 중고 게시글 저장 -->
     <insert id="saveUsed" parameterType="com.project.ribbon.domain.post.PostUsedRequest"
@@ -466,6 +497,7 @@
         , #{usedimage3}
         , #{usedimage4}
         , #{usedimage5}
+        , 0
         , 0
         , 0
         )
@@ -622,19 +654,14 @@
     <!-- 실시간 인기글 -->
     <select id="findAll11" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT
-            id,boardwrite.userid,title,description,img,writedate,User.nickname,
-            boardid,likedcount,commentcount,profileimage,token
+            id, boardwrite.userid, title, description, img, writedate, User.nickname,
+            boardid, likedcount, commentcount, profileimage, token,
+            (likedcount + commentcount + inquirycount) AS totalcount
         FROM boardwrite
-                 LEFT JOIN User
-                           ON User.userid=boardwrite.userid
-        WHERE
-                likedcount
-                = (SELECT max(likedcount) FROM boardwrite)
-            AND User.userid IS NOT NULL
-        ORDER BY
-            boardid
-                DESC
-            limit 1
+                 LEFT JOIN User ON User.userid = boardwrite.userid
+        WHERE User.userid IS NOT NULL
+        ORDER BY totalcount DESC, boardid DESC
+            LIMIT 1
     </select>
 
 

@@ -4,6 +4,8 @@ import com.project.ribbon.domain.post.*;
 import com.project.ribbon.mapper.PostMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -20,57 +22,57 @@ public class PostService {
 
     // 커뮤니티 게시글 작성
     @Transactional
-    public Long savePost(final PostRequest params) {
+    public ResponseEntity<?> savePost(final PostRequest params) {
         try {
             postMapper.save(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("게시글 저장에 실패했습니다.", e);
         }
-        return params.getBoardid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
 
     // 커뮤니티 게시글 수정
     @Transactional
-    public Long updatePost(final PostRequest params) {
+    public ResponseEntity<?> updatePost(final PostRequest params) {
         try {
             postMapper.update(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("게시글 수정에 실패했습니다.", e);
         }
-        return params.getBoardid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
 
     // 커뮤니티 게시글 삭제
-    public Long deletePost(final PostRequest params) {
+    public ResponseEntity<?> deletePost(final PostRequest params) {
         try {
             postMapper.deleteById(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("게시글 삭제에 실패했습니다.", e);
         }
-        return params.getBoardid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-    public Long deleteBoardWriteCommentsPost(final PostRequest params) {
+    public ResponseEntity<?> deleteBoardWriteCommentsPost(final PostRequest params) {
         try {
             postMapper.deleteBoardWriteComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("댓글 삭제에 실패했습니다.", e);
         }
-        return params.getBoardid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-    public Long deleteBoardWriteLikedPost(final PostRequest params) {
+    public ResponseEntity<?> deleteBoardWriteLikedPost(final PostRequest params) {
         try {
             postMapper.deleteBoardWriteByLikedId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("좋아요 삭제에 실패했습니다.", e);
         }
-        return params.getBoardid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
 
@@ -102,6 +104,16 @@ public class PostService {
             throw new RuntimeException("게시글 조회에 실패했습니다.", e);
         }
     }
+    @Transactional
+    public ResponseEntity<?> updateBoardInquiryPost(Long boardid) {
+        try {
+            postMapper.updateBoardInquiry(boardid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("게시글 조회수 업데이트에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
 
     // 단체 게시글 조회
     public List<PostGroupResponse> findGroupAllPost() {
@@ -113,56 +125,66 @@ public class PostService {
         }
     }
 
-    // 단체 게시글 조회
+    // 단체 특정 게시글 조회
     public List<PostGroupResponse> findGroupOnePost(Long groupid) {
         try {
             return postMapper.findGroupOne(groupid);
         } catch (Exception e) {
             // 예외 처리 코드 작성
-            throw new RuntimeException("단체게시글 조회에 실패했습니다.", e);
+            throw new RuntimeException("단체 특정게시글 조회에 실패했습니다.", e);
         }
+    }
+    @Transactional
+    public ResponseEntity<?> updateGroupInquiryPost(Long groupid) {
+        try {
+            postMapper.updateGroupInquiry(groupid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("게시글 조회수 업데이트에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 단체 게시글 작성
     @Transactional
-    public Long saveGroupPost(final PostGroupRequest params) {
+    public ResponseEntity<?> saveGroupPost(final PostGroupRequest params) {
         try {
             postMapper.saveGroup(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("단체게시글 작성에 실패했습니다.", e);
         }
-        return params.getGroupid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 단체 게시글 수정
     @Transactional
-    public Long updateGroupPost(final PostGroupRequest params) {
+    public ResponseEntity<?> updateGroupPost(final PostGroupRequest params) {
         try {
             postMapper.updateGroup(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("단체게시글 수정에 실패했습니다.", e);
         }
-        return params.getGroupid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 단체 게시글 삭제
-    public Long deleteGroupPost(final PostGroupRequest params) {
+    public ResponseEntity<?> deleteGroupPost(final PostGroupRequest params) {
         try {
             postMapper.deleteByGroupId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("단체게시글 삭제에 실패했습니다.", e);
         }
-        return params.getGroupid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-    public Long deleteGroupWriteCommentsPost(final PostGroupRequest params) {
+    public ResponseEntity<?> deleteGroupWriteCommentsPost(final PostGroupRequest params) {
         try {
             postMapper.deleteGroupWriteComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("댓글 삭제에 실패했습니다.", e);
         }
-        return params.getGroupid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 개인 게시글 조회
     public List<PostIndiResponse> findIndiAllPost() {
@@ -183,56 +205,66 @@ public class PostService {
             throw new RuntimeException("개인게시글 조회에 실패했습니다.", e);
         }
     }
+    @Transactional
+    public ResponseEntity<?> updateIndiInquiryPost(Long individualid) {
+        try {
+            postMapper.updateIndiInquiry(individualid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("게시글 조회수 업데이트에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
 
     // 개인 게시글 작성
     @Transactional
-    public Long saveIndiPost(final PostIndiRequest params) {
+    public ResponseEntity<?> saveIndiPost(final PostIndiRequest params) {
         try {
             postMapper.saveIndi(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("개인게시글 작성에 실패했습니다.", e);
         }
-        return params.getIndividualid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 개인 게시글 수정
     @Transactional
-    public Long updateIndiPost(final PostIndiRequest params) {
+    public ResponseEntity<?> updateIndiPost(final PostIndiRequest params) {
         try {
             postMapper.updateIndi(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("개인게시글 수정에 실패했습니다.", e);
         }
-        return params.getIndividualid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 개인 게시글 삭제
-    public Long deleteIndiPost(final PostIndiRequest params) {
+    public ResponseEntity<?> deleteIndiPost(final PostIndiRequest params) {
         try {
             postMapper.deleteByIndiId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("개인게시글 삭제에 실패했습니다.", e);
         }
-        return params.getIndividualid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-    public Long deleteIndiWriteCommentsPost(final PostIndiRequest params) {
+    public ResponseEntity<?> deleteIndiWriteCommentsPost(final PostIndiRequest params) {
         try {
             postMapper.deleteIndiWriteComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("댓글 삭제에 실패했습니다.", e);
         }
-        return params.getIndividualid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-    public Long deleteIndiWriteLikedPost(final PostIndiRequest params) {
+    public ResponseEntity<?> deleteIndiWriteLikedPost(final PostIndiRequest params) {
         try {
             postMapper.deleteIndiWriteByLikedId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("좋아요 삭제에 실패했습니다.", e);
         }
-        return params.getIndividualid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 중고 게시글 조회
     public List<PostUsedResponse> findUsedAllPost() {
@@ -252,55 +284,65 @@ public class PostService {
             throw new RuntimeException("중고게시글 조회에 실패했습니다.", e);
         }
     }
+    @Transactional
+    public ResponseEntity<?> updateUsedInquiryPost(Long usedid) {
+        try {
+            postMapper.updateUsedInquiry(usedid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("게시글 조회수 업데이트에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
     // 중고 게시글 작성
     @Transactional
-    public Long saveUsedPost(final PostUsedRequest params) {
+    public ResponseEntity<?> saveUsedPost(final PostUsedRequest params) {
         try {
             postMapper.saveUsed(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("중고게시글 작성에 실패했습니다.", e);
         }
-        return params.getUsedid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 중고 게시글 수정
     @Transactional
-    public Long updateUsedPost(final PostUsedRequest params) {
+    public ResponseEntity<?> updateUsedPost(final PostUsedRequest params) {
         try {
             postMapper.updateUsed(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("중고게시글 수정에 실패했습니다.", e);
         }
-        return params.getUsedid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 중고 게시글 삭제
-    public Long deleteUsedPost(final PostUsedRequest params) {
+    public ResponseEntity<?> deleteUsedPost(final PostUsedRequest params) {
         try {
             postMapper.deleteByUsedId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("중고게시글 삭제에 실패했습니다.", e);
         }
-        return params.getUsedid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-    public Long deleteUsedWriteCommentsPost(final PostUsedRequest params) {
+    public ResponseEntity<?> deleteUsedWriteCommentsPost(final PostUsedRequest params) {
         try {
             postMapper.deleteUsedWriteComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("댓글 삭제에 실패했습니다.", e);
         }
-        return params.getUsedid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-    public Long deleteUsedWriteLikedPost(final PostUsedRequest params) {
+    public ResponseEntity<?> deleteUsedWriteLikedPost(final PostUsedRequest params) {
         try {
             postMapper.deleteUsedWriteByLikedId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("좋아요 삭제에 실패했습니다.", e);
         }
-        return params.getUsedid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 유저 정보 조회
@@ -327,26 +369,26 @@ public class PostService {
 
     // 유저 정보 가입
     @Transactional
-    public Long saveUserPost(final PostUserRequest params) {
+    public ResponseEntity<?> saveUserPost(final PostUserRequest params) {
         try {
             postMapper.saveUser(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("유저정보 가입에 실패했습니다.", e);
         }
-        return params.getUserid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 유저 권한 정보 가입
     @Transactional
-    public Long saveUserRolesPost(final PostUserRequest params) {
+    public ResponseEntity<?> saveUserRolesPost(final PostUserRequest params) {
         try {
             postMapper.saveUserRoles(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("유저 권한정보 가입에 실패했습니다.", e);
         }
-        return params.getUserid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 유저 정보 수정
@@ -382,38 +424,38 @@ public class PostService {
 
 
     // 유저 정보 삭제
-    public Long deleteUserPost(final PostUserRequest params) {
+    public ResponseEntity<?> deleteUserPost(final PostUserRequest params) {
         try {
             postMapper.deleteByUserId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("유저 정보 삭제에 실패했습니다.", e);
         }
-        return params.getUserid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 유저 정보 삭제
-    public Long deleteUserRolesPost(final PostUserRequest params) {
+    public ResponseEntity<?> deleteUserRolesPost(final PostUserRequest params) {
         try {
             postMapper.deleteByUserRolesId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("유저 권한 정보 삭제에 실패했습니다.", e);
         }
-        return params.getUserid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
 
     // 좋아요 삽입
     @Transactional
-    public Long saveLikedPost(final PostLikedRequest params) {
+    public ResponseEntity<?> saveLikedPost(final PostLikedRequest params) {
         try {
             postMapper.saveLiked(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("좋아요 삽입에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 좋아요 알림 조회
     public List<PostLikedRequest> findLikedAlarmPost(Long userid) {
@@ -447,118 +489,118 @@ public class PostService {
 
     // 좋아요 정보 수정
     @Transactional
-    public Long updateLikedPost(final PostLikedRequest params) {
+    public ResponseEntity<?> updateLikedPost(final PostLikedRequest params) {
         try {
             postMapper.updateLiked(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("좋아요 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public Long updateDeleteLikedPost(final PostLikedRequest params) {
+    public ResponseEntity<?> updateDeleteLikedPost(final PostLikedRequest params) {
         try {
             postMapper.updateDeleteLiked(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("좋아요 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 좋아요 정보 삭제
-    public Long deleteLikedPost(final PostLikedRequest params) {
+    public ResponseEntity<?> deleteLikedPost(final PostLikedRequest params) {
         try {
             postMapper.deleteByLikedId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("좋아요 삭제에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 좋아요 개인 삽입
     @Transactional
-    public Long saveIndividualLikedPost(final PostIndividualLikedRequest params) {
+    public ResponseEntity<?> saveIndividualLikedPost(final PostIndividualLikedRequest params) {
         try {
             postMapper.saveIndividualLiked(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("개인좋아요 삽입에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 좋아요 개인 정보 수정
     @Transactional
-    public Long updateIndividualLikedPost(final PostIndividualLikedRequest params) {
+    public ResponseEntity<?> updateIndividualLikedPost(final PostIndividualLikedRequest params) {
         try {
             postMapper.updateIndividualLiked(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("개인좋아요 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public Long updateDeleteIndividualLikedPost(final PostIndividualLikedRequest params) {
+    public ResponseEntity<?> updateDeleteIndividualLikedPost(final PostIndividualLikedRequest params) {
         try {
             postMapper.updateDeleteIndividualLiked(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("개인좋아요 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 좋아요 개인 정보 삭제
-    public Long deleteIndividualLikedPost(final PostIndividualLikedRequest params) {
+    public ResponseEntity<?> deleteIndividualLikedPost(final PostIndividualLikedRequest params) {
         try {
             postMapper.deleteByIndividualLikedId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("개인좋아요 삭제에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 좋아요 중고 삽입
     @Transactional
-    public Long saveUsedLikedPost(final PostUsedLikedRequest params) {
+    public ResponseEntity<?> saveUsedLikedPost(final PostUsedLikedRequest params) {
         try {
             postMapper.saveUsedLiked(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("중고 좋아요 삽입에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 좋아요 중고 정보 수정
     @Transactional
-    public Long updateUsedLikedPost(final PostUsedLikedRequest params) {
+    public ResponseEntity<?> updateUsedLikedPost(final PostUsedLikedRequest params) {
         try {
             postMapper.updateUsedLiked(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("중고좋아요 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public Long updateDeleteUsedLikedPost(final PostUsedLikedRequest params) {
+    public ResponseEntity<?> updateDeleteUsedLikedPost(final PostUsedLikedRequest params) {
         try {
             postMapper.updateDeleteUsedLiked(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("중고좋아요 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 좋아요 중고 정보 삭제
-    public Long deleteUsedLikedPost(final PostUsedLikedRequest params) {
+    public ResponseEntity<?> deleteUsedLikedPost(final PostUsedLikedRequest params) {
         try {
             postMapper.deleteByUsedLikedId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("중고좋아요 삭제에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 커뮤니티 댓글 알림 조회
@@ -620,55 +662,55 @@ public class PostService {
 
     // 댓글 기입
     @Transactional
-    public Long saveCommentsPost(final PostCommentsRequest params) {
+    public ResponseEntity<?> saveCommentsPost(final PostCommentsRequest params) {
         try {
             postMapper.saveComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("댓글 작성에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 댓글 정보 수정
     @Transactional
-    public Long updateCommentsPost(final PostCommentsRequest params) {
+    public ResponseEntity<?> updateCommentsPost(final PostCommentsRequest params) {
         try {
             postMapper.updateComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("댓글 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public Long updateCommentsCountPost(final PostCommentsRequest params) {
+    public ResponseEntity<?> updateCommentsCountPost(final PostCommentsRequest params) {
         try {
             postMapper.updateCommentsCount(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("댓글 갯수 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public Long updateDeleteCommentsCountPost(final PostCommentsRequest params) {
+    public ResponseEntity<?> updateDeleteCommentsCountPost(final PostCommentsRequest params) {
         try {
             postMapper.updateDeleteCommentsCount(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("댓글 갯수 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 댓글 정보 삭제
-    public Long deleteCommentsPost(final PostCommentsRequest params) {
+    public ResponseEntity<?> deleteCommentsPost(final PostCommentsRequest params) {
         try {
             postMapper.deleteComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("댓글 삭제에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 개인 댓글 정보 조회
@@ -692,55 +734,55 @@ public class PostService {
 
     // 개인 댓글 기입
     @Transactional
-    public Long saveIndiCommentsPost(final PostIndiCommentsRequest params) {
+    public ResponseEntity<?> saveIndiCommentsPost(final PostIndiCommentsRequest params) {
         try {
             postMapper.saveIndiComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("개인 댓글 작성에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 개인 댓글 정보 수정
     @Transactional
-    public Long updateIndiCommentsPost(final PostIndiCommentsRequest params) {
+    public ResponseEntity<?> updateIndiCommentsPost(final PostIndiCommentsRequest params) {
         try {
             postMapper.updateIndiComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("개인 댓글 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public Long updateIndiCommentsCountPost(final PostIndiCommentsRequest params) {
+    public ResponseEntity<?> updateIndiCommentsCountPost(final PostIndiCommentsRequest params) {
         try {
             postMapper.updateIndiCommentsCount(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("개인 댓글 갯수 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public Long updateDeleteIndiCommentsCountPost(final PostIndiCommentsRequest params) {
+    public ResponseEntity<?> updateDeleteIndiCommentsCountPost(final PostIndiCommentsRequest params) {
         try {
             postMapper.updateDeleteIndiCommentsCount(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("개인 댓글 갯수 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 개인 댓글 정보 삭제
-    public Long deleteIndiCommentsPost(final PostIndiCommentsRequest params) {
+    public ResponseEntity<?> deleteIndiCommentsPost(final PostIndiCommentsRequest params) {
         try {
             postMapper.deleteIndiComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("개인 댓글 삭제에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 단체 댓글 정보 조회
@@ -764,55 +806,55 @@ public class PostService {
 
     // 단체 댓글 기입
     @Transactional
-    public Long saveGroupCommentsPost(final PostGroupCommentsRequest params) {
+    public ResponseEntity<?> saveGroupCommentsPost(final PostGroupCommentsRequest params) {
         try {
             postMapper.saveGroupComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("단체 댓글 작성에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 단체 댓글 정보 수정
     @Transactional
-    public Long updateGroupCommentsPost(final PostGroupCommentsRequest params) {
+    public ResponseEntity<?> updateGroupCommentsPost(final PostGroupCommentsRequest params) {
         try {
             postMapper.updateGroupComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("단체 댓글 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public Long updateGroupCommentsCountPost(final PostGroupCommentsRequest params) {
+    public ResponseEntity<?> updateGroupCommentsCountPost(final PostGroupCommentsRequest params) {
         try {
             postMapper.updateGroupCommentsCount(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("단체 댓글 갯수 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public Long updateDeleteGroupCommentsCountPost(final PostGroupCommentsRequest params) {
+    public ResponseEntity<?> updateDeleteGroupCommentsCountPost(final PostGroupCommentsRequest params) {
         try {
             postMapper.updateDeleteGroupCommentsCount(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("단체 댓글 갯수 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 단체 댓글 정보 삭제
-    public Long deleteGroupCommentsPost(final PostGroupCommentsRequest params) {
+    public ResponseEntity<?> deleteGroupCommentsPost(final PostGroupCommentsRequest params) {
         try {
             postMapper.deleteGroupComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("단체 댓글 삭제에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
 
@@ -838,55 +880,55 @@ public class PostService {
 
     // 중고 댓글 기입
     @Transactional
-    public Long saveUsedCommentsPost(final PostUsedCommentsRequest params) {
+    public ResponseEntity<?> saveUsedCommentsPost(final PostUsedCommentsRequest params) {
         try {
             postMapper.saveUsedComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("중고 댓글 작성에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 중고 댓글 정보 수정
     @Transactional
-    public Long updateUsedCommentsPost(final PostUsedCommentsRequest params) {
+    public ResponseEntity<?> updateUsedCommentsPost(final PostUsedCommentsRequest params) {
         try {
             postMapper.updateUsedComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("중고 댓글 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public Long updateUsedCommentsCountPost(final PostUsedCommentsRequest params) {
+    public ResponseEntity<?> updateUsedCommentsCountPost(final PostUsedCommentsRequest params) {
         try {
             postMapper.updateUsedCommentsCount(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("중고 댓글 댓수 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public Long updateDeleteUsedCommentsCountPost(final PostUsedCommentsRequest params) {
+    public ResponseEntity<?> updateDeleteUsedCommentsCountPost(final PostUsedCommentsRequest params) {
         try {
             postMapper.updateDeleteUsedCommentsCount(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("중고 댓글 댓수 수정에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 중고 댓글 정보 삭제
-    public Long deleteUsedCommentsPost(final PostUsedCommentsRequest params) {
+    public ResponseEntity<?> deleteUsedCommentsPost(final PostUsedCommentsRequest params) {
         try {
             postMapper.deleteUsedComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("중고 댓글 삭제에 실패했습니다.", e);
         }
-        return params.getInherentid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
 
@@ -979,25 +1021,25 @@ public class PostService {
 
     // 채팅방 넣기
     @Transactional
-    public Long saveChatRoomPost(final PostChatRoomRequest params) {
+    public ResponseEntity<?> saveChatRoomPost(final PostChatRoomRequest params) {
         try {
             postMapper.saveChatRoom(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("채팅방 넣기에 실패했습니다.", e);
         }
-        return params.getId();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 채팅룸 삭제
-    public String deleteChatRoomPost(final PostChatRoomDeleteRequest params) {
+    public ResponseEntity<?> deleteChatRoomPost(final PostChatRoomDeleteRequest params) {
         try {
             postMapper.deleteByRoomName(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("채팅방 삭제에 실패했습니다.", e);
         }
-        return params.getRoomname();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 신고 유저 조회
@@ -1011,14 +1053,14 @@ public class PostService {
     }
     // 신고 유저 저장
     @Transactional
-    public Long saveReportUserPost(final PostReportUserResponse params) {
+    public ResponseEntity<?> saveReportUserPost(final PostReportUserResponse params) {
         try {
             postMapper.saveReportUser(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 유저 저장에 실패했습니다.", e);
         }
-        return params.getUserid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 커뮤니티글 조회
     public List<PostReportBoardResponse> findReportBoardAllPost() {
@@ -1031,14 +1073,14 @@ public class PostService {
     }
     // 신고 커뮤니티글 저장
     @Transactional
-    public Long saveReportBoardPost(final PostReportBoardResponse params) {
+    public ResponseEntity<?> saveReportBoardPost(final PostReportBoardResponse params) {
         try {
             postMapper.saveReportBoard(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 커뮤니티 글 저장에 실패했습니다.", e);
         }
-        return params.getBoardid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 개인글 조회
     public List<PostReportIndividualResponse> findReportIndividualAllPost() {
@@ -1051,14 +1093,14 @@ public class PostService {
     }
     // 신고 개인글 저장
     @Transactional
-    public Long saveReportIndividualPost(final PostReportIndividualResponse params) {
+    public ResponseEntity<?> saveReportIndividualPost(final PostReportIndividualResponse params) {
         try {
             postMapper.saveReportIndividual(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 개인 글 저장에 실패했습니다.", e);
         }
-        return params.getIndividualid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 단체글 조회
     public List<PostReportGroupResponse> findReportGroupAllPost() {
@@ -1071,14 +1113,14 @@ public class PostService {
     }
     // 신고 단체글 저장
     @Transactional
-    public Long saveReportGroupPost(final PostReportGroupResponse params) {
+    public ResponseEntity<?> saveReportGroupPost(final PostReportGroupResponse params) {
         try {
             postMapper.saveReportGroup(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 단체 글 저장에 실패했습니다.", e);
         }
-        return params.getGroupid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 중고글 조회
     public List<PostReportUsedResponse> findReportUsedAllPost() {
@@ -1091,14 +1133,14 @@ public class PostService {
     }
     // 신고 중고글 저장
     @Transactional
-    public Long saveReportUsedPost(final PostReportUsedResponse params) {
+    public ResponseEntity<?> saveReportUsedPost(final PostReportUsedResponse params) {
         try {
             postMapper.saveReportUsed(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 중고 글 저장에 실패했습니다.", e);
         }
-        return params.getUsedid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 커뮤니티댓글 조회
     public List<PostReportCommentsResponse> findReportCommentsAllPost() {
@@ -1111,14 +1153,14 @@ public class PostService {
     }
     // 신고 커뮤니티 댓글 저장
     @Transactional
-    public Long saveReportCommentsPost(final PostReportCommentsResponse params) {
+    public ResponseEntity<?> saveReportCommentsPost(final PostReportCommentsResponse params) {
         try {
             postMapper.saveReportComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 커뮤니티 댓글 저장에 실패했습니다.", e);
         }
-        return params.getCommentsid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 개인댓글 조회
     public List<PostReportCommentsResponse> findReportIndividualCommentsAllPost() {
@@ -1131,14 +1173,14 @@ public class PostService {
     }
     // 신고 개인 댓글 저장
     @Transactional
-    public Long saveReportIndividualCommentsPost(final PostReportCommentsResponse params) {
+    public ResponseEntity<?> saveReportIndividualCommentsPost(final PostReportCommentsResponse params) {
         try {
             postMapper.saveReportIndividualComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 개인 댓글 저장에 실패했습니다.", e);
         }
-        return params.getCommentsid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 단체댓글 조회
     public List<PostReportCommentsResponse> findReportGroupCommentsAllPost() {
@@ -1151,14 +1193,14 @@ public class PostService {
     }
     // 신고 단체 댓글 저장
     @Transactional
-    public Long saveReportGroupCommentsPost(final PostReportCommentsResponse params) {
+    public ResponseEntity<?> saveReportGroupCommentsPost(final PostReportCommentsResponse params) {
         try {
             postMapper.saveReportGroupComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 단체 댓글 저장에 실패했습니다.", e);
         }
-        return params.getCommentsid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 중고댓글 조회
     public List<PostReportCommentsResponse> findReportUsedCommentsAllPost() {
@@ -1171,260 +1213,260 @@ public class PostService {
     }
     // 신고 중고 댓글 저장
     @Transactional
-    public Long saveReportUsedCommentsPost(final PostReportCommentsResponse params) {
+    public ResponseEntity<?> saveReportUsedCommentsPost(final PostReportCommentsResponse params) {
         try {
             postMapper.saveReportUsedComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 중고 댓글 저장에 실패했습니다.", e);
         }
-        return params.getCommentsid();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 관리자페이지 신고 유저 삭제
-    public PostReportUserRequest deleteUserReportPost(final String params) {
+    public ResponseEntity<?> deleteUserReportPost(final String params) {
         try {
             postMapper.deleteUserReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("관리자 페이지 신고 유저 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고유저 정보 삭제
-    public PostReportUserRequest deleteReportUserPost(final String params) {
+    public ResponseEntity<?> deleteReportUserPost(final String params) {
         try {
             postMapper.deleteByReportUserId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 유저 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 신고유저 권한정보 삭제
-    public PostReportUserRequest deleteReportUserRolesPost(final String params) {
+    public ResponseEntity<?> deleteReportUserRolesPost(final String params) {
         try {
             postMapper.deleteByReportUserRolesId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 유저 권한 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 관리자페이지 신고 커뮤니티글 삭제
-    public PostReportBoardRequest deleteBoardReportPost(final String params) {
+    public ResponseEntity<?> deleteBoardReportPost(final String params) {
         try {
             postMapper.deleteBoardReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("관리자 페이지 신고 커뮤니티 글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 커뮤니티글 삭제
-    public PostReportBoardRequest deleteBoardWriteReportPost(final String params) {
+    public ResponseEntity<?> deleteBoardWriteReportPost(final String params) {
         try {
             postMapper.deleteBoardWriteReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 커뮤니티 글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 관리자페이지 신고 개인글 삭제
-    public PostReportIndividualRequest deleteIndividualReportPost(final String params) {
+    public ResponseEntity<?> deleteIndividualReportPost(final String params) {
         try {
             postMapper.deleteIndividualReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("관리자 페이지 신고 개인 글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 개인글 삭제
-    public PostReportIndividualRequest deleteIndividualWriteReportPost(final String params) {
+    public ResponseEntity<?> deleteIndividualWriteReportPost(final String params) {
         try {
             postMapper.deleteIndividualWriteReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 개인 글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 관리자페이지 신고 단체글 삭제
-    public PostReportGroupRequest deleteGroupReportPost(final String params) {
+    public ResponseEntity<?> deleteGroupReportPost(final String params) {
         try {
             postMapper.deleteGroupReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("관리자페이지 신고 단체 글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 단체글 삭제
-    public PostReportGroupRequest deleteGroupWriteReportPost(final String params) {
+    public ResponseEntity<?> deleteGroupWriteReportPost(final String params) {
         try {
             postMapper.deleteGroupWriteReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 단체 글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 관리자페이지 신고 중고글 삭제
-    public PostReportUsedRequest deleteUsedReportPost(final String params) {
+    public ResponseEntity<?> deleteUsedReportPost(final String params) {
         try {
             postMapper.deleteUsedReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("관리자페이지 신고 중고 글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 중고글 삭제
-    public PostReportUsedRequest deleteUsedWriteReportPost(final String params) {
+    public ResponseEntity<?> deleteUsedWriteReportPost(final String params) {
         try {
             postMapper.deleteUsedWriteReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 중고 글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
 
 
     // 관리자페이지 신고 커뮤니티댓글 삭제
-    public PostReportBoardCommentsRequest deleteBoardCommentsReportPost(final String params) {
+    public ResponseEntity<?> deleteBoardCommentsReportPost(final String params) {
         try {
             postMapper.deleteBoardCommentsReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("관리자페이지 신고 커뮤니티 댓글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 커뮤니티댓글 삭제
-    public PostReportBoardCommentsRequest deleteBoardCommentsWriteReportPost(final String params) {
+    public ResponseEntity<?> deleteBoardCommentsWriteReportPost(final String params) {
         try {
             postMapper.deleteBoardCommentsWriteReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 커뮤니티 댓글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-    public PostReportCommentsCountRequest updateDeleteReportCommentsCountPost(final String params) {
+    public ResponseEntity<?> updateDeleteReportCommentsCountPost(final String params) {
         try {
             postMapper.updateDeleteReportCommentsCount(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 커뮤니티 댓글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 관리자페이지 신고 개인댓글 삭제
-    public PostReportIndividualCommentsRequest deleteIndividualCommentsReportPost(final String params) {
+    public ResponseEntity<?> deleteIndividualCommentsReportPost(final String params) {
         try {
             postMapper.deleteIndividualCommentsReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("관리자페이지 신고 개인 댓글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 개인댓글 삭제
-    public PostReportIndividualCommentsRequest deleteIndividualCommentsWriteReportPost(final String params) {
+    public ResponseEntity<?> deleteIndividualCommentsWriteReportPost(final String params) {
         try {
             postMapper.deleteIndividualCommentsWriteReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 개인 댓글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public PostReportIndividualCommentsCountRequest updateDeleteReportIndividualCommentsCountPost(final String params) {
+    public ResponseEntity<?> updateDeleteReportIndividualCommentsCountPost(final String params) {
         try {
             postMapper.updateDeleteReportIndividualCommentsCount(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 개인 댓글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 관리자페이지 신고 단체댓글 삭제
-    public PostReportGroupCommentsRequest deleteGroupCommentsReportPost(final String params) {
+    public ResponseEntity<?> deleteGroupCommentsReportPost(final String params) {
         try {
             postMapper.deleteGroupCommentsReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("관리자페이지 신고 단체 댓글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 단체댓글 삭제
-    public PostReportGroupCommentsRequest deleteGroupCommentsWriteReportPost(final String params) {
+    public ResponseEntity<?> deleteGroupCommentsWriteReportPost(final String params) {
         try {
             postMapper.deleteGroupCommentsWriteReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 단체 댓글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public PostReportGroupCommentsCountRequest updateDeleteReportGroupCommentsCountPost(final String params) {
+    public ResponseEntity<?> updateDeleteReportGroupCommentsCountPost(final String params) {
         try {
             postMapper.updateDeleteReportGroupCommentsCount(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 단체 댓글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 관리자페이지 신고 중고댓글 삭제
-    public PostReportUsedCommentsRequest deleteUsedCommentsReportPost(final String params) {
+    public ResponseEntity<?> deleteUsedCommentsReportPost(final String params) {
         try {
             postMapper.deleteUsedCommentsReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("관리자페이지 신고 중고 댓글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 신고 중고댓글 삭제
-    public PostReportUsedCommentsRequest deleteUsedCommentsWriteReportPost(final String params) {
+    public ResponseEntity<?> deleteUsedCommentsWriteReportPost(final String params) {
         try {
             postMapper.deleteUsedCommentsWriteReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 중고 댓글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     @Transactional
-    public PostReportUsedCommentsCountRequest updateDeleteReportUsedCommentsCountPost(final String params) {
+    public ResponseEntity<?> updateDeleteReportUsedCommentsCountPost(final String params) {
         try {
             postMapper.updateDeleteReportUsedCommentsCount(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 중고 댓글 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 공지사항 작성
     @Transactional
-    public Long saveAnnouncementPost(final PostAnnouncementRequest params) {
+    public ResponseEntity<?> saveAnnouncementPost(final PostAnnouncementRequest params) {
         try {
             postMapper.saveAnnouncement(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("공지사항 저장에 실패했습니다.", e);
         }
-        return params.getId();
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
     // 공지사항 조회
@@ -1437,13 +1479,13 @@ public class PostService {
         }
     }
     // 관리자페이지 공지사항삭제
-    public PostAdminAnnouncementRequest deleteAdminAnnouncementPost(final String params) {
+    public ResponseEntity<?> deleteAdminAnnouncementPost(final String params) {
         try {
             postMapper.deleteAnnouncement(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("관리자페이지 공지사항 삭제에 실패했습니다.", e);
         }
-        return null;
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 }

@@ -25,4 +25,5 @@ public class PostUsedResponse {
     private Integer  commentcount;
     private String token;
     private String profileimage;
+    private Integer inquirycount;
 }

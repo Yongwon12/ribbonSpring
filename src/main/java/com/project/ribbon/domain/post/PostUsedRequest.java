@@ -37,5 +37,6 @@ public class PostUsedRequest {
         private Integer  likedcount;
         private Integer  commentcount;
 
+
 }
 

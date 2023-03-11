@@ -23,6 +23,7 @@ public class PostIndiResponse {
     private Integer commentcount;
     private String profileimage;
     private String token;
+    private Integer inquirycount;
 
 
 }

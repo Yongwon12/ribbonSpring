@@ -46,5 +46,6 @@ public class PostIndiRequest {
         private Integer likedcount;
         private Integer commentcount;
 
+
 }
 

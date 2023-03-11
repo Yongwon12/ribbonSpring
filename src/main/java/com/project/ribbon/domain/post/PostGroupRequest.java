@@ -37,5 +37,6 @@ public class PostGroupRequest {
         private String once;
         private Integer commentcount;
 
+
 }
 
