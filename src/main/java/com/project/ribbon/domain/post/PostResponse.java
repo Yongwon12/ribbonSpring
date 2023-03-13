@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostResponse {
 
+    private String board;
     private Integer id;             // PK
     private Long userid;        // 제목
     private String title;      // 내용

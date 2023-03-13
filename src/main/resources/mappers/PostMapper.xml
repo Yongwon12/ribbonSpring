@@ -653,15 +653,23 @@
 
     <!-- 실시간 인기글 -->
     <select id="findAll11" resultType="com.project.ribbon.domain.post.PostResponse">
-        SELECT
-            id, boardwrite.userid, title, description, img, writedate, User.nickname,
-            boardid, likedcount, commentcount, profileimage, token,
-            (likedcount + commentcount + inquirycount) AS totalcount
-        FROM boardwrite
-                 LEFT JOIN User ON User.userid = boardwrite.userid
-        WHERE User.userid IS NOT NULL
-        ORDER BY totalcount DESC, boardid DESC
-            LIMIT 1
+        SELECT *
+        FROM (
+                 SELECT
+                     category.board, boardwrite.id, boardwrite.userid, title, description, img, writedate, User.nickname,
+                     boardid, profileimage, token, likedcount, commentcount, inquirycount,
+                     ROW_NUMBER() OVER (PARTITION BY boardwrite.id ORDER BY likedcount + commentcount + inquirycount DESC, writedate DESC) AS rn
+                 FROM
+                     boardwrite
+                         LEFT JOIN User ON User.userid = boardwrite.userid
+                         LEFT JOIN category ON category.id = boardwrite.id
+                 WHERE
+                     boardwrite.id BETWEEN 1 AND 10
+                   AND likedcount + commentcount + inquirycount > 0 -- 이 부분 나중에 댓글수 5개 이상일때로 고정
+                   AND writedate >= (NOW() - INTERVAL '30' MINUTE) -- 30분 이내에 작성된 글
+             ) AS sub
+        WHERE
+            rn = 1;
     </select>
 
 
