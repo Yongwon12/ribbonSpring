@@ -13,7 +13,6 @@ public class PostUsedCommentsResponse {
     private Long inherentid;
     private String writedate;
     private Long commentsid;
-    private Integer isrecomment;
     private String profileimage;
     private Integer commentscategory;
 

@@ -85,8 +85,9 @@ public interface PostMapper {
     // 유저 조회
     List<PostUserResponse> findUserAll();
     // 기존 유저 조회
-
     List<PostUserRequest> findUserInfoAll(String email);
+    // 기존 유저 권한 조회
+    List<PostUserRequest> findUserRolesInfoAll(String email);
 
 
     // 유저 가입

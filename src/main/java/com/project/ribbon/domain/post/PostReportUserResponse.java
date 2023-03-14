@@ -19,6 +19,7 @@ public class PostReportUserResponse {
         private String nickname;
         private String description;
         private String profileimage;
+        private String freezing;
 
 
 

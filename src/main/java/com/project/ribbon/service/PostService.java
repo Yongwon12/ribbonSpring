@@ -364,6 +364,17 @@ public class PostService {
         }
 
     }
+    // 기존 유저 권한 정보 조회
+    public List<PostUserRequest> findUserRolesInfoAllPost(String email) {
+        try {
+            return postMapper.findUserRolesInfoAll(email);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("유저권한 정보 조회에 실패했습니다.", e);
+        }
+
+    }
+
 
 
 

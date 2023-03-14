@@ -51,14 +51,13 @@ public class PostController {
 
     // 외부 서버 ip : 112.148.33.214
 
-    String userip = "http://112.148.33.214:8000/api/userimage/";
-    String boardip = "http://112.148.33.214:8000/api/boardimage/";
-    String groupip = "http://112.148.33.214:8000/api/groupimage/";
-    String usedip = "http://112.148.33.214:8000/api/usedimage/";
+    String userip = "http://192.168.0.5:8000/api/userimage/";
+    String boardip = "http://192.168.0.5:8000/api/boardimage/";
+    String groupip = "http://192.168.0.5:8000/api/groupimage/";
+    String usedip = "http://192.168.0.5:8000/api/usedimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
-
 
     // 커뮤니티 게시글 작성
     @PostMapping("/post/boardwrite")
@@ -421,23 +420,26 @@ public class PostController {
     }
 
 
-
-
-
     // 유저 모든 POST 요청 대한 권한얻기
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
+    public ResponseEntity<?> login(@RequestBody MemberLoginRequestDto memberLoginRequestDto,Model model) {
         String userid = memberLoginRequestDto.getUserid();
         String password = memberLoginRequestDto.getPassword();
         try {
-                TokenInfo tokenInfo = memberService.login(userid, password);
-                return ResponseEntity.ok(tokenInfo);
+            TokenInfo tokenInfo = memberService.login(userid, password);
+            Map<String, Object> obj = new HashMap<>();
+            List<PostUserRequest> posts = postService.findUserRolesInfoAllPost(memberLoginRequestDto.getEmail());
+            model.addAttribute("posts", posts);
+            obj.put("userroles", posts);
+            obj.put("tokenInfo", tokenInfo);
+            return ResponseEntity.ok(obj);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
 
 

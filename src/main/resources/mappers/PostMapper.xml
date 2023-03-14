@@ -120,7 +120,6 @@
         , inherentid
         , writedate
         , commentsid
-        , isrecomment
         , commentscategory
     </sql>
 
@@ -132,7 +131,6 @@
         , inherentid
         , writedate
         , commentsid
-        , isrecomment
             , commentscategory
     </sql>
 
@@ -144,7 +142,6 @@
         , inherentid
         , writedate
         , commentsid
-        , isrecomment
             , commentscategory
     </sql>
 
@@ -156,7 +153,6 @@
         , inherentid
         , writedate
         , commentsid
-        , isrecomment
             , commentscategory
     </sql>
 
@@ -544,12 +540,16 @@
 
     <!-- 기존 유저 정보 조회  -->
     <select id="findUserInfoAll" resultType="com.project.ribbon.domain.post.PostUserRequest">
-        SELECT
-            *
-        FROM
-            user
-        WHERE
-            email = #{email}
+        SELECT *
+        FROM user
+        WHERE email = #{email}
+    </select>
+
+    <!-- 유저 권한 조회  -->
+    <select id="findUserRolesInfoAll" resultType="com.project.ribbon.domain.post.PostUserRequest">
+        SELECT roles
+        FROM user_roles
+        WHERE email = #{email}
     </select>
 
 
@@ -666,7 +666,7 @@
                  WHERE
                      boardwrite.id BETWEEN 1 AND 10
                    AND likedcount + commentcount + inquirycount > 0 -- 이 부분 나중에 댓글수 5개 이상일때로 고정
-                   AND writedate >= (NOW() - INTERVAL '30' MINUTE) -- 30분 이내에 작성된 글
+                   AND writedate >= (NOW() - INTERVAL '180' MINUTE) -- 3시간 이내에 작성된 글
              ) AS sub
         WHERE
             rn = 1;
@@ -974,7 +974,7 @@
     <select id="findByInherentId" resultType="com.project.ribbon.domain.post.PostCommentsResponse">
         SELECT
             description,writedate,comments.userid,User.nickname,categoryid,
-            inherentid,commentsid,isrecomment,User.profileimage
+            inherentid,commentsid,User.profileimage
         FROM comments
                  LEFT JOIN User
                            ON User.userid = comments.userid
@@ -996,7 +996,6 @@
         , #{inherentid}
         , #{writedate}
         , #{commentsid}
-        , 2
         , #{commentscategory}
         )
 
@@ -1053,7 +1052,7 @@
     <select id="findByGroupCommentsInherentId" resultType="com.project.ribbon.domain.post.PostGroupCommentsResponse">
         SELECT
             description,groupcomments.userid,User.nickname,inherentid,
-            writedate,commentsid,isrecomment,User.profileimage
+            writedate,commentsid,User.profileimage
         FROM groupcomments
                  LEFT JOIN User
                            ON User.userid = groupcomments.userid
@@ -1074,7 +1073,6 @@
         , #{inherentid}
         , #{writedate}
         , #{commentsid}
-        , 2
         , #{commentscategory}
         )
 
@@ -1131,7 +1129,7 @@
     <select id="findByIndiCommentsInherentId" resultType="com.project.ribbon.domain.post.PostIndiCommentsResponse">
         SELECT
             description,individualcomments.userid,User.nickname,inherentid,
-            writedate,commentsid,isrecomment,User.profileimage
+            writedate,commentsid,User.profileimage
         FROM individualcomments
                  LEFT JOIN User
                            ON User.userid = individualcomments.userid
@@ -1152,7 +1150,6 @@
         , #{inherentid}
         , #{writedate}
         , #{commentsid}
-        , 2
         , #{commentscategory}
         )
 
@@ -1206,7 +1203,7 @@
     <select id="findByUsedCommentsInherentId" resultType="com.project.ribbon.domain.post.PostUsedCommentsResponse">
         SELECT
             description,usedcomments.userid,User.nickname,inherentid,
-            writedate,commentsid,isrecomment,User.profileimage
+            writedate,commentsid,User.profileimage
         FROM usedcomments
                  LEFT JOIN User
                            ON User.userid = usedcomments.userid
@@ -1227,7 +1224,6 @@
         , #{inherentid}
         , #{writedate}
         , #{commentsid}
-        , 2
         , #{commentscategory}
         )
 
@@ -1609,29 +1605,29 @@
                  )
     </insert>
 
-    <!-- 신고 관리자페이지 유저 삭제 -->
-    <delete id="deleteUserReport" >
-        DELETE
-        FROM
+    <!-- 신고 관리자페이지 유저 정지  -->
+    <update id="deleteUserReport" >
+        UPDATE
             reportuser
+        SET freezing = "FREEZING"
         WHERE userid = #{userid}
-    </delete>
+    </update>
 
-    <!-- 신고 유저 정보 삭제 -->
-    <delete id="deleteByReportUserId" >
-        DELETE
-        FROM
-            User
+    <!-- 신고 유저 정지 -->
+    <update id="deleteByReportUserId" >
+        UPDATE
+            user
+        SET profileimage = ""
         WHERE userid = #{userid}
-    </delete>
+    </update>
 
-    <!-- 신고 유저 권한 정보 삭제 -->
-    <delete id="deleteByReportUserRolesId" >
-        DELETE
-        FROM
+    <!-- 신고 유저 권한 변경 -->
+    <update id="deleteByReportUserRolesId" >
+        UPDATE
             user_roles
+        SET roles = "FREEZINGUSER"
         WHERE user_userid = #{userid}
-    </delete>
+    </update>
 
     <!-- 신고 관리자페이지 커뮤니티글 삭제 -->
     <delete id="deleteBoardReport" >
