@@ -87,7 +87,7 @@ public interface PostMapper {
     // 기존 유저 조회
     List<PostUserRequest> findUserInfoAll(String email);
     // 기존 유저 권한 조회
-    List<PostUserRequest> findUserRolesInfoAll(String email);
+    PostUserRequest findUserRolesInfoAll(String email);
 
 
     // 유저 가입
@@ -286,13 +286,19 @@ public interface PostMapper {
     // 신고 중고 댓글 저장
     void saveReportUsedComments(PostReportCommentsResponse params);
 
-    // 관리자페이지 신고 유저 삭제
-    void deleteUserReport(String params);
-    // 신고유저 삭제
-    void deleteByReportUserId(String params);
+    // 관리자페이지 신고 유저 수정
+    void updateUserReport(String params);
+    // 신고유저 수정
+    void updateByReportUserId(String params);
 
-    // 신고유저권한 삭제
-    void deleteByReportUserRolesId(String params);
+    // 신고유저권한 수정
+    void updateByReportUserRolesId(String params);
+
+    // 관리자페이지 활성화 유저 삭제
+    void deleteByActivateUserId(String params);
+
+    // 활성화 유저 수정
+    void updateByActivateUserRolesId(String params);
 
 
     // 관리자페이지 신고 커뮤니티글 삭제

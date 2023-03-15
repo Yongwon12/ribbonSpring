@@ -35,7 +35,7 @@ public class LoginController {
     private final PostService postService;
     private final FirebaseAnnouncementMessageService firebaseAnnouncementMessageService;
     // 내부 서버 Ip : 192.168.219.161
-    String ip = "http://192.168.0.5:8000/ribbon/admin";
+    String ip = "http://192.168.219.161:8000/ribbon/admin";
     // 맺음 홈페이지
     @GetMapping("/ribbon")
     public String showRibbonForm() {
@@ -255,14 +255,24 @@ public class LoginController {
     public ResponseEntity<?> usedcommentsReportInsert(@RequestBody PostReportCommentsResponse params) {
         return new ResponseEntity<>(postService.saveReportUsedCommentsPost(params),HttpStatus.OK);
     }
-    // 신고 유저 정보 삭제
+    // 신고 유저 정보 수정
     @RequestMapping("/ribbon/admin/post/reportuserdelete")
     public String userReportDelete(@RequestBody List<Map<String,String>> params) {
         for (Map<String,String> user:params) {
             String userId = user.get("userid");
-            postService.deleteReportUserRolesPost(userId);
-            postService.deleteReportUserPost(userId);
-            postService.deleteUserReportPost(userId);
+            postService.updateReportUserRolesPost(userId);
+            postService.updateReportUserPost(userId);
+            postService.updateUserReportPost(userId);
+        }
+        return "admin-reportpostdeleteuser";
+    }
+    // 활성화 유저 정보 수정 및 삭제
+    @RequestMapping("/ribbon/admin/post/reportuseractivate")
+    public String userActivateUpdate(@RequestBody List<Map<String,String>> params) {
+        for (Map<String,String> user:params) {
+            String userId = user.get("userid");
+            postService.updateActivateUserPost(userId);
+            postService.deleteActivateUserPost(userId);
         }
         return "admin-reportpostdeleteuser";
     }

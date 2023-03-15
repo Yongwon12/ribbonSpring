@@ -7,11 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -365,7 +361,7 @@ public class PostService {
 
     }
     // 기존 유저 권한 정보 조회
-    public List<PostUserRequest> findUserRolesInfoAllPost(String email) {
+    public PostUserRequest findUserRolesInfoAllPost(String email) {
         try {
             return postMapper.findUserRolesInfoAll(email);
         } catch (Exception e) {
@@ -1234,20 +1230,20 @@ public class PostService {
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
-    // 관리자페이지 신고 유저 삭제
-    public ResponseEntity<?> deleteUserReportPost(final String params) {
+    // 관리자페이지 신고 유저 수정
+    public ResponseEntity<?> updateUserReportPost(final String params) {
         try {
-            postMapper.deleteUserReport(params);
+            postMapper.updateUserReport(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("관리자 페이지 신고 유저 삭제에 실패했습니다.", e);
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-    // 신고유저 정보 삭제
-    public ResponseEntity<?> deleteReportUserPost(final String params) {
+    // 신고유저 정보 수정
+    public ResponseEntity<?> updateReportUserPost(final String params) {
         try {
-            postMapper.deleteByReportUserId(params);
+            postMapper.updateByReportUserId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 유저 삭제에 실패했습니다.", e);
@@ -1255,16 +1251,38 @@ public class PostService {
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
-    // 신고유저 권한정보 삭제
-    public ResponseEntity<?> deleteReportUserRolesPost(final String params) {
+    // 신고유저 권한정보 수정
+    public ResponseEntity<?> updateReportUserRolesPost(final String params) {
         try {
-            postMapper.deleteByReportUserRolesId(params);
+            postMapper.updateByReportUserRolesId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 유저 권한 삭제에 실패했습니다.", e);
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
+    // 관리자페이지 활성화 유저 삭제
+    public ResponseEntity<?> deleteActivateUserPost(final String params) {
+        try {
+            postMapper.deleteByActivateUserId(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("관리자 페이지 활성화 유저 삭제에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+    // 활성화 유저 정보 수정
+    public ResponseEntity<?> updateActivateUserPost(final String params) {
+        try {
+            postMapper.updateByActivateUserRolesId(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("활성화 유저 수정에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+
+
     // 관리자페이지 신고 커뮤니티글 삭제
     public ResponseEntity<?> deleteBoardReportPost(final String params) {
         try {

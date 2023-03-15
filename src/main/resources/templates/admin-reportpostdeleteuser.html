@@ -64,6 +64,7 @@
 <h1>User Report</h1>
 <button onclick="location.href='/ribbon/admin/report'">맺음 신고 및 공지 목록</button>
 <button type="button" onclick="deleteSelectedUsers()">유저 계정 정지</button>
+<button type="button" onclick="activateSelectedUsers()">유저 계정 활성화</button>
 <table>
   <thead>
   <tr>
@@ -72,9 +73,11 @@
     <th>Report User Nickname</th>
     <th>Report Description</th>
     <th>Report ProfileImage</th>
-    <th>Report Freezing</th>
+    <th>Freezing</th>
+    <th>NoFreezing</th>
   </tr>
   </thead>
+
   <tbody>
   <tr th:each="user : ${userList}">
     <td><input type="checkbox" name="selectedUsers" th:value="${user.getUserid()}" onclick="selectRow(this)"/></td>
@@ -82,7 +85,8 @@
     <td th:text="${user.getNickname()}"></td>
     <td th:text="${user.getDescription()}"></td>
     <td><img th:src="${user.getProfileimage()}" /></td>
-    <td th:text="${user.getFreezing()}"></td>
+    <td th:text="${user.getFreezing() == 'FREEZING' ? user.getFreezing() : ''}"></td>
+    <td th:text="${user.getFreezing() == 'NOFREEZING' ? user.getFreezing() : ''}"></td>
   </tr>
   </tbody>
 </table>
@@ -103,6 +107,28 @@
       }
     }
   }
+  function activateSelectedUsers() {
+    const selectedUsers = Array.from(document.getElementsByName('selectedUsers'))
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => ({ "userid": checkbox.value }));
+    if (selectedUsers.length === 0) {
+      alert('Please select at least one userid.');
+      return;
+    }
+    if (confirm('정말로 계정을 활성화하시겠습니까?')) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/ribbon/admin/post/reportuseractivate');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify(selectedUsers));
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          alert("유저 계정 활성화 성공!");
+          window.location.reload();
+        }
+      }
+    }
+  }
+
   function deleteSelectedUsers() {
     const selectedUsers = Array.from(document.getElementsByName('selectedUsers'))
             .filter(checkbox => checkbox.checked)

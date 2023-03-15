@@ -649,8 +649,6 @@
         WHERE user_userid = #{userid}
     </delete>
 
-
-
     <!-- 실시간 인기글 -->
     <select id="findAll11" resultType="com.project.ribbon.domain.post.PostResponse">
         SELECT *
@@ -1435,10 +1433,8 @@
 
     <!-- 신고 유저 조회 -->
     <select id="findReportUserAll" resultType="com.project.ribbon.domain.post.PostReportUserResponse">
-        SELECT
-            *
+        SELECT *
         FROM reportuser
-
     </select>
 
     <!-- 신고 유저 저장 -->
@@ -1606,26 +1602,42 @@
     </insert>
 
     <!-- 신고 관리자페이지 유저 정지  -->
-    <update id="deleteUserReport" >
+    <update id="updateUserReport" >
         UPDATE
             reportuser
         SET freezing = "FREEZING"
         WHERE userid = #{userid}
     </update>
 
-    <!-- 신고 유저 정지 -->
-    <update id="deleteByReportUserId" >
+    <!-- 신고 유저 정지 및 정보 수정 -->
+    <update id="updateByReportUserId" >
         UPDATE
             user
-        SET profileimage = ""
+        SET profileimage = NULL, shortinfo = NULL
         WHERE userid = #{userid}
     </update>
 
     <!-- 신고 유저 권한 변경 -->
-    <update id="deleteByReportUserRolesId" >
+    <update id="updateByReportUserRolesId" >
         UPDATE
             user_roles
         SET roles = "FREEZINGUSER"
+        WHERE user_userid = #{userid}
+    </update>
+
+    <!-- 활성화 유저 관리자페이지 삭제 -->
+    <delete id="deleteByActivateUserId" >
+        DELETE
+        FROM
+        reportuser
+        WHERE userid = #{userid}
+    </delete>
+
+    <!-- 활성화 유저 권한 변경 -->
+    <update id="updateByActivateUserRolesId" >
+        UPDATE
+        user_roles
+        SET roles = "USER"
         WHERE user_userid = #{userid}
     </update>
 
