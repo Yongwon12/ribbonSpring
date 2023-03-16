@@ -96,9 +96,9 @@
         , gender
         , bestcategory
         , shortinfo
-            <!--, youtube-->
-            , token
-            , password
+        <!--, youtube-->
+        , token
+        , password
     </sql>
 
     <!-- liked 테이블 전체 컬럼 -->
@@ -211,7 +211,7 @@
         FROM boardwrite
                  LEFT JOIN User
                            ON User.userid = boardwrite.userid
-                              WHERE User.userid IS NOT NULL
+        WHERE User.userid IS NOT NULL
         ORDER BY writedate DESC
     </select>
 
@@ -237,21 +237,21 @@
     <!-- 커뮤니티 게시글 삭제 -->
     <delete id="deleteById" >
         DELETE
-        FROM
-            boardwrite
-        WHERE boardid = #{boardid}
+                FROM
+                boardwrite
+                WHERE boardid = #{boardid}
     </delete>
     <delete id="deleteBoardWriteByLikedId" >
         DELETE
-        FROM
-            liked
-        WHERE inherentid = #{boardid}
+                FROM
+                liked
+                WHERE inherentid = #{boardid}
     </delete>
     <delete id="deleteBoardWriteComments" >
         DELETE
-        FROM
-            comments
-        WHERE inherentid = #{boardid}
+                FROM
+                comments
+                WHERE inherentid = #{boardid}
     </delete>
 
     <!-- 단체 게시글 조회  -->
@@ -277,7 +277,7 @@
                 LEFT JOIN User
                           ON User.userid = groupwrite.userid
         WHERE groupid = #{groupid}
-            AND User.userid IS NOT NULL
+          AND User.userid IS NOT NULL
     </select>
     <!-- 단체 특정 게시글 조회수 카운트 +1 -->
     <update id="updateGroupInquiry" parameterType="com.project.ribbon.domain.post.PostGroupResponse">
@@ -335,15 +335,15 @@
     <!-- 단체 게시글 삭제 -->
     <delete id="deleteByGroupId" >
         DELETE
-        FROM
-            groupwrite
-        WHERE groupid = #{groupid}
+                FROM
+                groupwrite
+                WHERE groupid = #{groupid}
     </delete>
     <delete id="deleteGroupWriteComments" >
         DELETE
-        FROM
-            groupcomments
-        WHERE inherentid = #{groupid}
+                FROM
+                groupcomments
+                WHERE inherentid = #{groupid}
     </delete>
 
 
@@ -372,7 +372,7 @@
                 LEFT JOIN User
                           ON User.userid = individualwrite.userid
         WHERE individualid = #{individualid}
-            AND User.userid IS NOT NULL
+          AND User.userid IS NOT NULL
     </select>
     <!-- 개인 특정 게시글 조회수 카운트 +1 -->
     <update id="updateIndiInquiry" parameterType="com.project.ribbon.domain.post.PostIndiResponse">
@@ -424,21 +424,21 @@
     <!-- 개인 게시글 삭제 -->
     <delete id="deleteByIndiId" >
         DELETE
-        FROM
-            individualwrite
-        WHERE individualid = #{individualid}
+                FROM
+                individualwrite
+                WHERE individualid = #{individualid}
     </delete>
     <delete id="deleteIndiWriteByLikedId" >
         DELETE
-        FROM
-            individualliked
-        WHERE inherentid = #{individualid}
+                FROM
+                individualliked
+                WHERE inherentid = #{individualid}
     </delete>
     <delete id="deleteIndiWriteComments" >
         DELETE
-        FROM
-            individualcomments
-        WHERE inherentid = #{individualid}
+                FROM
+                individualcomments
+                WHERE inherentid = #{individualid}
     </delete>
 
     <!-- 중고 게시글 조회  -->
@@ -464,7 +464,7 @@
                 LEFT JOIN User
                           ON User.userid = usedwrite.userid
         WHERE usedid = #{usedid}
-            AND User.userid IS NOT NULL
+          AND User.userid IS NOT NULL
     </select>
     <!-- 중고 특정 게시글 조회수 카운트 +1 -->
     <update id="updateUsedInquiry" parameterType="com.project.ribbon.domain.post.PostUsedResponse">
@@ -520,21 +520,21 @@
     <!-- 중고 게시글 삭제 -->
     <delete id="deleteByUsedId" >
         DELETE
-        FROM
-            usedwrite
-        where usedid = #{usedid}
+                FROM
+                usedwrite
+                where usedid = #{usedid}
     </delete>
     <delete id="deleteUsedWriteByLikedId" >
         DELETE
-        FROM
-            usedliked
-        WHERE inherentid = #{usedid}
+                FROM
+                usedliked
+                WHERE inherentid = #{usedid}
     </delete>
     <delete id="deleteUsedWriteComments" >
         DELETE
-        FROM
-            usedcomments
-        WHERE inherentid = #{usedid}
+                FROM
+                usedcomments
+                WHERE inherentid = #{usedid}
     </delete>
 
 
@@ -588,13 +588,13 @@
     <insert id="saveUserRoles" parameterType="com.project.ribbon.domain.post.PostUserRequest"
     >
         INSERT INTO user_roles (
-        user_userid,roles,email
+            user_userid,roles,email
         ) VALUES (
-        #{userid}
-        , "USER"
-        , #{email})
-        ON DUPLICATE KEY UPDATE
-        roles = VALUES(roles)
+                     #{userid}
+                 , "USER"
+                 , #{email})
+            ON DUPLICATE KEY UPDATE
+                                 roles = VALUES(roles)
 
     </insert>
 
@@ -603,24 +603,24 @@
     <update id="updateUser" parameterType="com.project.ribbon.domain.post.PostUserUpdateRequest">
         UPDATE User
         SET
-            sns = #{sns}
-          , nickname = #{nickname}
-          , modifydate = #{modifydate}
-          , bestcategory = #{bestcategory}
-          , shortinfo = #{shortinfo}
-          <!--, youtube = #{youtube}-->
-          , profileimage = #{profileimage}
+        sns = #{sns}
+        , nickname = #{nickname}
+        , modifydate = #{modifydate}
+        , bestcategory = #{bestcategory}
+        , shortinfo = #{shortinfo}
+        <!--, youtube = #{youtube}-->
+        , profileimage = #{profileimage}
         WHERE
-            userid = #{userid}
+        userid = #{userid}
     </update>
 
     <!-- 유저 프로필 수정 -->
     <update id="updateInstructorUser" parameterType="com.project.ribbon.domain.post.PostInstructorUserUpdateRequest">
         UPDATE user_roles
         SET
-        roles = "INSTRUCTOR"
+            roles = "INSTRUCTOR"
         WHERE
-        userid = #{userid}
+            userid = #{userid}
     </update>
 
     <!-- 유저 수정된 프사 조회  -->
@@ -636,17 +636,17 @@
     <!-- 유저 정보 삭제 -->
     <delete id="deleteByUserId" >
         DELETE
-        FROM
-            User
-        WHERE userid = #{userid}
+                FROM
+                User
+                WHERE userid = #{userid}
     </delete>
 
     <!-- 유저 권한 정보 삭제 -->
     <delete id="deleteByUserRolesId" >
         DELETE
-        FROM
-            user_roles
-        WHERE user_userid = #{userid}
+                FROM
+                user_roles
+                WHERE user_userid = #{userid}
     </delete>
 
     <!-- 실시간 인기글 -->
@@ -775,12 +775,12 @@
     <!-- 좋아요 삭제 -->
     <delete id="deleteByLikedId" >
         DELETE
-        FROM
-            liked
-        WHERE categoryid = #{categoryid}
-          AND nickname = #{nickname}
-          AND inherentid = #{inherentid}
-          AND userid = #{userid}
+                FROM
+                liked
+                WHERE categoryid = #{categoryid}
+                AND nickname = #{nickname}
+                AND inherentid = #{inherentid}
+                AND userid = #{userid}
     </delete>
 
 
@@ -817,12 +817,12 @@
     <!-- 개인 좋아요 삭제 -->
     <delete id="deleteByIndividualLikedId" >
         DELETE
-        FROM
-            individualliked
-        WHERE categoryid = #{categoryid}
-          AND nickname = #{nickname}
-          AND inherentid = #{inherentid}
-          AND userid = #{userid}
+                FROM
+                individualliked
+                WHERE categoryid = #{categoryid}
+                AND nickname = #{nickname}
+                AND inherentid = #{inherentid}
+                AND userid = #{userid}
     </delete>
 
 
@@ -859,12 +859,12 @@
     <!-- 중고 좋아요 삭제 -->
     <delete id="deleteByUsedLikedId" >
         DELETE
-        FROM
-            usedliked
-        WHERE categoryid = #{categoryid}
-          AND nickname = #{nickname}
-          AND inherentid = #{inherentid}
-          AND userid = #{userid}
+                FROM
+                usedliked
+                WHERE categoryid = #{categoryid}
+                AND nickname = #{nickname}
+                AND inherentid = #{inherentid}
+                AND userid = #{userid}
     </delete>
 
     <!-- 커뮤니티 댓글 알림 조회  -->
@@ -977,7 +977,7 @@
                  LEFT JOIN User
                            ON User.userid = comments.userid
         WHERE inherentid = #{inherentid}
-            AND User.userid IS NOT NULL
+          AND User.userid IS NOT NULL
     </select>
 
 
@@ -1029,9 +1029,9 @@
     <!-- 댓글 정보 삭제 -->
     <delete id="deleteComments" >
         DELETE
-        FROM
-            comments
-        WHERE commentsid = #{commentsid}
+                FROM
+                comments
+                WHERE commentsid = #{commentsid}
     </delete>
 
 
@@ -1106,9 +1106,9 @@
     <!-- 단체 댓글 정보 삭제 -->
     <delete id="deleteGroupComments" >
         DELETE
-        FROM
-            groupcomments
-        WHERE commentsid = #{commentsid}
+                FROM
+                groupcomments
+                WHERE commentsid = #{commentsid}
     </delete>
 
 
@@ -1181,9 +1181,9 @@
     <!-- 개인 댓글 정보 삭제 -->
     <delete id="deleteIndiComments" >
         DELETE
-        FROM
-            individualcomments
-        WHERE commentsid = #{commentsid}
+                FROM
+                individualcomments
+                WHERE commentsid = #{commentsid}
     </delete>
 
 
@@ -1256,9 +1256,9 @@
     <!-- 중고 댓글 정보 삭제 -->
     <delete id="deleteUsedComments" >
         DELETE
-        FROM
-            usedcomments
-        WHERE commentsid = #{commentsid}
+                FROM
+                usedcomments
+                WHERE commentsid = #{commentsid}
     </delete>
 
 
@@ -1411,9 +1411,9 @@
     <!-- 채팅룸 삭제 -->
     <delete id="deleteByRoomName" >
         DELETE
-        FROM
-            chatroom
-        WHERE roomname = #{roomname}
+                FROM
+                chatroom
+                WHERE roomname = #{roomname}
     </delete>
 
 
@@ -1628,15 +1628,15 @@
     <!-- 활성화 유저 관리자페이지 삭제 -->
     <delete id="deleteByActivateUserId" >
         DELETE
-        FROM
-        reportuser
-        WHERE userid = #{userid}
+                FROM
+                reportuser
+                WHERE userid = #{userid}
     </delete>
 
     <!-- 활성화 유저 권한 변경 -->
     <update id="updateByActivateUserRolesId" >
         UPDATE
-        user_roles
+            user_roles
         SET roles = "USER"
         WHERE user_userid = #{userid}
     </update>
@@ -1644,79 +1644,79 @@
     <!-- 신고 관리자페이지 커뮤니티글 삭제 -->
     <delete id="deleteBoardReport" >
         DELETE
-        FROM
-            reportboard
-        WHERE boardid = #{boardid}
+                FROM
+                reportboard
+                WHERE boardid = #{boardid}
     </delete>
 
     <!-- 신고 커뮤니티 게시글 삭제 -->
     <delete id="deleteBoardWriteReport" >
         DELETE
-        FROM
-            boardwrite
-        WHERE boardid = #{boardid}
+                FROM
+                boardwrite
+                WHERE boardid = #{boardid}
     </delete>
     <!-- 신고 관리자페이지 개인글 삭제 -->
     <delete id="deleteIndividualReport" >
         DELETE
-        FROM
-            reportindividual
-        WHERE individualid = #{individualid}
+                FROM
+                reportindividual
+                WHERE individualid = #{individualid}
     </delete>
 
     <!-- 신고 개인 게시글 삭제 -->
     <delete id="deleteIndividualWriteReport" >
         DELETE
-        FROM
-            individualwrite
-        WHERE individualid = #{individualid}
+                FROM
+                individualwrite
+                WHERE individualid = #{individualid}
     </delete>
     <!-- 신고 관리자페이지 단체글 삭제 -->
     <delete id="deleteGroupReport" >
         DELETE
-        FROM
-            reportgroup
-        WHERE groupid = #{groupid}
+                FROM
+                reportgroup
+                WHERE groupid = #{groupid}
     </delete>
 
     <!-- 신고 단체 게시글 삭제 -->
     <delete id="deleteGroupWriteReport" >
         DELETE
-        FROM
-            groupwrite
-        WHERE groupid = #{groupid}
+                FROM
+                groupwrite
+                WHERE groupid = #{groupid}
     </delete>
     <!-- 신고 관리자페이지 중고글 삭제 -->
     <delete id="deleteUsedReport" >
         DELETE
-        FROM
-            reportused
-        WHERE usedid = #{usedid}
+                FROM
+                reportused
+                WHERE usedid = #{usedid}
     </delete>
 
     <!-- 신고 중고 게시글 삭제 -->
     <delete id="deleteUsedWriteReport" >
         DELETE
-        FROM
-            usedwrite
-        WHERE usedid = #{usedid}
+                FROM
+                usedwrite
+                WHERE usedid = #{usedid}
     </delete>
 
 
     <!-- 신고 관리자페이지 커뮤니티댓글 삭제 -->
     <delete id="deleteBoardCommentsReport" >
         DELETE
-        FROM
-            reportcomments
-        WHERE commentsid = #{commentsid}
+                FROM
+                reportcomments
+                WHERE commentsid = #{commentsid}
     </delete>
 
     <!-- 신고 커뮤니티 게시댓글 삭제 -->
     <delete id="deleteBoardCommentsWriteReport" >
         DELETE
-        FROM
-            comments
-        WHERE commentsid = #{commentsid}
+                FROM
+                comments
+                WHERE commentsid = #{commentsid}
     </delete>
     <!-- 커뮤니티 댓글 갯수 카운트 -1 -->
     <update id="updateDeleteReportCommentsCount" parameterType="com.project.ribbon.domain.post.PostReportCommentsCountRequest">
@@ -1727,17 +1727,17 @@
     <!-- 신고 관리자페이지 개인댓글 삭제 -->
     <delete id="deleteIndividualCommentsReport" >
         DELETE
-        FROM
-            reportindividualcomments
-        WHERE commentsid = #{commentsid}
+                FROM
+                reportindividualcomments
+                WHERE commentsid = #{commentsid}
     </delete>
 
     <!-- 신고 개인 게시댓글 삭제 -->
     <delete id="deleteIndividualCommentsWriteReport" >
         DELETE
-        FROM
-            individualcomments
-        WHERE commentsid = #{commentsid}
+                FROM
+                individualcomments
+                WHERE commentsid = #{commentsid}
     </delete>
     <!-- 개인 댓글 갯수 카운트 -1 -->
     <update id="updateDeleteReportIndividualCommentsCount" parameterType="com.project.ribbon.domain.post.PostReportIndividualCommentsCountRequest">
@@ -1748,17 +1748,17 @@
     <!-- 신고 관리자페이지 단체댓글 삭제 -->
     <delete id="deleteGroupCommentsReport" >
         DELETE
-        FROM
-            reportgroupcomments
-        WHERE commentsid = #{commentsid}
+                FROM
+                reportgroupcomments
+                WHERE commentsid = #{commentsid}
     </delete>
 
     <!-- 신고 단체 게시댓글 삭제 -->
     <delete id="deleteGroupCommentsWriteReport" >
         DELETE
-        FROM
-            groupcomments
-        WHERE commentsid = #{commentsid}
+                FROM
+                groupcomments
+                WHERE commentsid = #{commentsid}
     </delete>
     <!-- 단체 댓글 갯수 카운트 -1 -->
     <update id="updateDeleteReportGroupCommentsCount" parameterType="com.project.ribbon.domain.post.PostReportGroupCommentsCountRequest">
@@ -1769,17 +1769,17 @@
     <!-- 신고 관리자페이지 중고댓글 삭제 -->
     <delete id="deleteUsedCommentsReport" >
         DELETE
-        FROM
-            reportusedcomments
-        WHERE commentsid = #{commentsid}
+                FROM
+                reportusedcomments
+                WHERE commentsid = #{commentsid}
     </delete>
 
     <!-- 신고 중고 게시댓글 삭제 -->
     <delete id="deleteUsedCommentsWriteReport" >
         DELETE
-        FROM
-            usedcomments
-        WHERE commentsid = #{commentsid}
+                FROM
+                usedcomments
+                WHERE commentsid = #{commentsid}
     </delete>
     <!-- 중고 댓글 갯수 카운트 -1 -->
     <update id="updateDeleteReportUsedCommentsCount" parameterType="com.project.ribbon.domain.post.PostReportUsedCommentsCountRequest">
@@ -1811,9 +1811,9 @@
 
     <!-- 관리자 공지사항 삭제 -->
     <delete id="deleteAnnouncement" >
-    DELETE
-    FROM
-        announcement
-    WHERE id = #{id}
+        DELETE
+                FROM
+                announcement
+                WHERE id = #{id}
     </delete>
 </mapper>
