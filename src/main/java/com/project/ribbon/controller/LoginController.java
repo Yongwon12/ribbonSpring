@@ -6,7 +6,6 @@ import com.project.ribbon.dto.TokenInfo;
 import com.project.ribbon.enums.ExceptionEnum;
 import com.project.ribbon.response.ApiException;
 import com.project.ribbon.service.FirebaseAnnouncementMessageService;
-import com.project.ribbon.service.FirebaseCloudMessageLikedService;
 import com.project.ribbon.service.MemberService;
 import com.project.ribbon.service.PostService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,11 +34,11 @@ public class LoginController {
     private final PostService postService;
     private final FirebaseAnnouncementMessageService firebaseAnnouncementMessageService;
     // 내부 서버 Ip : 192.168.219.161
-    String ip = "http://192.168.219.161:8000/ribbon/admin";
+    String ip = "http://172.20.10.3:8000/ribbon/admin";
     // 맺음 홈페이지
     @GetMapping("/ribbon")
     public String showRibbonForm() {
-        return "ribbonhome";
+        return "index";
     }
     @GetMapping("/ribbon/ribbon.png")
     public ResponseEntity<byte[]> getRibbonImage() throws IOException {
