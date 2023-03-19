@@ -92,6 +92,16 @@ public class PostController {
         return ResponseEntity.ok(postService.savePost(params));
     }
 
+    // GIF 조회
+    @GetMapping("/GIF/{imageName:.+}")
+    public ResponseEntity<byte[]> getGifImage(@PathVariable("imageName") String img) throws IOException {
+        Path imageGIFPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + img);
+        byte[] imageBytes = Files.readAllBytes(imageGIFPath);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+    }
 
     // 커뮤니티 프로필 사진 조회
     @GetMapping("/boardimage/{imageName:.+}")

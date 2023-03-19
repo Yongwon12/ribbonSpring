@@ -1218,6 +1218,15 @@ public class PostService {
             throw new RuntimeException("신고 중고 댓글 조회에 실패했습니다.", e);
         }
     }
+    // 문의하기 조회
+    public List<PostReportBoardResponse> findInquiryAllPost() {
+        try {
+            return postMapper.findInquiryAll();
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("문의하기 조회에 실패했습니다.", e);
+        }
+    }
     // 신고 중고 댓글 저장
     @Transactional
     public ResponseEntity<?> saveReportUsedCommentsPost(final PostReportCommentsResponse params) {
@@ -1517,4 +1526,6 @@ public class PostService {
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
+
+
 }

@@ -1812,6 +1812,14 @@
         FROM announcement
         ORDER BY writedate DESC
     </select>
+    <!-- 문의하기 조회 -->
+    <select id="findInquiryAll" resultType="com.project.ribbon.domain.post.PostReportBoardResponse">
+        SELECT
+            title,description,writedate
+        FROM boardwrite
+        WHERE id = 10
+        ORDER BY writedate DESC LIMIT 20
+    </select>
 
     <!-- 관리자 공지사항 삭제 -->
     <delete id="deleteAnnouncement" >

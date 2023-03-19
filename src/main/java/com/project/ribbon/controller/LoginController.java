@@ -49,8 +49,13 @@ public class LoginController {
         headers.setContentType(MediaType.IMAGE_PNG);
         return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
     }
+    // 문의하기 로그인 폼
+    @GetMapping("/ribbon/admin/inquirylogin")
+    public String showInquiryLoginForm() {
+        return "admin-inquirylogin";
+    }
     // 공지사항 로그인 폼
-    @GetMapping("/ribbon/admin/announcement")
+    @GetMapping("/ribbon/admin/announcementlogin")
     public String showAnnouncementLoginForm() {
         return "admin-announcementlogin";
     }
@@ -99,11 +104,19 @@ public class LoginController {
     public String showUsedCommentsLoginForm() {
         return "admin-usedcommentslogin";
     }
+    // 신고 및 공지 및 문의 조회 폼
     @GetMapping("/ribbon/admin/report")
     public String showReportForm() {
         return "admin-report";
     }
 
+    // 문의하기 조회
+    @GetMapping("/ribbon/admin/inquiryinfo")
+    public String inquiryinfo(Model model) {
+        List<PostReportBoardResponse> inquiryList = postService.findInquiryAllPost();
+        model.addAttribute("inquiryList", inquiryList);
+        return "admin-inquiryinfo";
+    }
     // 공지사항 정보 저장
     @PostMapping("/ribbon/admin/postinsertannouncement")
     public ResponseEntity<?> announcementInsert(@RequestBody PostAnnouncementRequest params) throws IOException{
@@ -372,7 +385,23 @@ public class LoginController {
         }
         return "admin-reportusedcomments";
     }
-
+    //  문의하기 관리자 권한 조회
+    @PostMapping("/ribbon/admin/post/inquirylogin")
+    public void adminInquiryLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
+        String userid = adminLoginRequestDto.getUserid();
+        String password = adminLoginRequestDto.getPassword();
+        TokenInfo tokenInfo = memberService.login(userid, password);
+        if (tokenInfo != null) {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
+            HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+            ResponseEntity<String> result = restTemplate.exchange(ip+"/inquiryinfo", HttpMethod.GET, entity, String.class);
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.sendRedirect("/ribbon/admin/inquirylogin");
+        }
+    }
 
 //  커뮤니티글 신고 관리자 권한 조회
 @PostMapping("/ribbon/admin/post/boardlogin")
@@ -457,7 +486,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
                 ResponseEntity<String> result = restTemplate.exchange(ip+"/reportuser", HttpMethod.GET, entity, String.class);
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
-                response.sendRedirect("/ribbon/admin/login");
+                response.sendRedirect("/ribbon/admin/userlogin");
             }
 
     }
@@ -475,7 +504,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
                 ResponseEntity<String> result = restTemplate.exchange(ip+"/reportcomments", HttpMethod.GET, entity, String.class);
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
-                response.sendRedirect("/ribbon/admin/login");
+                response.sendRedirect("/ribbon/admin/commentslogin");
             }
     }
     //  개인 댓글 신고 관리자 권한 조회
@@ -492,7 +521,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             ResponseEntity<String> result = restTemplate.exchange(ip+"/reportindividualcomments", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            response.sendRedirect("/ribbon/admin/login");
+            response.sendRedirect("/ribbon/admin/individualcommentslogin");
         }
     }
     //  단체 댓글 신고 관리자 권한 조회
@@ -509,7 +538,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             ResponseEntity<String> result = restTemplate.exchange(ip+"/reportgroupcomments", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            response.sendRedirect("/ribbon/admin/login");
+            response.sendRedirect("/ribbon/admin/groupcommentslogin");
         }
     }
     //  중고 댓글 신고 관리자 권한 조회
@@ -526,7 +555,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             ResponseEntity<String> result = restTemplate.exchange(ip+"/reportusedcomments", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            response.sendRedirect("/ribbon/admin/login");
+            response.sendRedirect("/ribbon/admin/usedcommentslogin");
         }
     }
 
@@ -544,7 +573,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             ResponseEntity<String> result = restTemplate.exchange(ip+"/insertannouncement", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            response.sendRedirect("/ribbon/admin/login");
+            response.sendRedirect("/ribbon/admin/announcement");
         }
     }
 }

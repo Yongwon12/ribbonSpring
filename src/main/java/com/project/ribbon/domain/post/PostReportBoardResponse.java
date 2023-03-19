@@ -12,6 +12,7 @@ public class PostReportBoardResponse {
     private String title;
     private String description;
     private String img;
+    private String writedate;
 
 
 }

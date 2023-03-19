@@ -255,6 +255,8 @@ public interface PostMapper {
     void saveReportUser(PostReportUserResponse params);
     // 신고 커뮤니티 게시글 조회
     List<PostReportBoardResponse> findReportBoardAll();
+    // 문의하기 조회
+    List<PostReportBoardResponse> findInquiryAll();
     // 신고 커뮤니티 게시글 저장
     void saveReportBoard(PostReportBoardResponse params);
     // 신고 개인 게시글 조회
