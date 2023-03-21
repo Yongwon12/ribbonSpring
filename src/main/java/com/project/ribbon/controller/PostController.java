@@ -148,11 +148,15 @@ public class PostController {
 
     // 기존 게시글 삭제
     @RequestMapping("/post/delete")
-    public ResponseEntity<?> deletePost(@RequestBody PostRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.deleteBoardWriteCommentsPost(params);
-        postService.deleteBoardWriteLikedPost(params);
-        return postService.deletePost(params);
+    public ResponseEntity<?> deletePost(@RequestBody PostRequest params) {
+        try {
+            postService.deleteBoardWriteCommentsPost(params);
+            postService.deleteBoardWriteLikedPost(params);
+            return postService.deletePost(params);
+        } catch (Exception e) {
+            // 예외 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     // 단체 작성글 조회
