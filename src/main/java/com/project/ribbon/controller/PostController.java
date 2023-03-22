@@ -88,7 +88,6 @@ public class PostController {
         } else {
             params.setImg(null);
         }
-        System.out.println(params);
         return ResponseEntity.ok(postService.savePost(params));
     }
 
@@ -426,7 +425,6 @@ public class PostController {
             List<PostUserRequest> posts = postService.findUserInfoAllPost(params.getEmail());
             model.addAttribute("posts", posts);
             obj.put("userid", posts);
-            System.out.println(posts);
             return ResponseEntity.ok(obj);
         } catch (ApiException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -494,7 +492,6 @@ public class PostController {
             postService.updateUserPost(params);
 
             PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
-            System.out.println(posts);
             return new ResponseEntity<>(posts, HttpStatus.OK);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

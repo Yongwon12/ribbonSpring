@@ -1818,7 +1818,7 @@
             title,description,writedate
         FROM boardwrite
         WHERE id = 10
-        ORDER BY writedate DESC LIMIT 20
+        ORDER BY writedate DESC LIMIT 10
     </select>
 
     <!-- 관리자 공지사항 삭제 -->
