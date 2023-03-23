@@ -35,7 +35,7 @@ import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("api")
+@RequestMapping("/api")
 @ResponseBody
 @Slf4j
 @RestController
@@ -434,7 +434,7 @@ public class PostController {
 
     // 유저 모든 POST 요청 대한 권한얻기
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody MemberLoginRequestDto memberLoginRequestDto, Model model) {
+    public ResponseEntity<?> login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
         String userid = memberLoginRequestDto.getUserid();
         String password = memberLoginRequestDto.getPassword();
         try {
@@ -470,7 +470,7 @@ public class PostController {
             ,@RequestParam("shortinfo") @Size(min = 2, max = 20, message = "한 줄 설명은 2~20자리여야 합니다.") String shortinfo
             //,@RequestParam("youtube") String youtube
             ,@RequestParam(value = "image",required = false) MultipartFile file
-            ,@RequestParam("userid") @NotNull(message = "유저아이디는 필수입력값입니다.") Long userid) throws IOException{
+            ,@RequestParam("userid") @NotNull(message = "유저아이디는 필수입력값입니다.") Long userid) {
         try {
             PostUserUpdateRequest params = new PostUserUpdateRequest();
             if (file != null) {
@@ -560,7 +560,7 @@ public class PostController {
             firebaseCloudMessageLikedService.sendMessageTo(
                     params.getToken(),
                     params.getNickname());
-            return ResponseEntity.ok().build().getStatusCodeValue();
+            return ResponseEntity.ok().build().getStatusCode().value();
 
         }
         // 커뮤니티 좋아요 알림 조회
@@ -612,7 +612,7 @@ public class PostController {
             firebaseCloudMessageLikedService.sendMessageTo(
                     params.getToken(),
                     params.getNickname());
-            return ResponseEntity.ok().build().getStatusCodeValue();
+            return ResponseEntity.ok().build().getStatusCode().value();
 
         }
 
@@ -634,7 +634,7 @@ public class PostController {
             firebaseCloudMessageLikedService.sendMessageTo(
                     params.getToken(),
                     params.getNickname());
-            return ResponseEntity.ok().build().getStatusCodeValue();
+            return ResponseEntity.ok().build().getStatusCode().value();
 
         }
 
@@ -710,7 +710,7 @@ public class PostController {
             firebaseCloudMessageCommentsService.sendMessageTo(
                     params.getToken(),
                     params.getNickname());
-            ResponseEntity.ok().build().getStatusCodeValue();
+            ResponseEntity.ok().build().getStatusCode();
             Map<String, Object> obj = new HashMap<>();
             List<PostCommentsIdResponse> posts = postService.findCommentsIdPost();
             model.addAttribute("posts", posts);
@@ -756,7 +756,7 @@ public class PostController {
             firebaseCloudMessageCommentsService.sendMessageTo(
                     params.getToken(),
                     params.getNickname());
-            ResponseEntity.ok().build().getStatusCodeValue();
+            ResponseEntity.ok().build().getStatusCode();
             Map<String, Object> obj = new HashMap<>();
             List<PostIndiCommentsIdResponse> posts = postService.findIndiCommentsIdPost();
             model.addAttribute("posts", posts);
@@ -802,7 +802,7 @@ public class PostController {
             firebaseCloudMessageCommentsService.sendMessageTo(
                     params.getToken(),
                     params.getNickname());
-            ResponseEntity.ok().build().getStatusCodeValue();
+            ResponseEntity.ok().build().getStatusCode();
             Map<String, Object> obj = new HashMap<>();
             List<PostGroupCommentsIdResponse> posts = postService.findGroupCommentsIdPost();
             model.addAttribute("posts", posts);
@@ -849,7 +849,7 @@ public class PostController {
             firebaseCloudMessageCommentsService.sendMessageTo(
                     params.getToken(),
                     params.getNickname());
-            ResponseEntity.ok().build().getStatusCodeValue();
+            ResponseEntity.ok().build().getStatusCode();
             Map<String, Object> obj = new HashMap<>();
             List<PostUsedCommentsIdResponse> posts = postService.findUsedCommentsIdPost();
             model.addAttribute("posts", posts);
@@ -1006,7 +1006,7 @@ public class PostController {
             firebaseCloudChatMessageService.sendMessageTo(
                     responseDTO.getToken(),
                     responseDTO.getNickname());
-            return String.valueOf(ResponseEntity.ok().build().getStatusCodeValue());
+            return String.valueOf(ResponseEntity.ok().build().getStatusCode());
 
         }
 
