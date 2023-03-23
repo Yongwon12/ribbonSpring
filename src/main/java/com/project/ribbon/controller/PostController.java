@@ -51,10 +51,10 @@ public class PostController {
 
     // 외부 서버 ip : 112.148.33.214
 
-    String userip = "http://192.168.219.161:8000/api/userimage/";
-    String boardip = "http://192.168.219.161:8000/api/boardimage/";
-    String groupip = "http://192.168.219.161:8000/api/groupimage/";
-    String usedip = "http://192.168.219.161:8000/api/usedimage/";
+    String userip = "https://ribbonding.shop:48610/api/userimage/";
+    String boardip = "https://ribbonding.shop:48610/api/boardimage/";
+    String groupip = "https://ribbonding.shop:48610/api/groupimage/";
+    String usedip = "https://ribbonding.shop:48610/api/usedimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
