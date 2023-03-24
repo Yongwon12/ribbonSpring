@@ -42,7 +42,7 @@ public class LoginController {
     }
     @GetMapping("/ribbon/ribbon.png")
     public ResponseEntity<byte[]> getRibbonImage() throws IOException {
-        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.png" );
+        Path imagePath = Paths.get("/oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbon.png" );
         byte[] imageBytes = Files.readAllBytes(imagePath);
 
         final HttpHeaders headers = new HttpHeaders();
