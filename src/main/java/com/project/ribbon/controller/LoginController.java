@@ -33,8 +33,9 @@ public class LoginController {
     private final MemberService memberService;
     private final PostService postService;
     private final FirebaseAnnouncementMessageService firebaseAnnouncementMessageService;
-    // 내부 서버 Ip : 192.168.219.161
-    String ip = "https://ribbonding.shop:48610/ribbon/admin";
+    // 서버 업로드용 ip : https://ribbonding.shop:48610/ribbon/admin
+    // 개발환경용 ip : https://192.168.219.161:8000/ribbon/admin
+    String ip = "https://192.168.219.161:8000/ribbon/admin";
     // 맺음 홈페이지
     @GetMapping("/ribbon")
     public String showRibbonForm() {
@@ -42,7 +43,7 @@ public class LoginController {
     }
     @GetMapping("/ribbon/ribbon.png")
     public ResponseEntity<byte[]> getRibbonImage() throws IOException {
-        Path imagePath = Paths.get("/oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbon.png" );
+        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.png" );
         byte[] imageBytes = Files.readAllBytes(imagePath);
 
         final HttpHeaders headers = new HttpHeaders();
