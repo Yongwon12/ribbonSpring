@@ -34,8 +34,10 @@ public class LoginController {
     private final PostService postService;
     private final FirebaseAnnouncementMessageService firebaseAnnouncementMessageService;
     // 서버 업로드용 ip : https://ribbonding.shop:48610/ribbon/admin
+    // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbon.png
     // 개발환경용 ip : https://192.168.219.161:8000/ribbon/admin
-    String ip = "https://192.168.219.161:8000/ribbon/admin";
+    // 개발환경용 맺음 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.png
+    String ip = "https://ribbonding.shop:48610/ribbon/admin";
     // 맺음 홈페이지
     @GetMapping("/ribbon")
     public String showRibbonForm() {

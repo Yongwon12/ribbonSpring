@@ -703,9 +703,9 @@
             boardwrite
                 LEFT JOIN liked AS boardliked
                           ON boardliked.inherentid = boardwrite.boardid
-                LEFT JOIN User AS writer
+                LEFT JOIN user AS writer
                           ON writer.userid = boardwrite.userid
-                LEFT JOIN User AS liker
+                LEFT JOIN user AS liker
                           ON liker.userid = boardliked.myid
         WHERE
             writer.userid = #{userid}
@@ -727,9 +727,9 @@
             individualwrite
                 LEFT JOIN individualliked AS liked
                           ON liked.inherentid = individualwrite.individualid
-                LEFT JOIN User AS writer
+                LEFT JOIN user AS writer
                           ON writer.userid = individualwrite.userid
-                LEFT JOIN User AS liker
+                LEFT JOIN user AS liker
                           ON liker.userid = liked.myid
         WHERE
             writer.userid = #{userid}
@@ -750,9 +750,9 @@
             usedwrite
                 LEFT JOIN usedliked AS liked
                           ON liked.inherentid = usedwrite.usedid
-                LEFT JOIN User AS writer
+                LEFT JOIN user AS writer
                           ON writer.userid = usedwrite.userid
-                LEFT JOIN User AS liker
+                LEFT JOIN user AS liker
                           ON liker.userid = liked.myid
         WHERE
             writer.userid = #{userid}
