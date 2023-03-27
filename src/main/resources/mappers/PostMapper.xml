@@ -648,6 +648,21 @@
                 user_roles
                 WHERE user_userid = #{userid}
     </delete>
+<!--    &lt;!&ndash; 삭제 유저 댓글 갯수 카운트 빼기 &ndash;&gt;-->
+<!--    <update id="updateDeleteGroupCommentsCount" parameterType="com.project.ribbon.domain.post.PostGroupCommentsRequest">-->
+
+<!--        UPDATE table1 SET commentcount = commentcount - (-->
+<!--            SELECT COUNT(*) FROM table2-->
+<!--            WHERE table2.user_id = #{user_id} AND table2.comment_type = 'count'-->
+<!--        ) WHERE table1.groupid = #{inherentid};-->
+
+<!--        UPDATE table3 SET commentcount = commentcount - (-->
+<!--            SELECT COUNT(*) FROM table4-->
+<!--            WHERE table4.user_id = #{user_id} AND table4.comment_type = 'count'-->
+<!--        ) WHERE table3.groupid = #{inherentid};-->
+
+
+<!--    </update>-->
 
     <!-- 실시간 인기글 -->
     <select id="findAll11" resultType="com.project.ribbon.domain.post.PostResponse">
@@ -785,6 +800,7 @@
                 AND nickname = #{nickname}
                 AND inherentid = #{inherentid}
                 AND userid = #{userid}
+                AND myid = #{myid}
     </delete>
 
 
