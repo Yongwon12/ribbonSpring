@@ -37,7 +37,7 @@ public class LoginController {
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbon.png
     // 개발환경용 ip : https://192.168.219.161:8000/ribbon/admin
     // 개발환경용 맺음 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.png
-    String ip = "https://ribbonding.shop:48610/ribbon/admin";
+    String ip = "https://192.168.219.161:8000/ribbon/admin";
     // 맺음 홈페이지
     @GetMapping("/ribbon")
     public String showRibbonForm() {
@@ -45,7 +45,7 @@ public class LoginController {
     }
     @GetMapping("/ribbon/ribbon.png")
     public ResponseEntity<byte[]> getRibbonImage() throws IOException {
-        Path imagePath = Paths.get("/oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbon.png" );
+        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.png" );
         byte[] imageBytes = Files.readAllBytes(imagePath);
 
         final HttpHeaders headers = new HttpHeaders();
