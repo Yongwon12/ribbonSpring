@@ -34,18 +34,27 @@ public class LoginController {
     private final PostService postService;
     private final FirebaseAnnouncementMessageService firebaseAnnouncementMessageService;
     // 서버 업로드용 ip : https://ribbonding.shop:48610/ribbon/admin
-    // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbon.png
+    // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbonding.png
     // 개발환경용 ip : https://192.168.219.161:8000/ribbon/admin
-    // 개발환경용 맺음 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.png
+    // 개발환경용 맺음 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png
     String ip = "https://192.168.219.161:8000/ribbon/admin";
     // 맺음 홈페이지
     @GetMapping("/ribbon")
     public String showRibbonForm() {
         return "index";
     }
-    @GetMapping("/ribbon/ribbon.png")
+    @GetMapping("/ribbon/ribbon.gif")
+    public ResponseEntity<byte[]> getRibbonGif() throws IOException {
+        Path gifPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.gif" );
+        byte[] gifBytes = Files.readAllBytes(gifPath);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_GIF);
+        return new ResponseEntity<>(gifBytes, headers, HttpStatus.OK);
+    }
+    @GetMapping("/ribbon/ribbonding.png")
     public ResponseEntity<byte[]> getRibbonImage() throws IOException {
-        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.png" );
+        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png" );
         byte[] imageBytes = Files.readAllBytes(imagePath);
 
         final HttpHeaders headers = new HttpHeaders();
