@@ -7,9 +7,7 @@ import com.project.ribbon.enums.ExceptionEnum;
 import com.project.ribbon.response.ApiException;
 import com.project.ribbon.service.*;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -410,9 +408,13 @@ public class PostController {
     @PostMapping("/sign")
     public ResponseEntity<?> saveUserPost(@RequestBody @Valid PostUserRequest params, Model model) throws ApiException {
         try {
-            postService.saveUserPost(params);
-            postService.saveUserRolesPost(params);
-
+            if ("USER".equals(params.getRoles())) {
+                postService.saveUserRolesPost(params);
+                postService.saveUserPost(params);
+            } else if ("INSTRUCTOR".equals(params.getRoles())) {
+                postService.updateInstructorUserPost(params);
+                postService.saveUserPost(params);
+            }
             Map<String, Object> obj = new HashMap<>();
             List<PostUserRequest> posts = postService.findUserInfoAllPost(params.getEmail());
             model.addAttribute("posts", posts);
@@ -420,8 +422,11 @@ public class PostController {
             return ResponseEntity.ok(obj);
         } catch (ApiException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
+
 
 
     // 유저 모든 POST 요청 대한 권한얻기
@@ -448,21 +453,18 @@ public class PostController {
     }
 
 
-
-
-
-
     // 유저 정보 수정
     @PostMapping("/post/updateuser")
     public ResponseEntity<?> updateUserPost(
             @RequestParam("sns") String sns
-            ,@RequestParam("nickname") @Size(min = 2, max = 10, message = "닉네임은 2~10자리여야 합니다.") @NotBlank(message = "닉네임은 필수 입력값입니다.") String nickname
-            ,@RequestParam("modifydate") @NotNull(message = "수정날짜는 필수입력값입니다.") String modifydate
-            ,@RequestParam("bestcategory") String bestcategory
-            ,@RequestParam("shortinfo") @Size(min = 2, max = 20, message = "한 줄 설명은 2~20자리여야 합니다.") String shortinfo
-            //,@RequestParam("youtube") String youtube
-            ,@RequestParam(value = "image",required = false) MultipartFile file
-            ,@RequestParam("userid") @NotNull(message = "유저아이디는 필수입력값입니다.") Long userid) {
+            , @RequestParam("nickname") @Size(min = 2, max = 10, message = "닉네임은 2~10자리여야 합니다.") @NotBlank(message = "닉네임은 필수 입력값입니다.") String nickname
+            , @RequestParam("modifydate") @NotNull(message = "수정날짜는 필수입력값입니다.") String modifydate
+            , @RequestParam("bestcategory") String bestcategory
+            , @RequestParam("shortinfo") @Size(min = 2, max = 20, message = "한 줄 설명은 2~20자리여야 합니다.") String shortinfo
+            , @RequestParam(value = "image",required = false) MultipartFile file
+            , @RequestParam("userid") @NotNull(message = "유저아이디는 필수입력값입니다.") Long userid
+            , @RequestParam("review") @NotNull @Min(value = 0, message = "review 값은 0 이상이어야 합니다.") @Max(value = 5, message = "review 값은 5 이하여야 합니다.") String review
+            , @RequestParam("appraisal") String appraisal) {
         try {
             PostUserUpdateRequest params = new PostUserUpdateRequest();
             if (file != null) {
@@ -481,6 +483,8 @@ public class PostController {
             params.setBestcategory(bestcategory);
             params.setShortinfo(shortinfo);
             params.setUserid(userid);
+            params.setReview(review);
+            params.setAppraisal(appraisal);
             postService.updateUserPost(params);
 
             PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
@@ -492,21 +496,6 @@ public class PostController {
         }
     }
 
-
-    // 강사 정보 수정
-    @PostMapping("/post/updateinstructoruser")
-    public ResponseEntity<?> updateUserPost(@RequestBody PostInstructorUserUpdateRequest params) {
-        try {
-            postService.updateInstructorUserPost(params);
-            return ResponseEntity.ok().build();
-        } catch (IOException e) {
-            // IOException 발생 시 500 에러 반환
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        } catch (Exception e) {
-            // 그 외 예외 발생 시 400 에러와 함께 에러 메시지 반환
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
 
     // 유저 프로필 사진 조회
     @GetMapping("/userimage/{imageName:.+}")

@@ -409,7 +409,7 @@ public class PostService {
     }
     // 강사 정보 수정
     @Transactional
-    public void updateInstructorUserPost(final PostInstructorUserUpdateRequest params) throws Exception {
+    public void updateInstructorUserPost(final PostUserRequest params) throws Exception {
         try {
             postMapper.updateInstructorUser(params);
         } catch (Exception e) {

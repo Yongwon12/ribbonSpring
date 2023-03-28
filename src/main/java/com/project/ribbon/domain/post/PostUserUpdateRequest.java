@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.awt.*;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,11 +21,14 @@ public class PostUserUpdateRequest {
         private String bestcategory;
         @Size(min = 2, max = 20, message = "한 줄 설명은 2~20자리여야 합니다.")
         private String shortinfo;
-        //private String youtube;
         private String profileimage;
         @NotNull(message = "유저아이디는 필수 입력값입니다.")
         private Long userid; //PK
-
+        @NotNull
+        @Min(value = 0, message = "review 값은 0 이상이어야 합니다.")
+        @Max(value = 5, message = "review 값은 5 이하여야 합니다.")
+        private String review;
+        private String appraisal;
 
 }
 

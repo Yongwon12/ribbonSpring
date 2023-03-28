@@ -96,9 +96,10 @@
         , gender
         , bestcategory
         , shortinfo
-        <!--, youtube-->
         , token
         , password
+        , review
+        , appraisal
     </sql>
 
     <!-- liked 테이블 전체 컬럼 -->
@@ -572,9 +573,10 @@
         , #{gender}
         , #{bestcategory}
         , #{shortinfo}
-        <!--, #{youtube}-->
         , #{token}
         , #{password})
+        , NULL
+        , NULL
         ON DUPLICATE KEY UPDATE
         token = VALUES(token),
         password = VALUES(password)
@@ -598,6 +600,17 @@
 
     </insert>
 
+    <!-- 강사 가입 -->
+    <insert id="updateInstructorUser" parameterType="com.project.ribbon.domain.post.PostInstructorUserUpdateRequest">
+        INSERT INTO user_roles (
+            user_userid,roles,email
+        ) VALUES (
+                     #{userid}
+                 , #{roles}
+                 , #{email})
+            ON DUPLICATE KEY UPDATE
+                                 roles = VALUES(roles)
+    </insert>
 
     <!-- 유저 프로필 수정 -->
     <update id="updateUser" parameterType="com.project.ribbon.domain.post.PostUserUpdateRequest">
@@ -608,19 +621,11 @@
         , modifydate = #{modifydate}
         , bestcategory = #{bestcategory}
         , shortinfo = #{shortinfo}
-        <!--, youtube = #{youtube}-->
         , profileimage = #{profileimage}
+        , review = #{review}
+        , appraisal = #{appraisal}
         WHERE
         userid = #{userid}
-    </update>
-
-    <!-- 유저 프로필 수정 -->
-    <update id="updateInstructorUser" parameterType="com.project.ribbon.domain.post.PostInstructorUserUpdateRequest">
-        UPDATE user_roles
-        SET
-            roles = "INSTRUCTOR"
-        WHERE
-            userid = #{userid}
     </update>
 
     <!-- 유저 수정된 프사 조회  -->
@@ -648,21 +653,7 @@
                 user_roles
                 WHERE user_userid = #{userid}
     </delete>
-<!--    &lt;!&ndash; 삭제 유저 댓글 갯수 카운트 빼기 &ndash;&gt;-->
-<!--    <update id="updateDeleteGroupCommentsCount" parameterType="com.project.ribbon.domain.post.PostGroupCommentsRequest">-->
 
-<!--        UPDATE table1 SET commentcount = commentcount - (-->
-<!--            SELECT COUNT(*) FROM table2-->
-<!--            WHERE table2.user_id = #{user_id} AND table2.comment_type = 'count'-->
-<!--        ) WHERE table1.groupid = #{inherentid};-->
-
-<!--        UPDATE table3 SET commentcount = commentcount - (-->
-<!--            SELECT COUNT(*) FROM table4-->
-<!--            WHERE table4.user_id = #{user_id} AND table4.comment_type = 'count'-->
-<!--        ) WHERE table3.groupid = #{inherentid};-->
-
-
-<!--    </update>-->
 
     <!-- 실시간 인기글 -->
     <select id="findAll11" resultType="com.project.ribbon.domain.post.PostResponse">

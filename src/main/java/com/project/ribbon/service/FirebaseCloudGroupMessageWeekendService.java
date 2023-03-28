@@ -49,7 +49,7 @@ public class FirebaseCloudGroupMessageWeekendService {
                         .topic("topic")
                         .data(FcmGroupMessage.Data.builder()
                                 .title("맺음")
-                                .body("주말에는 맺음과 함께 새로운 사람들과 인연을 맺어보세요!")
+                                .body("주말에는 맺음과 함께 새로운 사람들과 인연을 맺어보는건 어떨까요? \uD83E\uDD3C")
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();

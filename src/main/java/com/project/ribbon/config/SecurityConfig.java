@@ -3,14 +3,11 @@ package com.project.ribbon.config;
 import com.project.ribbon.filter.JwtAuthenticationFilter;
 import com.project.ribbon.provide.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -38,13 +35,13 @@ public class SecurityConfig {
                 .requestMatchers("/api/userimage/**").permitAll()
                 .requestMatchers("/api/groupimage/**").permitAll()
                 .requestMatchers("/api/usedimage/**").permitAll()
-                .requestMatchers("/api/realtimeup").hasRole("USER")
-                .requestMatchers("/api/board").hasRole("USER")
+                .requestMatchers("/api/realtimeup").hasAnyRole("USER","INSTRUCTOR")
+                .requestMatchers("/api/board").hasAnyRole("USER","INSTRUCTOR")
                 //.requestMatchers("/api/board").hasRole("INSTRUCTOR")
-                .requestMatchers("/api/individual").hasRole("USER")
-                .requestMatchers("/api/group").hasRole("USER")
-                .requestMatchers("/api/used").hasRole("USER")
-                .requestMatchers("/api/post/**").hasRole("USER")
+                .requestMatchers("/api/individual").hasAnyRole("USER","INSTRUCTOR")
+                .requestMatchers("/api/group").hasAnyRole("USER","INSTRUCTOR")
+                .requestMatchers("/api/used").hasAnyRole("USER","INSTRUCTOR")
+                .requestMatchers("/api/post/**").hasAnyRole("USER","INSTRUCTOR")
                 .requestMatchers("/ribbon/admin/report").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/inquirylogin").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/boardlogin").hasRole("ADMIN")
@@ -55,7 +52,7 @@ public class SecurityConfig {
                 .requestMatchers("/ribbon/admin/post/boardlogin").hasRole("ADMIN")
                 .requestMatchers("/ribbon").permitAll()
                 .requestMatchers("/ribbon/ribbon.png").permitAll()
-                .requestMatchers("/api/GIF/**").hasAnyRole("ADMIN","USER")
+                .requestMatchers("/api/GIF/**").hasAnyRole("ADMIN","USER","INSTRUCTOR")
                 .requestMatchers("/ribbon/admin/reportuser").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/reportboard").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/reportindividual").hasRole("ADMIN")
@@ -70,17 +67,17 @@ public class SecurityConfig {
                 .requestMatchers("/ribbon/admin/insertannouncement").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/adminannouncementinfo").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/inquiryinfo").hasRole("ADMIN")
-                .requestMatchers("/ribbon/admin/announcementinfo").hasAnyRole("ADMIN","USER")
+                .requestMatchers("/ribbon/admin/announcementinfo").hasAnyRole("ADMIN","USER","INSTRUCTOR")
                 .requestMatchers("/ribbon/admin/post/**").hasRole("ADMIN")
-                .requestMatchers("/ribbon/admin/reportinsertuser").hasAnyRole("USER","ADMIN")
-                .requestMatchers("/ribbon/admin/reportinsertboard").hasAnyRole("USER","ADMIN")
-                .requestMatchers("/ribbon/admin/reportinsertindividual").hasAnyRole("USER","ADMIN")
-                .requestMatchers("/ribbon/admin/reportinsertgroup").hasAnyRole("USER","ADMIN")
-                .requestMatchers("/ribbon/admin/reportinsertused").hasAnyRole("USER","ADMIN")
-                .requestMatchers("/ribbon/admin/reportinsertcomments").hasAnyRole("USER","ADMIN")
-                .requestMatchers("/ribbon/admin/reportinsertindividualcomments").hasAnyRole("USER","ADMIN")
-                .requestMatchers("/ribbon/admin/reportinsertgroupcomments").hasAnyRole("USER","ADMIN")
-                .requestMatchers("/ribbon/admin/reportinsertusedcomments").hasAnyRole("USER","ADMIN")
+                .requestMatchers("/ribbon/admin/reportinsertuser").hasAnyRole("USER","ADMIN","INSTRUCTOR")
+                .requestMatchers("/ribbon/admin/reportinsertboard").hasAnyRole("USER","ADMIN","INSTRUCTOR")
+                .requestMatchers("/ribbon/admin/reportinsertindividual").hasAnyRole("USER","ADMIN","INSTRUCTOR")
+                .requestMatchers("/ribbon/admin/reportinsertgroup").hasAnyRole("USER","ADMIN","INSTRUCTOR")
+                .requestMatchers("/ribbon/admin/reportinsertused").hasAnyRole("USER","ADMIN","INSTRUCTOR")
+                .requestMatchers("/ribbon/admin/reportinsertcomments").hasAnyRole("USER","ADMIN","INSTRUCTOR")
+                .requestMatchers("/ribbon/admin/reportinsertindividualcomments").hasAnyRole("USER","ADMIN","INSTRUCTOR")
+                .requestMatchers("/ribbon/admin/reportinsertgroupcomments").hasAnyRole("USER","ADMIN","INSTRUCTOR")
+                .requestMatchers("/ribbon/admin/reportinsertusedcomments").hasAnyRole("USER","ADMIN","INSTRUCTOR")
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()
