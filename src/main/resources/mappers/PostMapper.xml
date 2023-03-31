@@ -593,7 +593,7 @@
             user_userid,roles,email
         ) VALUES (
                      #{userid}
-                 , "USER"
+                 , #{roles}
                  , #{email})
             ON DUPLICATE KEY UPDATE
                                  roles = VALUES(roles)

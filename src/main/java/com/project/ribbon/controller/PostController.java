@@ -3,16 +3,14 @@ package com.project.ribbon.controller;
 import com.project.ribbon.domain.post.*;
 import com.project.ribbon.dto.TokenInfo;
 import com.project.ribbon.enums.ExceptionEnum;
-
+import com.project.ribbon.provide.JwtTokenProvider;
 import com.project.ribbon.response.ApiException;
 import com.project.ribbon.service.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
-
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -46,6 +44,8 @@ public class PostController {
     private final FirebaseCloudChatMessageService firebaseCloudChatMessageService;
 
     private final MemberService memberService;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     // 서버업로드용 서버 ip : ribbonding.shop:48610
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
@@ -456,16 +456,24 @@ public class PostController {
     // 유저 정보 수정
     @PostMapping("/post/updateuser")
     public ResponseEntity<?> updateUserPost(
-            @RequestParam("sns") String sns
-            , @RequestParam("nickname") @Size(min = 2, max = 10, message = "닉네임은 2~10자리여야 합니다.") @NotBlank(message = "닉네임은 필수 입력값입니다.") String nickname
-            , @RequestParam("modifydate") @NotNull(message = "수정날짜는 필수입력값입니다.") String modifydate
-            , @RequestParam("bestcategory") String bestcategory
-            , @RequestParam("shortinfo") @Size(min = 2, max = 20, message = "한 줄 설명은 2~20자리여야 합니다.") String shortinfo
-            , @RequestParam(value = "image",required = false) MultipartFile file
-            , @RequestParam("userid") @NotNull(message = "유저아이디는 필수입력값입니다.") Long userid
-            , @RequestParam("review") @NotNull @Min(value = 0, message = "review 값은 0 이상이어야 합니다.") @Max(value = 5, message = "review 값은 5 이하여야 합니다.") String review
-            , @RequestParam("appraisal") String appraisal) {
+            @RequestParam("sns") String sns,
+            @RequestParam("nickname") @Size(min = 2, max = 10, message = "닉네임은 2~10자리여야 합니다.") @NotBlank(message = "닉네임은 필수 입력값입니다.") String nickname,
+            @RequestParam("modifydate") @NotNull(message = "수정날짜는 필수입력값입니다.") String modifydate,
+            @RequestParam("bestcategory") String bestcategory,
+            @RequestParam("shortinfo") @Size(min = 2, max = 20, message = "한 줄 설명은 2~20자리여야 합니다.") String shortinfo,
+            @RequestParam(value = "image", required = false) MultipartFile file,
+            @RequestParam("userid") @NotNull(message = "유저아이디는 필수입력값입니다.") Long userid,
+            @RequestParam("review") @NotNull @Min(value = 0, message = "review 값은 0 이상이어야 합니다.") @Max(value = 5, message = "review 값은 5 이하여야 합니다.") String review,
+            @RequestParam("appraisal") String appraisal,
+            @RequestHeader(name = "Authorization") String tokenHeader) {
+
         try {
+            String token = tokenHeader.substring(7); // "Bearer " 이후 토큰 문자열을 추출
+            List<String> roles = jwtTokenProvider.getRoles(token);
+            boolean isUser = roles.contains("USER");
+            boolean isInstructor = roles.contains("INSTRUCTOR");
+
+
             PostUserUpdateRequest params = new PostUserUpdateRequest();
             if (file != null) {
                 String profileimage = file.getOriginalFilename();
@@ -483,8 +491,15 @@ public class PostController {
             params.setBestcategory(bestcategory);
             params.setShortinfo(shortinfo);
             params.setUserid(userid);
-            params.setReview(review);
-            params.setAppraisal(appraisal);
+
+            if (isUser) {
+                params.setReview(null);
+                params.setAppraisal(null);
+            } else if (isInstructor) {
+                params.setReview(review);
+                params.setAppraisal(appraisal);
+            }
+
             postService.updateUserPost(params);
 
             PostUserUpdateRequest posts = postService.findUserImagePost(params.getUserid());
@@ -495,6 +510,7 @@ public class PostController {
             throw new RuntimeException(e);
         }
     }
+
 
 
     // 유저 프로필 사진 조회

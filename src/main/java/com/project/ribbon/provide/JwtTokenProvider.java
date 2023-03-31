@@ -18,6 +18,7 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -106,4 +107,12 @@ public class JwtTokenProvider {
             return e.getClaims();
         }
     }
+
+
+    public List<String> getRoles(String token) {
+        Claims claims = parseClaims(token);
+        String authorities = (String) claims.get("auth");
+        return Arrays.asList(authorities.split(","));
+    }
+
 }
