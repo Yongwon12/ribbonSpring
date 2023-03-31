@@ -574,9 +574,9 @@
         , #{bestcategory}
         , #{shortinfo}
         , #{token}
-        , #{password})
+        , #{password}
         , NULL
-        , NULL
+        , NULL)
         ON DUPLICATE KEY UPDATE
         token = VALUES(token),
         password = VALUES(password)

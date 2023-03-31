@@ -10,12 +10,13 @@ import com.project.ribbon.service.MemberService;
 import com.project.ribbon.service.PostService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-
-
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -34,10 +35,12 @@ public class LoginController {
     private final PostService postService;
     private final FirebaseAnnouncementMessageService firebaseAnnouncementMessageService;
     // 서버 업로드용 ip : https://ribbonding.shop:48610/ribbon/admin
+    // 서버업로드용 gif 파일 경로 : /oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbon.gif
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbonding.png
-    // 개발환경용 ip : https://192.168.219.161:8000/ribbon/admin
+    // 개발환경용 ip : http://192.168.219.161:8000/ribbon/admin
     // 개발환경용 맺음 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png
-    String ip = "https://192.168.219.161:8000/ribbon/admin";
+    // 개발환경용 맺음 gif 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.gif
+    String ip = "http://192.168.219.161:8000/ribbon/admin/ribbon/admin";
     // 맺음 홈페이지
     @GetMapping("/ribbon")
     public String showRibbonForm() {
@@ -45,7 +48,7 @@ public class LoginController {
     }
     @GetMapping("/ribbon/ribbon.gif")
     public ResponseEntity<byte[]> getRibbonGif() throws IOException {
-        Path gifPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.gif" );
+        Path gifPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.gif");
         byte[] gifBytes = Files.readAllBytes(gifPath);
 
         final HttpHeaders headers = new HttpHeaders();
@@ -54,7 +57,7 @@ public class LoginController {
     }
     @GetMapping("/ribbon/ribbonding.png")
     public ResponseEntity<byte[]> getRibbonImage() throws IOException {
-        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png" );
+        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png");
         byte[] imageBytes = Files.readAllBytes(imagePath);
 
         final HttpHeaders headers = new HttpHeaders();

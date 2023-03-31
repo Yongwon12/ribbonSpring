@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -30,18 +29,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/login").permitAll()
                 .requestMatchers("/api/sign").permitAll()
-                .requestMatchers("/api/post/updateinstructoruser").permitAll()
                 .requestMatchers("/api/boardimage/**").permitAll()
                 .requestMatchers("/api/userimage/**").permitAll()
                 .requestMatchers("/api/groupimage/**").permitAll()
                 .requestMatchers("/api/usedimage/**").permitAll()
-                .requestMatchers("/api/realtimeup").hasAnyRole("USER","INSTRUCTOR")
-                .requestMatchers("/api/board").hasAnyRole("USER","INSTRUCTOR")
-                //.requestMatchers("/api/board").hasRole("INSTRUCTOR")
-                .requestMatchers("/api/individual").hasAnyRole("USER","INSTRUCTOR")
-                .requestMatchers("/api/group").hasAnyRole("USER","INSTRUCTOR")
-                .requestMatchers("/api/used").hasAnyRole("USER","INSTRUCTOR")
-                .requestMatchers("/api/post/**").hasAnyRole("USER","INSTRUCTOR")
+                .requestMatchers("/ribbon/ribbon.gif").permitAll()
+                .requestMatchers("/ribbon/ribbonding.png").permitAll()
+                .requestMatchers("/ribbon").permitAll()
+                .requestMatchers("https://ribbonding.shop/").permitAll()
                 .requestMatchers("/ribbon/admin/report").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/inquirylogin").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/boardlogin").hasRole("ADMIN")
@@ -50,9 +45,6 @@ public class SecurityConfig {
                 .requestMatchers("/ribbon/admin/post/commentslogin").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/post/userlogin").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/post/boardlogin").hasRole("ADMIN")
-                .requestMatchers("/ribbon").permitAll()
-                .requestMatchers("/ribbon/ribbon.gif").permitAll()
-                .requestMatchers("/ribbon/ribbonding.png").permitAll()
                 .requestMatchers("/ribbon/admin/reportuser").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/reportboard").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/reportindividual").hasRole("ADMIN")
@@ -67,8 +59,14 @@ public class SecurityConfig {
                 .requestMatchers("/ribbon/admin/insertannouncement").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/adminannouncementinfo").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/inquiryinfo").hasRole("ADMIN")
-                .requestMatchers("/ribbon/admin/announcementinfo").hasAnyRole("ADMIN","USER","INSTRUCTOR")
                 .requestMatchers("/ribbon/admin/post/**").hasRole("ADMIN")
+                .requestMatchers("/api/realtimeup").hasAnyRole("USER","INSTRUCTOR")
+                .requestMatchers("/api/board").hasAnyRole("USER","INSTRUCTOR")
+                .requestMatchers("/api/individual").hasAnyRole("USER","INSTRUCTOR")
+                .requestMatchers("/api/group").hasAnyRole("USER","INSTRUCTOR")
+                .requestMatchers("/api/used").hasAnyRole("USER","INSTRUCTOR")
+                .requestMatchers("/api/post/**").hasAnyRole("USER","INSTRUCTOR")
+                .requestMatchers("/ribbon/admin/announcementinfo").hasAnyRole("USER","ADMIN","INSTRUCTOR")
                 .requestMatchers("/ribbon/admin/reportinsertuser").hasAnyRole("USER","ADMIN","INSTRUCTOR")
                 .requestMatchers("/ribbon/admin/reportinsertboard").hasAnyRole("USER","ADMIN","INSTRUCTOR")
                 .requestMatchers("/ribbon/admin/reportinsertindividual").hasAnyRole("USER","ADMIN","INSTRUCTOR")
@@ -85,6 +83,7 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

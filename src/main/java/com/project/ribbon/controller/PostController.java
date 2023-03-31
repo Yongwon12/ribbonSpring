@@ -47,14 +47,14 @@ public class PostController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    // 서버업로드용 서버 ip : ribbonding.shop:48610
+    // 서버업로드용 서버 ip : https://ribbonding.shop:48610
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
-    // 개발환경용 서버 ip : 112.148.33.214:8000
+    // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "https://112.148.33.214:8000/api/userimage/";
-    String boardip = "https://112.148.33.214:8000/api/boardimage/";
-    String groupip = "https://112.148.33.214:8000/api/groupimage/";
-    String usedip = "https://112.148.33.214:8000/api/usedimage/";
+    String userip = "http://112.148.33.214:8000/api/userimage/";
+    String boardip = "http://112.148.33.214:8000/api/boardimage/";
+    String groupip = "http://112.148.33.214:8000/api/groupimage/";
+    String usedip = "http://112.148.33.214:8000/api/usedimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -409,11 +409,11 @@ public class PostController {
     public ResponseEntity<?> saveUserPost(@RequestBody @Valid PostUserRequest params, Model model) throws ApiException {
         try {
             if ("USER".equals(params.getRoles())) {
+                postService.saveUserPost(params);
                 postService.saveUserRolesPost(params);
-                postService.saveUserPost(params);
             } else if ("INSTRUCTOR".equals(params.getRoles())) {
-                postService.updateInstructorUserPost(params);
                 postService.saveUserPost(params);
+                postService.updateInstructorUserPost(params);
             }
             Map<String, Object> obj = new HashMap<>();
             List<PostUserRequest> posts = postService.findUserInfoAllPost(params.getEmail());
