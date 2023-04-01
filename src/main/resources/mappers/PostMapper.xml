@@ -80,6 +80,20 @@
         , commentcount
         , inquirycount
     </sql>
+    <!-- writementor 테이블 전체 컬럼 -->
+    <sql id="postWritementorColumns">
+        id
+        , title
+        , category
+        , shortcontent
+        , description
+        , carrer
+        , titleimage
+        , price
+        , region
+        , contacttime
+        , writedate
+    </sql>
 
     <!-- User 테이블 전체 컬럼 -->
     <sql id="postUserColumns">
@@ -538,6 +552,26 @@
                 WHERE inherentid = #{usedid}
     </delete>
 
+    <!-- 멘토 게시글 저장 -->
+    <insert id="saveWritementor" parameterType="com.project.ribbon.domain.post.PostWritementorDTO"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO writementor (
+        <include refid="postWritementorColumns" />
+        ) VALUES (
+        #{id}
+        , #{title}
+        , #{category}
+        , #{shortcontent}
+        , #{description}
+        , #{carrer}
+        , #{titleimage}
+        , #{price}
+        , #{region}
+        , #{contacttime}
+        , NOW()
+        )
+    </insert>
+
 
     <!-- 기존 유저 정보 조회  -->
     <select id="findUserInfoAll" resultType="com.project.ribbon.domain.post.PostUserRequest">
@@ -616,16 +650,16 @@
     <update id="updateUser" parameterType="com.project.ribbon.domain.post.PostUserUpdateRequest">
         UPDATE user
         SET
-        sns = #{sns}
-        , nickname = #{nickname}
-        , modifydate = #{modifydate}
-        , bestcategory = #{bestcategory}
-        , shortinfo = #{shortinfo}
-        , profileimage = #{profileimage}
-        , review = #{review}
-        , appraisal = #{appraisal}
+            sns = #{sns}
+          , nickname = #{nickname}
+          , modifydate = #{modifydate}
+          , bestcategory = #{bestcategory}
+          , shortinfo = #{shortinfo}
+          , profileimage = #{profileimage}
+          , review = #{review}
+          , appraisal = #{appraisal}
         WHERE
-        userid = #{userid}
+            userid = #{userid}
     </update>
 
     <!-- 유저 수정된 프사 조회  -->

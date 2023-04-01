@@ -23,7 +23,6 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
@@ -33,10 +32,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/userimage/**").permitAll()
                 .requestMatchers("/api/groupimage/**").permitAll()
                 .requestMatchers("/api/usedimage/**").permitAll()
+                .requestMatchers("/api//writementortitleimage/**").permitAll()
                 .requestMatchers("/ribbon/ribbon.gif").permitAll()
                 .requestMatchers("/ribbon/ribbonding.png").permitAll()
                 .requestMatchers("/ribbon").permitAll()
-                .requestMatchers("https://ribbonding.shop/").permitAll()
                 .requestMatchers("/ribbon/admin/report").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/inquirylogin").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/boardlogin").hasRole("ADMIN")
@@ -60,6 +59,7 @@ public class SecurityConfig {
                 .requestMatchers("/ribbon/admin/adminannouncementinfo").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/inquiryinfo").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/post/**").hasRole("ADMIN")
+                .requestMatchers("/api/post/writementor").hasRole("ADMIN")
                 .requestMatchers("/api/realtimeup").hasAnyRole("USER","INSTRUCTOR")
                 .requestMatchers("/api/board").hasAnyRole("USER","INSTRUCTOR")
                 .requestMatchers("/api/individual").hasAnyRole("USER","INSTRUCTOR")

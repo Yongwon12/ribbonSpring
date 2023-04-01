@@ -78,6 +78,10 @@ public interface PostMapper {
     void deleteUsedWriteByLikedId(PostUsedRequest params);
     void deleteUsedWriteComments(PostUsedRequest params);
 
+    // 멘토 게시글 작성
+    void saveWritementor(PostWritementorDTO params);
+
+
     // 유저 조회
     List<PostUserResponse> findUserAll();
     // 기존 유저 조회
@@ -97,8 +101,6 @@ public interface PostMapper {
     void updateInstructorUser(PostUserRequest params);
     // 유저 수정된 프사
     PostUserUpdateRequest findUserImage(Long userid);
-
-
 
 
 
@@ -354,7 +356,6 @@ public interface PostMapper {
 
     // 관리자페이지 공지사항 삭제
     void deleteAnnouncement(String params);
-    // 게시글 갯수 카운트
-    int count();
+
 
 }

@@ -55,6 +55,7 @@ public class PostController {
     String boardip = "http://112.148.33.214:8000/api/boardimage/";
     String groupip = "http://112.148.33.214:8000/api/groupimage/";
     String usedip = "http://112.148.33.214:8000/api/usedimage/";
+    String mentorip = "http://112.148.33.214:8000/api/mentortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -403,6 +404,61 @@ public class PostController {
         return postService.deleteUsedPost(params);
     }
 
+    // 멘토 게시글 작성
+    @PostMapping("/post/writementor")
+    public ResponseEntity<?> saveWritemetorPost(
+            @RequestParam("title") String title,
+            @RequestParam("category")  String category,
+            @RequestParam("shortcontent") String shortcontent,
+            @RequestParam("description")  String description,
+            @RequestParam("carrer")  String carrer,
+            @RequestParam(value = "image", required = false) MultipartFile file,
+            @RequestParam("price") @Pattern(regexp = "^\\d{4,7}$", message = "가격은 4~7자여야 합니다.") @NotBlank(message = "가격은 필수 입력값입니다.") Integer price,
+            @RequestParam("region")  String region,
+            @RequestParam("contacttime")  String contacttime
+    ) {
+        try {
+            PostWritementorDTO params = new PostWritementorDTO();
+            params.setTitle(title);
+            params.setCategory(category);
+            params.setShortcontent(shortcontent);
+            params.setDescription(description);
+            params.setCarrer(carrer);
+            params.setPrice(price);
+            params.setRegion(region);
+            params.setContacttime(contacttime);
+
+            if (file != null) {
+                String filename = file.getOriginalFilename();
+                String imagePath = Paths.get(uploadPath, filename).toString();
+                byte[] bytes = file.getBytes();
+                Path filePath = Paths.get(imagePath);
+                Files.write(filePath, bytes);
+                params.setTitleimage(mentorip + filename);
+            } else {
+                params.setTitleimage(null);
+            }
+
+            return ResponseEntity.ok(postService.saveWritementorPost(params));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    // 멘토 타이틀 사진 조회
+    @GetMapping("/writementortitleimage/{imageName:.+}")
+    public ResponseEntity<byte[]> getWritementortitleImage(@PathVariable("imageName") String mentortitleimage) throws IOException {
+        Path imageWritementorPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + mentortitleimage);
+        byte[] imageBytes = Files.readAllBytes(imageWritementorPath);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+    }
 
     // 유저 정보 등록
     @PostMapping("/sign")
