@@ -81,6 +81,20 @@ public interface PostMapper {
     // 멘토 게시글 작성
     void saveWritementor(PostWritementorDTO params);
 
+    // 멘토 게시글 조회
+    List<PostWritementorDTO> findMentorAll();
+
+    // 멘토 특정 게시글 조회
+    List<PostWritementorDTO> findMentorOne(Long id);
+
+    // 멘토 내가 쓴 글 커뮤니티
+    List<PostWritementorDTO> findMentorByMyUserId(Long userid);
+
+    // 멘토 게시글 수정
+    void updateMentor(PostWritementorDTO params);
+
+    // 멘토 게시글 삭제
+    void deleteMentorById(PostWritementorDTO params);
 
     // 유저 조회
     List<PostUserResponse> findUserAll();
@@ -244,8 +258,7 @@ public interface PostMapper {
     void deleteByRoomName(PostChatRoomDeleteRequest params);
 
 
-    // 채팅 입력
-    void saveChat(PostChatMessage params);
+
 
     // 신고 유저 조회
     List<PostReportUserResponse> findReportUserAll();

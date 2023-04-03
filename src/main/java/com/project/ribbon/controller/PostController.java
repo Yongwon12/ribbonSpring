@@ -1,5 +1,6 @@
 package com.project.ribbon.controller;
 
+import com.project.ribbon.customvaild.DigitLength;
 import com.project.ribbon.domain.post.*;
 import com.project.ribbon.dto.TokenInfo;
 import com.project.ribbon.enums.ExceptionEnum;
@@ -51,11 +52,11 @@ public class PostController {
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
     // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://112.148.33.214:8000/api/userimage/";
-    String boardip = "http://112.148.33.214:8000/api/boardimage/";
-    String groupip = "http://112.148.33.214:8000/api/groupimage/";
-    String usedip = "http://112.148.33.214:8000/api/usedimage/";
-    String mentorip = "http://112.148.33.214:8000/api/mentortitleimage/";
+    String userip = "http://192.168.0.8:8000/api/userimage/";
+    String boardip = "http://192.168.0.8:8000/api/boardimage/";
+    String groupip = "http://192.168.0.8:8000/api/groupimage/";
+    String usedip = "http://192.168.0.8:8000/api/usedimage/";
+    String mentorip = "http://192.168.0.8:8000/api/mentortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -66,7 +67,7 @@ public class PostController {
             @RequestParam("id") @NotNull(message = "카테고리 필수입력값입니다.") Integer id,
             @RequestParam("userid") @NotNull(message = "유저아이디 필수입력값입니다.") Long userId,
             @RequestParam("title") @NotBlank(message = "제목 필수입력값입니다.") @Size(min = 2, max = 30) String title,
-            @RequestParam("description") @NotBlank(message = "내용 필수입력값입니다.") @Size(min = 2, max = 50) String description,
+            @RequestParam("description") @NotBlank(message = "내용 필수입력값입니다.")  String description,
             @RequestParam(value = "image", required = false) MultipartFile file,
             @RequestParam("writedate") @Size(min = 2, max = 30) String writeDate,
             @RequestParam("nickname") @NotBlank(message = "닉네임 필수입력값입니다.") String nickname
@@ -326,9 +327,9 @@ public class PostController {
             @RequestParam("id") @NotNull(message = "카테고리는 필수 입력값입니다.") Integer id,
             @RequestParam("region") @NotBlank(message = "지역은 필수 입력값입니다.") String region,
             @RequestParam("title") @Size(min = 2, max = 30, message = "제목은 2~30자리여야 합니다.") @NotBlank(message = "제목은 필수 입력 값입니다.") String title,
-            @RequestParam("description") @NotBlank(message = "내용은 필수 입력 값입니다.") String description,
+            @RequestParam("description") @NotBlank(message = "내용은 필수 입력 값입니다.") @Size(min = 2, max = 200, message = "내용은 2~200자리여야 합니다.") String description,
             @RequestParam(value = "usedimage1", required = false) MultipartFile file1,
-            @RequestParam("price") @NotNull(message = "가격은 필수 입력값입니다.") Integer price,
+            @RequestParam("price") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 4, max = 8, message = "가격은 4~7자리로 입력해주세요.") Integer price,
             @RequestParam("userid") @NotNull(message = "유저아이디는 필수 입력값입니다.") Long userid,
             @RequestParam("writedate") @NotBlank(message = "작성날짜는 필수 입력값입니다.") String writedate,
             @RequestParam("nickname") @NotBlank(message = "닉네임은 필수 입력 값입니다.") String nickname,
@@ -406,16 +407,19 @@ public class PostController {
 
     // 멘토 게시글 작성
     @PostMapping("/post/writementor")
-    public ResponseEntity<?> saveWritemetorPost(
-            @RequestParam("title") String title,
-            @RequestParam("category")  String category,
-            @RequestParam("shortcontent") String shortcontent,
-            @RequestParam("description")  String description,
-            @RequestParam("carrer")  String carrer,
+    public ResponseEntity<?> saveWriteMentorPost(
+            @RequestParam("title") @Size(min = 2, max = 30) String title,
+            @RequestParam("category") @Size(min = 2, max = 10) String category,
+            @RequestParam("shortcontent") @Size(min = 2, max = 60) String shortcontent,
+            @RequestParam("description") @Size(min = 2, max = 300) String description,
+            @RequestParam("career") @Size(min = 2, max = 200) String career,
             @RequestParam(value = "image", required = false) MultipartFile file,
-            @RequestParam("price") @Pattern(regexp = "^\\d{4,7}$", message = "가격은 4~7자여야 합니다.") @NotBlank(message = "가격은 필수 입력값입니다.") Integer price,
-            @RequestParam("region")  String region,
-            @RequestParam("contacttime")  String contacttime
+            @RequestParam("writedate") String writedate,
+            @RequestParam("price") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 4, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price,
+            @RequestParam("userid") Long userid,
+            @RequestParam("nickname") @Size(min = 2,max = 10) String nickname,
+            @RequestParam("region") @Size(min = 2, max = 20) String region,
+            @RequestParam("contacttime") @Size(min = 2, max = 30) String contacttime
     ) {
         try {
             PostWritementorDTO params = new PostWritementorDTO();
@@ -423,8 +427,11 @@ public class PostController {
             params.setCategory(category);
             params.setShortcontent(shortcontent);
             params.setDescription(description);
-            params.setCarrer(carrer);
+            params.setCareer(career);
+            params.setWritedate(writedate);
             params.setPrice(price);
+            params.setUserid(userid);
+            params.setNickname(nickname);
             params.setRegion(region);
             params.setContacttime(contacttime);
 
@@ -451,13 +458,64 @@ public class PostController {
 
     // 멘토 타이틀 사진 조회
     @GetMapping("/writementortitleimage/{imageName:.+}")
-    public ResponseEntity<byte[]> getWritementortitleImage(@PathVariable("imageName") String mentortitleimage) throws IOException {
+    public ResponseEntity<byte[]> getWriteMentorTitleImage(@PathVariable("imageName") String mentortitleimage) throws IOException {
         Path imageWritementorPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + mentortitleimage);
         byte[] imageBytes = Files.readAllBytes(imageWritementorPath);
 
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);
         return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+    }
+
+    // 멘토 작성글 조회
+    @GetMapping("/writementor")
+    public ResponseEntity<?> mentorWrite(Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        Map<String, Object> obj = new HashMap<>();
+        List<PostWritementorDTO> posts = postService.findMentorAllPost();
+        model.addAttribute("posts", posts);
+        obj.put("writementor", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+    // 멘토 특정 작성글 조회
+    @PostMapping("/writementor")
+    public ResponseEntity<?> mentorWriteOne(@RequestBody PostWritementorDTO params, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        Map<String, Object> obj = new HashMap<>();
+        List<PostWritementorDTO> posts = postService.findMentorOnePost(params.getId());
+        model.addAttribute("posts", posts);
+        obj.put("writementor", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+    // 멘토 내가 쓴 글
+    @PostMapping("/post/mywritementor")
+    public ResponseEntity<?> myWriteMentor(@RequestBody PostWritementorDTO userid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        postService.findMentorPostByMyUserId(userid.getUserid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostWritementorDTO> posts = postService.findMentorPostByMyUserId(userid.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("writementor", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+    // 멘토 기존 게시글 수정
+    @PostMapping("/post/updatewritementor")
+    public ResponseEntity<?> updateWriteMentorPost(@RequestBody PostWritementorDTO params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        return postService.updateMentorPost(params);
+    }
+
+    // 멘토 기존 게시글 삭제
+    @RequestMapping("/post/deletewritementor")
+    public ResponseEntity<?> deleteWriteMentorPost(@RequestBody PostWritementorDTO params) {
+        try {
+            return postService.deleteMentorPost(params);
+        } catch (Exception e) {
+            // 예외 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     // 유저 정보 등록
@@ -518,17 +576,9 @@ public class PostController {
             @RequestParam("bestcategory") String bestcategory,
             @RequestParam("shortinfo") @Size(min = 2, max = 20, message = "한 줄 설명은 2~20자리여야 합니다.") String shortinfo,
             @RequestParam(value = "image", required = false) MultipartFile file,
-            @RequestParam("userid") @NotNull(message = "유저아이디는 필수입력값입니다.") Long userid,
-            @RequestParam("review") @NotNull @Min(value = 0, message = "review 값은 0 이상이어야 합니다.") @Max(value = 5, message = "review 값은 5 이하여야 합니다.") String review,
-            @RequestParam("appraisal") String appraisal,
-            @RequestHeader(name = "Authorization") String tokenHeader) {
+            @RequestParam("userid") @NotNull(message = "유저아이디는 필수입력값입니다.") Long userid) {
 
         try {
-            String token = tokenHeader.substring(7); // "Bearer " 이후 토큰 문자열을 추출
-            List<String> roles = jwtTokenProvider.getRoles(token);
-            boolean isUser = roles.contains("USER");
-            boolean isInstructor = roles.contains("INSTRUCTOR");
-
 
             PostUserUpdateRequest params = new PostUserUpdateRequest();
             if (file != null) {
@@ -547,14 +597,6 @@ public class PostController {
             params.setBestcategory(bestcategory);
             params.setShortinfo(shortinfo);
             params.setUserid(userid);
-
-            if (isUser) {
-                params.setReview(null);
-                params.setAppraisal(null);
-            } else if (isInstructor) {
-                params.setReview(review);
-                params.setAppraisal(appraisal);
-            }
 
             postService.updateUserPost(params);
 

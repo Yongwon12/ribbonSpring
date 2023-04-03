@@ -87,9 +87,11 @@
         , category
         , shortcontent
         , description
-        , carrer
+        , career
         , titleimage
         , price
+        , userid
+        , nickname
         , region
         , contacttime
         , writedate
@@ -112,8 +114,6 @@
         , shortinfo
         , token
         , password
-        , review
-        , appraisal
     </sql>
 
     <!-- liked 테이블 전체 컬럼 -->
@@ -481,6 +481,7 @@
         WHERE usedid = #{usedid}
           AND user.userid IS NOT NULL
     </select>
+
     <!-- 중고 특정 게시글 조회수 카운트 +1 -->
     <update id="updateUsedInquiry" parameterType="com.project.ribbon.domain.post.PostUsedResponse">
 
@@ -563,14 +564,80 @@
         , #{category}
         , #{shortcontent}
         , #{description}
-        , #{carrer}
+        , #{career}
         , #{titleimage}
         , #{price}
+        , #{userid}
+        , #{nickname}
         , #{region}
         , #{contacttime}
-        , NOW()
+        , #{writedate}
         )
     </insert>
+
+    <!-- 멘토 게시글 조회  -->
+    <select id="findMentorAll" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
+        SELECT
+            id,title,category,shortcontent,description,career,titleimage,price,
+            user.userid,user.nickname,region,contacttime,writedate,user.profileimage
+        FROM
+            writementor
+                LEFT JOIN user
+                          ON user.userid = writementor.userid
+        WHERE user.userid IS NOT NULL
+        ORDER BY writedate DESC
+    </select>
+
+    <!-- 멘토 특정 게시글 조회  -->
+    <select id="findMentorOne" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
+        SELECT
+            id,title,category,shortcontent,description,career,titleimage,price,
+            user.userid,user.nickname,region,contacttime,writedate,user.profileimage
+        FROM
+            writementor
+                LEFT JOIN user
+                          ON user.userid = writementor.userid
+        WHERE id = #{id}
+        AND user.userid IS NOT NULL
+    </select>
+
+    <!-- 멘토 내가 쓴 글  -->
+    <select id="findMentorByMyUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
+        SELECT
+            id,title,category,shortcontent,description,career,titleimage,price,
+            user.userid,user.nickname,region,contacttime,writedate,user.profileimage
+        FROM
+            writementor
+                LEFT JOIN user
+                          ON user.userid = writementor.userid
+        WHERE writementor.userid = #{userid}
+        ORDER BY writedate DESC
+    </select>
+
+    <!-- 멘토 게시글 수정 -->
+    <update id="updateMentor" parameterType="com.project.ribbon.domain.post.PostWritementorDTO">
+        UPDATE writementor
+        SET
+            title = #{title}
+          , category = #{category}
+          , shortcontent = #{shortcontent}
+          , description = #{description}
+          , career = #{career}
+          , titleimage = #{titleimage}
+          , price = #{price}
+          , region = #{region}
+          , contacttime = #{contacttime}
+        WHERE
+            id = #{id}
+    </update>
+
+    <!-- 멘토 게시글 삭제 -->
+    <delete id="deleteMentorById" >
+        DELETE
+                FROM
+                writementor
+                WHERE id = #{id}
+    </delete>
 
 
     <!-- 기존 유저 정보 조회  -->
@@ -608,9 +675,7 @@
         , #{bestcategory}
         , #{shortinfo}
         , #{token}
-        , #{password}
-        , NULL
-        , NULL)
+        , #{password})
         ON DUPLICATE KEY UPDATE
         token = VALUES(token),
         password = VALUES(password)
@@ -634,7 +699,7 @@
 
     </insert>
 
-    <!-- 강사 가입 -->
+    <!-- 멘토 권한 가입 -->
     <insert id="updateInstructorUser" parameterType="com.project.ribbon.domain.post.PostInstructorUserUpdateRequest">
         INSERT INTO user_roles (
             user_userid,roles,email
@@ -656,8 +721,6 @@
           , bestcategory = #{bestcategory}
           , shortinfo = #{shortinfo}
           , profileimage = #{profileimage}
-          , review = #{review}
-          , appraisal = #{appraisal}
         WHERE
             userid = #{userid}
     </update>
@@ -1328,6 +1391,7 @@
                            ON user.userid=boardwrite.userid
         WHERE
             boardwrite.userid = #{userid}
+        ORDER BY writedate DESC
     </select>
 
 
@@ -1343,6 +1407,7 @@
                           ON user.userid = groupwrite.userid
         WHERE
             groupwrite.userid = #{userid}
+        ORDER BY writedate DESC
     </select>
 
 
@@ -1358,6 +1423,7 @@
                           ON user.userid = individualwrite.userid
         WHERE
             individualwrite.userid = #{userid}
+        ORDER BY writedate DESC
     </select>
 
 
@@ -1373,6 +1439,7 @@
                           ON user.userid = usedwrite.userid
         WHERE
             usedwrite.userid = #{userid}
+        ORDER BY writedate DESC
     </select>
 
 
@@ -1387,6 +1454,7 @@
                  LEFT JOIN user
                            ON user.userid = boardwrite.userid
         WHERE liked.userid = #{userid}
+        ORDER BY writedate DESC
     </select>
 
 
@@ -1403,6 +1471,7 @@
                 LEFT JOIN user
                           ON user.userid = individualwrite.userid
         WHERE individualliked.userid = #{userid}
+        ORDER BY writedate DESC
     </select>
 
 
@@ -1419,6 +1488,7 @@
                 LEFT JOIN user
                           ON user.userid = usedwrite.userid
         WHERE usedliked.userid = #{userid}
+        ORDER BY writedate DESC
     </select>
 
 
@@ -1460,20 +1530,6 @@
                 chatroom
                 WHERE roomname = #{roomname}
     </delete>
-
-
-    <!-- 채팅 정보 저장 -->
-    <insert id="saveChat" parameterType="com.project.ribbon.domain.post.PostChatMessage">
-        INSERT INTO chattable (
-            roomname,nickname,message,profileimage,writedate
-        ) VALUES (
-                     #{roomname}
-                 , #{nickname}
-                 , #{message}
-                 , #{profileimage}
-                 , NOW()
-                 )
-    </insert>
 
 
     <!-- 신고 유저 조회 -->

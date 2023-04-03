@@ -1,10 +1,9 @@
 package com.project.ribbon.domain.post;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.type.DateTime;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,15 +24,21 @@ public class PostWritementorDTO {
         @NotBlank(message = "닉네임은 필수 입력 값입니다.")
         private String description;
         @NotBlank(message = "커리어는 필수 입력값입니다.")
-        private String carrer;
+        private String career;
 
         private String titleimage;
-        private DateTime writedate;
-        @Pattern(regexp = "^\\d{4,7}$", message = "가격은 4~7자여야 합니다.")
+        private String writedate;
+//        @Pattern(regexp = "^\\d{4,7}$", message = "가격은 4~7자여야 합니다.")
+        @Size(min = 4,max = 7,message = "가격은 4~7자리")
         @NotBlank(message = "가격은 필수 입력값입니다.")
         private Integer price;
+        @NotBlank(message = "유저아이디 필수 입력값입니다.")
+        private Long userid;
+        @NotBlank(message = "닉네임은 필수 입력값입니다.")
+        private String nickname;
         @NotBlank(message = "위치는 필수 입력값입니다.")
         private String region;
         @NotBlank(message = "가능시간은 필수 입력값입니다.")
         private String contacttime;
+        private String profileimage;
 }

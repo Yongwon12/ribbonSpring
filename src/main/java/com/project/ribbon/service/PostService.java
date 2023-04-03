@@ -97,7 +97,7 @@ public class PostService {
             return postMapper.findOne(boardid);
         } catch (Exception e) {
             // 예외 처리 코드 작성
-            throw new RuntimeException("게시글 조회에 실패했습니다.", e);
+            throw new RuntimeException("특정 게시글 조회에 실패했습니다.", e);
         }
     }
     @Transactional
@@ -198,7 +198,7 @@ public class PostService {
             return postMapper.findIndiOne(individualid);
         } catch (Exception e) {
             // 예외 처리 코드 작성
-            throw new RuntimeException("개인게시글 조회에 실패했습니다.", e);
+            throw new RuntimeException("개인 특정 게시글 조회에 실패했습니다.", e);
         }
     }
     @Transactional
@@ -277,7 +277,7 @@ public class PostService {
             return postMapper.findUsedOne(usedid);
         } catch (Exception e) {
             // 예외 처리 코드 작성
-            throw new RuntimeException("중고게시글 조회에 실패했습니다.", e);
+            throw new RuntimeException("중고 특정 게시글 조회에 실패했습니다.", e);
         }
     }
     @Transactional
@@ -349,6 +349,60 @@ public class PostService {
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("멘토 게시글 작성에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+
+    // 멘토 게시글 조회
+    public List<PostWritementorDTO> findMentorAllPost() {
+        try {
+            return postMapper.findMentorAll();
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("멘토 게시글 조회에 실패했습니다.", e);
+        }
+    }
+
+    // 멘토 특정 게시글 조회
+    public List<PostWritementorDTO> findMentorOnePost(Long id) {
+        try {
+            return postMapper.findMentorOne(id);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("멘토 특정 게시글 조회에 실패했습니다.", e);
+        }
+    }
+
+    // 멘토 내가 쓴 글 커뮤니티
+    public List<PostWritementorDTO> findMentorPostByMyUserId(final Long userid) {
+        try {
+            return postMapper.findMentorByMyUserId(userid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("멘토 내가 쓴 글 조회에 실패했습니다.", e);
+        }
+    }
+
+    // 멘토 게시글 수정
+    @Transactional
+    public ResponseEntity<?> updateMentorPost(final PostWritementorDTO params) {
+        try {
+            postMapper.updateMentor(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("멘토 게시글 수정에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+
+
+    // 멘토 게시글 삭제
+    public ResponseEntity<?> deleteMentorPost(final PostWritementorDTO params) {
+        try {
+            postMapper.deleteMentorById(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("멘토 게시글 삭제에 실패했습니다.", e);
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
@@ -650,7 +704,7 @@ public class PostService {
             throw new RuntimeException("단체 댓글 알림 조회에 실패했습니다.", e);
         }
     }
-    // 중 댓글 알림 조회
+    // 중고 댓글 알림 조회
     public List<PostUsedCommentsRequest> findUsedCommentsAlarmPost(Long userid) {
         try {
             return postMapper.findUsedCommentsAlarm(userid);
