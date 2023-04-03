@@ -41,4 +41,7 @@ public class PostWritementorDTO {
         @NotBlank(message = "가능시간은 필수 입력값입니다.")
         private String contacttime;
         private String profileimage;
+        private Long inherentid;
+        private String review;
+        private Integer appraisal;
 }

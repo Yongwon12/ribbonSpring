@@ -69,7 +69,7 @@ public class PostControllerTests {
                         .param("category", "category")
                         .param("shortcontent", "shortcontent")
                         .param("description", "description")
-                        .param("carrer", "carrer")
+                        .param("career", "career")
                         .param("writedate","tlqkf")
                         .param("price", "1000")
                         .param("userid","4231")
