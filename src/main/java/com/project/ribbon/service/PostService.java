@@ -373,7 +373,7 @@ public class PostService {
         }
     }
 
-    // 멘토 내가 쓴 글 커뮤니티
+    // 멘토 내가 쓴 글
     public List<PostWritementorDTO> findMentorPostByMyUserId(final Long userid) {
         try {
             return postMapper.findMentorByMyUserId(userid);
@@ -406,6 +406,54 @@ public class PostService {
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
+
+
+    // 리뷰 및 별점 작성
+    @Transactional
+    public ResponseEntity<?> saveWriteFeedBackPost(final PostWritementorDTO params) {
+        try {
+            postMapper.saveWriteFeedBack(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("별점 및 리뷰 작성에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+
+    // 내가 쓴 리뷰 및 별점
+    public List<PostWritementorDTO> findFeedBackPostByMyUserId(final Long userid) {
+        try {
+            return postMapper.findFeedBackByMyUserId(userid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("내가 쓴 리뷰 및 별점 조회에 실패했습니다.", e);
+        }
+    }
+
+    // 리뷰 수정
+    @Transactional
+    public ResponseEntity<?> updateFeedBackPost(final PostWritementorDTO params) {
+        try {
+            postMapper.updateFeedBack(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("리뷰 수정에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+
+
+    // 리뷰 및 별점 삭제
+    public ResponseEntity<?> deleteFeedBackPost(final PostWritementorDTO params) {
+        try {
+            postMapper.deleteFeedBackById(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("별점 및 리뷰 삭제에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+
 
 
     // 유저 정보 조회

@@ -54,11 +54,11 @@ public class PostController {
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
     // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://192.168.0.8:8000/api/userimage/";
-    String boardip = "http://192.168.0.8:8000/api/boardimage/";
-    String groupip = "http://192.168.0.8:8000/api/groupimage/";
-    String usedip = "http://192.168.0.8:8000/api/usedimage/";
-    String mentorip = "http://192.168.0.8:8000/api/mentortitleimage/";
+    String userip = "http://112.148.33.214:8000/api/userimage/";
+    String boardip = "http://112.148.33.214:8000/api/boardimage/";
+    String groupip = "http://112.148.33.214:8000/api/groupimage/";
+    String usedip = "http://112.148.33.214:8000/api/usedimage/";
+    String mentorip = "http://112.148.33.214:8000/api/mentortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -512,6 +512,59 @@ public class PostController {
     // 멘토 기존 게시글 삭제
     @RequestMapping("/post/deletewritementor")
     public ResponseEntity<?> deleteWriteMentorPost(@RequestBody PostWritementorDTO params) {
+        try {
+            return postService.deleteMentorPost(params);
+        } catch (Exception e) {
+            // 예외 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // 리뷰 및 별점 작성
+    @PostMapping("/post/writefeedback")
+    public ResponseEntity<?> saveWriteFeedBackPost(
+            @RequestParam("inherentid") @NotNull(message = "인허런트 아이디는 필수 입력값입니다.") Long inherentid,
+            @RequestParam("review") @NotBlank(message = "리뷰는 필수 입력값입니다.") @Size(min = 2, max = 200) String review,
+            @RequestParam("appraisal") @NotNull(message = "별점은 필수 입력값입니다.") Integer appraisal,
+            @RequestParam("userid") @NotNull(message = "리뷰 및 별점 작성자 아이디는 필수 입력값입니다.") Long userid
+            ) {
+        try {
+            PostWritementorDTO params = new PostWritementorDTO();
+            params.setInherentid(inherentid);
+            params.setReview(review);
+            params.setAppraisal(appraisal);
+            params.setUserid(userid);
+
+            return ResponseEntity.ok(postService.saveWritementorPost(params));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+
+    // 내가 쓴 리뷰 및 별점
+    @PostMapping("/post/mywritefeedback")
+    public ResponseEntity<?> myWriteFeedBack(@RequestBody PostWritementorDTO userid, Model model) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        postService.findMentorPostByMyUserId(userid.getUserid());
+        Map<String, Object> obj = new HashMap<>();
+        List<PostWritementorDTO> posts = postService.findMentorPostByMyUserId(userid.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("writefeedback", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+    // 기존 리뷰 수정
+    @PostMapping("/post/updatewritefeedback")
+    public ResponseEntity<?> updateWriteFeedBackPost(@RequestBody PostWritementorDTO params) throws ApiException {
+        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        return postService.updateMentorPost(params);
+    }
+
+    // 기존 별점 및 리뷰 삭제
+    @RequestMapping("/post/deletewritefeedback")
+    public ResponseEntity<?> deleteWriteFeedBackPost(@RequestBody PostWritementorDTO params) {
         try {
             return postService.deleteMentorPost(params);
         } catch (Exception e) {

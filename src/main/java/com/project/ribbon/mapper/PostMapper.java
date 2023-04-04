@@ -87,7 +87,7 @@ public interface PostMapper {
     // 멘토 특정 게시글 조회
     List<PostWritementorDTO> findMentorOne(Long id);
 
-    // 멘토 내가 쓴 글 커뮤니티
+    // 멘토 내가 쓴 글
     List<PostWritementorDTO> findMentorByMyUserId(Long userid);
 
     // 멘토 게시글 수정
@@ -95,6 +95,20 @@ public interface PostMapper {
 
     // 멘토 게시글 삭제
     void deleteMentorById(PostWritementorDTO params);
+
+
+    // 리뷰 및 별점 작성
+    void saveWriteFeedBack(PostWritementorDTO params);
+
+    // 내가 쓴 리뷰 및 별점
+    List<PostWritementorDTO> findFeedBackByMyUserId(Long userid);
+
+    // 리뷰 수정
+    void updateFeedBack(PostWritementorDTO params);
+
+    // 리뷰 및 별점 삭제
+    void deleteFeedBackById(PostWritementorDTO params);
+
 
     // 유저 조회
     List<PostUserResponse> findUserAll();

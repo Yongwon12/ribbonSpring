@@ -639,6 +639,47 @@
                 WHERE id = #{id}
     </delete>
 
+    <!-- 별점 및 리뷰 저장 -->
+    <insert id="saveWriteFeedBack" parameterType="com.project.ribbon.domain.post.PostWritementorDTO">
+        INSERT INTO feedback (
+        inherentid,review,appraisal,userid
+        ) VALUES (
+        #{inherentid}
+        , #{review}
+        , #{appraisal}
+        , #{userid}
+        )
+    </insert>
+
+    <!-- 내가 쓴 별점 및 리뷰  -->
+    <select id="findFeedBackByMyUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
+        SELECT
+            inherentid,review,appraisal,feedback.userid,user.profileimage
+        FROM
+            feedback
+                LEFT JOIN user
+                          ON user.userid = feedback.userid
+        WHERE feedback.userid = #{userid}
+        ORDER BY writedate DESC
+    </select>
+
+    <!-- 리뷰 수정 -->
+    <update id="updateFeedBack" parameterType="com.project.ribbon.domain.post.PostWritementorDTO">
+        UPDATE feedback
+        SET
+            review = #{review}
+        WHERE
+            inherentid = #{inherentid}
+    </update>
+
+    <!-- 별점 및 리뷰 삭제 -->
+    <delete id="deleteFeedBackById" >
+        DELETE
+                FROM
+                feedback
+                WHERE inherentid = #{inherentid}
+    </delete>
+
 
     <!-- 기존 유저 정보 조회  -->
     <select id="findUserInfoAll" resultType="com.project.ribbon.domain.post.PostUserRequest">
