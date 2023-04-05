@@ -579,11 +579,14 @@
     <select id="findMentorAll" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
         SELECT
             id,title,category,shortcontent,description,career,titleimage,price,
-            user.userid,user.nickname,region,contacttime,writedate,user.profileimage
+            user.userid,user.nickname,region,contacttime,writedate,user.profileimage,
+            review,appraisal
         FROM
             writementor
                 LEFT JOIN user
                           ON user.userid = writementor.userid
+                LEFT JOIN feedback
+                          ON writementor.id = feedback.inherentid
         WHERE user.userid IS NOT NULL
         ORDER BY writedate DESC
     </select>
@@ -592,11 +595,14 @@
     <select id="findMentorOne" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
         SELECT
             id,title,category,shortcontent,description,career,titleimage,price,
-            user.userid,user.nickname,region,contacttime,writedate,user.profileimage
+            user.userid,user.nickname,region,contacttime,writedate,user.profileimage,
+            review,appraisal
         FROM
             writementor
                 LEFT JOIN user
                           ON user.userid = writementor.userid
+                LEFT JOIN feedback
+                          ON writementor.id = feedback.inherentid
         WHERE id = #{id}
         AND user.userid IS NOT NULL
     </select>
@@ -604,14 +610,19 @@
     <!-- 멘토 내가 쓴 글  -->
     <select id="findMentorByMyUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
         SELECT
-            id,title,category,shortcontent,description,career,titleimage,price,
-            user.userid,user.nickname,region,contacttime,writedate,user.profileimage
+            writementor.id, title, category, shortcontent, description, career, titleimage, price,
+            user.userid, user.nickname, region, contacttime, writedate, user.profileimage,
+            review, appraisal, AVG(feedback.appraisal) as avg_appraisal
         FROM
             writementor
-                LEFT JOIN user
-                          ON user.userid = writementor.userid
-        WHERE writementor.userid = #{userid}
-        ORDER BY writedate DESC
+                LEFT JOIN user ON user.userid = writementor.userid
+                LEFT JOIN feedback ON feedback.inherentid = writementor.id
+        WHERE
+            writementor.userid = #{userid}
+        GROUP BY
+            writementor.id
+        ORDER BY
+            writedate DESC
     </select>
 
     <!-- 멘토 게시글 수정 -->
@@ -654,7 +665,7 @@
     <!-- 내가 쓴 별점 및 리뷰  -->
     <select id="findFeedBackByMyUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
         SELECT
-            inherentid,review,appraisal,feedback.userid,user.profileimage
+            inherentid,review,appraisal,user.userid,user.profileimage
         FROM
             feedback
                 LEFT JOIN user
@@ -686,6 +697,16 @@
         SELECT *
         FROM user
         WHERE email = #{email}
+    </select>
+
+    <!-- 특정 유저 프로필 조회  -->
+    <select id="findById" parameterType="Long" resultType="com.project.ribbon.domain.post.UserInfoResponse">
+        SELECT
+            userid,nickname,bestcategory,profileimage,shortinfo,sns,youtube,gender
+        FROM
+            user
+        WHERE
+            userid = #{userid}
     </select>
 
     <!-- 유저 권한 조회  -->
@@ -751,6 +772,7 @@
             ON DUPLICATE KEY UPDATE
                                  roles = VALUES(roles)
     </insert>
+
 
     <!-- 유저 프로필 수정 -->
     <update id="updateUser" parameterType="com.project.ribbon.domain.post.PostUserUpdateRequest">
@@ -1410,17 +1432,6 @@
                 usedcomments
                 WHERE commentsid = #{commentsid}
     </delete>
-
-
-    <!-- 특정 유저 프로필 조회  -->
-    <select id="findById" parameterType="Long" resultType="com.project.ribbon.domain.post.UserInfoResponse">
-        SELECT
-            userid,nickname,bestcategory,profileimage,shortinfo,sns,youtube,gender
-        FROM
-            user
-        WHERE
-            userid = #{userid}
-    </select>
 
 
     <!-- 커뮤니티 내가 쓴 글  -->

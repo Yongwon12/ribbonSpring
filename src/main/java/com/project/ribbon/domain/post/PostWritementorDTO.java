@@ -3,10 +3,12 @@ package com.project.ribbon.domain.post;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 
 @Data
 @NoArgsConstructor
@@ -41,7 +43,12 @@ public class PostWritementorDTO {
         @NotBlank(message = "가능시간은 필수 입력값입니다.")
         private String contacttime;
         private String profileimage;
+        @NotNull(message = "인허런트 아이디는 필수 입력값입니다.")
         private Long inherentid;
+        @NotBlank(message = "리뷰는 필수 입력값입니다.") @Size(min = 2, max = 200)
         private String review;
-        private Integer appraisal;
+        @NotNull(message = "별점은 필수 입력값입니다.")
+        @Range(min = 1, max = 5, message = "별점은 1부터 5까지 입력 가능합니다.")
+        private Double appraisal;
+        private Double avg_appraisal;
 }

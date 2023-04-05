@@ -522,19 +522,8 @@ public class PostController {
 
     // 리뷰 및 별점 작성
     @PostMapping("/post/writefeedback")
-    public ResponseEntity<?> saveWriteFeedBackPost(
-            @RequestParam("inherentid") @NotNull(message = "인허런트 아이디는 필수 입력값입니다.") Long inherentid,
-            @RequestParam("review") @NotBlank(message = "리뷰는 필수 입력값입니다.") @Size(min = 2, max = 200) String review,
-            @RequestParam("appraisal") @NotNull(message = "별점은 필수 입력값입니다.") Integer appraisal,
-            @RequestParam("userid") @NotNull(message = "리뷰 및 별점 작성자 아이디는 필수 입력값입니다.") Long userid
-            ) {
+    public ResponseEntity<?> saveWriteFeedBackPost(@RequestBody PostWritementorDTO params) {
         try {
-            PostWritementorDTO params = new PostWritementorDTO();
-            params.setInherentid(inherentid);
-            params.setReview(review);
-            params.setAppraisal(appraisal);
-            params.setUserid(userid);
-
             return ResponseEntity.ok(postService.saveWritementorPost(params));
         } catch (Exception e) {
             e.printStackTrace();
