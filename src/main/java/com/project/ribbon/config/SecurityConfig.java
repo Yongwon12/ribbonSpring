@@ -59,7 +59,7 @@ public class SecurityConfig {
                 .requestMatchers("/ribbon/admin/adminannouncementinfo").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/inquiryinfo").hasRole("ADMIN")
                 .requestMatchers("/ribbon/admin/post/**").hasRole("ADMIN")
-                .requestMatchers("/api/post/writementor").hasRole("INSTRUCTOR")
+                .requestMatchers("/api/post/writementor").hasAnyRole("INSTRUCTOR","ADMIN")
                 .requestMatchers("/api/post/mywritementor").hasRole("INSTRUCTOR")
                 .requestMatchers("/api/post/updatewritementor").hasRole("INSTRUCTOR")
                 .requestMatchers("/api/post/deletewritementor").hasRole("INSTRUCTOR")

@@ -61,7 +61,7 @@ public class PostControllerTests {
 
 
     @Test
-    public void testSaveWritementorPost() throws Exception {
+    public void testSaveWriteMultipart() throws Exception {
 
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/post/writementor")
@@ -77,9 +77,25 @@ public class PostControllerTests {
                         .param("region", "region")
                         .param("contacttime", "contacttime")
                         // 인증 헤더 설정
-                        .header("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiYXV0aCI6IlJPTEVfQURNSU4iLCJleHAiOjE2ODA1NDczNzJ9.2_9HT9vstB8honOfYqbPFnNP0V9YjlmUH0Uz4jbkKt0"))
+                        .header("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiYXV0aCI6IlJPTEVfQURNSU4iLCJleHAiOjE2ODA3MjA1Mzd9.58pCOvR19n7ezPJOscHXmqv2yqdM8nvcOmpYbnkR0pA"))
                 .andExpect(status().isOk());
     }
+    @Test
+    public void testSaveWritePost() throws Exception {
+        // JSON 형태의 요청 본문 데이터
+        String jsonBody = "{\"title\": \"title\", \"category\": \"category\", \"shortcontent\": \"shortcontent\", " +
+                "\"description\": \"description\", \"career\": \"career\", \"writedate\": \"tlqkf\", " +
+                "\"price\": 1000, \"userid\": \"4231\", \"nickname\": \"tlqkffja\", \"region\": \"region\", " +
+                "\"contacttime\": \"contacttime\"}";
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/post/writementor")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonBody)
+                        // 인증 헤더 설정
+                        .header("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiYXV0aCI6IlJPTEVfQURNSU4iLCJleHAiOjE2ODA3MjA1Mzd9.58pCOvR19n7ezPJOscHXmqv2yqdM8nvcOmpYbnkR0pA"))
+                .andExpect(status().isOk());
+    }
+
     @Test
     public void testMentorWriteOne() throws Exception {
         // Given

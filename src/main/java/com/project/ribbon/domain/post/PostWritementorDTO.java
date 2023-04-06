@@ -51,4 +51,5 @@ public class PostWritementorDTO {
         @Range(min = 1, max = 5, message = "별점은 1부터 5까지 입력 가능합니다.")
         private Double appraisal;
         private Double avg_appraisal;
+        private String token;
 }

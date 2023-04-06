@@ -25,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -54,11 +55,11 @@ public class PostController {
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
     // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://112.148.33.214:8000/api/userimage/";
-    String boardip = "http://112.148.33.214:8000/api/boardimage/";
-    String groupip = "http://112.148.33.214:8000/api/groupimage/";
-    String usedip = "http://112.148.33.214:8000/api/usedimage/";
-    String mentorip = "http://112.148.33.214:8000/api/mentortitleimage/";
+    String userip = "http://172.30.1.66:8000/api/userimage/";
+    String boardip = "http://172.30.1.66:8000/api/boardimage/";
+    String groupip = "http://172.30.1.66:8000/api/groupimage/";
+    String usedip = "http://172.30.1.66:8000/api/usedimage/";
+    String mentorip = "http://172.30.1.66:8000/api/mentortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -131,12 +132,14 @@ public class PostController {
     }
 
 
-
     // 기존 게시글 수정
     @PostMapping("/post/update")
     public ResponseEntity<?> updatePost(@RequestBody PostRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.updatePost(params);
+        try {
+            return postService.updatePost(params);
+        } catch (ApiException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        }
     }
 
     // 기존 게시글 삭제
@@ -238,17 +241,25 @@ public class PostController {
 
     // 단체 게시글 수정
     @PostMapping("/post/updategroup")
-    public ResponseEntity<?> updateGroupPost(@RequestBody PostGroupRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.updateGroupPost(params);
+    public ResponseEntity<?> updateGroupPost(@RequestBody PostGroupRequest params) {
+        try {
+            return postService.updateGroupPost(params);
+        } catch (ApiException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An internal server error occurred.");
+        }
     }
 
     // 단체 게시글 삭제
     @RequestMapping("/post/deletegroup")
-    public ResponseEntity<?> deleteGroupPost(@RequestBody PostGroupRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.deleteGroupWriteCommentsPost(params);
-        return postService.deleteGroupPost(params);
+    public ResponseEntity<?> deleteGroupPost(@RequestBody PostGroupRequest params) {
+        try {
+            postService.deleteGroupWriteCommentsPost(params);
+            return postService.deleteGroupPost(params);
+        } catch (ApiException e) {
+            return new ResponseEntity<>("Error occurred while deleting group post", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // 개인 작성글 조회
@@ -286,19 +297,28 @@ public class PostController {
 
     // 개인 게시글 수정
     @PostMapping("/post/updateindividual")
-    public ResponseEntity<?> updateIndiPost(@RequestBody PostIndiRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.updateIndiPost(params);
+    public ResponseEntity<?> updateIndiPost(@RequestBody PostIndiRequest params) {
+        try {
+            return postService.updateIndiPost(params);
+        } catch (ApiException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // 개인 게시글 삭제
     @RequestMapping("/post/deleteindividual")
-    public ResponseEntity<?> deleteIndiPost(@RequestBody PostIndiRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.deleteIndiWriteCommentsPost(params);
-        postService.deleteIndiWriteLikedPost(params);
-        return postService.deleteIndiPost(params);
+    public ResponseEntity<?> deleteIndiPost(@RequestBody PostIndiRequest params) {
+        try {
+            postService.deleteIndiWriteCommentsPost(params);
+            postService.deleteIndiWriteLikedPost(params);
+            return postService.deleteIndiPost(params);
+        } catch (ApiException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting the post.");
+        }
     }
+
 
     // 중고 작성글 조회
     @GetMapping("/used")
@@ -393,19 +413,29 @@ public class PostController {
 
     // 중고 게시글 수정
     @PostMapping("/post/updateused")
-    public ResponseEntity<?> updateUsedPost(@RequestBody PostUsedRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.updateUsedPost(params);
+    public ResponseEntity<?> updateUsedPost(@RequestBody PostUsedRequest params) {
+        try {
+            return postService.updateUsedPost(params);
+        } catch (ApiException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
+        }
     }
+
 
     // 중고 게시글 삭제
     @RequestMapping("/post/deleteused")
-    public ResponseEntity<?> deleteUsedPost(@RequestBody PostUsedRequest params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.deleteUsedWriteCommentsPost(params);
-        postService.deleteUsedWriteLikedPost(params);
-        return postService.deleteUsedPost(params);
+    public ResponseEntity<?> deleteUsedPost(@RequestBody PostUsedRequest params) {
+        try {
+            postService.deleteUsedWriteCommentsPost(params);
+            postService.deleteUsedWriteLikedPost(params);
+            return postService.deleteUsedPost(params);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An error occurred while deleting the post.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     // 멘토 게시글 작성
     @PostMapping("/post/writementor")
@@ -462,52 +492,70 @@ public class PostController {
     @GetMapping("/writementortitleimage/{imageName:.+}")
     public ResponseEntity<byte[]> getWriteMentorTitleImage(@PathVariable("imageName") String mentortitleimage) throws IOException {
         Path imageWritementorPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + mentortitleimage);
-        byte[] imageBytes = Files.readAllBytes(imageWritementorPath);
+        byte[] imageBytes;
+        try {
+            imageBytes = Files.readAllBytes(imageWritementorPath);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found", e);
+        }
 
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);
         return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
     }
 
+
     // 멘토 작성글 조회
     @GetMapping("/writementor")
-    public ResponseEntity<?> mentorWrite(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+    public ResponseEntity<?> mentorWrite(Model model) {
         Map<String, Object> obj = new HashMap<>();
-        List<PostWritementorDTO> posts = postService.findMentorAllPost();
-        model.addAttribute("posts", posts);
-        obj.put("writementor", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
+        try {
+            List<PostWritementorDTO> posts = postService.findMentorAllPost();
+            model.addAttribute("posts", posts);
+            obj.put("writementor", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        } catch (ApiException e) {
+            return new ResponseEntity<>("Error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     // 멘토 특정 작성글 조회
     @PostMapping("/writementor")
     public ResponseEntity<?> mentorWriteOne(@RequestBody PostWritementorDTO params, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
         Map<String, Object> obj = new HashMap<>();
         List<PostWritementorDTO> posts = postService.findMentorOnePost(params.getId());
         model.addAttribute("posts", posts);
         obj.put("writementor", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
+
     // 멘토 내가 쓴 글
     @PostMapping("/post/mywritementor")
-    public ResponseEntity<?> myWriteMentor(@RequestBody PostWritementorDTO userid, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findMentorPostByMyUserId(userid.getUserid());
+    public ResponseEntity<?> myWriteMentor(@RequestBody PostWritementorDTO userid, Model model) {
         Map<String, Object> obj = new HashMap<>();
-        List<PostWritementorDTO> posts = postService.findMentorPostByMyUserId(userid.getUserid());
-        model.addAttribute("posts", posts);
-        obj.put("writementor", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
+        try {
+            postService.findMentorPostByMyUserId(userid.getUserid());
+            List<PostWritementorDTO> posts = postService.findMentorPostByMyUserId(userid.getUserid());
+            model.addAttribute("posts", posts);
+            obj.put("writementor", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        } catch (ApiException e) {
+            return new ResponseEntity<>("Error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     // 멘토 기존 게시글 수정
     @PostMapping("/post/updatewritementor")
-    public ResponseEntity<?> updateWriteMentorPost(@RequestBody PostWritementorDTO params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.updateMentorPost(params);
+    public ResponseEntity<?> updateWriteMentorPost(@RequestBody PostWritementorDTO params) {
+        try {
+            return postService.updateMentorPost(params);
+        } catch (ApiException e) {
+            return new ResponseEntity<>("Error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     // 멘토 기존 게시글 삭제
     @RequestMapping("/post/deletewritementor")
@@ -524,7 +572,7 @@ public class PostController {
     @PostMapping("/post/writefeedback")
     public ResponseEntity<?> saveWriteFeedBackPost(@RequestBody PostWritementorDTO params) {
         try {
-            return ResponseEntity.ok(postService.saveWritementorPost(params));
+            return ResponseEntity.ok(postService.saveWriteFeedBackPost(params));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -536,9 +584,9 @@ public class PostController {
     @PostMapping("/post/mywritefeedback")
     public ResponseEntity<?> myWriteFeedBack(@RequestBody PostWritementorDTO userid, Model model) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.findMentorPostByMyUserId(userid.getUserid());
+        postService.findFeedBackPostByMyUserId(userid.getUserid());
         Map<String, Object> obj = new HashMap<>();
-        List<PostWritementorDTO> posts = postService.findMentorPostByMyUserId(userid.getUserid());
+        List<PostWritementorDTO> posts = postService.findFeedBackPostByMyUserId(userid.getUserid());
         model.addAttribute("posts", posts);
         obj.put("writefeedback", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
@@ -546,16 +594,20 @@ public class PostController {
 
     // 기존 리뷰 수정
     @PostMapping("/post/updatewritefeedback")
-    public ResponseEntity<?> updateWriteFeedBackPost(@RequestBody PostWritementorDTO params) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        return postService.updateMentorPost(params);
+    public ResponseEntity<?> updateWriteFeedBackPost(@RequestBody PostWritementorDTO params) {
+        try {
+            return postService.updateFeedBackPost(params);
+        } catch (ApiException e) {
+            return new ResponseEntity<>("Error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     // 기존 별점 및 리뷰 삭제
     @RequestMapping("/post/deletewritefeedback")
     public ResponseEntity<?> deleteWriteFeedBackPost(@RequestBody PostWritementorDTO params) {
         try {
-            return postService.deleteMentorPost(params);
+            return postService.deleteFeedBackPost(params);
         } catch (Exception e) {
             // 예외 처리
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
