@@ -23,8 +23,14 @@ public class PostWritementorDTO {
         @NotBlank(message = "종목은 필수 입력값입니다.")
         private String category;
         private String shortcontent;
-        @NotBlank(message = "닉네임은 필수 입력 값입니다.")
+        @NotBlank(message = "내용은 필수 입력 값입니다.")
         private String description;
+        @NotBlank(message = "내용은 필수 입력 값입니다.")
+        private String lowdescription;
+        @NotBlank(message = "내용은 필수 입력 값입니다.")
+        private String middledescription;
+        @NotBlank(message = "내용은 필수 입력 값입니다.")
+        private String highdescription;
         @NotBlank(message = "커리어는 필수 입력값입니다.")
         private String career;
 
@@ -33,7 +39,13 @@ public class PostWritementorDTO {
 //        @Pattern(regexp = "^\\d{4,7}$", message = "가격은 4~7자여야 합니다.")
         @Size(min = 4,max = 7,message = "가격은 4~7자리")
         @NotBlank(message = "가격은 필수 입력값입니다.")
-        private Integer price;
+        private Integer lowprice;
+        @Size(min = 4,max = 7,message = "가격은 4~7자리")
+        @NotBlank(message = "가격은 필수 입력값입니다.")
+        private Integer middleprice;
+        @Size(min = 4,max = 7,message = "가격은 4~7자리")
+        @NotBlank(message = "가격은 필수 입력값입니다.")
+        private Integer highprice;
         @NotBlank(message = "유저아이디 필수 입력값입니다.")
         private Long userid;
         @NotBlank(message = "닉네임은 필수 입력값입니다.")
@@ -52,4 +64,5 @@ public class PostWritementorDTO {
         private Double appraisal;
         private Double avg_appraisal;
         private String token;
+
 }

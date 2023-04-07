@@ -87,9 +87,14 @@
         , category
         , shortcontent
         , description
+        , lowdescription
+        , middledescription
+        , highdescription
         , career
         , titleimage
-        , price
+        , lowprice
+        , middleprice
+        , highprice
         , userid
         , nickname
         , region
@@ -564,9 +569,14 @@
         , #{category}
         , #{shortcontent}
         , #{description}
+        , #{lowdescription}
+        , #{middledescription}
+        , #{highdescription}
         , #{career}
         , #{titleimage}
-        , #{price}
+        , #{lowprice}
+        , #{middleprice}
+        , #{highprice}
         , #{userid}
         , #{nickname}
         , #{region}
@@ -578,7 +588,8 @@
     <!-- 멘토 게시글 조회  -->
     <select id="findMentorAll" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
         SELECT
-            id,title,category,shortcontent,description,career,titleimage,price,
+            id,title,category,shortcontent,description,lowdescription,middledescription,highdescription,
+            career,titleimage,lowprice,middleprice,highprice,
             user.userid,user.nickname,region,contacttime,writedate,user.profileimage,
             review,appraisal
         FROM
@@ -594,7 +605,8 @@
     <!-- 멘토 특정 게시글 조회  -->
     <select id="findMentorOne" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
         SELECT
-            id,title,category,shortcontent,description,career,titleimage,price,token,
+            id,title,category,shortcontent,description,lowdescription,middledescription,highdescription,
+            career,titleimage,lowprice,middleprice,highprice,
             user.userid,user.nickname,region,contacttime,writedate,user.profileimage,
             review,appraisal
         FROM
@@ -610,7 +622,8 @@
     <!-- 멘토 내가 쓴 글  -->
     <select id="findMentorByMyUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
         SELECT
-            writementor.id, title, category, shortcontent, description, career, titleimage, price,
+            writementor.id, title, category, shortcontent, description,lowdescription,middledescription,highdescription,
+            career, titleimage, lowprice, middleprice, highprice,
             user.userid, user.nickname, region, contacttime, writedate, user.profileimage,
             review, appraisal,inherentid, AVG(feedback.appraisal) as avg_appraisal
         FROM
@@ -633,9 +646,14 @@
           , category = #{category}
           , shortcontent = #{shortcontent}
           , description = #{description}
+          , lowdescription = #{lowdescription}
+          , middledescription = #{middledescription}
+          , highdescription = #{highdescription}
           , career = #{career}
           , titleimage = #{titleimage}
-          , price = #{price}
+          , lowprice = #{lowprice}
+          , middleprice = #{middleprice}
+          , highprice = #{highprice}
           , region = #{region}
           , contacttime = #{contacttime}
         WHERE
@@ -691,7 +709,6 @@
                 feedback
                 WHERE inherentid = #{inherentid}
     </delete>
-
 
     <!-- 기존 유저 정보 조회  -->
     <select id="findUserInfoAll" resultType="com.project.ribbon.domain.post.PostUserRequest">

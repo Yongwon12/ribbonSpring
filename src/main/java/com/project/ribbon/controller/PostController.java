@@ -55,11 +55,11 @@ public class PostController {
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
     // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://172.30.1.66:8000/api/userimage/";
-    String boardip = "http://172.30.1.66:8000/api/boardimage/";
-    String groupip = "http://172.30.1.66:8000/api/groupimage/";
-    String usedip = "http://172.30.1.66:8000/api/usedimage/";
-    String mentorip = "http://172.30.1.66:8000/api/mentortitleimage/";
+    String userip = "http://192.168.219.161:8000/api/userimage/";
+    String boardip = "http://192.168.219.161:8000/api/boardimage/";
+    String groupip = "http://192.168.219.161:8000/api/groupimage/";
+    String usedip = "http://192.168.219.161:8000/api/usedimage/";
+    String mentorip = "http://192.168.219.161:8000/api/mentortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -443,11 +443,16 @@ public class PostController {
             @RequestParam("title") @Size(min = 2, max = 30) String title,
             @RequestParam("category") @Size(min = 2, max = 10) String category,
             @RequestParam("shortcontent") @Size(min = 2, max = 60) String shortcontent,
-            @RequestParam("description") @Size(min = 2, max = 300) String description,
+            @RequestParam("description") @Size(min = 2, max = 1000) String description,
+            @RequestParam("lowdescription") @Size(min = 2, max = 100) String lowdescription,
+            @RequestParam("middledescription") @Size(min = 2, max = 100) String middledescription,
+            @RequestParam("highdescription") @Size(min = 2, max = 100) String highdescription,
             @RequestParam("career") @Size(min = 2, max = 200) String career,
             @RequestParam(value = "image", required = false) MultipartFile file,
             @RequestParam("writedate") String writedate,
-            @RequestParam("price") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 4, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price,
+            @RequestParam("lowprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 4, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer lowprice,
+            @RequestParam("middleprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 4, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer middleprice,
+            @RequestParam("highprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 4, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer highprice,
             @RequestParam("userid") Long userid,
             @RequestParam("nickname") @Size(min = 2,max = 10) String nickname,
             @RequestParam("region") @Size(min = 2, max = 20) String region,
@@ -459,9 +464,14 @@ public class PostController {
             params.setCategory(category);
             params.setShortcontent(shortcontent);
             params.setDescription(description);
+            params.setLowdescription(lowdescription);
+            params.setMiddledescription(middledescription);
+            params.setHighdescription(highdescription);
             params.setCareer(career);
             params.setWritedate(writedate);
-            params.setPrice(price);
+            params.setLowprice(lowprice);
+            params.setMiddleprice(middleprice);
+            params.setHighprice(highprice);
             params.setUserid(userid);
             params.setNickname(nickname);
             params.setRegion(region);
@@ -732,17 +742,21 @@ public class PostController {
 
         // 실시간 인기글
         @GetMapping("/realtimeup")
-        public ResponseEntity<?> realTimeUp(Model model) throws ApiException {
-            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        public ResponseEntity<?> realTimeUp(Model model) {
             Map<String, Object> obj = new HashMap<>();
-            List<PostResponse> posts = postService.findAllPost11();
-            model.addAttribute("posts", posts);
-            obj.put("bestwrite", posts);
-            return new ResponseEntity<>(obj, HttpStatus.OK);
+            try {
+                List<PostResponse> posts = postService.findAllPost11();
+                model.addAttribute("posts", posts);
+                obj.put("bestwrite", posts);
+                return new ResponseEntity<>(obj, HttpStatus.OK);
+            } catch (ApiException e) {
+                obj.put("error", e.getMessage());
+                return new ResponseEntity<>(obj, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
 
 
-        // 좋아요 등록
+    // 좋아요 등록
         @PostMapping("/post/liked")
         public Integer saveLikedPost(@RequestBody PostLikedRequest params) throws ApiException, IOException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;

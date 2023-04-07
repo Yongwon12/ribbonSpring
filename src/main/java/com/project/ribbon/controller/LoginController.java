@@ -40,7 +40,7 @@ public class LoginController {
     // 개발환경용 ip : http://192.168.219.161:8000/ribbon/admin
     // 개발환경용 맺음 gif 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.gif
     // 개발환경용 맺음 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png
-    String ip = "http://172.30.1.66:8000/ribbon/admin/ribbon/admin";
+    String ip = "http://192.168.219.161:8000/ribbon/admin/ribbon/admin";
     // 맺음 홈페이지
     @GetMapping("/ribbon")
     public String showRibbonForm() {
