@@ -278,6 +278,10 @@ public interface PostMapper {
     List<PostReportUserResponse> findReportUserAll();
     // 신고 유저 저장
     void saveReportUser(PostReportUserResponse params);
+    // 신고 멘토 게시글 조회
+    List<PostWritementorDTO> findReportMentorAll();
+    // 신고 멘토 게시글 저장
+    void saveReportMentor(PostWritementorDTO params);
     // 신고 커뮤니티 게시글 조회
     List<PostReportBoardResponse> findReportBoardAll();
     // 문의하기 조회
@@ -326,8 +330,10 @@ public interface PostMapper {
 
     // 활성화 유저 수정
     void updateByActivateUserRolesId(String params);
-
-
+    // 관리자페이지 신고 멘토글 삭제
+    void deleteMentorReport(String params);
+    // 신고 멘토 글 삭제
+    void deleteMentorWriteReport(String params);
     // 관리자페이지 신고 커뮤니티글 삭제
     void deleteBoardReport(String params);
     // 신고 커뮤니티글 삭제
@@ -349,7 +355,8 @@ public interface PostMapper {
     // 신고 중고글 삭제
     void deleteUsedWriteReport(String params);
 
-
+    // 신고 멘토 글 리뷰 삭제
+    void deleteMentorReviewWriteReport(String params);
 
     // 관리자페이지 신고 커뮤니티댓글 삭제
     void deleteBoardCommentsReport(String params);

@@ -64,5 +64,6 @@ public class PostWritementorDTO {
         private Double appraisal;
         private Double avg_appraisal;
         private String token;
+        private String reportdescription;
 
 }

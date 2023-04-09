@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f2f2f2;
+  }
+  h1 {
+    text-align: center;
+    margin-top: 20px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 80%;
+    margin: auto;
+    height: 100px; /* 원하는 세로 크기로 지정 */
+    overflow-y: scroll; /* 내용이 넘칠 경우 스크롤 표시 */
+    margin-top: 20px;
+    margin-bottom: 50px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  th, td {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  th {
+    background-color: #ccc;
+  }
+  img {
+    max-width: 50%;
+    height: 100px;
+  }
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  button {
+    margin-top: 20px;
+    margin-left: 20px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #3e8e41;
+  }
+  #selectAll {
+    margin-top: 5px;
+  }
+</style>
+<head>
+  <meta charset="UTF-8">
+  <title>Mentor Report</title>
+
+</head>
+<body>
+<h1>Mentor Report</h1>
+<button onclick="location.href='/ribbon/admin/report'">맺음 신고 및 공지 목록</button>
+<button type="button" onclick="deleteSelectedMentors()">Delete Selected Mentor Report</button>
+<table>
+  <thead>
+  <tr>
+    <th><input type="checkbox" id="selectAll"/></th>
+    <th>Report ID</th>
+    <th>Report Title</th>
+    <th>Report Description</th>
+    <th>Report Report Description</th>
+    <th>Report Low Description</th>
+    <th>Report Middle Description</th>
+    <th>Report High Description</th>
+    <th>Report Title Image</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="mentor : ${mentorList}">
+    <td><input type="checkbox" name="selectedMentors" th:value="${mentor.getId()}" onclick="selectRow(this)"/></td>
+    <td th:text="${mentor.getId()}"></td>
+    <td th:text="${mentor.getTitle()}"></td>
+    <td th:text="${mentor.getDescription()}"></td>
+    <td th:text="${mentor.getReportdescription()}"></td>
+    <td th:text="${mentor.getLowdescription()}"></td>
+    <td th:text="${mentor.getMiddledescription()}"></td>
+    <td th:text="${mentor.getHighdescription()}"></td>
+    <td><img th:src="${mentor.getTitleimage()}" /></td>
+  </tr>
+  </tbody>
+</table>
+<script>
+  // select all checkboxes when "select all" checkbox is clicked
+  const selectAllCheckbox = document.getElementById('selectAll');
+  const checkboxes = document.getElementsByName('selectedMentors');
+  selectAllCheckbox.addEventListener('click', function() {
+    for (let i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = selectAllCheckbox.checked;
+    }
+  });
+  function selectRow(checkbox) {
+    const inputs = checkbox.parentNode.parentNode.getElementsByTagName('input');
+    for (let i = 0; i < inputs.length; i++) {
+      if (inputs[i].type === 'checkbox') {
+        inputs[i].checked = checkbox.checked;
+      }
+    }
+  }
+  function deleteSelectedMentors() {
+    const selectedMentors = Array.from(document.getElementsByName('selectedMentors'))
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => ({ "id": checkbox.value }));
+    if (selectedMentors.length === 0) {
+      alert('Please select at least one id.');
+      return;
+    }
+    if (confirm('정말로 삭제하시겠습니까?')) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/ribbon/admin/post/reportmentordelete');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify(selectedMentors));
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          alert("멘토 신고 게시글 삭제 성공!");
+          window.location.reload();
+        }
+      }
+    }
+  }
+
+</script>
+</body>
+</html>

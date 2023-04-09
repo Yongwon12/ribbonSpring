@@ -1,8 +1,6 @@
 package com.project.ribbon.domain.post;
 
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +22,7 @@ public class PostChatRoomRequest {
         private String myprofileimage;
         private String yourprofileimage;
 
+        private String writedate;
 
 }
 

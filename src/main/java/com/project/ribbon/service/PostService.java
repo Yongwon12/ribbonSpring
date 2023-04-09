@@ -1184,13 +1184,34 @@ public class PostService {
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
+    // 신고 멘토 글 조회
+    public List<PostWritementorDTO> findReportMentorAllPost() {
+        try {
+            return postMapper.findReportMentorAll();
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("신고 멘토글 조회에 실패했습니다.", e);
+        }
+    }
+    // 신고 멘토 글 저장
+    @Transactional
+    public ResponseEntity<?> saveReportMentorPost(final PostWritementorDTO params) {
+        try {
+            postMapper.saveReportMentor(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("신고 멘토 글 저장에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+
     // 신고 커뮤니티글 조회
     public List<PostReportBoardResponse> findReportBoardAllPost() {
         try {
             return postMapper.findReportBoardAll();
         } catch (Exception e) {
             // 예외 처리 코드 작성
-            throw new RuntimeException("신고 유저 저장에 실패했습니다.", e);
+            throw new RuntimeException("신고 커뮤니티 글 조회에 실패했습니다.", e);
         }
     }
     // 신고 커뮤니티글 저장
@@ -1405,6 +1426,26 @@ public class PostService {
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
+    // 관리자페이지 신고 멘토 글 삭제
+    public ResponseEntity<?> deleteMentorReportPost(final String params) {
+        try {
+            postMapper.deleteMentorReport(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("관리자 페이지 신고 멘토 글 삭제에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+    // 신고 멘토 글 삭제
+    public ResponseEntity<?> deleteMentorWriteReportPost(final String params) {
+        try {
+            postMapper.deleteMentorWriteReport(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("신고 멘토 글 삭제에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
 
 
     // 관리자페이지 신고 커뮤니티글 삭제
@@ -1484,6 +1525,16 @@ public class PostService {
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("신고 중고 글 삭제에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+    // 신고 멘토글 리뷰 삭제
+    public ResponseEntity<?> deleteMentorReviewWriteReportPost(final String params) {
+        try {
+            postMapper.deleteMentorReviewWriteReport(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("신고 멘토 글 리뷰 삭제에 실패했습니다.", e);
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }

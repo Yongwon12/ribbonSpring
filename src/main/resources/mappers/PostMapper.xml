@@ -186,6 +186,7 @@
         , yournickname
         , myprofileimage
             , yourprofileimage
+            , writedate
     </sql>
 
     <!-- 커뮤니티 게시글 저장 -->
@@ -1577,6 +1578,7 @@
         , #{yournickname}
         , #{myprofileimage}
         , #{yourprofileimage}
+        , NOW()
         )
     </insert>
 
@@ -1584,13 +1586,14 @@
     <!-- 특정 채팅방 정보 조회  -->
     <select id="findByMyId" parameterType="Integer" resultType="com.project.ribbon.domain.post.PostChatRoomResponse">
         SELECT
-            roomname,yourid,yournickname,yourprofileimage,myid,token
+            roomname,yourid,user.nickname,user.profileimage,myid,token
         FROM
             chatroom
                 LEFT JOIN user
                           ON user.userid = chatroom.yourid
         WHERE
             myid = #{myid}
+        ORDER BY writedate DESC
     </select>
 
 
@@ -1620,7 +1623,28 @@
                  , #{profileimage}
                  )
     </insert>
+    <!-- 신고 멘토 글 조회 -->
+    <select id="findReportMentorAll" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
+        SELECT
+            *
+        FROM reportmentor
 
+    </select>
+    <!-- 신고 멘토 글  저장 -->
+    <insert id="saveReportMentor" parameterType="com.project.ribbon.domain.post.PostWritementorDTO">
+        INSERT INTO reportmentor (
+            id,title,description,lowdescription,middledescription,highdecription,reportdescription,titleimage
+        ) VALUES (
+                     #{id}
+                 , #{title}
+                 , #{description}
+                 , #{lowdescription}
+                 , #{middledescription}
+                 , #{highdecription}
+                 , #{reportdescription}
+                 , #{titleimage}
+                 )
+    </insert>
     <!-- 신고 커뮤니티글 조회 -->
     <select id="findReportBoardAll" resultType="com.project.ribbon.domain.post.PostReportBoardResponse">
         SELECT
@@ -1812,6 +1836,21 @@
         SET roles = "USER"
         WHERE user_userid = #{userid}
     </update>
+    <!-- 신고 관리자페이지 멘토글 삭제 -->
+    <delete id="deleteMentorReport" >
+        DELETE
+                FROM
+                reportmentor
+                WHERE id = #{id}
+    </delete>
+
+    <!-- 신고 멘토 게시글 삭제 -->
+    <delete id="deleteMentorWriteReport" >
+        DELETE
+                FROM
+                writementor
+                WHERE id = #{id}
+    </delete>
 
     <!-- 신고 관리자페이지 커뮤니티글 삭제 -->
     <delete id="deleteBoardReport" >
@@ -1873,7 +1912,13 @@
                 usedwrite
                 WHERE usedid = #{usedid}
     </delete>
-
+    <!-- 신고 커뮤니티 게시 리뷰 삭제 -->
+    <delete id="deleteMentorReviewWriteReport" >
+        DELETE
+                FROM
+                feedback
+                WHERE inherentid = #{id}
+    </delete>
 
     <!-- 신고 관리자페이지 커뮤니티댓글 삭제 -->
     <delete id="deleteBoardCommentsReport" >

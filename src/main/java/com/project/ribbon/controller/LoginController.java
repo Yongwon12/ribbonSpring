@@ -40,7 +40,9 @@ public class LoginController {
     // 개발환경용 ip : http://192.168.219.161:8000/ribbon/admin
     // 개발환경용 맺음 gif 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.gif
     // 개발환경용 맺음 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png
-    String ip = "http://192.168.219.161:8000/ribbon/admin/ribbon/admin";
+    String ip = "https://ribbonding.shop:48610/ribbon/admin";
+
+
     // 맺음 홈페이지
     @GetMapping("/ribbon")
     public String showRibbonForm() {
@@ -48,7 +50,7 @@ public class LoginController {
     }
     @GetMapping("/ribbon/ribbon.gif")
     public ResponseEntity<byte[]> getRibbonGif() throws IOException {
-        Path gifPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.gif");
+        Path gifPath = Paths.get("/oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbon.gif");
         byte[] gifBytes = Files.readAllBytes(gifPath);
 
         final HttpHeaders headers = new HttpHeaders();
@@ -57,7 +59,7 @@ public class LoginController {
     }
     @GetMapping("/ribbon/ribbonding.png")
     public ResponseEntity<byte[]> getRibbonImage() throws IOException {
-        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png");
+        Path imagePath = Paths.get("/oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbonding.png");
         byte[] imageBytes = Files.readAllBytes(imagePath);
 
         final HttpHeaders headers = new HttpHeaders();
@@ -73,6 +75,11 @@ public class LoginController {
     @GetMapping("/ribbon/admin/announcementlogin")
     public String showAnnouncementLoginForm() {
         return "admin-announcementlogin";
+    }
+    // 멘토 글 신고 로그인 폼
+    @GetMapping("/ribbon/admin/mentorlogin")
+    public String showMentorLoginForm() {
+        return "admin-mentorlogin";
     }
     // 커뮤니티 글 신고 로그인 폼
     @GetMapping("/ribbon/admin/boardlogin")
@@ -184,6 +191,18 @@ public class LoginController {
     @PostMapping("/ribbon/admin/reportinsertuser")
     public ResponseEntity<?> userReportInsert(@RequestBody PostReportUserResponse params) {
         return new ResponseEntity<>(postService.saveReportUserPost(params),HttpStatus.OK);
+    }
+    // 신고 멘토글 정보 조회
+    @GetMapping("/ribbon/admin/reportmentor")
+    public String mentorReport(Model model) {
+        List<PostWritementorDTO> mentorList = postService.findReportMentorAllPost();
+        model.addAttribute("mentorList", mentorList);
+        return "admin-reportpostdeletementor";
+    }
+    // 신고 멘토글 정보 저장
+    @PostMapping("/ribbon/admin/reportinsertmentor")
+    public ResponseEntity<?> mentorReportInsert(@RequestBody PostWritementorDTO params) {
+        return new ResponseEntity<>(postService.saveReportMentorPost(params), HttpStatus.OK);
     }
     // 신고 커뮤니티글 정보 조회
     @GetMapping("/ribbon/admin/reportboard")
@@ -303,6 +322,18 @@ public class LoginController {
         }
         return "admin-reportpostdeleteuser";
     }
+    // 관리자페이지 신고 멘토 글 정보 삭제
+    @RequestMapping("/ribbon/admin/post/reportmentordelete")
+    public String mentorReportDelete(@RequestBody List<Map<String,String>> params) {
+        System.out.println(params);
+        for (Map<String, String> mentor : params) {
+            String id = mentor.get("id");
+            postService.deleteMentorWriteReportPost(id);
+            postService.deleteMentorReportPost(id);
+            postService.deleteMentorReviewWriteReportPost(id);
+        }
+        return "admin-reportpostdeletementor";
+    }
     // 관리자페이지 신고 커뮤니티글 정보 삭제
     @RequestMapping("/ribbon/admin/post/reportboarddelete")
     public String boardReportDelete(@RequestBody List<Map<String,String>> params) {
@@ -417,7 +448,23 @@ public class LoginController {
             response.sendRedirect("/ribbon/admin/inquirylogin");
         }
     }
-
+    //  멘토 글 신고 관리자 권한 조회
+    @PostMapping("/ribbon/admin/post/mentorlogin")
+    public void adminMentorLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
+        String userid = adminLoginRequestDto.getUserid();
+        String password = adminLoginRequestDto.getPassword();
+        TokenInfo tokenInfo = memberService.login(userid, password);
+        if (tokenInfo != null) {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
+            HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportmentor", HttpMethod.GET, entity, String.class);
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.sendRedirect("/ribbon/admin/mentorlogin");
+        }
+    }
 //  커뮤니티글 신고 관리자 권한 조회
 @PostMapping("/ribbon/admin/post/boardlogin")
 public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
