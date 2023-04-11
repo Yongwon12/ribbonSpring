@@ -64,6 +64,8 @@ public class PostWritementorDTO {
         private Double appraisal;
         private Double avg_appraisal;
         private String token;
+        @NotBlank(message = "신고내용은 필수 입력값입니다.")
+        @Size(min = 2, max = 100)
         private String reportdescription;
 
 }

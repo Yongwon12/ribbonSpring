@@ -1633,14 +1633,14 @@
     <!-- 신고 멘토 글  저장 -->
     <insert id="saveReportMentor" parameterType="com.project.ribbon.domain.post.PostWritementorDTO">
         INSERT INTO reportmentor (
-            id,title,description,lowdescription,middledescription,highdecription,reportdescription,titleimage
+            id,title,description,lowdescription,middledescription,highdescription,reportdescription,titleimage
         ) VALUES (
                      #{id}
                  , #{title}
                  , #{description}
                  , #{lowdescription}
                  , #{middledescription}
-                 , #{highdecription}
+                 , #{highdescription}
                  , #{reportdescription}
                  , #{titleimage}
                  )
