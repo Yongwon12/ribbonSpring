@@ -67,30 +67,38 @@
   </style>
   <script>
     $(document).ready(function() {
-      $('#form-id').submit(function(event) {
-        // prevent default form submission
-        event.preventDefault();
-
-        // serialize form data to JSON string
-        const formData = $(this).serializeArray();
-        const jsonData = {};
-        $.each(formData, function(index, field) {
-          jsonData[field.name] = field.value;
-        });
-
-        // send JSON data to server using AJAX
-        $.ajax({
-          type: 'POST',
-          url: '/ribbon/admin/post/userlogin',
-          data: JSON.stringify(jsonData),
-          contentType: 'application/json',
-          success: function(data) {
-            alert("로그인 성공!");
-            window.location.href = "/ribbon/admin/reportuser";
-          },
-          error: function(xhr, status, error) {
-            alert("로그인 실패!");
+      $.get('/api/ribbon', function (data) {
+        // add CSRF token to X-XSRF-TOKEN header
+        $.ajaxSetup({
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-XSRF-TOKEN', data.csrfToken);
           }
+        });
+        $('#form-id').submit(function (event) {
+          // prevent default form submission
+          event.preventDefault();
+
+          // serialize form data to JSON string
+          const formData = $(this).serializeArray();
+          const jsonData = {};
+          $.each(formData, function (index, field) {
+            jsonData[field.name] = field.value;
+          });
+
+          // send JSON data to server using AJAX
+          $.ajax({
+            type: 'POST',
+            url: '/ribbon/admin/post/userlogin',
+            data: JSON.stringify(jsonData),
+            contentType: 'application/json',
+            success: function (data) {
+              alert("로그인 성공!");
+              window.location.href = "/ribbon/admin/reportuser";
+            },
+            error: function (xhr, status, error) {
+              alert("로그인 실패!");
+            }
+          });
         });
       });
     });

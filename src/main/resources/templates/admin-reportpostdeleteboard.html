@@ -89,14 +89,16 @@
   </tbody>
 </table>
 <script>
+
   // select all checkboxes when "select all" checkbox is clicked
   const selectAllCheckbox = document.getElementById('selectAll');
   const checkboxes = document.getElementsByName('selectedBoards');
-  selectAllCheckbox.addEventListener('click', function() {
+  selectAllCheckbox.addEventListener('click', function () {
     for (let i = 0; i < checkboxes.length; i++) {
       checkboxes[i].checked = selectAllCheckbox.checked;
     }
   });
+
   function selectRow(checkbox) {
     const inputs = checkbox.parentNode.parentNode.getElementsByTagName('input');
     for (let i = 0; i < inputs.length; i++) {
@@ -105,28 +107,37 @@
       }
     }
   }
+
   function deleteSelectedBoards() {
     const selectedBoards = Array.from(document.getElementsByName('selectedBoards'))
             .filter(checkbox => checkbox.checked)
-            .map(checkbox => ({ "boardid": checkbox.value }));
+            .map(checkbox => ({"boardid": checkbox.value}));
     if (selectedBoards.length === 0) {
       alert('Please select at least one boardid.');
       return;
     }
     if (confirm('정말로 삭제하시겠습니까?')) {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', '/ribbon/admin/post/reportboarddelete');
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.send(JSON.stringify(selectedBoards));
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          alert("커뮤니티 신고 게시글 삭제 성공!");
-          window.location.reload();
+      const xhrCsrf = new XMLHttpRequest();
+      xhrCsrf.open('GET', '/api/ribbon');
+      xhrCsrf.onload = function () {
+        if (xhrCsrf.status === 200) {
+          const csrfToken = JSON.parse(xhrCsrf.response).csrfToken;
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', '/ribbon/admin/post/reportboarddelete');
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.setRequestHeader('X-XSRF-TOKEN', csrfToken);
+          xhr.send(JSON.stringify(selectedBoards));
+          xhr.onload = function () {
+            if (xhr.status === 200) {
+              alert("커뮤니티 신고 게시글 삭제 성공!");
+              window.location.reload();
+            }
+          }
         }
       }
+      xhrCsrf.send();
     }
   }
-
 </script>
 </body>
 </html>

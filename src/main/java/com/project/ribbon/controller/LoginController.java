@@ -40,8 +40,12 @@ public class LoginController {
     // 개발환경용 ip : http://192.168.219.161:8000/ribbon/admin
     // 개발환경용 맺음 gif 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.gif
     // 개발환경용 맺음 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png
-    String ip = "http://192.168.0.5:8000/ribbon/admin";
-
+    String ip = "http://192.168.219.161:8000/ribbon/admin";
+    // test
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
 
     // 맺음 홈페이지
     @GetMapping("/ribbon")
@@ -431,6 +435,7 @@ public class LoginController {
         }
         return "admin-reportusedcomments";
     }
+
     //  문의하기 관리자 권한 조회
     @PostMapping("/ribbon/admin/post/inquirylogin")
     public void adminInquiryLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
@@ -448,6 +453,7 @@ public class LoginController {
             response.sendRedirect("/ribbon/admin/inquirylogin");
         }
     }
+
     //  멘토 글 신고 관리자 권한 조회
     @PostMapping("/ribbon/admin/post/mentorlogin")
     public void adminMentorLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {

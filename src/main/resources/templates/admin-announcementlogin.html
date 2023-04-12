@@ -66,7 +66,14 @@
     }
   </style>
   <script>
-    $(document).ready(function() {
+      $(document).ready(function() {
+        $.get('/api/ribbon', function(data) {
+          // add CSRF token to X-XSRF-TOKEN header
+          $.ajaxSetup({
+            beforeSend: function (xhr) {
+              xhr.setRequestHeader('X-XSRF-TOKEN', data.csrfToken);
+            }
+          });
       $('#form-id').submit(function(event) {
         // prevent default form submission
         event.preventDefault();
@@ -93,6 +100,7 @@
         });
       });
     });
+      });
 
 
   </script>

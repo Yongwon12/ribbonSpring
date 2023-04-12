@@ -113,16 +113,25 @@
       return;
     }
     if (confirm('정말로 삭제하시겠습니까?')) {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', '/ribbon/admin/post/reportgroupdelete');
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.send(JSON.stringify(selectedGroups));
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          alert("단체 신고 게시글 삭제 성공!");
-          window.location.reload();
+      const xhrCsrf = new XMLHttpRequest();
+      xhrCsrf.open('GET', '/api/ribbon');
+      xhrCsrf.onload = function () {
+        if (xhrCsrf.status === 200) {
+          const csrfToken = JSON.parse(xhrCsrf.response).csrfToken;
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', '/ribbon/admin/post/reportgroupdelete');
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.setRequestHeader('X-XSRF-TOKEN', csrfToken);
+          xhr.send(JSON.stringify(selectedGroups));
+          xhr.onload = function () {
+            if (xhr.status === 200) {
+              alert("단체 신고 게시글 삭제 성공!");
+              window.location.reload();
+            }
+          }
         }
       }
+      xhrCsrf.send();
     }
   }
 

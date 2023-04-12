@@ -65,35 +65,43 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script>
     $(document).ready(function() {
-      $('#announcement-form').submit(function(event) {
-        // prevent default form submission
-        event.preventDefault();
-
-        // serialize form data to JSON string
-        const formData = $(this).serializeArray();
-        const jsonData = {};
-        $.each(formData, function(index, field) {
-          jsonData[field.name] = field.value;
+      $.get('/api/ribbon', function (data) {
+        // add CSRF token to X-XSRF-TOKEN header
+        $.ajaxSetup({
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-XSRF-TOKEN', data.csrfToken);
+          }
         });
+        $('#announcement-form').submit(function (event) {
+          // prevent default form submission
+          event.preventDefault();
 
-        // confirm before sending data to server using AJAX
-        if(confirm("공지 올리기 전에 한번 더 생각했나요??")) {
-          // send JSON data to server using AJAX
-          $.ajax({
-            type: 'POST',
-            url: '/ribbon/admin/postinsertannouncement',
-            data: JSON.stringify(jsonData),
-            contentType: 'application/json',
-            success: function(data) {
-              alert('공지 성공!');
-              // redirect to adminannouncementinfo page
-              window.location.href = '/ribbon/admin/adminannouncementinfo';
-            },
-            error: function(xhr, status, error) {
-              alert('공지 실패!');
-            }
+          // serialize form data to JSON string
+          const formData = $(this).serializeArray();
+          const jsonData = {};
+          $.each(formData, function (index, field) {
+            jsonData[field.name] = field.value;
           });
-        }
+
+          // confirm before sending data to server using AJAX
+          if (confirm("공지 올리기 전에 한번 더 생각했나요??")) {
+            // send JSON data to server using AJAX
+            $.ajax({
+              type: 'POST',
+              url: '/ribbon/admin/postinsertannouncement',
+              data: JSON.stringify(jsonData),
+              contentType: 'application/json',
+              success: function (data) {
+                alert('공지 성공!');
+                // redirect to adminannouncementinfo page
+                window.location.href = '/ribbon/admin/adminannouncementinfo';
+              },
+              error: function (xhr, status, error) {
+                alert('공지 실패!');
+              }
+            });
+          }
+        });
       });
     });
   </script>

@@ -1836,6 +1836,7 @@
         SET roles = "USER"
         WHERE user_userid = #{userid}
     </update>
+
     <!-- 신고 관리자페이지 멘토글 삭제 -->
     <delete id="deleteMentorReport" >
         DELETE

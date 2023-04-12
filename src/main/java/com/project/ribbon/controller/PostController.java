@@ -7,6 +7,8 @@ import com.project.ribbon.enums.ExceptionEnum;
 import com.project.ribbon.provide.JwtTokenProvider;
 import com.project.ribbon.response.ApiException;
 import com.project.ribbon.service.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -40,8 +44,11 @@ import java.util.*;
 @Slf4j
 @RestController
 @Validated
+@ControllerAdvice
 public class PostController {
 
+    @Autowired
+    private CsrfTokenRepository csrfTokenRepository;
     private final PostService postService;
     private final FirebaseCloudMessageLikedService firebaseCloudMessageLikedService;
     private final FirebaseCloudMessageCommentsService firebaseCloudMessageCommentsService;
@@ -55,11 +62,11 @@ public class PostController {
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
     // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://192.168.0.5:8000/api/userimage/";
-    String boardip = "http://192.168.0.5:8000/api/boardimage/";
-    String groupip = "http://192.168.0.5:8000/api/groupimage/";
-    String usedip = "http://192.168.0.5:8000/api/usedimage/";
-    String mentorip = "http://192.168.0.5:8000/api/mentortitleimage/";
+    String userip = "http://192.168.219.161:8000/api/userimage/";
+    String boardip = "http://192.168.219.161:8000/api/boardimage/";
+    String groupip = "http://192.168.219.161:8000/api/groupimage/";
+    String usedip = "http://192.168.219.161:8000/api/usedimage/";
+    String mentorip = "http://192.168.219.161:8000/api/mentortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -284,6 +291,7 @@ public class PostController {
         obj.put("individualwrite", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
+
 
     // 개인 글작성
     @PostMapping("/post/writeindividual")
@@ -670,6 +678,36 @@ public class PostController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+    // 비밀키
+    @Value("${myapp.secretKey}")
+    private String secretKey;
+    // CSRF 토큰 발급
+    @PostMapping("/ribbon")
+    public ResponseEntity<Map<String, String>> myPage(CsrfToken token, HttpServletRequest request, HttpServletResponse response,
+                                                      @RequestBody PostSecretKey postSecretKey) {
+        if (!postSecretKey.getSecrettoken().equals(secretKey)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid secret key");
+        }
+        if (token != null) {
+            csrfTokenRepository.saveToken(token, request, response);
+        }
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("csrfToken", token.getToken());
+        System.out.println(postSecretKey.getSecrettoken());
+        System.out.println(tokens);
+        return ResponseEntity.ok(tokens);
+    }
+
+    @GetMapping("/ribbon")
+    public ResponseEntity<Map<String, String>> myPage(CsrfToken token, HttpServletRequest request, HttpServletResponse response) {
+        if (token != null) {
+            csrfTokenRepository.saveToken(token, request, response);
+        }
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("csrfToken", token.getToken());
+        System.out.println(tokens);
+        return ResponseEntity.ok(tokens);
     }
 
 
