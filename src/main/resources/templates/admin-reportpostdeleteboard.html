@@ -118,7 +118,7 @@
     }
     if (confirm('정말로 삭제하시겠습니까?')) {
       const xhrCsrf = new XMLHttpRequest();
-      xhrCsrf.open('GET', '/api/ribbon');
+      xhrCsrf.open('POST', '/api/ribbon');
       xhrCsrf.onload = function () {
         if (xhrCsrf.status === 200) {
           const csrfToken = JSON.parse(xhrCsrf.response).csrfToken;
@@ -135,7 +135,7 @@
           }
         }
       }
-      xhrCsrf.send();
+      xhrCsrf.send(JSON.stringify({ "secrettoken":"@McQfThWmZq4t7w!z%C*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B" }));
     }
   }
 </script>

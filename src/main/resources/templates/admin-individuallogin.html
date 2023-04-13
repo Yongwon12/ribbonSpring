@@ -67,13 +67,26 @@
   </style>
   <script>
     $(document).ready(function() {
-      $.get('/api/ribbon', function(data) {
-        // add CSRF token to X-XSRF-TOKEN header
-        $.ajaxSetup({
-          beforeSend: function(xhr) {
-            xhr.setRequestHeader('X-XSRF-TOKEN', data.csrfToken);
-          }
-        });
+      $.ajax({
+        type: 'POST',
+        url: '/api/ribbon',
+        data: JSON.stringify({
+          "secrettoken": "@McQfThWmZq4t7w!z%C*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B"
+        }),
+        contentType: 'application/json',
+        success: function(data) {
+          // Add CSRF token to X-XSRF-TOKEN header for all subsequent requests
+          $.ajaxSetup({
+            beforeSend: function(xhr) {
+              xhr.setRequestHeader('X-XSRF-TOKEN', data.csrfToken);
+            }
+          });
+        },
+        error: function(xhr, status, error) {
+          console.error("Failed to retrieve CSRF token");
+        }
+      });
+
       $('#form-id').submit(function(event) {
         // prevent default form submission
         event.preventDefault();
@@ -100,7 +113,6 @@
           }
         });
       });
-    });
     });
 
   </script>

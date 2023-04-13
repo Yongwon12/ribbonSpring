@@ -10,6 +10,7 @@ import com.project.ribbon.service.MemberService;
 import com.project.ribbon.service.PostService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -75,11 +76,17 @@ public class LoginController {
     public String showInquiryLoginForm() {
         return "admin-inquirylogin";
     }
+    // secret
+    @Value("${myapp.secretKey}")
+    private String secretKey;
+
     // 공지사항 로그인 폼
     @GetMapping("/ribbon/admin/announcementlogin")
-    public String showAnnouncementLoginForm() {
+    public String showAnnouncementLoginForm(Model model) {
+        model.addAttribute("secretKey", secretKey);
         return "admin-announcementlogin";
     }
+
     // 멘토 글 신고 로그인 폼
     @GetMapping("/ribbon/admin/mentorlogin")
     public String showMentorLoginForm() {

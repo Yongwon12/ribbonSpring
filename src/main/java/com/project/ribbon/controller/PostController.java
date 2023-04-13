@@ -655,8 +655,6 @@ public class PostController {
         }
     }
 
-
-
     // 유저 모든 POST 요청 대한 권한얻기
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
@@ -672,6 +670,7 @@ public class PostController {
             tokenInfoMap.put("refreshToken", tokenInfo.getRefreshToken());
             tokenInfoMap.put("roles", posts.getRoles());
             response.put("tokenInfo", tokenInfoMap);
+            System.out.println(tokenInfo);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -694,21 +693,20 @@ public class PostController {
         }
         Map<String, String> tokens = new HashMap<>();
         tokens.put("csrfToken", token.getToken());
-        System.out.println(postSecretKey.getSecrettoken());
         System.out.println(tokens);
         return ResponseEntity.ok(tokens);
     }
 
-    @GetMapping("/ribbon")
-    public ResponseEntity<Map<String, String>> myPage(CsrfToken token, HttpServletRequest request, HttpServletResponse response) {
-        if (token != null) {
-            csrfTokenRepository.saveToken(token, request, response);
-        }
-        Map<String, String> tokens = new HashMap<>();
-        tokens.put("csrfToken", token.getToken());
-        System.out.println(tokens);
-        return ResponseEntity.ok(tokens);
-    }
+//    @GetMapping("/ribbon")
+//    public ResponseEntity<Map<String, String>> myPage(CsrfToken token, HttpServletRequest request, HttpServletResponse response) {
+//        if (token != null) {
+//            csrfTokenRepository.saveToken(token, request, response);
+//        }
+//        Map<String, String> tokens = new HashMap<>();
+//        tokens.put("csrfToken", token.getToken());
+//        System.out.println(tokens);
+//        return ResponseEntity.ok(tokens);
+//    }
 
 
     // 유저 정보 수정
