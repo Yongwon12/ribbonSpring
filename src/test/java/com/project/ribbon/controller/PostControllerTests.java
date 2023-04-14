@@ -83,18 +83,31 @@ public class PostControllerTests {
     @Test
     public void testSaveWritePost() throws Exception {
         // JSON 형태의 요청 본문 데이터
-        String jsonBody = "{\"title\": \"title\", \"category\": \"category\", \"shortcontent\": \"shortcontent\", " +
-                "\"description\": \"description\", \"career\": \"career\", \"writedate\": \"tlqkf\", " +
-                "\"price\": 1000, \"userid\": \"4231\", \"nickname\": \"tlqkffja\", \"region\": \"region\", " +
+        String jsonBody = "{\"secrettoken\": \"@McQfThWmZq4t7w!z%C*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B\",\"title\": \"title\", \"category\": \"category\", \"shortcontent\": \"shortcontent\", " +
+                "\"description\": \"description\", \"career\": \"career\", \"writedate\": \"2022-00-00 00:00:00\", " +
+                "\"price\": 1000, \"userid\": \"308\", \"nickname\": \"tlqkffja\", \"region\": \"region\", " +
                 "\"contacttime\": \"contacttime\"}";
 
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/ribbon")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonBody)
+                        .header("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzMDgiLCJhdXRoIjoiUk9MRV9JTlNUUlVDVE9SIiwiZXhwIjoxNjgxNDk4NzA2fQ.qoEinPYrt1hNvDfQpjMjQCGTNntogICdkQHfVAXv2fI"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // CSRF 토큰 추출
+        MockHttpServletResponse response = result.getResponse();
+        String csrfToken = response.getCookie("XSRF-TOKEN").getValue();
+
+        // 게시글 저장 요청
         mockMvc.perform(MockMvcRequestBuilders.post("/api/post/writementor")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonBody)
-                        // 인증 헤더 설정
-                        .header("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiYXV0aCI6IlJPTEVfQURNSU4iLCJleHAiOjE2ODA3MjA1Mzd9.58pCOvR19n7ezPJOscHXmqv2yqdM8nvcOmpYbnkR0pA"))
+                        .header("X-XSRF-TOKEN", csrfToken)
+                        .header("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzMDgiLCJhdXRoIjoiUk9MRV9JTlNUUlVDVE9SIiwiZXhwIjoxNjgxNDk4NzA2fQ.qoEinPYrt1hNvDfQpjMjQCGTNntogICdkQHfVAXv2fI"))
                 .andExpect(status().isOk());
     }
+
 
     @Test
     public void testMentorWriteOne() throws Exception {

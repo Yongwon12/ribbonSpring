@@ -62,11 +62,11 @@ public class PostController {
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
     // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://192.168.219.161:8000/api/userimage/";
-    String boardip = "http://192.168.219.161:8000/api/boardimage/";
-    String groupip = "http://192.168.219.161:8000/api/groupimage/";
-    String usedip = "http://192.168.219.161:8000/api/usedimage/";
-    String mentorip = "http://192.168.219.161:8000/api/mentortitleimage/";
+    String userip = "http://192.168.0.4:8000/api/userimage/";
+    String boardip = "http://192.168.0.4:8000/api/boardimage/";
+    String groupip = "http://192.168.0.4:8000/api/groupimage/";
+    String usedip = "http://192.168.0.4:8000/api/usedimage/";
+    String mentorip = "http://192.168.0.4:8000/api/writementortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -634,8 +634,9 @@ public class PostController {
 
     // 유저 정보 등록
     @PostMapping("/sign")
-    public ResponseEntity<?> saveUserPost(@RequestBody @Valid PostUserRequest params, Model model) throws ApiException {
+    public ResponseEntity<?> saveUserPost(HttpServletRequest request, @RequestBody @Valid PostUserRequest params, Model model) throws ApiException {
         try {
+
             if ("USER".equals(params.getRoles())) {
                 postService.saveUserPost(params);
                 postService.saveUserRolesPost(params);
@@ -688,25 +689,10 @@ public class PostController {
         if (!postSecretKey.getSecrettoken().equals(secretKey)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid secret key");
         }
-        if (token != null) {
-            csrfTokenRepository.saveToken(token, request, response);
-        }
         Map<String, String> tokens = new HashMap<>();
-        tokens.put("csrfToken", token.getToken());
-        System.out.println(tokens);
+        tokens.put("csrfToken", token.getToken());;
         return ResponseEntity.ok(tokens);
     }
-
-//    @GetMapping("/ribbon")
-//    public ResponseEntity<Map<String, String>> myPage(CsrfToken token, HttpServletRequest request, HttpServletResponse response) {
-//        if (token != null) {
-//            csrfTokenRepository.saveToken(token, request, response);
-//        }
-//        Map<String, String> tokens = new HashMap<>();
-//        tokens.put("csrfToken", token.getToken());
-//        System.out.println(tokens);
-//        return ResponseEntity.ok(tokens);
-//    }
 
 
     // 유저 정보 수정

@@ -766,7 +766,7 @@
         </selectKey>
     </insert>
 
-    <!-- 유저 가입 -->
+    <!-- 유저 권한 가입 -->
     <insert id="saveUserRoles" parameterType="com.project.ribbon.domain.post.PostUserRequest"
     >
         INSERT INTO user_roles (

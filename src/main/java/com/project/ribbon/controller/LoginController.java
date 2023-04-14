@@ -10,14 +10,10 @@ import com.project.ribbon.service.MemberService;
 import com.project.ribbon.service.PostService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -41,7 +37,7 @@ public class LoginController {
     // 개발환경용 ip : http://192.168.219.161:8000/ribbon/admin
     // 개발환경용 맺음 gif 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.gif
     // 개발환경용 맺음 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png
-    String ip = "http://192.168.219.161:8000/ribbon/admin";
+    String ip = "http://192.168.0.4:8000/ribbon/admin";
     // test
     @GetMapping("/test")
     public String test() {
@@ -73,23 +69,23 @@ public class LoginController {
     }
     // 문의하기 로그인 폼
     @GetMapping("/ribbon/admin/inquirylogin")
-    public String showInquiryLoginForm() {
+    public String showInquiryLoginForm(@ModelAttribute("secretKey") String secretKey) {
         return "admin-inquirylogin";
     }
-    // secret
-    @Value("${myapp.secretKey}")
-    private String secretKey;
+
+
 
     // 공지사항 로그인 폼
     @GetMapping("/ribbon/admin/announcementlogin")
-    public String showAnnouncementLoginForm(Model model) {
-        model.addAttribute("secretKey", secretKey);
+    public String showAnnouncementLoginForm() {
         return "admin-announcementlogin";
     }
+
 
     // 멘토 글 신고 로그인 폼
     @GetMapping("/ribbon/admin/mentorlogin")
     public String showMentorLoginForm() {
+
         return "admin-mentorlogin";
     }
     // 커뮤니티 글 신고 로그인 폼
@@ -651,4 +647,5 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             response.sendRedirect("/ribbon/admin/announcement");
         }
     }
+
 }
