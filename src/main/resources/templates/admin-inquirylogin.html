@@ -67,12 +67,18 @@
   </style>
   <script>
     $(document).ready(function() {
-      // GET request to fetch CSRF token and session token
+      $.ajax({
+        type: 'GET',
+        url: '/ribbon/admin/secret',
+        success: function (data) {
+          const secretKey = data.secretKey;
+
+          // GET request to fetch CSRF token and session token
       $.ajax({
         type: 'POST',
         url: '/api/ribbon',
         data: JSON.stringify({
-          "secrettoken": "@McQfThWmZq4t7w!z%C*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B"
+          "secrettoken": secretKey
         }),
         contentType: 'application/json',
         success: function(data) {
@@ -114,6 +120,11 @@
             }
           });
         });
+            },
+            error: function (xhr, status, error) {
+      console.error("Failed to retrieve secretKey");
+    }
+    });
     });
 
 

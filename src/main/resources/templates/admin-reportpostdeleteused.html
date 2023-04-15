@@ -122,7 +122,13 @@
       return;
     }
     if (confirm('정말로 삭제하시겠습니까?')) {
-      const xhrCsrf = new XMLHttpRequest();
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', '/ribbon/admin/secret');
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          const secretKey = JSON.parse(xhr.response).secretKey;
+
+          const xhrCsrf = new XMLHttpRequest();
       xhrCsrf.open('POST', '/api/ribbon');
       xhrCsrf.setRequestHeader('Content-Type', 'application/json');
       xhrCsrf.onload = function () {
@@ -141,7 +147,10 @@
           }
         }
       }
-      xhrCsrf.send(JSON.stringify({ "secrettoken":"@McQfThWmZq4t7w!z%C*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B" }));
+      xhrCsrf.send(JSON.stringify({ "secrettoken":secretKey }));
+    }
+      }
+      xhr.send();
     }
   }
 

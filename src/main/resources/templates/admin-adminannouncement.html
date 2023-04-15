@@ -114,26 +114,36 @@
       return;
     }
     if (confirm('정말로 삭제하시겠습니까?')) {
-      const xhrCsrf = new XMLHttpRequest();
-      xhrCsrf.open('POST', '/api/ribbon');
-      xhrCsrf.setRequestHeader('Content-Type', 'application/json');
-      xhrCsrf.onload = function () {
-        if (xhrCsrf.status === 200) {
-          const csrfToken = JSON.parse(xhrCsrf.response).csrfToken;
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', '/ribbon/admin/post/adminannouncementdelete');
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.setRequestHeader('X-XSRF-TOKEN', csrfToken);
-          xhr.send(JSON.stringify(selectedAnnouncements));
-          xhr.onload = function () {
-            if (xhr.status === 200) {
-              alert("공지 삭제 성공!");
-              window.location.reload();
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', '/ribbon/admin/secret');
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          const secretKey = JSON.parse(xhr.response).secretKey;
+
+          const xhrCsrf = new XMLHttpRequest();
+          xhrCsrf.open('POST', '/api/ribbon');
+          xhrCsrf.setRequestHeader('Content-Type', 'application/json');
+          xhrCsrf.onload = function () {
+            if (xhrCsrf.status === 200) {
+              const csrfToken = JSON.parse(xhrCsrf.response).csrfToken;
+
+              const xhrDelete = new XMLHttpRequest();
+              xhrDelete.open('POST', '/ribbon/admin/post/adminannouncementdelete');
+              xhrDelete.setRequestHeader('Content-Type', 'application/json');
+              xhrDelete.setRequestHeader('X-XSRF-TOKEN', csrfToken);
+              xhrDelete.send(JSON.stringify(selectedAnnouncements));
+              xhrDelete.onload = function () {
+                if (xhrDelete.status === 200) {
+                  alert("공지 삭제 성공!");
+                  window.location.reload();
+                }
+              }
             }
           }
+          xhrCsrf.send(JSON.stringify({ "secrettoken": secretKey }));
         }
       }
-      xhrCsrf.send(JSON.stringify({ "secrettoken":"@McQfThWmZq4t7w!z%C*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B" }));
+      xhr.send();
     }
   }
 
