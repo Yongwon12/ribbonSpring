@@ -671,7 +671,6 @@ public class PostController {
             tokenInfoMap.put("refreshToken", tokenInfo.getRefreshToken());
             tokenInfoMap.put("roles", posts.getRoles());
             response.put("tokenInfo", tokenInfoMap);
-            System.out.println(tokenInfo);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
