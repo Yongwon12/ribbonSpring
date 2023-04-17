@@ -1,6 +1,7 @@
 package com.project.ribbon.mapper;
 
 import com.project.ribbon.domain.post.*;
+import com.project.ribbon.dto.PaymentResponse;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -86,6 +87,8 @@ public interface PostMapper {
 
     // 멘토 특정 게시글 조회
     List<PostWritementorDTO> findMentorOne(Long id);
+    // 멘토 특정 게시글 가격 조회
+    List<PaymentResponse> findMentorOnePrice(String merchantUid);
 
     // 멘토 내가 쓴 글
     List<PostWritementorDTO> findMentorByMyUserId(Long userid);
@@ -120,6 +123,8 @@ public interface PostMapper {
 
     // 유저 가입
     void saveUser(PostUserRequest params);
+    // 유저 첫 휴대폰 인증
+    void updateUserUnique(PostUserUpdateRequest params);
 
     // 유저 가입 권한
     void saveUserRoles(PostUserRequest params);

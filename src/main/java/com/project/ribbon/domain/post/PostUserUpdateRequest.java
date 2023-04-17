@@ -30,5 +30,9 @@ public class PostUserUpdateRequest {
         private String review;
         private String appraisal;
 
+        private String uniqueInSite;
+        private String uniqueKey;
+        private String impUid;
+
 }
 

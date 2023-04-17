@@ -80,7 +80,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/post/updatewritementor").hasRole("INSTRUCTOR")
                 .requestMatchers("/api/post/deletewritementor").hasRole("INSTRUCTOR")
                 .requestMatchers("/getRibbonAccessToken").hasAnyRole("USER","INSTRUCTOR")
-//                .requestMatchers("/getRibbonAccessToken").permitAll()
+                .requestMatchers("/post/pricebeforehand").hasAnyRole("USER","INSTRUCTOR")
                 .requestMatchers("/certificationsRibbon").hasAnyRole("USER","INSTRUCTOR")
                 .requestMatchers("/api/post/mywritementor").hasAnyRole("USER","INSTRUCTOR")
                 .requestMatchers("/api/realtimeup").hasAnyRole("USER","INSTRUCTOR")

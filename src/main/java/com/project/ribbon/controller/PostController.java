@@ -15,12 +15,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -28,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -47,7 +44,7 @@ import java.util.*;
 @ControllerAdvice
 public class PostController {
 
-    @Autowired
+
     private CsrfTokenRepository csrfTokenRepository;
     private final PostService postService;
     private final FirebaseCloudMessageLikedService firebaseCloudMessageLikedService;
@@ -55,7 +52,7 @@ public class PostController {
     private final FirebaseCloudChatMessageService firebaseCloudChatMessageService;
 
     private final MemberService memberService;
-    @Autowired
+
     private JwtTokenProvider jwtTokenProvider;
 
     // 서버업로드용 서버 ip : https://ribbonding.shop:48610
@@ -464,7 +461,10 @@ public class PostController {
             @RequestParam("userid") Long userid,
             @RequestParam("nickname") @Size(min = 2,max = 10) String nickname,
             @RequestParam("region") @Size(min = 2, max = 20) String region,
-            @RequestParam("contacttime") @Size(min = 2, max = 30) String contacttime
+            @RequestParam("contacttime") @Size(min = 2, max = 30) String contacttime,
+            @RequestParam("merchant_uid_low") @Size(min = 2, max = 30) String merchantUidLow,
+            @RequestParam("merchant_uid_middle") @Size(min = 2, max = 30) String merchantUidMiddle,
+            @RequestParam("merchant_uid_high") @Size(min = 2, max = 30) String merchantUidHigh
     ) {
         try {
             PostWritementorDTO params = new PostWritementorDTO();
@@ -484,6 +484,9 @@ public class PostController {
             params.setNickname(nickname);
             params.setRegion(region);
             params.setContacttime(contacttime);
+            params.setMerchantUidLow(merchantUidLow);
+            params.setMerchantUidMiddle(merchantUidMiddle);
+            params.setMerchantUidHigh(merchantUidHigh);
 
             if (file != null) {
                 String filename = file.getOriginalFilename();
@@ -495,8 +498,52 @@ public class PostController {
             } else {
                 params.setTitleimage(null);
             }
+            postService.saveWritementorPost(params);
 
-            return ResponseEntity.ok(postService.saveWritementorPost(params));
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // 데이터 맵 구성
+            Map<String, Object> dataLow = new HashMap<>();
+            dataLow.put("merchant_uid", merchantUidLow);
+            dataLow.put("amount", lowprice);
+
+            Map<String, Object> dataMiddle = new HashMap<>();
+            dataMiddle.put("merchant_uid", merchantUidMiddle);
+            dataMiddle.put("amount", middleprice);
+
+            Map<String, Object> dataHigh = new HashMap<>();
+            dataHigh.put("merchant_uid", merchantUidHigh);
+            dataHigh.put("amount", highprice);
+
+            // HttpEntity 객체 생성
+            HttpEntity<Map<String, Object>> entityLow = new HttpEntity<>(dataLow, headers);
+            HttpEntity<Map<String, Object>> entityMiddle = new HttpEntity<>(dataMiddle, headers);
+            HttpEntity<Map<String, Object>> entityHigh = new HttpEntity<>(dataHigh, headers);
+
+            // API 호출 URL 구성
+            String url = "https://api.iamport.kr/payments/prepare";
+
+            // 각각의 가격에 대한 API 호출 실행
+            ResponseEntity<String> responseLow = restTemplate.postForEntity(url, entityLow, String.class);
+            ResponseEntity<String> responseMiddle = restTemplate.postForEntity(url, entityMiddle, String.class);
+            ResponseEntity<String> responseHigh = restTemplate.postForEntity(url, entityHigh, String.class);
+
+            // 응답 상태 코드 확인
+            HttpStatus statusLow = (HttpStatus) responseLow.getStatusCode();
+            HttpStatus statusMiddle = (HttpStatus) responseMiddle.getStatusCode();
+            HttpStatus statusHigh = (HttpStatus) responseHigh.getStatusCode();
+
+            // 각각의 결과를 처리하는 로직 추가
+            if (statusLow.is2xxSuccessful() && statusMiddle.is2xxSuccessful() && statusHigh.is2xxSuccessful()) {
+                // 모든 API 호출이 성공한 경우
+                return ResponseEntity.ok().build();
+            } else {
+                // 하나 이상의 API 호출이 실패한 경우
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -504,6 +551,22 @@ public class PostController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
+    // 결제 주문번호와 주문금액 사전등록
+    @PostMapping("/post/pricebeforehand")
+    public ResponseEntity<String> preparePayment(@RequestParam String merchantUid, @RequestParam int amount) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Map<String, Object> data = new HashMap<>();
+        data.put("merchant_uid", merchantUid);
+        data.put("amount", amount);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(data, headers);
+
+        String url = "https://api.iamport.kr/payments/prepare";
+        ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+        return response;
     }
 
     // 멘토 타이틀 사진 조회

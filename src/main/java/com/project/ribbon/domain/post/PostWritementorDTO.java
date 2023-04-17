@@ -67,5 +67,12 @@ public class PostWritementorDTO {
         @NotBlank(message = "신고내용은 필수 입력값입니다.")
         @Size(min = 2, max = 100)
         private String reportdescription;
+        @NotBlank(message = "주문번호는 필수 입력값입니다.")
+        private String merchantUidLow;
+        @NotBlank(message = "주문번호는 필수 입력값입니다.")
+        private String merchantUidMiddle;
+        @NotBlank(message = "주문번호는 필수 입력값입니다.")
+        private String merchantUidHigh;
+
 
 }

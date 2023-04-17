@@ -1,8 +1,11 @@
 package com.project.ribbon.controller;
 
+import com.project.ribbon.domain.post.PostUserUpdateRequest;
 import com.project.ribbon.dto.User;
 import com.project.ribbon.repository.MemberRepository;
+import com.project.ribbon.service.PostService;
 import net.minidev.json.JSONObject;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +19,10 @@ import java.util.Optional;
 
 @RestController
 public class PostPortOneCertify {
+    private final SqlSessionTemplate sqlSession;
+
     private final MemberRepository memberRepository;
+    private final PostService postService;
     @Value("${myapp.secretToken}")
     private String secretToken;
     @Value("${myapp.impKey}")
@@ -24,8 +30,10 @@ public class PostPortOneCertify {
     @Value("${myapp.impSecret}")
     private String impSecret;
 
-    public PostPortOneCertify(MemberRepository memberRepository) {
+    public PostPortOneCertify(MemberRepository memberRepository, PostService postService, SqlSessionTemplate sqlSession) {
         this.memberRepository = memberRepository;
+        this.postService = postService;
+        this.sqlSession = sqlSession;
     }
 
     // 엑세스 토큰 얻기
@@ -60,8 +68,9 @@ public class PostPortOneCertify {
     }
     // 폰 인증
     @PostMapping("/certificationsRibbon")
-    public ResponseEntity<String> handleCertificationsRequest(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<?> handleCertificationsRequest(@RequestBody Map<String, Object> body) {
         String impUid = (String) body.get("imp_uid");
+        Long userid = (Long) body.get("userid");
         try {
             String getTokenUrl = "https://api.iamport.kr/users/getToken";
             HttpHeaders getTokenHeaders = new HttpHeaders();
@@ -90,17 +99,23 @@ public class PostPortOneCertify {
             String birth = (String) certificationsInfo.get("birth");
 
             // 연령 제한 로직
-            int birthYear = Integer.parseInt(birth.substring(0, 4));
-            if (birthYear <= 1999) {
-                // 연령 만족
-            } else {
-                // 연령 미달
-            }
+//            int birthYear = Integer.parseInt(birth.substring(0, 4));
+//            if (birthYear <= 1999) {
+//                // 연령 만족
+//            } else {
+//                // 연령 미달
+//            }
 
             // 1인 1계정 허용 로직
-            Optional<User> user = memberRepository.findByUserid(uniqueKey);
+            Optional<User> user = memberRepository.findByUniqueKey(uniqueKey);
             if (user.isEmpty()) {
-                throw new RuntimeException("계정이 존재하지 않습니다.");
+                PostUserUpdateRequest newUserUniqueInfo = new PostUserUpdateRequest();
+                newUserUniqueInfo.setImpUid(impUid);
+                newUserUniqueInfo.setUniqueKey(uniqueKey);
+                newUserUniqueInfo.setUniqueInSite(uniqueInSite);
+                newUserUniqueInfo.setUserid(userid);
+                postService.updateUserUniquePost(newUserUniqueInfo);
+                ResponseEntity.ok("인증 정보를 성공적으로 저장했습니다.");
             } else {
                 ResponseEntity.ok("인증이 완료되었습니다.");
             }
@@ -110,5 +125,61 @@ public class PostPortOneCertify {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
         }
         return ResponseEntity.ok("Success");
+
+
     }
+    // 결제완료 검증
+//    @PostMapping("/payments/complete")
+//    public ResponseEntity<?> completePayment(@RequestBody PaymentRequest paymentRequest) {
+//        try {
+//            String imp_uid = paymentRequest.getImpUid();
+//            String merchant_uid = paymentRequest.getMerchantUid();
+//            // 엑세스 토큰 발급
+//            String getTokenUrl = "https://api.iamport.kr/users/getToken";
+//            HttpHeaders getTokenHeaders = new HttpHeaders();
+//            getTokenHeaders.setContentType(MediaType.APPLICATION_JSON);
+//            Map<String, String> getTokenData = new HashMap<>();
+//            getTokenData.put("imp_key", impKey);
+//            getTokenData.put("imp_secret", impSecret);
+//
+//            HttpEntity<Map<String, String>> getTokenRequest = new HttpEntity<>(getTokenData, getTokenHeaders);
+//            ResponseEntity<Map> getTokenResponse = new RestTemplate().exchange(getTokenUrl, HttpMethod.POST, getTokenRequest, Map.class);
+//            String accessToken = (String) getTokenResponse.getBody().get("access_token");
+//
+//            // imp_uid로 결제 정보 조회
+//            String paymentUrl = "https://api.iamport.kr/payments/" + imp_uid;
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setBearerAuth(accessToken);
+//            RestTemplate restTemplate = new RestTemplate();
+//            HttpEntity<String> paymentEntity = new HttpEntity<>(headers);
+//            ResponseEntity<PaymentResponse> paymentResponse = restTemplate.exchange(paymentUrl, HttpMethod.GET, paymentEntity, PaymentResponse.class);
+//            PaymentData paymentData = paymentResponse.getBody().getResponse(); // 조회한 결제 정보
+//
+//            // DB에서 결제되어야 하는 금액 조회
+//            Map<String, Object> paramMap = new HashMap<>();
+//            paramMap.put("merchantUid", paymentData.getMerchantUid());
+//            Order order = sqlSession.selectOne("postMapper.findMentorOnePricePost", paramMap);
+//            Integer amountToBePaid = order.getAmount(); // 결제 되어야 하는 금액
+//
+//            // 결제 검증하기
+//            Integer amount = paymentData.getAmount();
+//            String status = paymentData.getStatus();
+//            if (amount == amountToBePaid) {
+//                ordersRepository.updatePayment(paymentData); // DB에 결제 정보 저장
+//// 결제 성공시 응답
+//                switch (status) {
+//                    case "paid":
+//                        return ResponseEntity.ok().build();
+//                    default:
+//                        return ResponseEntity.badRequest().build();
+//                }
+//            } else {
+//// 결제 금액 불일치
+//                return ResponseEntity.badRequest().build();
+//            }
+//        } catch (Exception e) {
+//// 결제 실패
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
 }

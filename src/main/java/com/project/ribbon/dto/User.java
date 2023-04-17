@@ -1,10 +1,7 @@
 package com.project.ribbon.dto;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,6 +27,8 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
+    private String uniqueKey;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

@@ -1,6 +1,7 @@
 package com.project.ribbon.service;
 
 import com.project.ribbon.domain.post.*;
+import com.project.ribbon.dto.PaymentResponse;
 import com.project.ribbon.mapper.PostMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -362,6 +363,16 @@ public class PostService {
             throw new RuntimeException("멘토 게시글 조회에 실패했습니다.", e);
         }
     }
+    // 멘토 특정 게시글 조회
+    public List<PaymentResponse> findMentorOnePricePost(String merchantUid) {
+        try {
+            return postMapper.findMentorOnePrice(merchantUid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("멘토 특정 게시글 가격 조회에 실패했습니다.", e);
+        }
+    }
+
 
     // 멘토 특정 게시글 조회
     public List<PostWritementorDTO> findMentorOnePost(Long id) {
@@ -372,6 +383,7 @@ public class PostService {
             throw new RuntimeException("멘토 특정 게시글 조회에 실패했습니다.", e);
         }
     }
+
 
     // 멘토 내가 쓴 글
     public List<PostWritementorDTO> findMentorPostByMyUserId(final Long userid) {
@@ -511,6 +523,15 @@ public class PostService {
             throw new RuntimeException("유저 권한정보 가입에 실패했습니다.", e);
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+    // 유저 첫 인증 수정
+    @Transactional
+    public void updateUserUniquePost(final PostUserUpdateRequest params) throws Exception {
+        try {
+            postMapper.updateUserUnique(params);
+        } catch (Exception e) {
+            throw new Exception("유저 인증 정보 업데이트에 실패하였습니다.");
+        }
     }
 
     // 유저 정보 수정

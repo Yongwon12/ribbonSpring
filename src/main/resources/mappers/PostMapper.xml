@@ -100,6 +100,9 @@
         , region
         , contacttime
         , writedate
+        , merchant_uid_low
+        , merchant_uid_middle
+        , merchant_uid_high
     </sql>
 
     <!-- User 테이블 전체 컬럼 -->
@@ -583,6 +586,9 @@
         , #{region}
         , #{contacttime}
         , #{writedate}
+        , #{merchantUidLow}
+        , #{merchantUidMiddle}
+        , #{merchantUidHigh}
         )
     </insert>
 
@@ -792,6 +798,16 @@
                                  roles = VALUES(roles)
     </insert>
 
+    <!-- 유저 첫 인증 정보 수정 -->
+    <update id="updateUserUnique" parameterType="com.project.ribbon.domain.post.PostUserUpdateRequest">
+        UPDATE user
+        SET
+            unique_in_site = #{uniqueInSite}
+          , unique_key = #{uniqueKey}
+          , imp_uid = #{impUid}
+        WHERE
+            userid = #{userid}
+    </update>
 
     <!-- 유저 프로필 수정 -->
     <update id="updateUser" parameterType="com.project.ribbon.domain.post.PostUserUpdateRequest">
