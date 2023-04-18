@@ -1,5 +1,8 @@
 package com.project.ribbon.controller;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.project.ribbon.customvaild.DigitLength;
 import com.project.ribbon.domain.post.*;
 import com.project.ribbon.dto.TokenInfo;
@@ -59,11 +62,11 @@ public class PostController {
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
     // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://192.168.219.161:8000/api/userimage/";
-    String boardip = "http://192.168.219.161:8000/api/boardimage/";
-    String groupip = "http://192.168.219.161:8000/api/groupimage/";
-    String usedip = "http://192.168.219.161:8000/api/usedimage/";
-    String mentorip = "http://192.168.219.161:8000/api/writementortitleimage/";
+    String userip = "http://172.20.10.3:8000/api/userimage/";
+    String boardip = "http://172.20.10.3:8000/api/boardimage/";
+    String groupip = "http://172.20.10.3:8000/api/groupimage/";
+    String usedip = "http://172.20.10.3:8000/api/usedimage/";
+    String mentorip = "http://172.20.10.3:8000/api/writementortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -440,9 +443,12 @@ public class PostController {
             return new ResponseEntity<>("An error occurred while deleting the post.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @Value("${myapp.impKey}")
+    private String impKey;
+    @Value("${myapp.impSecret}")
+    private String impSecret;
 
-
-    // 멘토 게시글 작성
+    // 멘토 게시글 작성 및 포트원 주문번호, 금액 사전 등록
     @PostMapping("/post/writementor")
     public ResponseEntity<?> saveWriteMentorPost(
             @RequestParam("title") @Size(min = 2, max = 30) String title,
@@ -455,9 +461,9 @@ public class PostController {
             @RequestParam("career") @Size(min = 2, max = 200) String career,
             @RequestParam(value = "image", required = false) MultipartFile file,
             @RequestParam("writedate") String writedate,
-            @RequestParam("lowprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 4, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer lowprice,
-            @RequestParam("middleprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 4, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer middleprice,
-            @RequestParam("highprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 4, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer highprice,
+            @RequestParam("lowprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer lowprice,
+            @RequestParam("middleprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer middleprice,
+            @RequestParam("highprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer highprice,
             @RequestParam("userid") Long userid,
             @RequestParam("nickname") @Size(min = 2,max = 10) String nickname,
             @RequestParam("region") @Size(min = 2, max = 20) String region,
@@ -502,48 +508,63 @@ public class PostController {
 
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
+            String url = "https://api.iamport.kr/users/getToken";
             headers.setContentType(MediaType.APPLICATION_JSON);
+            Map<String, Object> request = new HashMap<>();
+            request.put("imp_key", impKey);
+            request.put("imp_secret", impSecret);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            String responseBody = response.getBody();
+            JsonElement responseJson = JsonParser.parseString(responseBody);
+            JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
+            JsonElement accessTokenJson = responseObj.get("access_token");
+            if (accessTokenJson != null && !accessTokenJson.isJsonNull()) {
+                String accessToken = "Bearer " + accessTokenJson.getAsString();
+                headers.set("Authorization",accessToken);
+                System.out.println(headers);
 
-            // 데이터 맵 구성
-            Map<String, Object> dataLow = new HashMap<>();
-            dataLow.put("merchant_uid", merchantUidLow);
-            dataLow.put("amount", lowprice);
+                Map<String, Object> dataLow = new HashMap<>();
+                dataLow.put("merchant_uid", merchantUidLow);
+                dataLow.put("amount", lowprice);
 
-            Map<String, Object> dataMiddle = new HashMap<>();
-            dataMiddle.put("merchant_uid", merchantUidMiddle);
-            dataMiddle.put("amount", middleprice);
+                Map<String, Object> dataMiddle = new HashMap<>();
+                dataMiddle.put("merchant_uid", merchantUidMiddle);
+                dataMiddle.put("amount", middleprice);
 
-            Map<String, Object> dataHigh = new HashMap<>();
-            dataHigh.put("merchant_uid", merchantUidHigh);
-            dataHigh.put("amount", highprice);
+                Map<String, Object> dataHigh = new HashMap<>();
+                dataHigh.put("merchant_uid", merchantUidHigh);
+                dataHigh.put("amount", highprice);
 
-            // HttpEntity 객체 생성
-            HttpEntity<Map<String, Object>> entityLow = new HttpEntity<>(dataLow, headers);
-            HttpEntity<Map<String, Object>> entityMiddle = new HttpEntity<>(dataMiddle, headers);
-            HttpEntity<Map<String, Object>> entityHigh = new HttpEntity<>(dataHigh, headers);
+                // HttpEntity 객체 생성
+                HttpEntity<Map<String, Object>> entityLow = new HttpEntity<>(dataLow, headers);
+                HttpEntity<Map<String, Object>> entityMiddle = new HttpEntity<>(dataMiddle, headers);
+                HttpEntity<Map<String, Object>> entityHigh = new HttpEntity<>(dataHigh, headers);
 
-            // API 호출 URL 구성
-            String url = "https://api.iamport.kr/payments/prepare";
+                // API 호출 URL 구성
+                String apiUrl = "https://api.iamport.kr/payments/prepare";
 
-            // 각각의 가격에 대한 API 호출 실행
-            ResponseEntity<String> responseLow = restTemplate.postForEntity(url, entityLow, String.class);
-            ResponseEntity<String> responseMiddle = restTemplate.postForEntity(url, entityMiddle, String.class);
-            ResponseEntity<String> responseHigh = restTemplate.postForEntity(url, entityHigh, String.class);
+                // 각각의 가격에 대한 API 호출 실행
+                ResponseEntity<String> responseLow = restTemplate.postForEntity(apiUrl, entityLow, String.class);
+                ResponseEntity<String> responseMiddle = restTemplate.postForEntity(apiUrl, entityMiddle, String.class);
+                ResponseEntity<String> responseHigh = restTemplate.postForEntity(apiUrl, entityHigh, String.class);
 
-            // 응답 상태 코드 확인
-            HttpStatus statusLow = (HttpStatus) responseLow.getStatusCode();
-            HttpStatus statusMiddle = (HttpStatus) responseMiddle.getStatusCode();
-            HttpStatus statusHigh = (HttpStatus) responseHigh.getStatusCode();
+                // 응답 상태 코드 확인
+                HttpStatus statusLow = (HttpStatus) responseLow.getStatusCode();
+                HttpStatus statusMiddle = (HttpStatus) responseMiddle.getStatusCode();
+                HttpStatus statusHigh = (HttpStatus) responseHigh.getStatusCode();
 
-            // 각각의 결과를 처리하는 로직 추가
-            if (statusLow.is2xxSuccessful() && statusMiddle.is2xxSuccessful() && statusHigh.is2xxSuccessful()) {
-                // 모든 API 호출이 성공한 경우
-                return ResponseEntity.ok().build();
-            } else {
-                // 하나 이상의 API 호출이 실패한 경우
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                // 각각의 결과를 처리하는 로직 추가
+                if (statusLow.is2xxSuccessful() && statusMiddle.is2xxSuccessful() && statusHigh.is2xxSuccessful()) {
+                    // 모든 API 호출이 성공한 경우
+                    return ResponseEntity.ok().build();
+                } else {
+                    // 하나 이상의 API 호출이 실패한 경우
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                }
+            }else {
+                throw new RuntimeException("Access token not found in response");
             }
-
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -553,21 +574,21 @@ public class PostController {
         }
     }
     // 결제 주문번호와 주문금액 사전등록
-    @PostMapping("/post/pricebeforehand")
-    public ResponseEntity<String> preparePayment(@RequestParam String merchantUid, @RequestParam int amount) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        Map<String, Object> data = new HashMap<>();
-        data.put("merchant_uid", merchantUid);
-        data.put("amount", amount);
-
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(data, headers);
-
-        String url = "https://api.iamport.kr/payments/prepare";
-        ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-        return response;
-    }
+//    @PostMapping("/post/pricebeforehand")
+//    public ResponseEntity<String> preparePayment(@RequestParam String merchantUid, @RequestParam int amount) {
+//        RestTemplate restTemplate = new RestTemplate();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        Map<String, Object> data = new HashMap<>();
+//        data.put("merchant_uid", merchantUid);
+//        data.put("amount", amount);
+//
+//        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(data, headers);
+//
+//        String url = "https://api.iamport.kr/payments/prepare";
+//        ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+//        return response;
+//    }
 
     // 멘토 타이틀 사진 조회
     @GetMapping("/writementortitleimage/{imageName:.+}")

@@ -591,6 +591,19 @@
         , #{merchantUidHigh}
         )
     </insert>
+    <!-- 결제 정보 저장 -->
+    <insert id="savePaymentInfo" parameterType="com.project.ribbon.dto.PaymentData"
+            useGeneratedKeys="true" keyProperty="paymentid">
+        INSERT INTO writementor (
+        paymentid,paydate,amount,merchant_uid,imp_uid,username
+        ) VALUES (
+        #{paymentid}
+        , NOW()
+        , #{amount}
+        , #{merchant_uid})
+        , #{imp_uid}
+        , #{buyer_name}
+    </insert>
 
     <!-- 멘토 게시글 조회  -->
     <select id="findMentorAll" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
@@ -608,6 +621,32 @@
         WHERE user.userid IS NOT NULL
         ORDER BY writedate DESC
     </select>
+    <!-- 멘토 특정 게시글 가격 조회  -->
+    <select id="findMentorOnePrice" resultType="com.project.ribbon.dto.PaymentRequest">
+        SELECT
+            lowprice AS amount
+        FROM
+            writementor
+        WHERE
+            merchant_uid_low = #{merchantUid}
+          AND lowprice IS NOT NULL
+        UNION
+        SELECT
+            middleprice AS amount
+        FROM
+            writementor
+        WHERE
+            merchant_uid_middle = #{merchantUid}
+          AND middleprice IS NOT NULL
+        UNION
+        SELECT
+            highprice AS amount
+        FROM
+            writementor
+        WHERE
+            merchant_uid_high = #{merchantUid}
+          AND highprice IS NOT NULL
+    </select>
 
     <!-- 멘토 특정 게시글 조회  -->
     <select id="findMentorOne" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
@@ -615,7 +654,7 @@
             id,title,category,shortcontent,description,lowdescription,middledescription,highdescription,
             career,titleimage,lowprice,middleprice,highprice,
             user.userid,user.nickname,region,contacttime,writedate,user.profileimage,
-            review,appraisal
+            review,appraisal,merchant_uid_low,merchant_uid_middle,merchant_uid_high
         FROM
             writementor
                 LEFT JOIN user

@@ -1,6 +1,11 @@
 package com.project.ribbon.controller;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.project.ribbon.domain.post.PostUserUpdateRequest;
+import com.project.ribbon.dto.PaymentData;
+import com.project.ribbon.dto.PaymentRequest;
 import com.project.ribbon.dto.User;
 import com.project.ribbon.repository.MemberRepository;
 import com.project.ribbon.service.PostService;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -72,16 +78,22 @@ public class PostPortOneCertify {
         String impUid = (String) body.get("imp_uid");
         Long userid = (Long) body.get("userid");
         try {
-            String getTokenUrl = "https://api.iamport.kr/users/getToken";
-            HttpHeaders getTokenHeaders = new HttpHeaders();
-            getTokenHeaders.setContentType(MediaType.APPLICATION_JSON);
-            Map<String, String> getTokenData = new HashMap<>();
-            getTokenData.put("imp_key", impKey);
-            getTokenData.put("imp_secret", impSecret);
-            HttpEntity<Map<String, String>> getTokenRequest = new HttpEntity<>(getTokenData, getTokenHeaders);
-            ResponseEntity<Map> getTokenResponse = new RestTemplate().exchange(getTokenUrl, HttpMethod.POST, getTokenRequest, Map.class);
-            String accessToken = (String) getTokenResponse.getBody().get("access_token");
-
+            // 토큰 발급
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            String url = "https://api.iamport.kr/users/getToken";
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            Map<String, Object> request = new HashMap<>();
+            request.put("imp_key", impKey);
+            request.put("imp_secret", impSecret);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            String responseBody = response.getBody();
+            JsonElement responseJson = JsonParser.parseString(responseBody);
+            JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
+            String accessToken = "Bearer " + responseObj.get("access_token").getAsString();
+            headers.set("Authorization", accessToken);
+            System.out.println(accessToken);
 
             // imp_uid로 인증 정보 조회
             String getCertificationsUrl = "https://api.iamport.kr/certifications/" + impUid;
@@ -129,57 +141,79 @@ public class PostPortOneCertify {
 
     }
     // 결제완료 검증
-//    @PostMapping("/payments/complete")
-//    public ResponseEntity<?> completePayment(@RequestBody PaymentRequest paymentRequest) {
-//        try {
-//            String imp_uid = paymentRequest.getImpUid();
-//            String merchant_uid = paymentRequest.getMerchantUid();
-//            // 엑세스 토큰 발급
-//            String getTokenUrl = "https://api.iamport.kr/users/getToken";
-//            HttpHeaders getTokenHeaders = new HttpHeaders();
-//            getTokenHeaders.setContentType(MediaType.APPLICATION_JSON);
-//            Map<String, String> getTokenData = new HashMap<>();
-//            getTokenData.put("imp_key", impKey);
-//            getTokenData.put("imp_secret", impSecret);
-//
-//            HttpEntity<Map<String, String>> getTokenRequest = new HttpEntity<>(getTokenData, getTokenHeaders);
-//            ResponseEntity<Map> getTokenResponse = new RestTemplate().exchange(getTokenUrl, HttpMethod.POST, getTokenRequest, Map.class);
-//            String accessToken = (String) getTokenResponse.getBody().get("access_token");
-//
-//            // imp_uid로 결제 정보 조회
-//            String paymentUrl = "https://api.iamport.kr/payments/" + imp_uid;
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setBearerAuth(accessToken);
-//            RestTemplate restTemplate = new RestTemplate();
-//            HttpEntity<String> paymentEntity = new HttpEntity<>(headers);
-//            ResponseEntity<PaymentResponse> paymentResponse = restTemplate.exchange(paymentUrl, HttpMethod.GET, paymentEntity, PaymentResponse.class);
-//            PaymentData paymentData = paymentResponse.getBody().getResponse(); // 조회한 결제 정보
-//
-//            // DB에서 결제되어야 하는 금액 조회
-//            Map<String, Object> paramMap = new HashMap<>();
-//            paramMap.put("merchantUid", paymentData.getMerchantUid());
-//            Order order = sqlSession.selectOne("postMapper.findMentorOnePricePost", paramMap);
-//            Integer amountToBePaid = order.getAmount(); // 결제 되어야 하는 금액
-//
-//            // 결제 검증하기
-//            Integer amount = paymentData.getAmount();
-//            String status = paymentData.getStatus();
-//            if (amount == amountToBePaid) {
-//                ordersRepository.updatePayment(paymentData); // DB에 결제 정보 저장
-//// 결제 성공시 응답
-//                switch (status) {
-//                    case "paid":
-//                        return ResponseEntity.ok().build();
-//                    default:
-//                        return ResponseEntity.badRequest().build();
-//                }
-//            } else {
-//// 결제 금액 불일치
-//                return ResponseEntity.badRequest().build();
-//            }
-//        } catch (Exception e) {
-//// 결제 실패
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
+    @PostMapping("/payments/ribboncomplete")
+    public ResponseEntity<?> completePayment(@RequestBody PaymentRequest paymentRequest) {
+        try {
+            String imp_uid = paymentRequest.getImpUid();
+            String merchant_uid = paymentRequest.getMerchantUid();
+            System.out.println(merchant_uid);
+            // 엑세스 토큰 발급
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            String url = "https://api.iamport.kr/users/getToken";
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            Map<String, Object> request = new HashMap<>();
+            request.put("imp_key", impKey);
+            request.put("imp_secret", impSecret);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            String responseBody = response.getBody();
+            JsonElement responseJson = JsonParser.parseString(responseBody);
+            JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
+            String accessToken = "Bearer " + responseObj.get("access_token").getAsString();
+
+            // merchant_uid로 결제 정보 조회
+//            String payment_status = "-paid";
+            headers.set("Authorization", accessToken);
+            System.out.println(headers);
+            String paymentUrl = "https://api.iamport.kr/payments/find/" + merchant_uid; //+ "/" + payment_status;
+            HttpEntity<String> paymentEntity = new HttpEntity<>(headers);
+            ResponseEntity<PaymentData> paymentResponse = restTemplate.exchange(paymentUrl, HttpMethod.GET, paymentEntity, PaymentData.class);
+            PaymentData paymentData = paymentResponse.getBody(); // 조회한 결제 정보
+            System.out.println(paymentData);
+
+            // DB에서 결제되어야 하는 금액 조회
+
+            List<PaymentRequest> orderList = postService.findMentorOnePricePost(paymentRequest.getMerchantUid());
+            PaymentRequest order = orderList.get(0);
+            Integer amountToBePaid = order.getAmount();
+            System.out.println(amountToBePaid);
+
+            // 결제 검증하기
+            Integer amount = paymentData.getResponse().getAmount();
+            System.out.println(amount);
+            String status = paymentData.getResponse().getStatus();
+            System.out.println(status);
+            if (amount == amountToBePaid) {
+                PaymentData paymentData1 = new PaymentData();
+                paymentData1.setMerchant_uid(paymentData.getResponse().getMerchant_uid());
+                paymentData1.setAmount(paymentData.getResponse().getAmount());
+                paymentData1.setImp_uid(paymentData.getResponse().getImp_uid());
+                paymentData1.setBuyer_name(paymentData.getResponse().getBuyer_name());
+                postService.saveWritementorPaymentInfoPost(paymentData1);
+            // 결제 성공시 응답
+                switch (status) {
+                    case "paid":
+                        return ResponseEntity.ok("결제가 성공적으로 완료되었습니다.");
+                    case "ready":
+                        return ResponseEntity.ok("결제 되지 않았습니다.");
+                    case "failed":
+                        return ResponseEntity.ok("결제에 실패했습니다.");
+                    case "cancelled":
+                        return ResponseEntity.ok("취소 및 환불된 결제입니다.");
+                    default:
+                        return ResponseEntity.badRequest().build();
+                }
+
+            } else {
+            // 결제 금액 불일치
+                return ResponseEntity.badRequest().build();
+            }
+
+        } catch (Exception e) {
+            // 결제 실패
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }

@@ -79,6 +79,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/post/writementor").hasRole("INSTRUCTOR")
                 .requestMatchers("/api/post/updatewritementor").hasRole("INSTRUCTOR")
                 .requestMatchers("/api/post/deletewritementor").hasRole("INSTRUCTOR")
+                .requestMatchers("/payments/ribboncomplete").hasAnyRole("USER","INSTRUCTOR")
                 .requestMatchers("/getRibbonAccessToken").hasAnyRole("USER","INSTRUCTOR")
                 .requestMatchers("/post/pricebeforehand").hasAnyRole("USER","INSTRUCTOR")
                 .requestMatchers("/certificationsRibbon").hasAnyRole("USER","INSTRUCTOR")
