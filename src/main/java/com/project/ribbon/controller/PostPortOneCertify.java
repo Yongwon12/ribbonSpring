@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.project.ribbon.domain.post.PostUserUpdateRequest;
+import com.project.ribbon.dto.PaymentDTO;
 import com.project.ribbon.dto.PaymentData;
 import com.project.ribbon.dto.PaymentRequest;
 import com.project.ribbon.dto.User;
@@ -146,6 +147,7 @@ public class PostPortOneCertify {
         try {
             String imp_uid = paymentRequest.getImpUid();
             String merchant_uid = paymentRequest.getMerchantUid();
+            Long userid = paymentRequest.getUserid();
             System.out.println(merchant_uid);
             // 엑세스 토큰 발급
             RestTemplate restTemplate = new RestTemplate();
@@ -185,12 +187,15 @@ public class PostPortOneCertify {
             String status = paymentData.getResponse().getStatus();
             System.out.println(status);
             if (amount == amountToBePaid) {
-                PaymentData paymentData1 = new PaymentData();
-                paymentData1.setMerchant_uid(paymentData.getResponse().getMerchant_uid());
-                paymentData1.setAmount(paymentData.getResponse().getAmount());
-                paymentData1.setImp_uid(paymentData.getResponse().getImp_uid());
-                paymentData1.setBuyer_name(paymentData.getResponse().getBuyer_name());
-                postService.saveWritementorPaymentInfoPost(paymentData1);
+                PaymentDTO paymentDTO = new PaymentDTO();
+                paymentDTO.setPaymentid(paymentData.getResponse().getPaymentid());
+                paymentDTO.setPaydate(paymentData.getResponse().getPaydate());
+                paymentDTO.setAmount(paymentData.getResponse().getAmount());
+                paymentDTO.setMerchantUid(paymentData.getResponse().getMerchant_uid());
+                paymentDTO.setImpUid(paymentData.getResponse().getImp_uid());
+                paymentDTO.setBuyerName(paymentData.getResponse().getBuyer_name());
+                System.out.println(paymentDTO);
+                postService.saveWritementorPaymentInfoPost(paymentDTO);
             // 결제 성공시 응답
                 switch (status) {
                     case "paid":

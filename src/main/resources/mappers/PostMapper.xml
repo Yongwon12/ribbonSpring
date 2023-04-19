@@ -592,17 +592,17 @@
         )
     </insert>
     <!-- 결제 정보 저장 -->
-    <insert id="savePaymentInfo" parameterType="com.project.ribbon.dto.PaymentData"
+    <insert id="savePaymentInfo" parameterType="com.project.ribbon.dto.PaymentDTO"
             useGeneratedKeys="true" keyProperty="paymentid">
-        INSERT INTO writementor (
+        INSERT INTO payment (
         paymentid,paydate,amount,merchant_uid,imp_uid,username
         ) VALUES (
         #{paymentid}
         , NOW()
         , #{amount}
-        , #{merchant_uid})
-        , #{imp_uid}
-        , #{buyer_name}
+        , #{merchantUid}
+        , #{impUid}
+        , #{buyerName})
     </insert>
 
     <!-- 멘토 게시글 조회  -->

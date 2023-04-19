@@ -1,7 +1,7 @@
 package com.project.ribbon.mapper;
 
 import com.project.ribbon.domain.post.*;
-import com.project.ribbon.dto.PaymentData;
+import com.project.ribbon.dto.PaymentDTO;
 import com.project.ribbon.dto.PaymentRequest;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -83,7 +83,7 @@ public interface PostMapper {
     // 멘토 게시글 작성
     void saveWritementor(PostWritementorDTO params);
     // 멘토 결제 정보 저장
-    void savePaymentInfo(PaymentData params);
+    void savePaymentInfo(PaymentDTO paymentDTO);
 
 
     // 멘토 게시글 조회

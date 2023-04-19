@@ -1,9 +1,8 @@
 package com.project.ribbon.service;
 
 import com.project.ribbon.domain.post.*;
-import com.project.ribbon.dto.PaymentData;
+import com.project.ribbon.dto.PaymentDTO;
 import com.project.ribbon.dto.PaymentRequest;
-import com.project.ribbon.dto.PaymentResponse;
 import com.project.ribbon.mapper.PostMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -358,9 +357,9 @@ public class PostService {
 
     // 멘토 결제 정보 저장
     @Transactional
-    public ResponseEntity<?> saveWritementorPaymentInfoPost(final PaymentData params) {
+    public ResponseEntity<?> saveWritementorPaymentInfoPost(final PaymentDTO paymentDTO) {
         try {
-            postMapper.savePaymentInfo(params);
+            postMapper.savePaymentInfo(paymentDTO);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("멘토 결제 정보 저장에 실패했습니다.", e);
