@@ -36,7 +36,6 @@ public class PostWritementorDTO {
 
         private String titleimage;
         private String writedate;
-//        @Pattern(regexp = "^\\d{4,7}$", message = "가격은 4~7자여야 합니다.")
         @Size(min = 4,max = 7,message = "가격은 4~7자리")
         @NotBlank(message = "가격은 필수 입력값입니다.")
         private Integer lowprice;
@@ -67,12 +66,8 @@ public class PostWritementorDTO {
         @NotBlank(message = "신고내용은 필수 입력값입니다.")
         @Size(min = 2, max = 100)
         private String reportdescription;
-        @NotBlank(message = "주문번호는 필수 입력값입니다.")
         private String merchantUidLow;
-        @NotBlank(message = "주문번호는 필수 입력값입니다.")
         private String merchantUidMiddle;
-        @NotBlank(message = "주문번호는 필수 입력값입니다.")
         private String merchantUidHigh;
-
 
 }

@@ -3,6 +3,7 @@ package com.project.ribbon.service;
 import com.project.ribbon.domain.post.*;
 import com.project.ribbon.dto.PaymentDTO;
 import com.project.ribbon.dto.PaymentRequest;
+import com.project.ribbon.dto.PostBuyerInfoDTO;
 import com.project.ribbon.mapper.PostMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -366,7 +367,26 @@ public class PostService {
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-
+    // 멘토 구매자 결제 정보 저장
+    @Transactional
+    public ResponseEntity<?> saveBuyerInfoPost(final PostBuyerInfoDTO postBuyerInfoDTO) {
+        try {
+            postMapper.saveBuyerInfo(postBuyerInfoDTO);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("멘토 구매자 결제 정보 저장에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+    // 특정 멀천트 아이디 조회
+    public List<PostBuyerInfoDTO> findMerchantIdOnePost(Long userid) {
+        try {
+            return postMapper.findMerchantIdOne(userid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("특정 멀천트 아이디 조회에 실패했습니다.", e);
+        }
+    }
     // 멘토 게시글 조회
     public List<PostWritementorDTO> findMentorAllPost() {
         try {
@@ -384,6 +404,26 @@ public class PostService {
             // 예외 처리 코드 작성
             throw new RuntimeException("멘토 특정 게시글 가격 조회에 실패했습니다.", e);
         }
+    }
+    // 구매자 결제 정보 삭제(취소 및 환불)
+    public ResponseEntity<?> deleteBuyerInfoPost(final PostBuyerInfoDTO params) {
+        try {
+            postMapper.deleteBuyerInfoById(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("구매자 결제 정보 삭제에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+    // 결제 정보 삭제(취소 및 환불)
+    public ResponseEntity<?> deletePaidInfoPost(final PostBuyerInfoDTO params) {
+        try {
+            postMapper.deletePaidInfoById(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("결제정보 삭제에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
 

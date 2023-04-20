@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.project.ribbon.customvaild.DigitLength;
 import com.project.ribbon.domain.post.*;
+import com.project.ribbon.dto.PostBuyerInfoDTO;
 import com.project.ribbon.dto.TokenInfo;
 import com.project.ribbon.enums.ExceptionEnum;
 import com.project.ribbon.provide.JwtTokenProvider;
@@ -77,7 +78,7 @@ public class PostController {
             @RequestParam("id") @NotNull(message = "카테고리 필수입력값입니다.") Integer id,
             @RequestParam("userid") @NotNull(message = "유저아이디 필수입력값입니다.") Long userId,
             @RequestParam("title") @NotBlank(message = "제목 필수입력값입니다.") @Size(min = 2, max = 30) String title,
-            @RequestParam("description") @NotBlank(message = "내용 필수입력값입니다.")  String description,
+            @RequestParam("description") @NotBlank(message = "내용 필수입력값입니다.") String description,
             @RequestParam(value = "image", required = false) MultipartFile file,
             @RequestParam("writedate") @Size(min = 2, max = 30) String writeDate,
             @RequestParam("nickname") @NotBlank(message = "닉네임 필수입력값입니다.") String nickname
@@ -150,7 +151,7 @@ public class PostController {
     }
 
     // 기존 게시글 삭제
-    @RequestMapping("/post/delete")
+    @DeleteMapping("/post/delete")
     public ResponseEntity<?> deletePost(@RequestBody PostRequest params) {
         try {
             postService.deleteBoardWriteCommentsPost(params);
@@ -197,7 +198,7 @@ public class PostController {
             @RequestParam("peoplenum") @NotNull(message = "인원수 필수입력값입니다.") String peoplenum,
             @RequestParam("gender") @NotBlank(message = "성별 필수입력값입니다.") String gender,
             @RequestParam("minage") @NotNull(message = "최소나이 필수입력값입니다.") String minage,
-            @RequestParam(value = "image",required = false) MultipartFile file,
+            @RequestParam(value = "image", required = false) MultipartFile file,
             @RequestParam("userid") @NotNull(message = "유저아이디 필수입력값입니다.") Long userid,
             @RequestParam("maxage") @NotNull(message = "최대나이 필수입력값입니다.") String maxage,
             @RequestParam("writedate") @NotBlank(message = "작성날짜 필수입력값입니다.") String writedate,
@@ -227,7 +228,7 @@ public class PostController {
             byte[] bytes = file.getBytes();
             Path groupimagepath = Paths.get(filegrouppath);
             Files.write(groupimagepath, bytes);
-            params.setTitleimage(groupip+titleimage);
+            params.setTitleimage(groupip + titleimage);
         } else {
             params.setTitleimage(null);
         }
@@ -238,7 +239,7 @@ public class PostController {
     // 단체 프로필 사진 조회
     @GetMapping("/groupimage/{imageName:.+}")
     public ResponseEntity<byte[]> getGroupImage(@PathVariable("imageName") String titleimage) throws IOException {
-        Path imageGroupPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" +titleimage);
+        Path imageGroupPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + titleimage);
         byte[] imageBytes = Files.readAllBytes(imageGroupPath);
 
         final HttpHeaders headers = new HttpHeaders();
@@ -259,7 +260,7 @@ public class PostController {
     }
 
     // 단체 게시글 삭제
-    @RequestMapping("/post/deletegroup")
+    @DeleteMapping("/post/deletegroup")
     public ResponseEntity<?> deleteGroupPost(@RequestBody PostGroupRequest params) {
         try {
             postService.deleteGroupWriteCommentsPost(params);
@@ -316,7 +317,7 @@ public class PostController {
     }
 
     // 개인 게시글 삭제
-    @RequestMapping("/post/deleteindividual")
+    @DeleteMapping("/post/deleteindividual")
     public ResponseEntity<?> deleteIndiPost(@RequestBody PostIndiRequest params) {
         try {
             postService.deleteIndiWriteCommentsPost(params);
@@ -433,7 +434,7 @@ public class PostController {
 
 
     // 중고 게시글 삭제
-    @RequestMapping("/post/deleteused")
+    @DeleteMapping("/post/deleteused")
     public ResponseEntity<?> deleteUsedPost(@RequestBody PostUsedRequest params) {
         try {
             postService.deleteUsedWriteCommentsPost(params);
@@ -443,12 +444,13 @@ public class PostController {
             return new ResponseEntity<>("An error occurred while deleting the post.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @Value("${myapp.impKey}")
     private String impKey;
     @Value("${myapp.impSecret}")
     private String impSecret;
 
-    // 멘토 게시글 작성 및 포트원 주문번호, 금액 사전 등록
+    // 멘토 게시글 작성
     @PostMapping("/post/writementor")
     public ResponseEntity<?> saveWriteMentorPost(
             @RequestParam("title") @Size(min = 2, max = 30) String title,
@@ -465,12 +467,9 @@ public class PostController {
             @RequestParam("middleprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer middleprice,
             @RequestParam("highprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer highprice,
             @RequestParam("userid") Long userid,
-            @RequestParam("nickname") @Size(min = 2,max = 10) String nickname,
+            @RequestParam("nickname") @Size(min = 2, max = 10) String nickname,
             @RequestParam("region") @Size(min = 2, max = 20) String region,
-            @RequestParam("contacttime") @Size(min = 2, max = 30) String contacttime,
-            @RequestParam("merchant_uid_low") @Size(min = 2, max = 30) String merchantUidLow,
-            @RequestParam("merchant_uid_middle") @Size(min = 2, max = 30) String merchantUidMiddle,
-            @RequestParam("merchant_uid_high") @Size(min = 2, max = 30) String merchantUidHigh
+            @RequestParam("contacttime") @Size(min = 2, max = 30) String contacttime
     ) {
         try {
             PostWritementorDTO params = new PostWritementorDTO();
@@ -490,9 +489,6 @@ public class PostController {
             params.setNickname(nickname);
             params.setRegion(region);
             params.setContacttime(contacttime);
-            params.setMerchantUidLow(merchantUidLow);
-            params.setMerchantUidMiddle(merchantUidMiddle);
-            params.setMerchantUidHigh(merchantUidHigh);
 
             if (file != null) {
                 String filename = file.getOriginalFilename();
@@ -505,6 +501,41 @@ public class PostController {
                 params.setTitleimage(null);
             }
             postService.saveWritementorPost(params);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return ResponseEntity.ok("요청이 성공적으로 처리되었습니다.");
+    }
+
+    // 포트원 주문번호, 금액 사전 등록, 디비 저장
+    @PostMapping("/post/pricebeforehandandsavebuyerinfo")
+    public ResponseEntity<String> preparePayment(@RequestParam("userid") Long userid,
+                                                 @RequestParam("username") @Size(min = 2, max = 10) String username,
+                                                 @RequestParam("lowprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer lowprice,
+                                                 @RequestParam("middleprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer middleprice,
+                                                 @RequestParam("highprice") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer highprice,
+                                                 @RequestParam("merchantUidLow") String merchantUidLow,
+                                                 @RequestParam("merchantUidMiddle") String merchantUidMiddle,
+                                                 @RequestParam("merchantUidHigh") String merchantUidHigh,
+                                                 @RequestParam("inherentid") Long inherentid) throws IOException{
+        try {
+            PostBuyerInfoDTO postBuyerInfoDTO = new PostBuyerInfoDTO();
+            postBuyerInfoDTO.setLowprice(lowprice);
+            postBuyerInfoDTO.setMiddleprice(middleprice);
+            postBuyerInfoDTO.setHighprice(highprice);
+            postBuyerInfoDTO.setUserid(userid);
+            postBuyerInfoDTO.setUsername(username);
+            postBuyerInfoDTO.setInherentid(inherentid);
+            postBuyerInfoDTO.setMerchantUidLow(merchantUidLow);
+            postBuyerInfoDTO.setMerchantUidMiddle(merchantUidMiddle);
+            postBuyerInfoDTO.setMerchantUidHigh(merchantUidHigh);
+
+            postService.saveBuyerInfoPost(postBuyerInfoDTO);
 
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
@@ -521,20 +552,26 @@ public class PostController {
             JsonElement accessTokenJson = responseObj.get("access_token");
             if (accessTokenJson != null && !accessTokenJson.isJsonNull()) {
                 String accessToken = "Bearer " + accessTokenJson.getAsString();
-                headers.set("Authorization",accessToken);
+                headers.set("Authorization", accessToken);
                 System.out.println(headers);
 
                 Map<String, Object> dataLow = new HashMap<>();
-                dataLow.put("merchant_uid", merchantUidLow);
                 dataLow.put("amount", lowprice);
+                if (merchantUidLow != null) {
+                    dataLow.put("merchant_uid", merchantUidLow);
+                }
 
                 Map<String, Object> dataMiddle = new HashMap<>();
-                dataMiddle.put("merchant_uid", merchantUidMiddle);
                 dataMiddle.put("amount", middleprice);
+                if (merchantUidMiddle != null) {
+                    dataMiddle.put("merchant_uid", merchantUidMiddle);
+                }
 
                 Map<String, Object> dataHigh = new HashMap<>();
-                dataHigh.put("merchant_uid", merchantUidHigh);
                 dataHigh.put("amount", highprice);
+                if (merchantUidHigh != null) {
+                    dataHigh.put("merchant_uid", merchantUidHigh);
+                }
 
                 // HttpEntity 객체 생성
                 HttpEntity<Map<String, Object>> entityLow = new HttpEntity<>(dataLow, headers);
@@ -545,14 +582,32 @@ public class PostController {
                 String apiUrl = "https://api.iamport.kr/payments/prepare";
 
                 // 각각의 가격에 대한 API 호출 실행
-                ResponseEntity<String> responseLow = restTemplate.postForEntity(apiUrl, entityLow, String.class);
-                ResponseEntity<String> responseMiddle = restTemplate.postForEntity(apiUrl, entityMiddle, String.class);
-                ResponseEntity<String> responseHigh = restTemplate.postForEntity(apiUrl, entityHigh, String.class);
+                ResponseEntity<String> responseLow = null;
+                ResponseEntity<String> responseMiddle = null;
+                ResponseEntity<String> responseHigh = null;
+                if (merchantUidLow != null) {
+                    responseLow = restTemplate.postForEntity(apiUrl, entityLow, String.class);
+                }
+                if (merchantUidMiddle != null) {
+                    responseMiddle = restTemplate.postForEntity(apiUrl, entityMiddle, String.class);
+                }
+                if (merchantUidHigh != null) {
+                    responseHigh = restTemplate.postForEntity(apiUrl, entityHigh, String.class);
+                }
 
                 // 응답 상태 코드 확인
-                HttpStatus statusLow = (HttpStatus) responseLow.getStatusCode();
-                HttpStatus statusMiddle = (HttpStatus) responseMiddle.getStatusCode();
-                HttpStatus statusHigh = (HttpStatus) responseHigh.getStatusCode();
+                HttpStatus statusLow = null;
+                HttpStatus statusMiddle = null;
+                HttpStatus statusHigh = null;
+                if (responseLow != null) {
+                    statusLow = (HttpStatus) responseLow.getStatusCode();
+                }
+                if (responseMiddle != null) {
+                    statusMiddle = (HttpStatus) responseMiddle.getStatusCode();
+                }
+                if (responseHigh != null) {
+                    statusHigh = (HttpStatus) responseHigh.getStatusCode();
+                }
 
                 // 각각의 결과를 처리하는 로직 추가
                 if (statusLow.is2xxSuccessful() && statusMiddle.is2xxSuccessful() && statusHigh.is2xxSuccessful()) {
@@ -562,33 +617,39 @@ public class PostController {
                     // 하나 이상의 API 호출이 실패한 경우
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
                 }
-            }else {
+            } else {
                 throw new RuntimeException("Access token not found in response");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-    // 결제 주문번호와 주문금액 사전등록
-//    @PostMapping("/post/pricebeforehand")
-//    public ResponseEntity<String> preparePayment(@RequestParam String merchantUid, @RequestParam int amount) {
-//        RestTemplate restTemplate = new RestTemplate();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        Map<String, Object> data = new HashMap<>();
-//        data.put("merchant_uid", merchantUid);
-//        data.put("amount", amount);
-//
-//        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(data, headers);
-//
-//        String url = "https://api.iamport.kr/payments/prepare";
-//        ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-//        return response;
-//    }
+
+    // 멘토 특정 멀천트 아이디 조회
+    @PostMapping("/post/selectmerchantid")
+    public ResponseEntity<?> selectMerchantId(@RequestBody PostBuyerInfoDTO params,
+                                              Model model) throws ApiException {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostBuyerInfoDTO> posts = postService.findMerchantIdOnePost(params.getUserid());
+        System.out.println(postService.findMerchantIdOnePost(params.getUserid()));
+        model.addAttribute("posts", posts);
+        obj.put("merchantuid", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+    // 결제 내역 삭제
+    @DeleteMapping("/post/deletePaymentInfoAll")
+    public ResponseEntity<?> deletePaymentAll(@RequestBody PostBuyerInfoDTO params) {
+        try {
+            postService.deleteBuyerInfoPost(params);
+            return postService.deletePaidInfoPost(params);
+        } catch (Exception e) {
+            // 예외 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     // 멘토 타이틀 사진 조회
     @GetMapping("/writementortitleimage/{imageName:.+}")
@@ -660,7 +721,7 @@ public class PostController {
 
 
     // 멘토 기존 게시글 삭제
-    @RequestMapping("/post/deletewritementor")
+    @DeleteMapping("/post/deletewritementor")
     public ResponseEntity<?> deleteWriteMentorPost(@RequestBody PostWritementorDTO params) {
         try {
             return postService.deleteMentorPost(params);
@@ -706,7 +767,7 @@ public class PostController {
 
 
     // 기존 별점 및 리뷰 삭제
-    @RequestMapping("/post/deletewritefeedback")
+    @DeleteMapping("/post/deletewritefeedback")
     public ResponseEntity<?> deleteWriteFeedBackPost(@RequestBody PostWritementorDTO params) {
         try {
             return postService.deleteFeedBackPost(params);
@@ -835,7 +896,7 @@ public class PostController {
 
 
         // 유저 정보 삭제
-        @RequestMapping("/post/deleteuser")
+        @DeleteMapping("/post/deleteuser")
         public ResponseEntity<?> deleteUserPost(@RequestBody PostUserRequest params) {
             try {
                 postService.deleteUserRolesPost(params);
@@ -906,7 +967,7 @@ public class PostController {
 
 
         // 좋아요 삭제
-        @RequestMapping("/post/deleteliked")
+        @DeleteMapping("/post/deleteliked")
         public ResponseEntity<?> deleteLikedPost(@RequestBody PostLikedRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.updateDeleteLikedPost(params);
@@ -928,7 +989,7 @@ public class PostController {
 
 
         // 개인 좋아요 삭제
-        @RequestMapping("/post/deleteindividualliked")
+        @DeleteMapping("/post/deleteindividualliked")
         public ResponseEntity<?> deleteIndiLikedPost(@RequestBody PostIndividualLikedRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.updateDeleteIndividualLikedPost(params);
@@ -950,7 +1011,7 @@ public class PostController {
 
 
         // 중고 좋아요 삭제
-        @RequestMapping("/post/deleteusedliked")
+        @DeleteMapping("/post/deleteusedliked")
         public ResponseEntity<?> deleteUsedLikedPost(@RequestBody PostUsedLikedRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.updateDeleteUsedLikedPost(params);
@@ -999,7 +1060,7 @@ public class PostController {
     }
 
         // 댓글 조회
-        @RequestMapping("/post/commentsinfo")
+        @PostMapping("/post/commentsinfo")
         public ResponseEntity<?> commentsInfo(@RequestBody PostCommentsResponse inherentid, Model model) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.findPostByInherentId(inherentid.getInherentid());
@@ -1012,7 +1073,7 @@ public class PostController {
 
 
         // 댓글 등록 및 아이디 전송
-        @RequestMapping(method = RequestMethod.POST, path = "/post/comments")
+        @PostMapping("/post/comments")
         public ResponseEntity<?> saveComments(@RequestBody PostCommentsRequest params, Model model) throws ApiException, IOException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.saveCommentsPost(params);
@@ -1037,7 +1098,7 @@ public class PostController {
         }
 
         // 댓글 삭제
-        @RequestMapping("/post/deletecomments")
+        @DeleteMapping("/post/deletecomments")
         public ResponseEntity<?> deleteCommentsPost(@RequestBody PostCommentsRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.updateDeleteCommentsCountPost(params);
@@ -1045,7 +1106,7 @@ public class PostController {
         }
 
         // 개인 댓글 조회
-        @RequestMapping("/post/indicommentsinfo")
+        @PostMapping("/post/indicommentsinfo")
         public ResponseEntity<?> indiCommentsInfo(@RequestBody PostIndiCommentsResponse inherentid, Model model) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.findPostByIndiCommentsInherentId(inherentid.getInherentid());
@@ -1058,7 +1119,7 @@ public class PostController {
 
 
         // 개인 댓글 등록 및 아이디 전송
-        @RequestMapping(method = RequestMethod.POST, path = "/post/indicomments")
+        @PostMapping("/post/indicomments")
         public ResponseEntity<?> saveIndiComments(@RequestBody PostIndiCommentsRequest params, Model model) throws ApiException, IOException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.saveIndiCommentsPost(params);
@@ -1083,7 +1144,7 @@ public class PostController {
         }
 
         // 개인 댓글 삭제
-        @RequestMapping("/post/deleteindicomments")
+        @DeleteMapping("/post/deleteindicomments")
         public ResponseEntity<?> deleteIndiCommentsPost(@RequestBody PostIndiCommentsRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.updateDeleteIndiCommentsCountPost(params);
@@ -1091,7 +1152,7 @@ public class PostController {
         }
 
         // 단체 댓글 조회
-        @RequestMapping("/post/groupcommentsinfo")
+        @PostMapping("/post/groupcommentsinfo")
         public ResponseEntity<?> groupCommentsInfo(@RequestBody PostGroupCommentsResponse inherentid, Model model) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.findPostByGroupCommentsInherentId(inherentid.getInherentid());
@@ -1104,7 +1165,7 @@ public class PostController {
 
 
         // 단체 댓글 등록 및 아이디 전송
-        @RequestMapping(method = RequestMethod.POST, path = "/post/groupcomments")
+        @PostMapping("/post/groupcomments")
         public ResponseEntity<?> saveGroupComments(@RequestBody PostGroupCommentsRequest params, Model model) throws ApiException, IOException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.saveGroupCommentsPost(params);
@@ -1129,7 +1190,7 @@ public class PostController {
         }
 
         // 단체 댓글 삭제
-        @RequestMapping("/post/deletegroupcomments")
+        @DeleteMapping("/post/deletegroupcomments")
         public ResponseEntity<?> deleteGroupCommentsPost(@RequestBody PostGroupCommentsRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.updateDeleteGroupCommentsCountPost(params);
@@ -1138,7 +1199,7 @@ public class PostController {
 
 
         // 중고 댓글 조회
-        @RequestMapping("/post/usedcommentsinfo")
+        @PostMapping("/post/usedcommentsinfo")
         public ResponseEntity<?> usedcommentsinfo(@RequestBody PostUsedCommentsResponse inherentid, Model model) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.findPostByUsedCommentsInherentId(inherentid.getInherentid());
@@ -1151,7 +1212,7 @@ public class PostController {
 
 
         // 중고 댓글 등록 및 아이디 전송
-        @RequestMapping(method = RequestMethod.POST, path = "/post/usedcomments")
+        @PostMapping("/post/usedcomments")
         public ResponseEntity<?> saveUsedComments(@RequestBody PostUsedCommentsRequest params, Model model) throws ApiException, IOException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.saveUsedCommentsPost(params);
@@ -1176,7 +1237,7 @@ public class PostController {
         }
 
         // 중고 댓글 삭제
-        @RequestMapping("/post/deleteusedcomments")
+        @DeleteMapping("/post/deleteusedcomments")
         public ResponseEntity<?> deleteUsedCommentsPost(@RequestBody PostUsedCommentsRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             postService.updateDeleteUsedCommentsCountPost(params);
@@ -1304,7 +1365,7 @@ public class PostController {
 
 
         // 특정 채팅방 삭제
-        @RequestMapping("/post/deleteroom")
+        @DeleteMapping("/post/deleteroom")
         public ResponseEntity<?> deleteChatRoomPost(@RequestBody PostChatRoomDeleteRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             return postService.deleteChatRoomPost(params);

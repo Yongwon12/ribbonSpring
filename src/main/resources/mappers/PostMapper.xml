@@ -100,9 +100,6 @@
         , region
         , contacttime
         , writedate
-        , merchant_uid_low
-        , merchant_uid_middle
-        , merchant_uid_high
     </sql>
 
     <!-- User 테이블 전체 컬럼 -->
@@ -586,23 +583,43 @@
         , #{region}
         , #{contacttime}
         , #{writedate}
+        )
+    </insert>
+    <!-- 멘토 구매자 정보 저장 -->
+    <insert id="saveBuyerInfo" parameterType="com.project.ribbon.dto.PostBuyerInfoDTO"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO buyerinfo (
+        id,lowprice,middleprice,highprice,userid,
+        username,merchant_uid_low,merchant_uid_middle,
+        merchant_uid_high,inherentid,paydate
+        ) VALUES (
+        #{id}
+        , #{lowprice}
+        , #{middleprice}
+        , #{highprice}
+        , #{userid}
+        , #{username}
         , #{merchantUidLow}
         , #{merchantUidMiddle}
         , #{merchantUidHigh}
+        , #{inherentid}
+        , NOW()
         )
     </insert>
     <!-- 결제 정보 저장 -->
     <insert id="savePaymentInfo" parameterType="com.project.ribbon.dto.PaymentDTO"
             useGeneratedKeys="true" keyProperty="paymentid">
-        INSERT INTO payment (
-        paymentid,paydate,amount,merchant_uid,imp_uid,username
+        INSERT INTO paid (
+        paymentid,paydate,amount,merchant_uid,imp_uid,username,userid,inherentid
         ) VALUES (
         #{paymentid}
         , NOW()
         , #{amount}
         , #{merchantUid}
         , #{impUid}
-        , #{buyerName})
+        , #{buyerName}
+        , #{userid}
+        , #{inherentid})
     </insert>
 
     <!-- 멘토 게시글 조회  -->
@@ -621,12 +638,13 @@
         WHERE user.userid IS NOT NULL
         ORDER BY writedate DESC
     </select>
+
     <!-- 멘토 특정 게시글 가격 조회  -->
     <select id="findMentorOnePrice" resultType="com.project.ribbon.dto.PaymentRequest">
         SELECT
             lowprice AS amount
         FROM
-            writementor
+            buyerinfo
         WHERE
             merchant_uid_low = #{merchantUid}
           AND lowprice IS NOT NULL
@@ -634,7 +652,7 @@
         SELECT
             middleprice AS amount
         FROM
-            writementor
+            buyerinfo
         WHERE
             merchant_uid_middle = #{merchantUid}
           AND middleprice IS NOT NULL
@@ -642,11 +660,43 @@
         SELECT
             highprice AS amount
         FROM
-            writementor
+            buyerinfo
         WHERE
             merchant_uid_high = #{merchantUid}
           AND highprice IS NOT NULL
     </select>
+
+
+    <!-- 특정 멀천트 아이디 조회  -->
+    <select id="findMerchantIdOne" resultType="com.project.ribbon.dto.PostBuyerInfoDTO">
+        SELECT
+            writementor.title, paid.paydate, paid.amount, paid.merchant_uid AS merchantUid, paid.imp_uid AS impUid, paid.inherentid
+        FROM
+            paid
+                LEFT JOIN user
+                          ON user.userid = paid.userid
+                LEFT JOIN writementor
+                          ON writementor.id = paid.inherentid
+        WHERE user.userid = #{userid}
+          AND user.userid IS NOT NULL
+    </select>
+
+    <!-- 구매자 결제 정보삭제 -->
+    <delete id="deleteBuyerInfoById" >
+        DELETE
+                FROM
+                buyerinfo
+                WHERE merchant_uid_low = #{merchantUid}
+                OR merchant_uid_middle = #{merchantUid}
+                OR merchant_uid_high = #{merchantUid}
+    </delete>
+    <!-- 결제 정보삭제 -->
+    <delete id="deletePaidInfoById" >
+        DELETE
+                FROM
+                paid
+                WHERE merchant_uid = #{merchantUid}
+    </delete>
 
     <!-- 멘토 특정 게시글 조회  -->
     <select id="findMentorOne" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
@@ -654,7 +704,7 @@
             id,title,category,shortcontent,description,lowdescription,middledescription,highdescription,
             career,titleimage,lowprice,middleprice,highprice,
             user.userid,user.nickname,region,contacttime,writedate,user.profileimage,
-            review,appraisal,merchant_uid_low,merchant_uid_middle,merchant_uid_high
+            review,appraisal
         FROM
             writementor
                 LEFT JOIN user

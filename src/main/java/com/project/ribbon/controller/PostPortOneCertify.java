@@ -145,10 +145,12 @@ public class PostPortOneCertify {
     @PostMapping("/payments/ribboncomplete")
     public ResponseEntity<?> completePayment(@RequestBody PaymentRequest paymentRequest) {
         try {
-            String imp_uid = paymentRequest.getImpUid();
             String merchant_uid = paymentRequest.getMerchantUid();
             Long userid = paymentRequest.getUserid();
+            Long inherentid = paymentRequest.getInherentid();
             System.out.println(merchant_uid);
+            System.out.println(userid);
+            System.out.println(inherentid);
             // 엑세스 토큰 발급
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
@@ -194,6 +196,8 @@ public class PostPortOneCertify {
                 paymentDTO.setMerchantUid(paymentData.getResponse().getMerchant_uid());
                 paymentDTO.setImpUid(paymentData.getResponse().getImp_uid());
                 paymentDTO.setBuyerName(paymentData.getResponse().getBuyer_name());
+                paymentDTO.setUserid(userid);
+                paymentDTO.setInherentid(inherentid);
                 System.out.println(paymentDTO);
                 postService.saveWritementorPaymentInfoPost(paymentDTO);
             // 결제 성공시 응답

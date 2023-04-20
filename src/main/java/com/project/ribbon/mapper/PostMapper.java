@@ -3,6 +3,7 @@ package com.project.ribbon.mapper;
 import com.project.ribbon.domain.post.*;
 import com.project.ribbon.dto.PaymentDTO;
 import com.project.ribbon.dto.PaymentRequest;
+import com.project.ribbon.dto.PostBuyerInfoDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -84,7 +85,14 @@ public interface PostMapper {
     void saveWritementor(PostWritementorDTO params);
     // 멘토 결제 정보 저장
     void savePaymentInfo(PaymentDTO paymentDTO);
-
+    // 멘토 구매자 결제 정보 저장
+    void saveBuyerInfo(PostBuyerInfoDTO postBuyerInfoDTO);
+    // 특정 멀천트 아이디 조회
+    List<PostBuyerInfoDTO> findMerchantIdOne(Long userid);
+    // 구매자 결제 정보 삭제(취소 및 환불)
+    void deleteBuyerInfoById(PostBuyerInfoDTO params);
+    // 결제 정보 삭제(취소 및 환불)
+    void deletePaidInfoById(PostBuyerInfoDTO params);
 
     // 멘토 게시글 조회
     List<PostWritementorDTO> findMentorAll();
