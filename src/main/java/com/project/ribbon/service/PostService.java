@@ -1,6 +1,7 @@
 package com.project.ribbon.service;
 
 import com.project.ribbon.domain.post.*;
+import com.project.ribbon.dto.PaymentCancelRequest;
 import com.project.ribbon.dto.PaymentDTO;
 import com.project.ribbon.dto.PaymentRequest;
 import com.project.ribbon.dto.PostBuyerInfoDTO;
@@ -403,6 +404,15 @@ public class PostService {
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("멘토 특정 게시글 가격 조회에 실패했습니다.", e);
+        }
+    }
+    // 멘토 특정 게시글 날짜 및 시간 조회
+    public List<PaymentCancelRequest> findPayDateOnePost(String merchantUid) {
+        try {
+            return postMapper.findPayDateOne(merchantUid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("멘토 특정 게시글 날짜 및 시간 조회에 실패했습니다.", e);
         }
     }
     // 구매자 결제 정보 삭제(취소 및 환불)

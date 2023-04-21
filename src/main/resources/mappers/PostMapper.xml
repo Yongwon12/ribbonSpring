@@ -666,6 +666,17 @@
           AND highprice IS NOT NULL
     </select>
 
+<!-- 멘토 특정 게시글 날짜 및 시간 조회 -->
+    <select id="findPayDateOne" resultType="com.project.ribbon.dto.PaymentCancelRequest">
+        SELECT
+            paydate
+        FROM
+            paid
+        WHERE
+            merchant_uid = #{merchantUid}
+          AND paydate IS NOT NULL
+    </select>
+
 
     <!-- 특정 멀천트 아이디 조회  -->
     <select id="findMerchantIdOne" resultType="com.project.ribbon.dto.PostBuyerInfoDTO">

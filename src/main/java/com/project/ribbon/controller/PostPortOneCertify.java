@@ -4,10 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.project.ribbon.domain.post.PostUserUpdateRequest;
-import com.project.ribbon.dto.PaymentDTO;
-import com.project.ribbon.dto.PaymentData;
-import com.project.ribbon.dto.PaymentRequest;
-import com.project.ribbon.dto.User;
+import com.project.ribbon.dto.*;
 import com.project.ribbon.repository.MemberRepository;
 import com.project.ribbon.service.PostService;
 import net.minidev.json.JSONObject;
@@ -19,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -148,9 +148,6 @@ public class PostPortOneCertify {
             String merchant_uid = paymentRequest.getMerchantUid();
             Long userid = paymentRequest.getUserid();
             Long inherentid = paymentRequest.getInherentid();
-            System.out.println(merchant_uid);
-            System.out.println(userid);
-            System.out.println(inherentid);
             // 엑세스 토큰 발급
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
@@ -164,30 +161,25 @@ public class PostPortOneCertify {
             String responseBody = response.getBody();
             JsonElement responseJson = JsonParser.parseString(responseBody);
             JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
+            if (responseObj != null && !responseObj.isJsonNull()) {
             String accessToken = "Bearer " + responseObj.get("access_token").getAsString();
 
             // merchant_uid로 결제 정보 조회
-//            String payment_status = "-paid";
             headers.set("Authorization", accessToken);
-            System.out.println(headers);
-            String paymentUrl = "https://api.iamport.kr/payments/find/" + merchant_uid; //+ "/" + payment_status;
+            String paymentUrl = "https://api.iamport.kr/payments/find/" + merchant_uid;
             HttpEntity<String> paymentEntity = new HttpEntity<>(headers);
             ResponseEntity<PaymentData> paymentResponse = restTemplate.exchange(paymentUrl, HttpMethod.GET, paymentEntity, PaymentData.class);
             PaymentData paymentData = paymentResponse.getBody(); // 조회한 결제 정보
-            System.out.println(paymentData);
 
             // DB에서 결제되어야 하는 금액 조회
 
             List<PaymentRequest> orderList = postService.findMentorOnePricePost(paymentRequest.getMerchantUid());
             PaymentRequest order = orderList.get(0);
             Integer amountToBePaid = order.getAmount();
-            System.out.println(amountToBePaid);
 
             // 결제 검증하기
             Integer amount = paymentData.getResponse().getAmount();
-            System.out.println(amount);
             String status = paymentData.getResponse().getStatus();
-            System.out.println(status);
             if (amount == amountToBePaid) {
                 PaymentDTO paymentDTO = new PaymentDTO();
                 paymentDTO.setPaymentid(paymentData.getResponse().getPaymentid());
@@ -198,14 +190,13 @@ public class PostPortOneCertify {
                 paymentDTO.setBuyerName(paymentData.getResponse().getBuyer_name());
                 paymentDTO.setUserid(userid);
                 paymentDTO.setInherentid(inherentid);
-                System.out.println(paymentDTO);
                 postService.saveWritementorPaymentInfoPost(paymentDTO);
             // 결제 성공시 응답
                 switch (status) {
                     case "paid":
                         return ResponseEntity.ok("결제가 성공적으로 완료되었습니다.");
                     case "ready":
-                        return ResponseEntity.ok("결제 되지 않았습니다.");
+                        return ResponseEntity.ok("결제 준비중 입니다.");
                     case "failed":
                         return ResponseEntity.ok("결제에 실패했습니다.");
                     case "cancelled":
@@ -218,11 +209,113 @@ public class PostPortOneCertify {
             // 결제 금액 불일치
                 return ResponseEntity.badRequest().build();
             }
+            }else {
+                throw new RuntimeException("Access token not found in response");
+            }
 
         } catch (Exception e) {
             // 결제 실패
             return ResponseEntity.badRequest().build();
         }
     }
+    // 결제 취소
+    @PostMapping("/payments/ribbonCancel")
+    public ResponseEntity<?> ribbonCancel(@RequestBody PaymentCancelRequest paymentCancelRequest) {
+        try {
+            String merchant_uid = paymentCancelRequest.getMerchantUid();
+            Integer amount = paymentCancelRequest.getAmount();
+            String tax_free = paymentCancelRequest.getTaxFree();
+            String vat_amount = paymentCancelRequest.getVatAmount();
+            String checksum = paymentCancelRequest.getChecksum();
+            String reason = paymentCancelRequest.getReason();
+            String refund_holder = paymentCancelRequest.getRefundHolder();
+            String refund_bank = paymentCancelRequest.getRefundBank();
+            String refund_account = paymentCancelRequest.getRefundAccount();
+            String refund_tel = paymentCancelRequest.getRefundTel();
+            String canceldate = paymentCancelRequest.getCanceldate();
+            System.out.println(paymentCancelRequest);
 
-}
+                // DB에서 결제 시간 조회
+                List<PaymentCancelRequest> orderList = postService.findPayDateOnePost(paymentCancelRequest.getMerchantUid());
+                PaymentCancelRequest order = orderList.get(0);
+                String dateToBePaid = order.getPaydate();
+                String cancelDate = canceldate;
+                // 날짜 형식 지정
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                // 날짜 변환
+                LocalDateTime dateToBePaidLocalDateTime = LocalDateTime.parse(dateToBePaid, formatter);
+                LocalDateTime cancelDateLocalDateTime = LocalDateTime.parse(cancelDate, formatter);
+
+                // 날짜 차이 계산
+                long secondsBetween = ChronoUnit.SECONDS.between(dateToBePaidLocalDateTime, cancelDateLocalDateTime);
+
+                // 3일이내 결제 최소허용
+                if (secondsBetween < 24 * 3600 * 3) {
+                    // 엑세스 토큰 발급
+                    RestTemplate restTemplate = new RestTemplate();
+                    HttpHeaders headers = new HttpHeaders();
+                    String url = "https://api.iamport.kr/users/getToken";
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+                    Map<String, Object> request = new HashMap<>();
+                    request.put("imp_key", impKey);
+                    request.put("imp_secret", impSecret);
+                    HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
+                    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+                    String responseBody = response.getBody();
+                    JsonElement responseJson = JsonParser.parseString(responseBody);
+                    JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
+                    if (responseObj != null && !responseObj.isJsonNull()) {
+                    String accessToken = "Bearer " + responseObj.get("access_token").getAsString();
+                    // 헤더 추가
+                    headers.set("Authorization", accessToken);
+                    System.out.println(headers);
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("amount", amount);
+                    data.put("tax_free", tax_free);
+                    data.put("vat_amount", vat_amount);
+                    data.put("checksum", checksum);
+                    data.put("reason", reason);
+                    data.put("refund_holder", refund_holder);
+                    data.put("refund_bank", refund_bank);
+                    data.put("refund_account", refund_account);
+                    data.put("refund_tel", refund_tel);
+                    if (merchant_uid != null) {
+                        data.put("merchant_uid", merchant_uid);
+                    }
+                    // HttpEntity 객체 생성
+                    HttpEntity<Map<String, Object>> apiEntity = new HttpEntity<>(data, headers);
+                    System.out.println(apiEntity);
+                    // API 호출 URL 구성
+                    String apiUrl = "https://api.iamport.kr/payments/cancel";
+
+                    // 각각의 가격에 대한 API 호출 실행
+                    ResponseEntity<String> apiResponse = null;
+                    if (merchant_uid != null) {
+                        apiResponse = restTemplate.postForEntity(apiUrl, apiEntity, String.class);
+                    }
+                    // 응답 상태 코드 확인
+                    HttpStatus status = null;
+                    if (apiResponse != null) {
+                        status = (HttpStatus) apiResponse.getStatusCode();
+                    }
+
+                    // 결과를 처리하는 로직
+                    if (status.is2xxSuccessful()) {
+                        // API 호출이 성공한 경우
+                        return ResponseEntity.ok("결제취소 완료");
+                    } else {
+                        // API 호출이 실패한 경우
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                    }
+                } else {
+                    throw new RuntimeException("Access token not found in response");
+                }
+            }
+            } catch(Exception e){
+                // 취소 실패
+                return ResponseEntity.badRequest().build();
+            }
+        throw new RuntimeException("결제일로부터 3일이 경과하였습니다");
+        }
+    }

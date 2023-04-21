@@ -1,6 +1,7 @@
 package com.project.ribbon.mapper;
 
 import com.project.ribbon.domain.post.*;
+import com.project.ribbon.dto.PaymentCancelRequest;
 import com.project.ribbon.dto.PaymentDTO;
 import com.project.ribbon.dto.PaymentRequest;
 import com.project.ribbon.dto.PostBuyerInfoDTO;
@@ -101,6 +102,8 @@ public interface PostMapper {
     List<PostWritementorDTO> findMentorOne(Long id);
     // 멘토 특정 게시글 가격 조회
     List<PaymentRequest> findMentorOnePrice(String merchantUid);
+    // 멘토 특정 게시글 날짜 및 시간 조회
+    List<PaymentCancelRequest> findPayDateOne(String merchantUid);
 
     // 멘토 내가 쓴 글
     List<PostWritementorDTO> findMentorByMyUserId(Long userid);

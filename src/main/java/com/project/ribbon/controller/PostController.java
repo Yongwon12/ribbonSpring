@@ -553,7 +553,6 @@ public class PostController {
             if (accessTokenJson != null && !accessTokenJson.isJsonNull()) {
                 String accessToken = "Bearer " + accessTokenJson.getAsString();
                 headers.set("Authorization", accessToken);
-                System.out.println(headers);
 
                 Map<String, Object> dataLow = new HashMap<>();
                 dataLow.put("amount", lowprice);
@@ -632,7 +631,6 @@ public class PostController {
                                               Model model) throws ApiException {
         Map<String, Object> obj = new HashMap<>();
         List<PostBuyerInfoDTO> posts = postService.findMerchantIdOnePost(params.getUserid());
-        System.out.println(postService.findMerchantIdOnePost(params.getUserid()));
         model.addAttribute("posts", posts);
         obj.put("merchantuid", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
