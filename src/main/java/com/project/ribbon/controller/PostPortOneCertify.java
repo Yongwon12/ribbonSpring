@@ -247,7 +247,7 @@ public class PostPortOneCertify {
                 LocalDateTime dateToBePaidLocalDateTime = LocalDateTime.parse(dateToBePaid, formatter);
                 LocalDateTime cancelDateLocalDateTime = LocalDateTime.parse(cancelDate, formatter);
 
-                // 날짜 차이 계산
+                // 날짜 차이 계산로직
                 long secondsBetween = ChronoUnit.SECONDS.between(dateToBePaidLocalDateTime, cancelDateLocalDateTime);
 
                 // 3일이내 결제 최소허용
