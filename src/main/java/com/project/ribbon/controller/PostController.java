@@ -28,9 +28,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -537,23 +539,26 @@ public class PostController {
 
             postService.saveBuyerInfoPost(postBuyerInfoDTO);
 
-            RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
+            WebClient webClient = WebClient.builder().build();
             String url = "https://api.iamport.kr/users/getToken";
-            headers.setContentType(MediaType.APPLICATION_JSON);
             Map<String, Object> request = new HashMap<>();
             request.put("imp_key", impKey);
             request.put("imp_secret", impSecret);
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-            String responseBody = response.getBody();
+            Mono<String> response = webClient.post()
+                    .uri(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(request)
+                    .retrieve()
+                    .bodyToMono(String.class);
+            String responseBody = response.block();
             JsonElement responseJson = JsonParser.parseString(responseBody);
             JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
             JsonElement accessTokenJson = responseObj.get("access_token");
             if (accessTokenJson != null && !accessTokenJson.isJsonNull()) {
+                HttpHeaders headers = new HttpHeaders();
                 String accessToken = "Bearer " + accessTokenJson.getAsString();
                 headers.set("Authorization", accessToken);
-
+                System.out.println(headers);
                 Map<String, Object> dataLow = new HashMap<>();
                 dataLow.put("amount", lowprice);
                 if (merchantUidLow != null) {
@@ -573,40 +578,64 @@ public class PostController {
                 }
 
                 // HttpEntity 객체 생성
-                HttpEntity<Map<String, Object>> entityLow = new HttpEntity<>(dataLow, headers);
-                HttpEntity<Map<String, Object>> entityMiddle = new HttpEntity<>(dataMiddle, headers);
-                HttpEntity<Map<String, Object>> entityHigh = new HttpEntity<>(dataHigh, headers);
+                HttpEntity<Map<String, Object>> entityLow = new HttpEntity<>(dataLow);
+                HttpEntity<Map<String, Object>> entityMiddle = new HttpEntity<>(dataMiddle);
+                HttpEntity<Map<String, Object>> entityHigh = new HttpEntity<>(dataHigh);
+                System.out.println(entityLow);
+                System.out.println(entityMiddle);
+                System.out.println(entityHigh);
 
                 // API 호출 URL 구성
                 String apiUrl = "https://api.iamport.kr/payments/prepare";
 
                 // 각각의 가격에 대한 API 호출 실행
-                ResponseEntity<String> responseLow = null;
-                ResponseEntity<String> responseMiddle = null;
-                ResponseEntity<String> responseHigh = null;
+                Mono<ResponseEntity<String>> responseLow = null;
+                Mono<ResponseEntity<String>> responseMiddle = null;
+                Mono<ResponseEntity<String>> responseHigh = null;
+
+
                 if (merchantUidLow != null) {
-                    responseLow = restTemplate.postForEntity(apiUrl, entityLow, String.class);
+                    responseLow = webClient.post()
+                            .uri(apiUrl)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, accessToken)
+                            .body(BodyInserters.fromValue(entityLow))
+                            .retrieve()
+                            .toEntity(String.class);
                 }
                 if (merchantUidMiddle != null) {
-                    responseMiddle = restTemplate.postForEntity(apiUrl, entityMiddle, String.class);
+                    responseMiddle = webClient.post()
+                            .uri(apiUrl)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, accessToken)
+                            .body(BodyInserters.fromValue(entityMiddle))
+                            .retrieve()
+                            .toEntity(String.class);
                 }
                 if (merchantUidHigh != null) {
-                    responseHigh = restTemplate.postForEntity(apiUrl, entityHigh, String.class);
+                    responseHigh = webClient.post()
+                            .uri(apiUrl)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, accessToken)
+                            .body(BodyInserters.fromValue(entityHigh))
+                            .retrieve()
+                            .toEntity(String.class);
                 }
 
                 // 응답 상태 코드 확인
-                HttpStatus statusLow = null;
-                HttpStatus statusMiddle = null;
-                HttpStatus statusHigh = null;
+                HttpStatusCode statusLow = null;
+                HttpStatusCode statusMiddle = null;
+                HttpStatusCode statusHigh = null;
                 if (responseLow != null) {
-                    statusLow = (HttpStatus) responseLow.getStatusCode();
+                    statusLow = responseLow.block().getStatusCode();
                 }
                 if (responseMiddle != null) {
-                    statusMiddle = (HttpStatus) responseMiddle.getStatusCode();
+                    statusMiddle = responseMiddle.block().getStatusCode();
                 }
                 if (responseHigh != null) {
-                    statusHigh = (HttpStatus) responseHigh.getStatusCode();
+                    statusHigh = responseHigh.block().getStatusCode();
                 }
+
 
                 // 각각의 결과를 처리하는 로직 추가
                 if (statusLow.is2xxSuccessful() && statusMiddle.is2xxSuccessful() && statusHigh.is2xxSuccessful()) {
