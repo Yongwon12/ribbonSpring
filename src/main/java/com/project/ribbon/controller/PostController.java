@@ -29,7 +29,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
@@ -526,18 +525,6 @@ public class PostController {
                                                  @RequestParam("merchantUidHigh") String merchantUidHigh,
                                                  @RequestParam("inherentid") Long inherentid) throws IOException{
         try {
-            PostBuyerInfoDTO postBuyerInfoDTO = new PostBuyerInfoDTO();
-            postBuyerInfoDTO.setLowprice(lowprice);
-            postBuyerInfoDTO.setMiddleprice(middleprice);
-            postBuyerInfoDTO.setHighprice(highprice);
-            postBuyerInfoDTO.setUserid(userid);
-            postBuyerInfoDTO.setUsername(username);
-            postBuyerInfoDTO.setInherentid(inherentid);
-            postBuyerInfoDTO.setMerchantUidLow(merchantUidLow);
-            postBuyerInfoDTO.setMerchantUidMiddle(merchantUidMiddle);
-            postBuyerInfoDTO.setMerchantUidHigh(merchantUidHigh);
-
-            postService.saveBuyerInfoPost(postBuyerInfoDTO);
 
             WebClient webClient = WebClient.builder().build();
             String url = "https://api.iamport.kr/users/getToken";
@@ -555,10 +542,7 @@ public class PostController {
             JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
             JsonElement accessTokenJson = responseObj.get("access_token");
             if (accessTokenJson != null && !accessTokenJson.isJsonNull()) {
-                HttpHeaders headers = new HttpHeaders();
                 String accessToken = "Bearer " + accessTokenJson.getAsString();
-                headers.set("Authorization", accessToken);
-                System.out.println(headers);
                 Map<String, Object> dataLow = new HashMap<>();
                 dataLow.put("amount", lowprice);
                 if (merchantUidLow != null) {
@@ -577,14 +561,6 @@ public class PostController {
                     dataHigh.put("merchant_uid", merchantUidHigh);
                 }
 
-                // HttpEntity 객체 생성
-                HttpEntity<Map<String, Object>> entityLow = new HttpEntity<>(dataLow);
-                HttpEntity<Map<String, Object>> entityMiddle = new HttpEntity<>(dataMiddle);
-                HttpEntity<Map<String, Object>> entityHigh = new HttpEntity<>(dataHigh);
-                System.out.println(entityLow);
-                System.out.println(entityMiddle);
-                System.out.println(entityHigh);
-
                 // API 호출 URL 구성
                 String apiUrl = "https://api.iamport.kr/payments/prepare";
 
@@ -599,7 +575,7 @@ public class PostController {
                             .uri(apiUrl)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, accessToken)
-                            .body(BodyInserters.fromValue(entityLow))
+                            .bodyValue(dataLow)
                             .retrieve()
                             .toEntity(String.class);
                 }
@@ -608,7 +584,7 @@ public class PostController {
                             .uri(apiUrl)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, accessToken)
-                            .body(BodyInserters.fromValue(entityMiddle))
+                            .bodyValue(dataMiddle)
                             .retrieve()
                             .toEntity(String.class);
                 }
@@ -617,7 +593,7 @@ public class PostController {
                             .uri(apiUrl)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, accessToken)
-                            .body(BodyInserters.fromValue(entityHigh))
+                            .bodyValue(dataHigh)
                             .retrieve()
                             .toEntity(String.class);
                 }
@@ -640,6 +616,18 @@ public class PostController {
                 // 각각의 결과를 처리하는 로직 추가
                 if (statusLow.is2xxSuccessful() && statusMiddle.is2xxSuccessful() && statusHigh.is2xxSuccessful()) {
                     // 모든 API 호출이 성공한 경우
+                    PostBuyerInfoDTO postBuyerInfoDTO = new PostBuyerInfoDTO();
+                    postBuyerInfoDTO.setLowprice(lowprice);
+                    postBuyerInfoDTO.setMiddleprice(middleprice);
+                    postBuyerInfoDTO.setHighprice(highprice);
+                    postBuyerInfoDTO.setUserid(userid);
+                    postBuyerInfoDTO.setUsername(username);
+                    postBuyerInfoDTO.setInherentid(inherentid);
+                    postBuyerInfoDTO.setMerchantUidLow(merchantUidLow);
+                    postBuyerInfoDTO.setMerchantUidMiddle(merchantUidMiddle);
+                    postBuyerInfoDTO.setMerchantUidHigh(merchantUidHigh);
+
+                    postService.saveBuyerInfoPost(postBuyerInfoDTO);
                     return ResponseEntity.ok().build();
                 } else {
                     // 하나 이상의 API 호출이 실패한 경우

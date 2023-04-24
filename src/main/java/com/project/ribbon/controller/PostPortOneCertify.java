@@ -7,7 +7,6 @@ import com.project.ribbon.domain.post.PostUserUpdateRequest;
 import com.project.ribbon.dto.*;
 import com.project.ribbon.repository.MemberRepository;
 import com.project.ribbon.service.PostService;
-import net.minidev.json.JSONObject;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -55,27 +54,36 @@ public class PostPortOneCertify {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid secret token");
             }
 
-            RestTemplate restTemplate = new RestTemplate();
+            WebClient webClient = WebClient.builder().build();
             String url = "https://api.iamport.kr/users/getToken";
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            JSONObject request = new JSONObject();
+            Map<String, Object> request = new HashMap<>();
             request.put("imp_key", impKey);
             request.put("imp_secret", impSecret);
-            HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-            if (response.getStatusCode() == HttpStatus.OK) {
-                String result = response.getBody();
+            Mono<String> response = webClient.post()
+                    .uri(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(request)
+                    .retrieve()
+                    .bodyToMono(String.class);
+            String responseBody = response.block();
+            JsonElement responseJson = JsonParser.parseString(responseBody);
+            JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
+
+            if (response instanceof ClientResponse && ((ClientResponse) response).statusCode().equals(HttpStatus.OK)) {
                 // 결과 처리
-                return ResponseEntity.ok(result);
+                return ResponseEntity.ok(responseObj.toString());
             } else {
                 // 오류 처리
-                return ResponseEntity.status(response.getStatusCode()).build();
+                return ResponseEntity.status(((ClientResponse) response).statusCode()).body(responseBody);
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+
+
+
     // 폰 인증
     @PostMapping("/certificationsRibbon")
     public ResponseEntity<?> handleCertificationsRequest(@RequestBody Map<String, Object> body) {
@@ -83,25 +91,25 @@ public class PostPortOneCertify {
         Long userid = (Long) body.get("userid");
         try {
             // 토큰 발급
-            RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
+            WebClient webClient = WebClient.builder().build();
             String url = "https://api.iamport.kr/users/getToken";
-            headers.setContentType(MediaType.APPLICATION_JSON);
             Map<String, Object> request = new HashMap<>();
             request.put("imp_key", impKey);
             request.put("imp_secret", impSecret);
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-            String responseBody = response.getBody();
+            Mono<String> response = webClient.post()
+                    .uri(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(request)
+                    .retrieve()
+                    .bodyToMono(String.class);
+            String responseBody = response.block();
             JsonElement responseJson = JsonParser.parseString(responseBody);
             JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
-            String accessToken = "Bearer " + responseObj.get("access_token").getAsString();
-            headers.set("Authorization", accessToken);
-            System.out.println(accessToken);
 
             // imp_uid로 인증 정보 조회
             String getCertificationsUrl = "https://api.iamport.kr/certifications/" + impUid;
             HttpHeaders getCertificationsHeaders = new HttpHeaders();
+            String accessToken = "Bearer " + responseObj.get("access_token").getAsString();
             getCertificationsHeaders.set("Authorization", accessToken);
             HttpEntity<Void> getCertificationsRequest = new HttpEntity<>(getCertificationsHeaders);
             ResponseEntity<Map> getCertificationsResponse = new RestTemplate().exchange(getCertificationsUrl, HttpMethod.GET, getCertificationsRequest, Map.class);
@@ -207,13 +215,13 @@ public class PostPortOneCertify {
             // 결제 성공시 응답
                 switch (status) {
                     case "paid":
-                        return ResponseEntity.ok("결제가 성공적으로 완료되었습니다.");
+                        return ResponseEntity.ok("결제 완료 상태");
                     case "ready":
-                        return ResponseEntity.ok("결제 준비중 입니다.");
+                        return ResponseEntity.ok("결제 준비 상태");
                     case "failed":
-                        return ResponseEntity.ok("결제에 실패했습니다.");
+                        return ResponseEntity.ok("결제 실패 상태");
                     case "cancelled":
-                        return ResponseEntity.ok("취소 및 환불된 결제입니다.");
+                        return ResponseEntity.ok("취소 및 환불된 결제");
                     default:
                         return ResponseEntity.badRequest().build();
                 }
@@ -281,9 +289,7 @@ public class PostPortOneCertify {
                     JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
                     if (responseObj != null && !responseObj.isJsonNull()) {
                     String accessToken = "Bearer " + responseObj.get("access_token").getAsString();
-                        HttpHeaders headers = new HttpHeaders();
                         // 헤더 추가
-                        headers.set("Authorization", accessToken);
                     Map<String, Object> data = new HashMap<>();
                     data.put("amount", amount);
                     data.put("tax_free", tax_free);
@@ -297,40 +303,60 @@ public class PostPortOneCertify {
                     if (merchant_uid != null) {
                         data.put("merchant_uid", merchant_uid);
                     }
-                    // HttpEntity 객체 생성
-                    HttpEntity<Map<String, Object>> apiEntity = new HttpEntity<>(data, headers);
                     // API 호출 URL 구성
                     String apiUrl = "https://api.iamport.kr/payments/cancel";
 
                     // 각각의 가격에 대한 API 호출 실행
-                        ResponseEntity<String> apiResponse = null;
-                        HttpStatus status = null;
+                        Mono<ResponseEntity<String>> apiResponse = null;
+
                         if (merchant_uid != null) {
-                            Mono<ResponseEntity<String>> apiResponseMono = webClient.post()
+                            apiResponse = webClient.post()
                                     .uri(apiUrl)
-                                    .header(HttpHeaders.AUTHORIZATION, accessToken)
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .body(BodyInserters.fromValue(apiEntity))
+                                    .header(HttpHeaders.AUTHORIZATION, accessToken)
+                                    .bodyValue(data)
                                     .retrieve()
                                     .toEntity(String.class);
-                            apiResponse = apiResponseMono.block();
                         }
-
-                        // 응답 상태 코드 확인
+                        HttpStatusCode apiStatus = null;
                         if (apiResponse != null) {
-                            status = (HttpStatus) apiResponse.getStatusCode();
+                            apiStatus = apiResponse.block().getStatusCode();
                         }
+                        if (apiStatus.is2xxSuccessful()) {
 
+                            String paymentUrl = "https://api.iamport.kr/payments/find/" + merchant_uid;
+                            Mono<ResponseEntity<PaymentData>> paymentResponse = webClient.get()
+                                    .uri(paymentUrl)
+                                    .header(HttpHeaders.AUTHORIZATION, accessToken)
+                                    .retrieve()
+                                    .toEntity(PaymentData.class);
+                            PaymentData paymentData = webClient.get()
+                                    .uri(paymentUrl)
+                                    .header(HttpHeaders.AUTHORIZATION, accessToken)
+                                    .retrieve()
+                                    .bodyToMono(PaymentData.class)
+                                    .block();
 
-                        // 결과를 처리하는 로직
-                    if (status.is2xxSuccessful()) {
-                        // API 호출이 성공한 경우
-                        return ResponseEntity.ok("결제취소 완료");
+                            String status = paymentData.getResponse().getStatus();
+                            System.out.println(status);
+                            // 결과를 처리하는 로직
+                            switch (status) {
+                                case "paid":
+                                    return ResponseEntity.ok("결제 완료 상태입니다.");
+                                case "ready":
+                                    return ResponseEntity.ok("결제 준비 상태입니다.");
+                                case "failed":
+                                    return ResponseEntity.ok("결제 실패 상태입니다.");
+                                case "cancelled":
+                                    return ResponseEntity.ok("취소 및 환불된 결제입니다.");
+                                default:
+                                    return ResponseEntity.badRequest().build();
+                            }
+
+                        }
+                        return ResponseEntity.ok().build();
+
                     } else {
-                        // API 호출이 실패한 경우
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-                    }
-                } else {
                     throw new RuntimeException("Access token not found in response");
                 }
             }else {
