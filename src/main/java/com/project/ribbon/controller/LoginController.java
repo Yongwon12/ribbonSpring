@@ -35,10 +35,10 @@ public class LoginController {
     // 서버 업로드용 ip : https://ribbonding.shop:48610/ribbon/admin
     // 서버업로드용 gif 파일 경로 : /oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbon.gif
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbonding.png
-    // 개발환경용 ip : http://192.168.219.161:8000/ribbon/admin
+    // 개발환경용 ip : http://112.148.33.214:8000/ribbon/admin
     // 개발환경용 맺음 gif 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.gif
     // 개발환경용 맺음 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png
-    String ip = "http://192.168.219.161:8000/ribbon/admin";
+    String ip = "http://112.148.33.214:8000/ribbon/admin";
     // test
     @GetMapping("/test")
     public String test() {

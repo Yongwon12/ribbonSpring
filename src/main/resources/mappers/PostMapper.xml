@@ -732,15 +732,13 @@
             writementor.id, title, category, shortcontent, description,lowdescription,middledescription,highdescription,
             career, titleimage, lowprice, middleprice, highprice,
             user.userid, user.nickname, region, contacttime, writedate, user.profileimage,
-            review, appraisal,inherentid, AVG(feedback.appraisal) as avg_appraisal
+            review, appraisal,inherentid
         FROM
             writementor
                 LEFT JOIN user ON user.userid = writementor.userid
                 LEFT JOIN feedback ON feedback.inherentid = writementor.id
         WHERE
-            writementor.userid = #{userid}
-        GROUP BY
-            writementor.id
+            user.userid = #{userid}
         ORDER BY
             writedate DESC
     </select>

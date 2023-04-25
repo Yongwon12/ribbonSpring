@@ -64,11 +64,11 @@ public class PostController {
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
     // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://192.168.219.161:8000/api/userimage/";
-    String boardip = "http://192.168.219.161:8000/api/boardimage/";
-    String groupip = "http://192.168.219.161:8000/api/groupimage/";
-    String usedip = "http://192.168.219.161:8000/api/usedimage/";
-    String mentorip = "http://192.168.219.161:8000/api/writementortitleimage/";
+    String userip = "http://112.148.33.214:8000/api/userimage/";
+    String boardip = "http://112.148.33.214:8000/api/boardimage/";
+    String groupip = "http://112.148.33.214:8000/api/groupimage/";
+    String usedip = "http://112.148.33.214:8000/api/usedimage/";
+    String mentorip = "http://112.148.33.214:8000/api/writementortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -711,8 +711,8 @@ public class PostController {
     // 멘토 내가 쓴 글
     @PostMapping("/post/mywritementor")
     public ResponseEntity<?> myWriteMentor(@RequestBody PostWritementorDTO userid, Model model) {
-        Map<String, Object> obj = new HashMap<>();
         try {
+            Map<String, Object> obj = new HashMap<>();
             postService.findMentorPostByMyUserId(userid.getUserid());
             List<PostWritementorDTO> posts = postService.findMentorPostByMyUserId(userid.getUserid());
             model.addAttribute("posts", posts);
