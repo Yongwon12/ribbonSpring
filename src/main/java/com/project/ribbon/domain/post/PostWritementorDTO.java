@@ -61,7 +61,7 @@ public class PostWritementorDTO {
         @NotNull(message = "별점은 필수 입력값입니다.")
         @Range(min = 1, max = 5, message = "별점은 1부터 5까지 입력 가능합니다.")
         private Double appraisal;
-        private Double avg_appraisal;
+        private Double avgAppraisal;
         private String token;
         @NotBlank(message = "신고내용은 필수 입력값입니다.")
         @Size(min = 2, max = 100)
@@ -69,5 +69,9 @@ public class PostWritementorDTO {
         private String merchantUidLow;
         private String merchantUidMiddle;
         private String merchantUidHigh;
-
+        private String reviewnickname;
+        private Long appraisalnumber;
+        private String feedbackdate;
+        private Long instructorid;
+        private String userprofileimage;
 }

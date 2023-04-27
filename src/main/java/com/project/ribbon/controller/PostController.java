@@ -64,11 +64,11 @@ public class PostController {
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
     // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://112.148.33.214:8000/api/userimage/";
-    String boardip = "http://112.148.33.214:8000/api/boardimage/";
-    String groupip = "http://112.148.33.214:8000/api/groupimage/";
-    String usedip = "http://112.148.33.214:8000/api/usedimage/";
-    String mentorip = "http://112.148.33.214:8000/api/writementortitleimage/";
+    String userip = "http://192.168.3.89:8000/api/userimage/";
+    String boardip = "http://192.168.3.89:8000/api/boardimage/";
+    String groupip = "http://192.168.3.89:8000/api/groupimage/";
+    String usedip = "http://192.168.3.89:8000/api/usedimage/";
+    String mentorip = "http://192.168.3.89:8000/api/writementortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -702,21 +702,41 @@ public class PostController {
     @PostMapping("/writementor")
     public ResponseEntity<?> mentorWriteOne(@RequestBody PostWritementorDTO params, Model model) throws ApiException {
         Map<String, Object> obj = new HashMap<>();
-        List<PostWritementorDTO> posts = postService.findMentorOnePost(params.getId());
-        model.addAttribute("posts", posts);
-        obj.put("writementor", posts);
+
+        // Find posts for writementor
+        List<PostWritementorDTO> writementorPosts = postService.findMentorOnePost(params.getId());
+        model.addAttribute("writementor", writementorPosts);
+        obj.put("writementor", writementorPosts);
+
+        // Find posts for reviewlist
+        List<PostWritementorDTO> reviewlistPosts = postService.findMentorReviewAppraisalOnePost(params.getId());
+        model.addAttribute("reviewlist", reviewlistPosts);
+        obj.put("reviewlist", reviewlistPosts);
+
+        // Return response entity with obj and HTTP status OK
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
+
+
+
 
     // 멘토 내가 쓴 글
     @PostMapping("/post/mywritementor")
     public ResponseEntity<?> myWriteMentor(@RequestBody PostWritementorDTO userid, Model model) {
         try {
+
             Map<String, Object> obj = new HashMap<>();
-            postService.findMentorPostByMyUserId(userid.getUserid());
-            List<PostWritementorDTO> posts = postService.findMentorPostByMyUserId(userid.getUserid());
-            model.addAttribute("posts", posts);
-            obj.put("writementor", posts);
+
+            //멘토 내가 쓴 글 조회
+            List<PostWritementorDTO> writementorPosts = postService.findMentorPostByMyUserId(userid.getUserid());
+            model.addAttribute("writementor", writementorPosts);
+            obj.put("writementor", writementorPosts);
+
+            //멘토 내가 쓴 글 별점 및 리뷰 조회
+            List<PostWritementorDTO> reviewListPosts = postService.findMentorReviewAppraisalPostByMyUserId(userid.getUserid());
+            model.addAttribute("reviewlist", reviewListPosts);
+            obj.put("reviewlist", reviewListPosts);
+
             return new ResponseEntity<>(obj, HttpStatus.OK);
         } catch (ApiException e) {
             return new ResponseEntity<>("Error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -828,7 +848,6 @@ public class PostController {
             Map<String, Object> tokenInfoMap = new HashMap<>();
             tokenInfoMap.put("grantType", tokenInfo.getGrantType());
             tokenInfoMap.put("accessToken", tokenInfo.getAccessToken());
-            tokenInfoMap.put("refreshToken", tokenInfo.getRefreshToken());
             tokenInfoMap.put("roles", posts.getRoles());
             response.put("tokenInfo", tokenInfoMap);
             return ResponseEntity.ok(response);

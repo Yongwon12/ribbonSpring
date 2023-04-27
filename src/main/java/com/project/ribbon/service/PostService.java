@@ -446,6 +446,15 @@ public class PostService {
             throw new RuntimeException("멘토 특정 게시글 조회에 실패했습니다.", e);
         }
     }
+    // 멘토 특정 별점 및 리뷰 조회
+    public List<PostWritementorDTO> findMentorReviewAppraisalOnePost(Long id) {
+        try {
+            return postMapper.findMentorReviewAppraisalOne(id);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("멘토 특정 별점 및 리뷰 조회에 실패했습니다.", e);
+        }
+    }
 
 
     // 멘토 내가 쓴 글
@@ -455,6 +464,16 @@ public class PostService {
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("멘토 내가 쓴 글 조회에 실패했습니다.", e);
+        }
+    }
+
+    // 멘토 내가 쓴 글
+    public List<PostWritementorDTO> findMentorReviewAppraisalPostByMyUserId(final Long userid) {
+        try {
+            return postMapper.findMentorReviewAppraisalByMyUserId(userid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("멘토 내가 쓴 리뷰 및 별점 조회에 실패했습니다.", e);
         }
     }
 

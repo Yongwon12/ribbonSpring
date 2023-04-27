@@ -624,19 +624,21 @@
 
     <!-- 멘토 게시글 조회  -->
     <select id="findMentorAll" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
-        SELECT
-            id,title,category,shortcontent,description,lowdescription,middledescription,highdescription,
-            career,titleimage,lowprice,middleprice,highprice,
-            user.userid,user.nickname,region,contacttime,writedate,user.profileimage,
-            review,appraisal
-        FROM
-            writementor
-                LEFT JOIN user
-                          ON user.userid = writementor.userid
-                LEFT JOIN feedback
-                          ON writementor.id = feedback.inherentid
+        SELECT writementor.id, writementor.title, writementor.category, writementor.shortcontent, writementor.description, writementor.lowdescription,
+               writementor.middledescription, writementor.highdescription, writementor.career, writementor.titleimage, writementor.lowprice,
+               writementor.middleprice, writementor.highprice, user.userid, user.nickname, writementor.region, writementor.contacttime, writementor.writedate,
+               user.profileimage, user.token, AVG(feedback.appraisal) AS avgAppraisal, feedback.inherentid,COUNT(feedback.appraisal) as appraisalnumber
+        FROM writementor
+                 LEFT JOIN user
+                           ON user.userid = writementor.userid
+                 LEFT JOIN feedback
+                           ON writementor.id = feedback.inherentid
         WHERE user.userid IS NOT NULL
-        ORDER BY writedate DESC
+        GROUP BY feedback.inherentid, writementor.id, writementor.title, writementor.category, writementor.shortcontent, writementor.description, writementor.lowdescription,
+                 writementor.middledescription, writementor.highdescription, writementor.career, writementor.titleimage, writementor.lowprice,
+                 writementor.middleprice, writementor.highprice, user.userid, user.nickname, writementor.region, writementor.contacttime, writementor.writedate,
+                 user.profileimage, user.token
+        ORDER BY writementor.writedate DESC
     </select>
 
     <!-- 멘토 특정 게시글 가격 조회  -->
@@ -711,36 +713,68 @@
 
     <!-- 멘토 특정 게시글 조회  -->
     <select id="findMentorOne" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
-        SELECT
-            id,title,category,shortcontent,description,lowdescription,middledescription,highdescription,
-            career,titleimage,lowprice,middleprice,highprice,
-            user.userid,user.nickname,region,contacttime,writedate,user.profileimage,
-            review,appraisal
-        FROM
-            writementor
-                LEFT JOIN user
-                          ON user.userid = writementor.userid
-                LEFT JOIN feedback
-                          ON writementor.id = feedback.inherentid
+        SELECT writementor.id, writementor.title, writementor.category, writementor.shortcontent, writementor.description, writementor.lowdescription,
+               writementor.middledescription, writementor.highdescription, writementor.career, writementor.titleimage, writementor.lowprice,
+               writementor.middleprice, writementor.highprice, user.userid, user.nickname, writementor.region, writementor.contacttime, writementor.writedate,
+               user.profileimage, user.token, AVG(feedback.appraisal) AS avg_appraisal, feedback.inherentid
+        FROM writementor
+                 LEFT JOIN user
+                           ON user.userid = writementor.userid
+                 LEFT JOIN feedback
+                           ON writementor.id = feedback.inherentid
         WHERE id = #{id}
+        GROUP BY feedback.inherentid, writementor.id, writementor.title, writementor.category, writementor.shortcontent, writementor.description, writementor.lowdescription,
+                 writementor.middledescription, writementor.highdescription, writementor.career, writementor.titleimage, writementor.lowprice,
+                 writementor.middleprice, writementor.highprice, user.userid, user.nickname, writementor.region, writementor.contacttime, writementor.writedate,
+                 user.profileimage, user.token
         AND user.userid IS NOT NULL
+        ORDER BY writementor.writedate DESC
+    </select>
+
+    <!-- 멘토 특정 별점 및 리뷰  -->
+    <select id="findMentorReviewAppraisalOne" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
+        SELECT
+            review,appraisal,user.nickname,user.profileimage AS userprofileimage
+        FROM
+            feedback
+                LEFT JOIN user
+                          ON user.userid = feedback.userid
+        WHERE inherentid = #{id}
+          AND user.userid IS NOT NULL
     </select>
 
     <!-- 멘토 내가 쓴 글  -->
     <select id="findMentorByMyUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
+        SELECT writementor.id, writementor.title, writementor.category, writementor.shortcontent, writementor.description, writementor.lowdescription,
+               writementor.middledescription, writementor.highdescription, writementor.career, writementor.titleimage, writementor.lowprice,
+               writementor.middleprice, writementor.highprice, user.userid, user.nickname, writementor.region, writementor.contacttime, writementor.writedate,
+               user.profileimage, user.token, AVG(feedback.appraisal) AS avgAppraisal, feedback.inherentid
+        FROM writementor
+                 LEFT JOIN user
+                           ON user.userid = writementor.userid
+                 LEFT JOIN feedback
+                           ON writementor.id = feedback.inherentid
+        WHERE user.userid = #{userid}
+        GROUP BY feedback.inherentid, writementor.id, writementor.title, writementor.category, writementor.shortcontent, writementor.description, writementor.lowdescription,
+                 writementor.middledescription, writementor.highdescription, writementor.career, writementor.titleimage, writementor.lowprice,
+                 writementor.middleprice, writementor.highprice, user.userid, user.nickname, writementor.region, writementor.contacttime, writementor.writedate,
+                 user.profileimage, user.token
+                     AND user.userid IS NOT NULL
+        ORDER BY writementor.writedate DESC
+    </select>
+
+    <!-- 멘토 내가 쓴 글의 별점 및 리뷰  -->
+    <select id="findMentorReviewAppraisalByMyUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
         SELECT
-            writementor.id, title, category, shortcontent, description,lowdescription,middledescription,highdescription,
-            career, titleimage, lowprice, middleprice, highprice,
-            user.userid, user.nickname, region, contacttime, writedate, user.profileimage,
-            review, appraisal,inherentid
+            review,appraisal,user.nickname,user.profileimage AS userprofileimage
         FROM
-            writementor
-                LEFT JOIN user ON user.userid = writementor.userid
-                LEFT JOIN feedback ON feedback.inherentid = writementor.id
-        WHERE
-            user.userid = #{userid}
-        ORDER BY
-            writedate DESC
+            feedback
+                LEFT JOIN user
+                          ON user.userid = feedback.userid
+                LEFT JOIN user AS instructor
+                          ON instructor.userid = feedback.instructorid
+        WHERE instructor.userid = #{userid}
+          AND instructor.userid IS NOT NULL
     </select>
 
     <!-- 멘토 게시글 수정 -->
@@ -776,13 +810,15 @@
     <!-- 별점 및 리뷰 저장 -->
     <insert id="saveWriteFeedBack" parameterType="com.project.ribbon.domain.post.PostWritementorDTO">
         INSERT INTO feedback (
-        inherentid,review,appraisal,userid,nickname
+        inherentid,review,appraisal,userid,nickname,feedbackdate,instructorid
         ) VALUES (
         #{inherentid}
         , #{review}
         , #{appraisal}
         , #{userid}
         , #{nickname}
+        , NOW()
+        , #{instructorid}
         )
     </insert>
 
@@ -795,7 +831,7 @@
                 LEFT JOIN user
                           ON user.userid = feedback.userid
         WHERE feedback.userid = #{userid}
-        ORDER BY writedate DESC
+        ORDER BY feedback.writedate DESC
     </select>
 
     <!-- 리뷰 수정 -->
