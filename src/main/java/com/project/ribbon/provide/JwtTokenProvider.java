@@ -51,7 +51,7 @@ public class JwtTokenProvider {
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + 60*60*12*1000))
+                .setExpiration(new Date(now + 60*60*24*7*1000))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
@@ -100,19 +100,65 @@ public class JwtTokenProvider {
         return false;
     }
 
-    private Claims parseClaims(String accessToken) {
+    // AccessToken을 갱신하는 메서드
+    public TokenInfo generateAccessToken(String username, List<String> roles) {
+
+        long now = (new Date()).getTime();
+        Date accessTokenExpiresIn = new Date(now + 60*60*12*1000);
+        String accessToken = Jwts.builder()
+                .setSubject(username)
+                .claim("auth", String.join(",", roles))
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return TokenInfo.builder()
+                .grantType("Bearer")
+                .accessToken(accessToken)
+                .build();
+    }
+
+
+
+    // JWT 토큰에서 클레임 정보 추출
+    public Claims parseClaims(String token) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
-            return e.getClaims();
+            log.info("Expired JWT Token", e);
+            throw new RuntimeException("토큰이 만료되었습니다.");
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT Token", e);
+            throw new RuntimeException("지원되지 않는 JWT 토큰입니다.");
+        } catch (MalformedJwtException e) {
+            log.info("Invalid JWT Token", e);
+            throw new RuntimeException("유효하지 않은 JWT 토큰입니다.");
+        } catch (io.jsonwebtoken.security.SecurityException | IllegalArgumentException e) {
+            log.info("Invalid JWT Token", e);
+            throw new RuntimeException("유효하지 않은 JWT 토큰입니다.");
         }
     }
 
 
+    // Access Token에서 권한 정보 추출
     public List<String> getRoles(String token) {
-        Claims claims = parseClaims(token);
-        String authorities = (String) claims.get("auth");
-        return Arrays.asList(authorities.split(","));
+        try {
+            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            String roles = claims.get("auth", String.class);
+            return Arrays.asList(roles.split(","));
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT Token", e);
+            throw new RuntimeException("토큰이 만료되었습니다.");
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT Token", e);
+            throw new RuntimeException("지원되지 않는 JWT 토큰입니다.");
+        } catch (MalformedJwtException e) {
+            log.info("Invalid JWT Token", e);
+            throw new RuntimeException("유효하지 않은 JWT 토큰입니다.");
+        } catch (io.jsonwebtoken.security.SecurityException | IllegalArgumentException e) {
+            log.info("Invalid JWT Token", e);
+            throw new RuntimeException("유효하지 않은 JWT 토큰입니다.");
+        }
     }
 
 }

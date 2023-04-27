@@ -6,11 +6,14 @@ import com.google.gson.JsonParser;
 import com.project.ribbon.customvaild.DigitLength;
 import com.project.ribbon.domain.post.*;
 import com.project.ribbon.dto.PostBuyerInfoDTO;
+import com.project.ribbon.dto.ReissueToken;
 import com.project.ribbon.dto.TokenInfo;
 import com.project.ribbon.enums.ExceptionEnum;
+import com.project.ribbon.filter.JwtAuthenticationFilter;
 import com.project.ribbon.provide.JwtTokenProvider;
 import com.project.ribbon.response.ApiException;
 import com.project.ribbon.service.*;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -19,6 +22,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.core.AuthenticationException;
@@ -58,17 +63,21 @@ public class PostController {
 
     private final MemberService memberService;
 
+    @Autowired
+    @Qualifier("jwtTokenProvider")
     private JwtTokenProvider jwtTokenProvider;
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
 
     // 서버업로드용 서버 ip : https://ribbonding.shop:48610
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
     // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://192.168.3.89:8000/api/userimage/";
-    String boardip = "http://192.168.3.89:8000/api/boardimage/";
-    String groupip = "http://192.168.3.89:8000/api/groupimage/";
-    String usedip = "http://192.168.3.89:8000/api/usedimage/";
-    String mentorip = "http://192.168.3.89:8000/api/writementortitleimage/";
+    String userip = "http://112.148.33.214:8000/api/userimage/";
+    String boardip = "http://112.148.33.214:8000/api/boardimage/";
+    String groupip = "http://112.148.33.214:8000/api/groupimage/";
+    String usedip = "http://112.148.33.214:8000/api/usedimage/";
+    String mentorip = "http://112.148.33.214:8000/api/writementortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -848,6 +857,7 @@ public class PostController {
             Map<String, Object> tokenInfoMap = new HashMap<>();
             tokenInfoMap.put("grantType", tokenInfo.getGrantType());
             tokenInfoMap.put("accessToken", tokenInfo.getAccessToken());
+            tokenInfoMap.put("refreshToken", tokenInfo.getRefreshToken());
             tokenInfoMap.put("roles", posts.getRoles());
             response.put("tokenInfo", tokenInfoMap);
             return ResponseEntity.ok(response);
@@ -857,6 +867,24 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    // 엑세스토큰 재발급
+    @PostMapping("/ribbonRefresh")
+    public ResponseEntity<TokenInfo> refreshToken(@RequestBody ReissueToken params) {
+        String refreshToken = params.getRefreshToken();
+        String expireToken = params.getAccessToken();
+        // RefreshToken 검증
+        if (!jwtTokenProvider.validateToken(refreshToken)) {
+            return ResponseEntity.badRequest().build();
+        }
+        // AccessToken 재발급
+        Claims claims = jwtTokenProvider.parseClaims(expireToken);
+        String username = claims.getSubject();
+        List<String> roles = jwtTokenProvider.getRoles(expireToken);
+        TokenInfo newTokenInfo = jwtTokenProvider.generateAccessToken(username, roles);
+
+        return ResponseEntity.ok(newTokenInfo);
+    }
+
     // 비밀키
     @Value("${myapp.secretKey}")
     private String secretKey;
