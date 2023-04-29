@@ -13,6 +13,5 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReissueToken {
 
-    private String accessToken;
     private String refreshToken;
 }

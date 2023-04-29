@@ -41,7 +41,7 @@ public class JwtTokenProvider {
 
         long now = (new Date()).getTime();
         // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + 60*60*12*1000);
+        Date accessTokenExpiresIn = new Date(now + 60*60*2*1000);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
@@ -104,7 +104,7 @@ public class JwtTokenProvider {
     public TokenInfo generateAccessToken(String username, List<String> roles) {
 
         long now = (new Date()).getTime();
-        Date accessTokenExpiresIn = new Date(now + 60*60*12*1000);
+        Date accessTokenExpiresIn = new Date(now + 60*60*2*1000);
         String accessToken = Jwts.builder()
                 .setSubject(username)
                 .claim("auth", String.join(",", roles))

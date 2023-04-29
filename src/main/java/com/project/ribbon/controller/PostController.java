@@ -869,9 +869,9 @@ public class PostController {
     }
     // 엑세스토큰 재발급
     @PostMapping("/ribbonRefresh")
-    public ResponseEntity<TokenInfo> refreshToken(@RequestBody ReissueToken params) {
+    public ResponseEntity<TokenInfo> refreshToken(@RequestBody ReissueToken params, @RequestHeader HttpHeaders headers) {
         String refreshToken = params.getRefreshToken();
-        String expireToken = params.getAccessToken();
+        String expireToken = headers.getFirst("Authorization").substring(7);
         // RefreshToken 검증
         if (!jwtTokenProvider.validateToken(refreshToken)) {
             return ResponseEntity.badRequest().build();
