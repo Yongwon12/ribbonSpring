@@ -1,10 +1,7 @@
 package com.project.ribbon.service;
 
 import com.project.ribbon.domain.post.*;
-import com.project.ribbon.dto.PaymentCancelRequest;
-import com.project.ribbon.dto.PaymentDTO;
-import com.project.ribbon.dto.PaymentRequest;
-import com.project.ribbon.dto.PostBuyerInfoDTO;
+import com.project.ribbon.dto.*;
 import com.project.ribbon.mapper.PostMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -1796,5 +1793,14 @@ public class PostService {
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
 
+    // 검색기능
+    public List<PostWritementorDTO> findPostByWriteMentorSearch(final String query) {
+        try {
+            return postMapper.findWriteMentorSearch(query);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("검색에 실패했습니다.", e);
+        }
+    }
 
 }

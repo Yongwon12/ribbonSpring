@@ -1,10 +1,7 @@
 package com.project.ribbon.mapper;
 
 import com.project.ribbon.domain.post.*;
-import com.project.ribbon.dto.PaymentCancelRequest;
-import com.project.ribbon.dto.PaymentDTO;
-import com.project.ribbon.dto.PaymentRequest;
-import com.project.ribbon.dto.PostBuyerInfoDTO;
+import com.project.ribbon.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -416,5 +413,7 @@ public interface PostMapper {
     // 관리자페이지 공지사항 삭제
     void deleteAnnouncement(String params);
 
+    // 검새기능
+    List<PostWritementorDTO> findWriteMentorSearch(String query);
 
 }

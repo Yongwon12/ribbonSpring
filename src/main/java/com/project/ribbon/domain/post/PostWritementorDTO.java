@@ -74,4 +74,5 @@ public class PostWritementorDTO {
         private String feedbackdate;
         private Long instructorid;
         private String userprofileimage;
+        private String query;
 }

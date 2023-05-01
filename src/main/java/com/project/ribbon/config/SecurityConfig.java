@@ -79,6 +79,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/post/writementor").hasRole("INSTRUCTOR")
                 .requestMatchers("/api/post/updatewritementor").hasRole("INSTRUCTOR")
                 .requestMatchers("/api/post/deletewritementor").hasRole("INSTRUCTOR")
+                .requestMatchers("/api/searchwritementor").hasAnyRole("USER","INSTRUCTOR")
                 .requestMatchers("/api/ribbonRefresh").hasAnyRole("USER","INSTRUCTOR")
                 .requestMatchers("/payments/ribbonCancel").hasAnyRole("USER","INSTRUCTOR")
                 .requestMatchers("/payments/ribboncomplete").hasAnyRole("USER","INSTRUCTOR")

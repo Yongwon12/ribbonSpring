@@ -2192,4 +2192,15 @@
                 announcement
                 WHERE id = #{id}
     </delete>
+
+    <!-- 검색 기능 -->
+    <select id="findWriteMentorSearch" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
+        SELECT * FROM writementor
+        WHERE title LIKE CONCAT('%', #{query}, '%')
+           OR description LIKE CONCAT('%', #{query}, '%')
+           OR category LIKE CONCAT('%', #{query}, '%')
+           OR nickname LIKE CONCAT('%', #{query}, '%')
+        ORDER BY writedate DESC
+    </select>
+
 </mapper>
