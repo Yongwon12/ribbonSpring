@@ -25,10 +25,10 @@ import java.util.Map;
 @ControllerAdvice
 public class SearchController {
     private final PostService postService;
-    @GetMapping("/searchwritementor")
-    public ResponseEntity<?> searchWritementors(@RequestParam("q") String query, Model model) {
+    @PostMapping("/searchwritementor")
+    public ResponseEntity<?> searchWritementors(@RequestBody PostWritementorDTO query, Model model) {
         Map<String, Object> obj = new HashMap<>();
-        List<PostWritementorDTO> posts = postService.findPostByWriteMentorSearch(query);
+        List<PostWritementorDTO> posts = postService.findPostByWriteMentorSearch(query.getQuery());
         model.addAttribute("posts", posts);
         obj.put("search", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);

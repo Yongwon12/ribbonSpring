@@ -33,6 +33,8 @@ public class PostUserUpdateRequest {
         private String uniqueInSite;
         private String uniqueKey;
         private String impUid;
+        private String account;
+        private String bank;
 
 }
 

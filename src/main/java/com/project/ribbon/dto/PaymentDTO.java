@@ -18,4 +18,7 @@ public class PaymentDTO {
     private String buyerName;
     private Long userid;
     private Long inherentid;
+    private String account;
+    private String bank;
+
 }

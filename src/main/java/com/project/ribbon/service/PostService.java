@@ -263,22 +263,22 @@ public class PostService {
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-    // 중고 게시글 조회
+    // 대여 게시글 조회
     public List<PostUsedResponse> findUsedAllPost() {
         try {
             return postMapper.findUsedAll();
         } catch (Exception e) {
             // 예외 처리 코드 작성
-            throw new RuntimeException("중고게시글 조회에 실패했습니다.", e);
+            throw new RuntimeException("대여 게시글 조회에 실패했습니다.", e);
         }
     }
-    // 중고 특정 게시글 조회
+    // 대여 특정 게시글 조회
     public List<PostUsedResponse> findUsedOnePost(Long usedid) {
         try {
             return postMapper.findUsedOne(usedid);
         } catch (Exception e) {
             // 예외 처리 코드 작성
-            throw new RuntimeException("중고 특정 게시글 조회에 실패했습니다.", e);
+            throw new RuntimeException("대여 특정 게시글 조회에 실패했습니다.", e);
         }
     }
     @Transactional
@@ -287,39 +287,39 @@ public class PostService {
             postMapper.updateUsedInquiry(usedid);
         } catch (Exception e) {
             // 예외 처리 코드 작성
-            throw new RuntimeException("게시글 조회수 업데이트에 실패했습니다.", e);
+            throw new RuntimeException("대여 게시글 조회수 업데이트에 실패했습니다.", e);
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-    // 중고 게시글 작성
+    // 대여 게시글 작성
     @Transactional
     public ResponseEntity<?> saveUsedPost(final PostUsedRequest params) {
         try {
             postMapper.saveUsed(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
-            throw new RuntimeException("중고게시글 작성에 실패했습니다.", e);
+            throw new RuntimeException("대여 게시글 작성에 실패했습니다.", e);
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-    // 중고 게시글 수정
+    // 대여 게시글 수정
     @Transactional
     public ResponseEntity<?> updateUsedPost(final PostUsedRequest params) {
         try {
             postMapper.updateUsed(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
-            throw new RuntimeException("중고게시글 수정에 실패했습니다.", e);
+            throw new RuntimeException("대여 게시글 수정에 실패했습니다.", e);
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-    // 중고 게시글 삭제
+    // 대여 게시글 삭제
     public ResponseEntity<?> deleteUsedPost(final PostUsedRequest params) {
         try {
             postMapper.deleteByUsedId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
-            throw new RuntimeException("중고게시글 삭제에 실패했습니다.", e);
+            throw new RuntimeException("대여 게시글 삭제에 실패했습니다.", e);
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
@@ -328,7 +328,7 @@ public class PostService {
             postMapper.deleteUsedWriteComments(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
-            throw new RuntimeException("댓글 삭제에 실패했습니다.", e);
+            throw new RuntimeException("대여 댓글 삭제에 실패했습니다.", e);
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
@@ -337,7 +337,77 @@ public class PostService {
             postMapper.deleteUsedWriteByLikedId(params);
         } catch (Exception e) {
             // 예외 처리 코드 작성
-            throw new RuntimeException("좋아요 삭제에 실패했습니다.", e);
+            throw new RuntimeException("대여 좋아요 삭제에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+    // 대여 결제 정보 저장
+    @Transactional
+    public ResponseEntity<?> savePaymentRentalInfoPost(final PaymentDTO paymentDTO) {
+        try {
+            postMapper.savePaymentRentalInfo(paymentDTO);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("대여 결제 정보 저장에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+
+    // 대여 결제 정보 저장
+    @Transactional
+    public ResponseEntity<?> saveRentalInfoPost(final PostUsedRequest postUsedRequest) {
+        try {
+            postMapper.saveRentalInfo(postUsedRequest);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("대여 결제 정보 저장에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+    // 대여 특정 멀천트 아이디 조회
+    public List<PostUsedRequest> findMerchantIdRentalOnePost(Long userid) {
+        try {
+            return postMapper.findMerchantIdRentalOne(userid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("대여 특정 멀천트 아이디 조회에 실패했습니다.", e);
+        }
+    }
+    // 대여 특정 게시글 가격 조회
+    public List<PaymentRequest> findRentalOnePricePost(String merchantUid) {
+        try {
+            return postMapper.findRentalOnePrice(merchantUid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("대여 특정 게시글 가격 조회에 실패했습니다.", e);
+        }
+    }
+    // 대여 특정 게시글 날짜 및 시간 조회
+    public List<PaymentCancelRequest> findRentalPayDateOnePost(String merchantUid) {
+        try {
+            return postMapper.findPayDateRentalOne(merchantUid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("대여 특정 게시글 날짜 및 시간 조회에 실패했습니다.", e);
+        }
+    }
+    // 대여 결제 정보 삭제(취소 및 환불)
+    public ResponseEntity<?> deleteRentalInfoPost(final PostUsedRequest params) {
+        try {
+            postMapper.deleteRentalInfoById(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("대여 결제 정보 삭제에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+    // 대여 결제 정보 삭제(취소 및 환불)
+    public ResponseEntity<?> deletePaidRentalInfoPost(final PostUsedRequest params) {
+        try {
+            postMapper.deletePaidRentalInfoById(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("대여 결제정보 삭제에 실패했습니다.", e);
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
@@ -353,7 +423,6 @@ public class PostService {
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-
     // 멘토 결제 정보 저장
     @Transactional
     public ResponseEntity<?> saveWritementorPaymentInfoPost(final PaymentDTO paymentDTO) {

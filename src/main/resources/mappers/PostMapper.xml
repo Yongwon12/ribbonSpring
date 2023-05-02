@@ -462,7 +462,7 @@
                 WHERE inherentid = #{individualid}
     </delete>
 
-    <!-- 중고 게시글 조회  -->
+    <!-- 대여 게시글 조회  -->
     <select id="findUsedAll" resultType="com.project.ribbon.domain.post.PostUsedResponse">
         SELECT
             id,region,title,description,usedimage1,price,user.userid,writedate,user.nickname,
@@ -475,7 +475,7 @@
         ORDER BY writedate DESC
     </select>
 
-    <!-- 중고 특정 게시글 조회  -->
+    <!-- 대여 특정 게시글 조회  -->
     <select id="findUsedOne" resultType="com.project.ribbon.domain.post.PostUsedResponse">
         SELECT
             id,region,title,description,usedimage1,price,user.userid,writedate,user.nickname,
@@ -488,14 +488,14 @@
           AND user.userid IS NOT NULL
     </select>
 
-    <!-- 중고 특정 게시글 조회수 카운트 +1 -->
+    <!-- 대여 특정 게시글 조회수 카운트 +1 -->
     <update id="updateUsedInquiry" parameterType="com.project.ribbon.domain.post.PostUsedResponse">
 
         UPDATE usedwrite SET inquirycount = inquirycount + 1 WHERE usedid = #{usedid}
 
     </update>
 
-    <!-- 중고 게시글 저장 -->
+    <!-- 대여 게시글 저장 -->
     <insert id="saveUsed" parameterType="com.project.ribbon.domain.post.PostUsedRequest"
             useGeneratedKeys="true" keyProperty="usedid">
         INSERT INTO usedwrite (
@@ -521,7 +521,7 @@
         )
     </insert>
 
-    <!-- 중고 게시글 수정 -->
+    <!-- 대여 게시글 수정 -->
     <update id="updateUsed" parameterType="com.project.ribbon.domain.post.PostUsedRequest">
         UPDATE usedwrite
         SET
@@ -539,7 +539,7 @@
             usedid = #{usedid}
     </update>
 
-    <!-- 중고 게시글 삭제 -->
+    <!-- 대여 게시글 삭제 -->
     <delete id="deleteByUsedId" >
         DELETE
                 FROM
@@ -557,6 +557,90 @@
                 FROM
                 usedcomments
                 WHERE inherentid = #{usedid}
+    </delete>
+
+    <!-- 대여 정보 저장 -->
+    <insert id="saveRentalInfo" parameterType="com.project.ribbon.domain.post.PostUsedRequest"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO rentalinfo (
+            id,price,userid,username,merchant_uid,inherentid,paydate
+        ) VALUES (
+                     #{id}
+                 , #{price}
+                 , #{userid}
+                 , #{username}
+                 , #{merchantUid}
+                 , #{inherentid}
+                 , NOW()
+                 )
+    </insert>
+
+    <!-- 대여 결제 정보 저장 -->
+    <insert id="savePaymentRentalInfo" parameterType="com.project.ribbon.dto.PaymentDTO"
+            useGeneratedKeys="true" keyProperty="paymentid">
+        INSERT INTO paidrental (
+            paymentid,paydate,amount,merchant_uid,imp_uid,username,userid,inherentid
+        ) VALUES (
+                     #{paymentid}
+                 , NOW()
+                 , #{amount}
+                 , #{merchantUid}
+                 , #{impUid}
+                 , #{buyerName}
+                 , #{userid}
+                 , #{inherentid})
+    </insert>
+
+    <!-- 대여 특정 게시글 가격 조회  -->
+    <select id="findRentalOnePrice" resultType="com.project.ribbon.dto.PaymentRequest">
+        SELECT
+            price AS amount
+        FROM
+            rentalinfo
+        WHERE
+            merchant_uid = #{merchantUid}
+          AND price IS NOT NULL
+    </select>
+
+    <!-- 대여 특정 게시글 날짜 및 시간 조회 -->
+    <select id="findPayDateRentalOne" resultType="com.project.ribbon.dto.PaymentCancelRequest">
+        SELECT
+            paydate
+        FROM
+            paidrental
+        WHERE
+            merchant_uid = #{merchantUid}
+          AND paydate IS NOT NULL
+    </select>
+
+
+    <!-- 대여 특정 멀천트 아이디 조회  -->
+    <select id="findMerchantIdRentalOne" resultType="com.project.ribbon.domain.post.PostUsedRequest">
+        SELECT
+            usedwrite.title, paidrental.paydate, paidrental.amount, paidrental.merchant_uid AS merchantUid, paidrental.imp_uid AS impUid, paidrental.inherentid
+        FROM
+            paidrental
+                LEFT JOIN user
+                          ON user.userid = paidrental.userid
+                LEFT JOIN usedwrite
+                          ON usedwrite.id = paidrental.inherentid
+        WHERE user.userid = #{userid}
+          AND user.userid IS NOT NULL
+    </select>
+
+    <!-- 대여 결제 정보삭제 -->
+    <delete id="deleteRentalInfoById" >
+        DELETE
+                FROM
+                rentalinfo
+                WHERE merchant_uid = #{merchantUid}
+    </delete>
+    <!-- 대여 결제 정보삭제 -->
+    <delete id="deletePaidRentalInfoById" >
+        DELETE
+                FROM
+                paidrental
+                WHERE merchant_uid = #{merchantUid}
     </delete>
 
     <!-- 멘토 게시글 저장 -->
@@ -610,7 +694,7 @@
     <insert id="savePaymentInfo" parameterType="com.project.ribbon.dto.PaymentDTO"
             useGeneratedKeys="true" keyProperty="paymentid">
         INSERT INTO paid (
-        paymentid,paydate,amount,merchant_uid,imp_uid,username,userid,inherentid
+        paymentid,paydate,amount,merchant_uid,imp_uid,username,userid,inherentid,account,bank
         ) VALUES (
         #{paymentid}
         , NOW()
@@ -620,6 +704,8 @@
         , #{buyerName}
         , #{userid}
         , #{inherentid})
+        , #{account}
+        , #{bank}
     </insert>
 
     <!-- 멘토 게시글 조회  -->
@@ -953,6 +1039,8 @@
           , bestcategory = #{bestcategory}
           , shortinfo = #{shortinfo}
           , profileimage = #{profileimage}
+          , account = #{account}
+          , bank = #{bank}
         WHERE
             userid = #{userid}
     </update>
@@ -2195,11 +2283,16 @@
 
     <!-- 검색 기능 -->
     <select id="findWriteMentorSearch" resultType="com.project.ribbon.domain.post.PostWritementorDTO">
-        SELECT * FROM writementor
-        WHERE title LIKE CONCAT('%', #{query}, '%')
-           OR description LIKE CONCAT('%', #{query}, '%')
-           OR category LIKE CONCAT('%', #{query}, '%')
-           OR nickname LIKE CONCAT('%', #{query}, '%')
+        SELECT id,title,category,shortcontent,description,lowdescription,
+               middledescription,highdescription,career,titleimage,
+               lowprice,middleprice,highprice,user.userid,user.nickname,
+               region,contacttime,writedate FROM writementor
+                          LEFT JOIN user
+                                    ON user.userid=writementor.userid
+        WHERE (title LIKE CONCAT('%', #{query}, '%')
+            OR category LIKE CONCAT('%', #{query}, '%')
+            OR user.nickname LIKE CONCAT('%', #{query}, '%'))
+          AND user.userid IS NOT NULL
         ORDER BY writedate DESC
     </select>
 

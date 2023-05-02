@@ -27,8 +27,7 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
-    private String uniqueKey;
+
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

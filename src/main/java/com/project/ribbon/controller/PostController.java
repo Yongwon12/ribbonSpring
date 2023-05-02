@@ -73,11 +73,11 @@ public class PostController {
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
     // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://112.148.33.214:8000/api/userimage/";
-    String boardip = "http://112.148.33.214:8000/api/boardimage/";
-    String groupip = "http://112.148.33.214:8000/api/groupimage/";
-    String usedip = "http://112.148.33.214:8000/api/usedimage/";
-    String mentorip = "http://112.148.33.214:8000/api/writementortitleimage/";
+    String userip = "http://192.168.3.89:8000/api/userimage/";
+    String boardip = "http://192.168.3.89:8000/api/boardimage/";
+    String groupip = "http://192.168.3.89:8000/api/groupimage/";
+    String usedip = "http://192.168.3.89:8000/api/usedimage/";
+    String mentorip = "http://192.168.3.89:8000/api/writementortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -339,7 +339,7 @@ public class PostController {
     }
 
 
-    // 중고 작성글 조회
+    // 대여 작성글 조회
     @GetMapping("/used")
     public ResponseEntity<?> usedWrite(Model model) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
@@ -350,7 +350,7 @@ public class PostController {
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
 
-    // 중고 특정 작성글 조회
+    // 대여 특정 작성글 조회
     @PostMapping("/used")
     public ResponseEntity<?> usedWriteOne(@RequestBody PostUsedResponse params, Model model) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
@@ -362,7 +362,7 @@ public class PostController {
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
 
-    // 중고 글작성
+    // 대여 글작성
     @PostMapping("/post/writeused")
     public ResponseEntity<?> saveUsedPost(
             @RequestParam("id") @NotNull(message = "카테고리는 필수 입력값입니다.") Integer id,
@@ -377,7 +377,10 @@ public class PostController {
             @RequestParam(value = "usedimage2", required = false) MultipartFile file2,
             @RequestParam(value = "usedimage3", required = false) MultipartFile file3,
             @RequestParam(value = "usedimage4", required = false) MultipartFile file4,
-            @RequestParam(value = "usedimage5", required = false) MultipartFile file5) throws IOException {
+            @RequestParam(value = "usedimage5", required = false) MultipartFile file5,
+            @RequestParam(value = "merchantUid") String merchantUid,
+            @RequestParam(value = "inherentid") Long inherentid,
+            @RequestParam(value = "username") String username) throws IOException {
 
         List<MultipartFile> files = Arrays.asList(file1, file2, file3, file4, file5);
         List<String> usedImages = new ArrayList<>();
@@ -415,11 +418,100 @@ public class PostController {
         if (usedImages.size() > 4) {
             params.setUsedimage5(usedImages.get(4));
         }
-        return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
+
+        WebClient webClient = WebClient.builder().build();
+        String url = "https://api.iamport.kr/users/getToken";
+        Map<String, Object> request = new HashMap<>();
+        request.put("imp_key", impKey);
+        request.put("imp_secret", impSecret);
+        Mono<String> response = webClient.post()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(String.class);
+        String responseBody = response.block();
+        JsonElement responseJson = JsonParser.parseString(responseBody);
+        JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
+        JsonElement accessTokenJson = responseObj.get("access_token");
+        if (accessTokenJson != null && !accessTokenJson.isJsonNull()) {
+            String accessToken = "Bearer " + accessTokenJson.getAsString();
+            Map<String, Object> dataLow = new HashMap<>();
+            dataLow.put("amount", price);
+            if (merchantUid != null) {
+                dataLow.put("merchant_uid", merchantUid);
+            }
+
+            // API 호출 URL 구성
+            String apiUrl = "https://api.iamport.kr/payments/prepare";
+
+            // 각각의 가격에 대한 API 호출 실행
+            Mono<ResponseEntity<String>> responseRentalApi = null;
+
+
+            if (merchantUid != null) {
+                responseRentalApi = webClient.post()
+                        .uri(apiUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken)
+                        .bodyValue(dataLow)
+                        .retrieve()
+                        .toEntity(String.class);
+            }
+
+            // 응답 상태 코드 확인
+            HttpStatusCode status = null;
+            if (responseRentalApi != null) {
+                status = responseRentalApi.block().getStatusCode();
+            }
+
+            // 각각의 결과를 처리하는 로직 추가
+            if (status.is2xxSuccessful()) {
+                // 모든 API 호출이 성공한 경우
+                PostUsedRequest rentalInfo = new PostUsedRequest();
+                rentalInfo.setPrice(price);
+                rentalInfo.setUserid(userid);
+                rentalInfo.setUsername(username);
+                rentalInfo.setMerchantUid(merchantUid);
+                rentalInfo.setInherentid(inherentid);
+
+                postService.saveRentalInfoPost(rentalInfo);
+                postService.saveUsedPost(params);
+                return ResponseEntity.ok().build();
+            } else {
+                // 하나 이상의 API 호출이 실패한 경우
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        } else {
+            throw new RuntimeException("Access token not found in response");
+        }
+    }
+    // 대여 특정 멀천트 아이디 조회
+    @PostMapping("/post/selectMerchantIdRental")
+    public ResponseEntity<?> selectMerchantIdRental(@RequestBody PostUsedRequest params,
+                                              Model model) throws ApiException {
+        Map<String, Object> obj = new HashMap<>();
+        List<PostUsedRequest> posts = postService.findMerchantIdRentalOnePost(params.getUserid());
+        model.addAttribute("posts", posts);
+        obj.put("merchantuid", posts);
+        return new ResponseEntity<>(obj, HttpStatus.OK);
+    }
+
+    // 대여 결제 내역 삭제
+    @DeleteMapping("/post/deletePaymentRentalInfoAll")
+    public ResponseEntity<?> deletePaymentRentalInfoAll(@RequestBody PostUsedRequest params) {
+        try {
+            postService.deleteRentalInfoPost(params);
+            return postService.deletePaidRentalInfoPost(params);
+        } catch (Exception e) {
+            // 예외 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 
-    // 중고 사진 조회
+
+    // 대여 사진 조회
     @GetMapping("/usedimage/{imageName:.+}")
     public ResponseEntity<byte[]> getUsedImage(@PathVariable("imageName") String usedimage) throws IOException {
         Path imageUsedPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + usedimage);
@@ -430,7 +522,7 @@ public class PostController {
         return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
     }
 
-    // 중고 게시글 수정
+    // 대여 게시글 수정
     @PostMapping("/post/updateused")
     public ResponseEntity<?> updateUsedPost(@RequestBody PostUsedRequest params) {
         try {
@@ -443,7 +535,7 @@ public class PostController {
     }
 
 
-    // 중고 게시글 삭제
+    // 대여 게시글 삭제
     @DeleteMapping("/post/deleteused")
     public ResponseEntity<?> deleteUsedPost(@RequestBody PostUsedRequest params) {
         try {
@@ -522,7 +614,7 @@ public class PostController {
         return ResponseEntity.ok("요청이 성공적으로 처리되었습니다.");
     }
 
-    // 포트원 주문번호, 금액 사전 등록, 디비 저장
+    // 포트원 주문번호, 금액 사전 등록, 디비 저장 (멘토 금액 컨트롤러)
     @PostMapping("/post/pricebeforehandandsavebuyerinfo")
     public ResponseEntity<String> preparePayment(@RequestParam("userid") Long userid,
                                                  @RequestParam("username") @Size(min = 2, max = 10) String username,
@@ -650,6 +742,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
 
     // 멘토 특정 멀천트 아이디 조회
     @PostMapping("/post/selectmerchantid")
@@ -910,7 +1003,9 @@ public class PostController {
             @RequestParam("bestcategory") String bestcategory,
             @RequestParam("shortinfo") @Size(min = 2, max = 20, message = "한 줄 설명은 2~20자리여야 합니다.") String shortinfo,
             @RequestParam(value = "image", required = false) MultipartFile file,
-            @RequestParam("userid") @NotNull(message = "유저아이디는 필수입력값입니다.") Long userid) {
+            @RequestParam("userid") @NotNull(message = "유저아이디는 필수입력값입니다.") Long userid,
+            @RequestParam("account") @Size(min = 1, max = 34, message = "계좌번호는 최소1자, 최대34자로 입력해주세요.") String account,
+            @RequestParam("bank") @Size(min = 1, max = 8, message = "최소1자, 최대8자로 입력해주세요.")String bank) {
 
         try {
 
@@ -931,6 +1026,8 @@ public class PostController {
             params.setBestcategory(bestcategory);
             params.setShortinfo(shortinfo);
             params.setUserid(userid);
+            params.setAccount(account);
+            params.setBank(bank);
 
             postService.updateUserPost(params);
 

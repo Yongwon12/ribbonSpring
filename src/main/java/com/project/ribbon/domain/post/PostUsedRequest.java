@@ -2,9 +2,6 @@ package com.project.ribbon.domain.post;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,6 +33,9 @@ public class PostUsedRequest {
         private String  usedimage5;
         private Integer  likedcount;
         private Integer  commentcount;
+        private String merchantUid;
+        private Long inherentid;
+        private String username;
 
 
 }

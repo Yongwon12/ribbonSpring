@@ -44,5 +44,4 @@ public class PostBuyerInfoDTO {
         private String amount;
 
 
-
 }

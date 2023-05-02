@@ -63,21 +63,37 @@ public interface PostMapper {
     void deleteIndiWriteByLikedId(PostIndiRequest params);
     void deleteIndiWriteComments(PostIndiRequest params);
 
-    // 중고 게시글 조회
+    // 대여 게시글 조회
     List<PostUsedResponse> findUsedAll();
 
-    // 중고 특정 게시글 조회
+    // 대여 특정 게시글 조회
     List<PostUsedResponse> findUsedOne(Long usedid);
     void updateUsedInquiry(Long usedid);
 
-    // 중고 게시글 작성
+    // 대여 게시글 작성
     void saveUsed(PostUsedRequest params);
-    // 중고 게시글 수정
+    // 대여 게시글 수정
     void updateUsed(PostUsedRequest params);
-    // 중고 게시글 삭제
+    // 대여 게시글 삭제
     void deleteByUsedId(PostUsedRequest params);
     void deleteUsedWriteByLikedId(PostUsedRequest params);
     void deleteUsedWriteComments(PostUsedRequest params);
+
+    // 대여 결제 정보 저장
+    void savePaymentRentalInfo(PaymentDTO paymentDTO);
+    // 대여 결제 정보 저장
+    void saveRentalInfo(PostUsedRequest postBuyerInfoDTO);
+    // 대여 특정 멀천트 아이디 조회
+    List<PostUsedRequest> findMerchantIdRentalOne(Long userid);
+    // 대여 결제 정보 삭제(취소 및 환불)
+    void deleteRentalInfoById(PostUsedRequest params);
+    // 대여 결제 정보 삭제(취소 및 환불)
+    void deletePaidRentalInfoById(PostUsedRequest params);
+    // 대여 특정 게시글 가격 조회
+    List<PaymentRequest> findRentalOnePrice(String merchantUid);
+    // 대여 특정 게시글 날짜 및 시간 조회
+    List<PaymentCancelRequest> findPayDateRentalOne(String merchantUid);
+
 
     // 멘토 게시글 작성
     void saveWritementor(PostWritementorDTO params);
