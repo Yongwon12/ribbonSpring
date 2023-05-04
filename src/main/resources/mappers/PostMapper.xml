@@ -233,6 +233,7 @@
                  LEFT JOIN user
                            ON user.userid = boardwrite.userid
         WHERE user.userid IS NOT NULL
+        AND id != 10
         ORDER BY writedate DESC
     </select>
 
@@ -245,6 +246,7 @@
                  LEFT JOIN user
                            ON user.userid = boardwrite.userid
         WHERE boardid = #{boardid}
+          AND id != 10
           AND user.userid IS NOT NULL
     </select>
     <!-- 커뮤니티 특정 게시글 조회수 카운트 +1 -->
@@ -694,7 +696,7 @@
     <insert id="savePaymentInfo" parameterType="com.project.ribbon.dto.PaymentDTO"
             useGeneratedKeys="true" keyProperty="paymentid">
         INSERT INTO paid (
-        paymentid,paydate,amount,merchant_uid,imp_uid,username,userid,inherentid,account,bank
+        paymentid,paydate,amount,merchant_uid,imp_uid,username,userid,inherentid
         ) VALUES (
         #{paymentid}
         , NOW()
@@ -704,8 +706,6 @@
         , #{buyerName}
         , #{userid}
         , #{inherentid})
-        , #{account}
-        , #{bank}
     </insert>
 
     <!-- 멘토 게시글 조회  -->
@@ -1843,6 +1843,50 @@
                 WHERE roomname = #{roomname}
     </delete>
 
+    <!-- 유저 결제 정보 조회 -->
+    <select id="findPaymentInfoAll" resultType="com.project.ribbon.domain.post.PostPaymentInfoResponse">
+        SELECT
+            paid.paymentid,
+            paid.paydate,
+            paid.amount,
+            user.username,
+            user.bank,
+            user.account
+        FROM
+            paid
+                LEFT JOIN user ON user.userid = paid.userid
+        WHERE
+            paid.commissioninfo = 0
+          AND paid.paydate > DATE_ADD(CURDATE(), INTERVAL 3 DAY)
+
+    </select>
+
+    <!-- 유저 결제 정보 수정 -->
+    <update id="updateByPaymentInfoId" >
+        UPDATE
+            paid
+        SET commissioninfo = "1"
+        WHERE paymentid = #{paymentid}
+    </update>
+
+    <!-- 결제 문의하기 정보 조회 -->
+    <select id="findInqueryPaymentInfoAll" resultType="com.project.ribbon.domain.post.PostPaymentInfoResponse">
+        SELECT merchant_uid_low AS merchantUid, lowprice AS amount, user.userid, user.username, paydate
+        FROM buyerinfo
+                 LEFT JOIN user ON user.userid = buyerinfo.userid
+        WHERE merchant_uid_low != '' AND user.userid IS NOT NULL
+        UNION
+        SELECT merchant_uid_middle AS merchantUid, middleprice AS amount, user.userid, user.username, paydate
+        FROM buyerinfo
+                 LEFT JOIN user ON user.userid = buyerinfo.userid
+        WHERE merchant_uid_middle != '' AND user.userid IS NOT NULL
+        UNION
+        SELECT merchant_uid_high AS merchantUid, highprice AS amount, user.userid, user.username, paydate
+        FROM buyerinfo
+                 LEFT JOIN user ON user.userid = buyerinfo.userid
+        WHERE merchant_uid_high != '' AND user.userid IS NOT NULL
+        ORDER BY paydate DESC;
+    </select>
 
     <!-- 신고 유저 조회 -->
     <select id="findReportUserAll" resultType="com.project.ribbon.domain.post.PostReportUserResponse">
@@ -2244,7 +2288,7 @@
 
     </update>
 
-    <!-- 공지사 저장 -->
+    <!-- 공지사항 저장 -->
     <insert id="saveAnnouncement" parameterType="com.project.ribbon.domain.post.PostAnnouncementRequest"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO announcement (
@@ -2270,6 +2314,7 @@
             title,description,writedate
         FROM boardwrite
         WHERE id = 10
+          AND title != "결제관련"
         ORDER BY writedate DESC LIMIT 10
     </select>
 

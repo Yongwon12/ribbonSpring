@@ -311,6 +311,12 @@ public interface PostMapper {
 
 
 
+    // 유저 결제 정보 조회
+    List<PostPaymentInfoResponse> findPaymentInfoAll();
+    // 유저 결제 정보 수정
+    void updateByPaymentInfoId(String params);
+    // 결제 문의하기 조회
+    List<PostPaymentInfoResponse> findInqueryPaymentInfoAll();
 
     // 신고 유저 조회
     List<PostReportUserResponse> findReportUserAll();

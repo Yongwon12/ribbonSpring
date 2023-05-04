@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Inquiry Login</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      background-color: #f2f2f2;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      text-align: center;
+    }
+    form {
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      margin: 50px auto;
+      max-width: 500px;
+      padding: 20px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    input[type="text"],
+    input[type="password"] {
+      border-radius: 3px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 16px;
+      padding: 10px;
+      width: 100%;
+    }
+    input[type="submit"] {
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 3px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+    }
+    input[type="submit"]:hover {
+      background-color: #3e8e41;
+    }
+    button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 20px;
+    }
+  </style>
+  <script>
+    $(document).ready(function() {
+      $.ajax({
+        type: 'GET',
+        url: '/ribbon/admin/secret',
+        success: function (data) {
+          const secretKey = data.secretKey;
+
+          // GET request to fetch CSRF token and session token
+      $.ajax({
+        type: 'POST',
+        url: '/api/ribbon',
+        data: JSON.stringify({
+          "secrettoken": secretKey
+        }),
+        contentType: 'application/json',
+        success: function(data) {
+          // Add CSRF token to X-XSRF-TOKEN header for all subsequent requests
+          $.ajaxSetup({
+            beforeSend: function(xhr) {
+              xhr.setRequestHeader('X-XSRF-TOKEN', data.csrfToken);
+            }
+          });
+        },
+        error: function(xhr, status, error) {
+          console.error("Failed to retrieve CSRF token");
+        }
+      });
+
+      // login form submission
+        $('#form-id').submit(function(event) {
+          // prevent default form submission
+          event.preventDefault();
+
+          // serialize form data to JSON string
+          const formData = $(this).serializeArray();
+          const jsonData = {};
+          $.each(formData, function(index, field) {
+            jsonData[field.name] = field.value;
+          });
+
+          $.ajax({
+            type: 'POST',
+            url: '/ribbon/admin/post/paymentlogin',
+            data: JSON.stringify(jsonData),
+            contentType: 'application/json',
+            success: function(data) {
+              alert("로그인 성공!");
+              window.location.href = "/ribbon/admin/paymentinfo";
+            },
+            error: function(xhr, status, error) {
+              alert("로그인 실패!");
+            }
+          });
+        });
+            },
+            error: function (xhr, status, error) {
+      console.error("Failed to retrieve secretKey");
+    }
+    });
+    });
+
+
+  </script>
+</head>
+<body>
+<h1>Payment Login</h1>
+<button onclick="location.href='/ribbon/admin/report'">신고 및 공지</button>
+<form id="form-id" th:action="@{/ribbon/admin/post/paymentlogin}" method="post">
+  <label for="userid">Admin:</label>
+  <input type="text" id="userid" name="userid" required>
+  <br>
+  <label for="password">Key:</label>
+  <input type="password" id="password" name="password" required>
+  <br>
+  <input type="submit" value="Login">
+</form>
+</body>
+</html>

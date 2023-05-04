@@ -1332,7 +1332,34 @@ public class PostService {
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-
+    // 유저 결제 정보 조회
+    public List<PostPaymentInfoResponse> findPaymentInfoAllPost() {
+        try {
+            return postMapper.findPaymentInfoAll();
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("유저 결제 정보 조회에 실패했습니다.", e);
+        }
+    }
+    // 유저 결제 정보 수정
+    public ResponseEntity<?> updatePaymentInfoPost(final String params) {
+        try {
+            postMapper.updateByPaymentInfoId(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("유저 결제 정보 수정에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+    // 결제 문의하기 정보 조회
+    public List<PostPaymentInfoResponse> findInqueryPaymentInfoAllPost() {
+        try {
+            return postMapper.findInqueryPaymentInfoAll();
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("결제 문의하기 정보 조회에 실패했습니다.", e);
+        }
+    }
     // 신고 유저 조회
     public List<PostReportUserResponse> findReportUserAllPost() {
         try {

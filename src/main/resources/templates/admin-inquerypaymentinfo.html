@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f2f2f2;
+  }
+  h1 {
+    text-align: center;
+    margin-top: 20px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 80%;
+    margin: auto;
+    height: 100px; /* 원하는 세로 크기로 지정 */
+    overflow-y: scroll; /* 내용이 넘칠 경우 스크롤 표시 */
+    margin-top: 20px;
+    margin-bottom: 50px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  th, td {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    font-size: 12px;
+  }
+  th {
+    background-color: #ccc;
+  }
+  img {
+    max-width: 50%;
+    height: 100px;
+  }
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  button {
+    margin-top: 20px;
+    margin-left: 20px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #3e8e41;
+  }
+  #selectAll {
+    margin-top: 5px;
+  }
+</style>
+<head>
+  <meta charset="UTF-8">
+  <title>Inquery Payment</title>
+
+</head>
+<body>
+<h1>Inquery Payment</h1>
+<button onclick="location.href='/ribbon/admin/report'">맺음 신고 및 공지 목록</button>
+<button onclick="location.href='/ribbon/admin/paymentinfo'">3일 이후 결제목록</button>
+<button type="button" onclick="deleteSelectedInqueryPayments()">Cancel InqueryPayment</button>
+<table>
+  <thead>
+  <tr>
+    <th>select one</th>
+    <th>상품ID</th>
+    <th>상품가격</th>
+    <th>유저아이디</th>
+    <th>유저이름</th>
+    <th>결제일</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="inquerypayment : ${inquerypaymentList}">
+    <td><input type="checkbox" name="selectedInqueryPayments" th:value="${inquerypayment.getMerchantUid()}" onclick="selectRow(this)"/></td>
+    <td th:text="${inquerypayment.getMerchantUid()}"></td>
+    <td th:text="${inquerypayment.getAmount()}"></td>
+    <td th:text="${inquerypayment.getUserid()}"></td>
+    <td th:text="${inquerypayment.getUsername()}"></td>
+    <td th:text="${inquerypayment.getPaydate()}"></td>
+  </tr>
+  </tbody>
+</table>
+<script>
+
+  // select all checkboxes when "select all" checkbox is clicked
+  const checkboxes = document.getElementsByName('selectedInqueryPayments');
+  function selectRow(checkbox) {
+    const inputs = checkbox.parentNode.parentNode.getElementsByTagName('input');
+    for (let i = 0; i < inputs.length; i++) {
+      if (inputs[i].type === 'checkbox') {
+        inputs[i].checked = checkbox.checked;
+      }
+    }
+  }
+  function deleteSelectedInqueryPayments() {
+    const selectedInqueryPayments = Array.from(document.getElementsByName('selectedInqueryPayments'))
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => ({ "merchantUid": checkbox.value }));
+    const numSelected = selectedInqueryPayments.length;
+    if (numSelected === 0) {
+      alert('Please select at least one merchantUid.');
+      return;
+    } else if (numSelected > 1) {
+      alert('Please select only one merchantUid.');
+      return;
+    }
+    if (confirm('정말로 삭제하시겠습니까?')) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', '/ribbon/admin/secret');
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          const secretKey = JSON.parse(xhr.response).secretKey;
+
+          const xhrCsrf = new XMLHttpRequest();
+          xhrCsrf.open('POST', '/api/ribbon');
+          xhrCsrf.setRequestHeader('Content-Type', 'application/json');
+          xhrCsrf.onload = function () {
+            if (xhrCsrf.status === 200) {
+              const csrfToken = JSON.parse(xhrCsrf.response).csrfToken;
+
+              const xhrDelete = new XMLHttpRequest();
+              xhrDelete.open('POST', '/ribbon/admin/post/inqueryPaymentInfoCancel');
+              xhrDelete.setRequestHeader('Content-Type', 'application/json');
+              xhrDelete.setRequestHeader('X-XSRF-TOKEN', csrfToken);
+              xhrDelete.send(JSON.stringify(selectedInqueryPayments));
+              xhrDelete.onload = function () {
+                if (xhrDelete.status === 200) {
+                  alert("취소요청에 성공했습니다.");
+                  window.location.reload();
+                }
+                else{
+                  alert("취소요청에 실패했습니다.");
+                  window.location.reload();
+                }
+              }
+            }
+          }
+          xhrCsrf.send(JSON.stringify({ "secrettoken": secretKey }));
+        }
+      }
+      xhr.send();
+    }
+  }
+
+</script>
+</body>
+</html>

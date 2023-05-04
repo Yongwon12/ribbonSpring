@@ -1,7 +1,12 @@
 package com.project.ribbon.controller;
 
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.project.ribbon.domain.post.*;
+import com.project.ribbon.dto.PaymentData;
+import com.project.ribbon.dto.PostBuyerInfoDTO;
 import com.project.ribbon.dto.TokenInfo;
 import com.project.ribbon.enums.ExceptionEnum;
 import com.project.ribbon.response.ApiException;
@@ -16,6 +21,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,6 +31,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 @Controller
@@ -38,12 +46,7 @@ public class LoginController {
     // 개발환경용 ip : http://112.148.33.214:8000/ribbon/admin
     // 개발환경용 맺음 gif 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.gif
     // 개발환경용 맺음 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png
-    String ip = "http://112.148.33.214:8000/ribbon/admin";
-    // test
-    @GetMapping("/test")
-    public String test() {
-        return "test";
-    }
+    String ip = "http://192.168.3.89:8000/ribbon/admin";
 
     // 맺음 홈페이지
     @GetMapping("/ribbon")
@@ -78,6 +81,11 @@ public class LoginController {
         Map<String, Object> response = new HashMap<>();
         response.put("secretKey", secretKey);
         return response;
+    }
+    // 결제정보 로그인 폼
+    @GetMapping("/ribbon/admin/paymentlogin")
+    public String showPaymentLoginForm() {
+        return "admin-paymentlogin";
     }
 
     // 문의하기 로그인 폼
@@ -149,9 +157,134 @@ public class LoginController {
         return "admin-report";
     }
 
+    // 유저 결제 정보 조회
+    @GetMapping("/ribbon/admin/paymentinfo")
+    public String paymentInfo(Model model) {
+        List<PostPaymentInfoResponse> paymentList = postService.findPaymentInfoAllPost();
+        model.addAttribute("paymentList", paymentList);
+        return "admin-paymentinfo";
+    }
+
+    // 유저 결제 정보 수정
+    @PostMapping("/ribbon/admin/post/hidepaymentinfo")
+    public String hidePaymentInfo(@RequestBody List<Map<String,String>> params) {
+        for (Map<String,String> payment:params) {
+            String paymentId = payment.get("paymentid");
+            postService.updatePaymentInfoPost(paymentId);
+        }
+        return "admin-paymentinfo";
+    }
+
+    // 결제 문의 조회
+    @GetMapping("/ribbon/admin/inqueryPaymentInfo")
+    public String inqueryPaymentiIfo(Model model) {
+        List<PostPaymentInfoResponse> inquerypaymentList = postService.findInqueryPaymentInfoAllPost();
+        model.addAttribute("inquerypaymentList", inquerypaymentList);
+        return "admin-inquerypaymentinfo";
+    }
+    // 결제 문의에 대한 결제 취소 요청
+    @Value("${myapp.impKey}")
+    private String impKey;
+    @Value("${myapp.impSecret}")
+    private String impSecret;
+    @PostMapping("/ribbon/admin/post/inqueryPaymentInfoCancel")
+    public String inqueryPaymentInfoDelete(@RequestBody List<Map<String,String>> params) {
+        try {
+            for (Map<String, String> inquerypayment : params) {
+                String merchant_uid = inquerypayment.get("merchantUid");
+
+                    // 엑세스 토큰 발급
+                    WebClient webClient = WebClient.builder().build();
+                    String url = "https://api.iamport.kr/users/getToken";
+                    Map<String, Object> request = new HashMap<>();
+                    request.put("imp_key", impKey);
+                    request.put("imp_secret", impSecret);
+                    Mono<String> response = webClient.post()
+                            .uri(url)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .bodyValue(request)
+                            .retrieve()
+                            .bodyToMono(String.class);
+                    String responseBody = response.block();
+                    JsonElement responseJson = JsonParser.parseString(responseBody);
+                    JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
+                    if (responseObj != null && !responseObj.isJsonNull()) {
+                        String accessToken = "Bearer " + responseObj.get("access_token").getAsString();
+                        // 해쉬맵에 데이터 담기
+                        Map<String, Object> data = new HashMap<>();
+
+                        if (merchant_uid != null) {
+                            data.put("merchant_uid", merchant_uid);
+                        }
+                        // API 호출 URL 구성
+                        String apiUrl = "https://api.iamport.kr/payments/cancel";
+
+                        // 각각의 가격에 대한 API 호출 실행
+                        Mono<ResponseEntity<String>> apiResponse = null;
+
+                        if (merchant_uid != null) {
+                            apiResponse = webClient.post()
+                                    .uri(apiUrl)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .header(HttpHeaders.AUTHORIZATION, accessToken)
+                                    .bodyValue(data)
+                                    .retrieve()
+                                    .toEntity(String.class);
+                        }
+                        HttpStatusCode apiStatus = null;
+                        if (apiResponse != null) {
+                            apiStatus = Objects.requireNonNull(apiResponse.block()).getStatusCode();
+                        }
+                        if (Objects.requireNonNull(apiStatus).is2xxSuccessful()) {
+
+                            String paymentUrl = "https://api.iamport.kr/payments/find/" + merchant_uid;
+                            Mono<ResponseEntity<PaymentData>> paymentResponse = webClient.get()
+                                    .uri(paymentUrl)
+                                    .header(HttpHeaders.AUTHORIZATION, accessToken)
+                                    .retrieve()
+                                    .toEntity(PaymentData.class);
+                            PaymentData paymentData = webClient.get()
+                                    .uri(paymentUrl)
+                                    .header(HttpHeaders.AUTHORIZATION, accessToken)
+                                    .retrieve()
+                                    .bodyToMono(PaymentData.class)
+                                    .block();
+
+                            String status = Objects.requireNonNull(paymentData).getResponse().getStatus();
+                            // 결과를 처리하는 로직
+                            switch (status) {
+                                case "paid":
+                                    return ResponseEntity.ok("결제 완료 상태입니다.").toString();
+                                case "ready":
+                                    return ResponseEntity.ok("결제 준비 상태입니다.").toString();
+                                case "failed":
+                                    return ResponseEntity.ok("결제 실패 상태입니다.").toString();
+                                case "cancelled":
+                                    PostBuyerInfoDTO deleteparams = new PostBuyerInfoDTO();
+                                    deleteparams.setMerchantUid(merchant_uid);
+                                    postService.deleteBuyerInfoPost(deleteparams);
+                                    postService.deletePaidInfoPost(deleteparams);
+                                    return "admin-inquerypaymentinfo";
+                                default:
+                                    return ResponseEntity.badRequest().build().toString();
+                            }
+                        }
+                        return ResponseEntity.ok().build().toString();
+
+                    } else {
+                        throw new RuntimeException("Access token not found in response");
+                    }
+                }
+                }catch(Exception e){
+                    // 취소 실패
+                    return ResponseEntity.badRequest().build().toString();
+                }
+        return "admin-inquerypaymentinfo";
+    }
+
     // 문의하기 조회
     @GetMapping("/ribbon/admin/inquiryinfo")
-    public String inquiryinfo(Model model) {
+    public String inquiryInfo(Model model) {
         List<PostReportBoardResponse> inquiryList = postService.findInquiryAllPost();
         model.addAttribute("inquiryList", inquiryList);
         return "admin-inquiryinfo";
@@ -188,7 +321,7 @@ public class LoginController {
         return "admin-adminannouncement";
     }
     // 관리자페이지 공지사항 삭제
-    @RequestMapping("/ribbon/admin/post/adminannouncementdelete")
+    @PostMapping("/ribbon/admin/post/adminannouncementdelete")
     public String adminannouncementInfoDelete(@RequestBody List<Map<String,String>> params) {
         for (Map<String,String> announcement:params) {
             String id = announcement.get("id");
@@ -448,7 +581,23 @@ public class LoginController {
         }
         return "admin-reportusedcomments";
     }
-
+    //  결제정보 관리자 권한 조회
+    @PostMapping("/ribbon/admin/post/paymentlogin")
+    public void adminPaymentLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
+        String userid = adminLoginRequestDto.getUserid();
+        String password = adminLoginRequestDto.getPassword();
+        TokenInfo tokenInfo = memberService.login(userid, password);
+        if (tokenInfo != null) {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
+            HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+            ResponseEntity<String> result = restTemplate.exchange(ip+"/paymentinfo", HttpMethod.GET, entity, String.class);
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.sendRedirect("/ribbon/admin/paymentlogin");
+        }
+    }
     //  문의하기 관리자 권한 조회
     @PostMapping("/ribbon/admin/post/inquirylogin")
     public void adminInquiryLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
