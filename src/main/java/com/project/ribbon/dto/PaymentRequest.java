@@ -10,6 +10,8 @@ public class PaymentRequest {
     private String impUid;
     private Long userid;
     private Long inherentid;
+    private String rentaltime;
+    private String productname;
     private PaymentData response;
     @NotNull(message = "가격은 필수 입력값입니다.")
     @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.")

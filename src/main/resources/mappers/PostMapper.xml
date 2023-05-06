@@ -66,6 +66,7 @@
         , region
         , title
         , description
+        , shortdescription
         , usedimage1
         , price
         , userid
@@ -79,6 +80,11 @@
         , likedcount
         , commentcount
         , inquirycount
+        , storename
+        , numpeople
+        , opentime
+        , storetel
+        , parking
     </sql>
     <!-- writementor 테이블 전체 컬럼 -->
     <sql id="postWritementorColumns">
@@ -467,12 +473,17 @@
     <!-- 대여 게시글 조회  -->
     <select id="findUsedAll" resultType="com.project.ribbon.domain.post.PostUsedResponse">
         SELECT
-            id,region,title,description,usedimage1,price,user.userid,writedate,user.nickname,
-            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount
+            id,region,title,description,shortdescription,usedimage1,price,user.userid,user.username,writedate,user.nickname,
+            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount,
+            productname1, productname2, productname3, productname4, productname5, productname6, productname7, productname8,
+            productname9, productname10, price1, price2, price3, price4, price5, price6, price7, price8, price9, price10, rentalimage1,
+            rentalimage2, rentalimage3, rentalimage4, rentalimage5, rentalimage6, rentalimage7, rentalimage8, rentalimage9, rentalimage10
         FROM
             usedwrite
                 LEFT JOIN user
                           ON user.userid = usedwrite.userid
+                LEFT JOIN rentalproductprice
+                          ON rentalproductprice.inherentid = usedwrite.usedid
         WHERE user.userid IS NOT NULL
         ORDER BY writedate DESC
     </select>
@@ -480,12 +491,17 @@
     <!-- 대여 특정 게시글 조회  -->
     <select id="findUsedOne" resultType="com.project.ribbon.domain.post.PostUsedResponse">
         SELECT
-            id,region,title,description,usedimage1,price,user.userid,writedate,user.nickname,
-            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount
+            id,region,title,description,shortdescription,usedimage1,price,user.userid,user.username,writedate,user.nickname,
+            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount,
+            productname1, productname2, productname3, productname4, productname5, productname6, productname7, productname8,
+            productname9, productname10, price1, price2, price3, price4, price5, price6, price7, price8, price9, price10, rentalimage1,
+            rentalimage2, rentalimage3, rentalimage4, rentalimage5, rentalimage6, rentalimage7, rentalimage8, rentalimage9, rentalimage10
         FROM
             usedwrite
                 LEFT JOIN user
                           ON user.userid = usedwrite.userid
+                LEFT JOIN rentalproductprice
+                          ON rentalproductprice.inherentid = usedwrite.usedid
         WHERE usedid = #{usedid}
           AND user.userid IS NOT NULL
     </select>
@@ -507,9 +523,11 @@
         , #{region}
         , #{title}
         , #{description}
+        , #{shortdescription}
         , #{usedimage1}
         , #{price}
         , #{userid}
+        , #{username}
         , #{writedate}
         , #{nickname}
         , #{usedid}
@@ -520,7 +538,55 @@
         , 0
         , 0
         , 0
-        )
+        , #{storename}
+        , #{numpeople}
+        , #{opentime}
+        , #{storetel}
+        , #{parking})
+        <selectKey keyProperty="inherentid" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <!-- 대여 게시글 저장 -->
+    <insert id="saveRental" parameterType="com.project.ribbon.domain.post.PostRentalRequest">
+        INSERT INTO rentalproductprice (
+        inherentid, productname1, productname2, productname3, productname4,
+        productname5, productname6, productname7, productname8, productname9,
+        productname10, price1, price2, price3, price4, price5, price6, price7,
+        price8, price9, price10, rentalimage1, rentalimage2, rentalimage3, rentalimage4,
+        rentalimage5, rentalimage6, rentalimage7, rentalimage8, rentalimage9, rentalimage10
+        ) VALUES (
+        #{inherentid}
+        , #{productname1}
+        , #{productname2}
+        , #{productname3}
+        , #{productname4}
+        , #{productname5}
+        , #{productname6}
+        , #{productname7}
+        , #{productname8}
+        , #{productname9}
+        , #{productname10}
+        , #{price1}
+        , #{price2}
+        , #{price3}
+        , #{price4}
+        , #{price5}
+        , #{price6}
+        , #{price7}
+        , #{price8}
+        , #{price9}
+        , #{price10}
+        , #{rentalimage1}
+        , #{rentalimage2}
+        , #{rentalimage3}
+        , #{rentalimage4}
+        , #{rentalimage5}
+        , #{rentalimage6}
+        , #{rentalimage7}
+        , #{rentalimage8}
+        , #{rentalimage9}
+        , #{rentalimage10})
     </insert>
 
     <!-- 대여 게시글 수정 -->
@@ -562,10 +628,10 @@
     </delete>
 
     <!-- 대여 정보 저장 -->
-    <insert id="saveRentalInfo" parameterType="com.project.ribbon.domain.post.PostUsedRequest"
+    <insert id="saveRentalInfo" parameterType="com.project.ribbon.dto.PostRentalInfoDTO"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO rentalinfo (
-            id,price,userid,username,merchant_uid,inherentid,paydate
+            id,price,userid,username,merchant_uid,inherentid,paydate,rentaltime,productname
         ) VALUES (
                      #{id}
                  , #{price}
@@ -574,6 +640,8 @@
                  , #{merchantUid}
                  , #{inherentid}
                  , NOW()
+                 , #{rentaltime}
+                 , #{productname}
                  )
     </insert>
 
@@ -581,7 +649,7 @@
     <insert id="savePaymentRentalInfo" parameterType="com.project.ribbon.dto.PaymentDTO"
             useGeneratedKeys="true" keyProperty="paymentid">
         INSERT INTO paidrental (
-            paymentid,paydate,amount,merchant_uid,imp_uid,username,userid,inherentid
+            paymentid,paydate,amount,merchant_uid,imp_uid,username,userid,inherentid,rentaltime,productname
         ) VALUES (
                      #{paymentid}
                  , NOW()
@@ -590,7 +658,10 @@
                  , #{impUid}
                  , #{buyerName}
                  , #{userid}
-                 , #{inherentid})
+                 , #{inherentid}
+                 , #{rentaltime}
+                 , #{productname}
+                 )
     </insert>
 
     <!-- 대여 특정 게시글 가격 조회  -->
@@ -617,9 +688,11 @@
 
 
     <!-- 대여 특정 멀천트 아이디 조회  -->
-    <select id="findMerchantIdRentalOne" resultType="com.project.ribbon.domain.post.PostUsedRequest">
+    <select id="findMerchantIdRentalOne" resultType="com.project.ribbon.dto.PostRentalInfoDTO">
         SELECT
-            usedwrite.title, paidrental.paydate, paidrental.amount, paidrental.merchant_uid AS merchantUid, paidrental.imp_uid AS impUid, paidrental.inherentid
+            usedwrite.title, paidrental.paydate, paidrental.amount,
+            paidrental.merchant_uid AS merchantUid, paidrental.imp_uid AS impUid,
+            paidrental.inherentid,paidrental.rentaltime,paidrental.productname
         FROM
             paidrental
                 LEFT JOIN user

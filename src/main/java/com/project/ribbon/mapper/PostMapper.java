@@ -72,6 +72,8 @@ public interface PostMapper {
 
     // 대여 게시글 작성
     void saveUsed(PostUsedRequest params);
+    // 대여 게시글 작성
+    void saveRental(PostRentalRequest params);
     // 대여 게시글 수정
     void updateUsed(PostUsedRequest params);
     // 대여 게시글 삭제
@@ -82,13 +84,13 @@ public interface PostMapper {
     // 대여 결제 정보 저장
     void savePaymentRentalInfo(PaymentDTO paymentDTO);
     // 대여 결제 정보 저장
-    void saveRentalInfo(PostUsedRequest postBuyerInfoDTO);
+    void saveRentalInfo(PostRentalInfoDTO postRentalInfoDTO);
     // 대여 특정 멀천트 아이디 조회
-    List<PostUsedRequest> findMerchantIdRentalOne(Long userid);
+    List<PostRentalInfoDTO> findMerchantIdRentalOne(Long userid);
     // 대여 결제 정보 삭제(취소 및 환불)
-    void deleteRentalInfoById(PostUsedRequest params);
+    void deleteRentalInfoById(PostRentalInfoDTO params);
     // 대여 결제 정보 삭제(취소 및 환불)
-    void deletePaidRentalInfoById(PostUsedRequest params);
+    void deletePaidRentalInfoById(PostRentalInfoDTO params);
     // 대여 특정 게시글 가격 조회
     List<PaymentRequest> findRentalOnePrice(String merchantUid);
     // 대여 특정 게시글 날짜 및 시간 조회
@@ -201,12 +203,12 @@ public interface PostMapper {
     void updateIndividualLiked(PostIndividualLikedRequest params);
     // 개인 좋아요 삭제
     void deleteByIndividualLikedId(PostIndividualLikedRequest params);
-    // 중고 좋아요
+    // 대여 좋아요
     void saveUsedLiked(PostUsedLikedRequest params);
-    // 중고 좋아요 수정
+    // 대여 좋아요 수정
     void updateDeleteUsedLiked(PostUsedLikedRequest params);
     void updateUsedLiked(PostUsedLikedRequest params);
-    // 중고 좋아요 삭제
+    // 대여 좋아요 삭제
     void deleteByUsedLikedId(PostUsedLikedRequest params);
 
     // 커뮤니티 댓글 알림 조회
@@ -215,7 +217,7 @@ public interface PostMapper {
     List<PostIndiCommentsRequest> findIndiCommentsAlarm(Long userid);
     // 단체 댓글 알림 조회
     List<PostGroupCommentsRequest> findGroupCommentsAlarm(Long userid);
-    // 중고 댓글 알림 조회
+    // 대여 댓글 알림 조회
     List<PostUsedCommentsRequest> findUsedCommentsAlarm(Long userid);
 
     // 댓글 조회

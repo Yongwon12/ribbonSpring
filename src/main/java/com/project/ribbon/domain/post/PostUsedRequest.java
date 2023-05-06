@@ -18,9 +18,8 @@ public class PostUsedRequest {
         private String title;
 
         private String description;
+        private String shortdescription;
         private String usedimage1;
-
-        private Integer price;
         private Long userid;
         private String writedate;
 
@@ -35,7 +34,6 @@ public class PostUsedRequest {
         private Integer  commentcount;
         private String merchantUid;
         private Long inherentid;
-        private String username;
 
 
 }

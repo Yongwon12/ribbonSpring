@@ -1,11 +1,13 @@
 package com.project.ribbon.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.ribbon.customvaild.DigitLength;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaymentDTO {
     @Id
     private Long paymentid;
@@ -20,6 +22,7 @@ public class PaymentDTO {
     private Long inherentid;
     private String account;
     private String bank;
-
+    private String rentaltime;
+    private String productname;
 
 }

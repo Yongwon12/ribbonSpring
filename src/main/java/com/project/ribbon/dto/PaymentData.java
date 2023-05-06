@@ -1,11 +1,13 @@
 package com.project.ribbon.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.ribbon.customvaild.DigitLength;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaymentData {
     @Id
     private Long paymentid;
@@ -17,6 +19,8 @@ public class PaymentData {
     private String imp_uid;
     private String buyer_name;
     private String status;
+    private String rentaltime;
+    private String productname;
 
     private PaymentData response;
 

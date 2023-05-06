@@ -302,6 +302,17 @@ public class PostService {
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
+    // 대여 게시글 작성
+    @Transactional
+    public ResponseEntity<?> saveRentalPost(final PostRentalRequest params) {
+        try {
+            postMapper.saveRental(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("대여 게시글 작성에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
     // 대여 게시글 수정
     @Transactional
     public ResponseEntity<?> updateUsedPost(final PostUsedRequest params) {
@@ -355,9 +366,9 @@ public class PostService {
 
     // 대여 결제 정보 저장
     @Transactional
-    public ResponseEntity<?> saveRentalInfoPost(final PostUsedRequest postUsedRequest) {
+    public ResponseEntity<?> saveRentalInfoPost(final PostRentalInfoDTO postRentalInfoDTO) {
         try {
-            postMapper.saveRentalInfo(postUsedRequest);
+            postMapper.saveRentalInfo(postRentalInfoDTO);
         } catch (Exception e) {
             // 예외 처리 코드 작성
             throw new RuntimeException("대여 결제 정보 저장에 실패했습니다.", e);
@@ -365,7 +376,7 @@ public class PostService {
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 대여 특정 멀천트 아이디 조회
-    public List<PostUsedRequest> findMerchantIdRentalOnePost(Long userid) {
+    public List<PostRentalInfoDTO> findMerchantIdRentalOnePost(Long userid) {
         try {
             return postMapper.findMerchantIdRentalOne(userid);
         } catch (Exception e) {
@@ -392,7 +403,7 @@ public class PostService {
         }
     }
     // 대여 결제 정보 삭제(취소 및 환불)
-    public ResponseEntity<?> deleteRentalInfoPost(final PostUsedRequest params) {
+    public ResponseEntity<?> deleteRentalInfoPost(final PostRentalInfoDTO params) {
         try {
             postMapper.deleteRentalInfoById(params);
         } catch (Exception e) {
@@ -402,7 +413,7 @@ public class PostService {
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
     // 대여 결제 정보 삭제(취소 및 환불)
-    public ResponseEntity<?> deletePaidRentalInfoPost(final PostUsedRequest params) {
+    public ResponseEntity<?> deletePaidRentalInfoPost(final PostRentalInfoDTO params) {
         try {
             postMapper.deletePaidRentalInfoById(params);
         } catch (Exception e) {

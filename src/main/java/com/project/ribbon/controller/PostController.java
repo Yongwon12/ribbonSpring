@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import com.project.ribbon.customvaild.DigitLength;
 import com.project.ribbon.domain.post.*;
 import com.project.ribbon.dto.PostBuyerInfoDTO;
+import com.project.ribbon.dto.PostRentalInfoDTO;
 import com.project.ribbon.dto.ReissueToken;
 import com.project.ribbon.dto.TokenInfo;
 import com.project.ribbon.enums.ExceptionEnum;
@@ -368,9 +369,29 @@ public class PostController {
             @RequestParam("id") @NotNull(message = "카테고리는 필수 입력값입니다.") Integer id,
             @RequestParam("region") @NotBlank(message = "지역은 필수 입력값입니다.") String region,
             @RequestParam("title") @Size(min = 2, max = 30, message = "제목은 2~30자리여야 합니다.") @NotBlank(message = "제목은 필수 입력 값입니다.") String title,
-            @RequestParam("description") @NotBlank(message = "내용은 필수 입력 값입니다.") @Size(min = 2, max = 200, message = "내용은 2~200자리여야 합니다.") String description,
+            @RequestParam("description") @NotBlank(message = "내용은 필수 입력 값입니다.") @Size(min = 2, max = 500, message = "내용은 2~500자리여야 합니다.") String description,
+            @RequestParam("shortdescription") @NotBlank(message = "내용은 필수 입력 값입니다.") @Size(min = 2, max = 40, message = "내용은 2~40자리여야 합니다.") String shortdescription,
             @RequestParam(value = "usedimage1", required = false) MultipartFile file1,
-            @RequestParam("price") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 4, max = 8, message = "가격은 4~7자리로 입력해주세요.") Integer price,
+            @RequestParam("price1") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price1,
+            @RequestParam("price2") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price2,
+            @RequestParam("price3") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price3,
+            @RequestParam("price4") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price4,
+            @RequestParam("price5") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price5,
+            @RequestParam("price6") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price6,
+            @RequestParam("price7") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price7,
+            @RequestParam("price8") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price8,
+            @RequestParam("price9") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price9,
+            @RequestParam("price10") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price10,
+            @RequestParam("productname1") @NotBlank(message = "상품명은 필수 입력값입니다.") String productname1,
+            @RequestParam("productname2") String productname2,
+            @RequestParam("productname3") String productname3,
+            @RequestParam("productname4") String productname4,
+            @RequestParam("productname5") String productname5,
+            @RequestParam("productname6") String productname6,
+            @RequestParam("productname7") String productname7,
+            @RequestParam("productname8") String productname8,
+            @RequestParam("productname9") String productname9,
+            @RequestParam("productname10") String productname10,
             @RequestParam("userid") @NotNull(message = "유저아이디는 필수 입력값입니다.") Long userid,
             @RequestParam("writedate") @NotBlank(message = "작성날짜는 필수 입력값입니다.") String writedate,
             @RequestParam("nickname") @NotBlank(message = "닉네임은 필수 입력 값입니다.") String nickname,
@@ -378,11 +399,21 @@ public class PostController {
             @RequestParam(value = "usedimage3", required = false) MultipartFile file3,
             @RequestParam(value = "usedimage4", required = false) MultipartFile file4,
             @RequestParam(value = "usedimage5", required = false) MultipartFile file5,
-            @RequestParam(value = "merchantUid") String merchantUid,
-            @RequestParam(value = "inherentid") Long inherentid,
-            @RequestParam(value = "username") String username) throws IOException {
+            @RequestParam(value = "rentalimage1", required = false) MultipartFile file6,
+            @RequestParam(value = "rentalimage2", required = false) MultipartFile file7,
+            @RequestParam(value = "rentalimage3", required = false) MultipartFile file8,
+            @RequestParam(value = "rentalimage4", required = false) MultipartFile file9,
+            @RequestParam(value = "rentalimage5", required = false) MultipartFile file10,
+            @RequestParam(value = "rentalimage6", required = false) MultipartFile file11,
+            @RequestParam(value = "rentalimage7", required = false) MultipartFile file12,
+            @RequestParam(value = "rentalimage8", required = false) MultipartFile file13,
+            @RequestParam(value = "rentalimage9", required = false) MultipartFile file14,
+            @RequestParam(value = "rentalimage10", required = false) MultipartFile file15)
+            throws IOException {
 
-        List<MultipartFile> files = Arrays.asList(file1, file2, file3, file4, file5);
+        List<MultipartFile> files = Arrays.asList(file1, file2, file3,
+                file4, file5,file6,file7,file8,file9,file10,file11,
+                file12,file13,file14,file15);
         List<String> usedImages = new ArrayList<>();
         for (MultipartFile file : files) {
             if (file != null) {
@@ -395,11 +426,32 @@ public class PostController {
             }
         }
         PostUsedRequest params = new PostUsedRequest();
+        PostRentalRequest postRentalRequest = new PostRentalRequest();
         params.setId(id);
         params.setRegion(region);
         params.setTitle(title);
         params.setDescription(description);
-        params.setPrice(price);
+        params.setShortdescription(shortdescription);
+        postRentalRequest.setPrice1(price1);
+        postRentalRequest.setPrice2(price2);
+        postRentalRequest.setPrice3(price3);
+        postRentalRequest.setPrice4(price4);
+        postRentalRequest.setPrice5(price5);
+        postRentalRequest.setPrice6(price6);
+        postRentalRequest.setPrice7(price7);
+        postRentalRequest.setPrice8(price8);
+        postRentalRequest.setPrice9(price9);
+        postRentalRequest.setPrice10(price10);
+        postRentalRequest.setProductname1(productname1);
+        postRentalRequest.setProductname2(productname2);
+        postRentalRequest.setProductname3(productname3);
+        postRentalRequest.setProductname4(productname4);
+        postRentalRequest.setProductname5(productname5);
+        postRentalRequest.setProductname6(productname6);
+        postRentalRequest.setProductname7(productname7);
+        postRentalRequest.setProductname8(productname8);
+        postRentalRequest.setProductname9(productname9);
+        postRentalRequest.setProductname10(productname10);
         params.setUserid(userid);
         params.setWritedate(writedate);
         params.setNickname(nickname);
@@ -418,80 +470,129 @@ public class PostController {
         if (usedImages.size() > 4) {
             params.setUsedimage5(usedImages.get(4));
         }
+        if (usedImages.size() > 5) {
+            postRentalRequest.setRentalimage1(usedImages.get(5));
+        }
+        if (usedImages.size() > 6) {
+            postRentalRequest.setRentalimage2(usedImages.get(6));
+        }
+        if (usedImages.size() > 7) {
+            postRentalRequest.setRentalimage3(usedImages.get(7));
+        }
+        if (usedImages.size() > 8) {
+            postRentalRequest.setRentalimage4(usedImages.get(8));
+        }
+        if (usedImages.size() > 9) {
+            postRentalRequest.setRentalimage5(usedImages.get(9));
+        }
+        if (usedImages.size() > 10) {
+            postRentalRequest.setRentalimage6(usedImages.get(10));
+        }
+        if (usedImages.size() > 11) {
+            postRentalRequest.setRentalimage7(usedImages.get(11));
+        }
+        if (usedImages.size() > 12) {
+            postRentalRequest.setRentalimage8(usedImages.get(12));
+        }
+        if (usedImages.size() > 13) {
+            postRentalRequest.setRentalimage9(usedImages.get(13));
+        }
+        if (usedImages.size() > 14) {
+            postRentalRequest.setRentalimage10(usedImages.get(14));
+        }
+        postService.saveRentalPost(postRentalRequest);
+        return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
 
-        WebClient webClient = WebClient.builder().build();
-        String url = "https://api.iamport.kr/users/getToken";
-        Map<String, Object> request = new HashMap<>();
-        request.put("imp_key", impKey);
-        request.put("imp_secret", impSecret);
-        Mono<String> response = webClient.post()
-                .uri(url)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .retrieve()
-                .bodyToMono(String.class);
-        String responseBody = response.block();
-        JsonElement responseJson = JsonParser.parseString(responseBody);
-        JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
-        JsonElement accessTokenJson = responseObj.get("access_token");
-        if (accessTokenJson != null && !accessTokenJson.isJsonNull()) {
-            String accessToken = "Bearer " + accessTokenJson.getAsString();
-            Map<String, Object> dataLow = new HashMap<>();
-            dataLow.put("amount", price);
-            if (merchantUid != null) {
-                dataLow.put("merchant_uid", merchantUid);
-            }
+    }
+    // 대여 포트원 주문번호, 금액 사전 등록, 디비 저장 (멘토 금액 컨트롤러)
+    @PostMapping("/post/pricebeforehandandsaverentalinfo")
+    public ResponseEntity<String> preparePaymentRental(@RequestParam("userid") Long userid,
+                                                 @RequestParam("username") @Size(min = 2, max = 10) String username,
+                                                 @RequestParam("price") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price,
+                                                 @RequestParam("merchantUid") String merchantUid,
+                                                 @RequestParam("inherentid") Long inherentid,
+                                                       @RequestParam("rentaltime") String rentaltime,
+                                                       @RequestParam("productname") String  productname) throws IOException{
+        try {
 
-            // API 호출 URL 구성
-            String apiUrl = "https://api.iamport.kr/payments/prepare";
+            WebClient webClient = WebClient.builder().build();
+            String url = "https://api.iamport.kr/users/getToken";
+            Map<String, Object> request = new HashMap<>();
+            request.put("imp_key", impKey);
+            request.put("imp_secret", impSecret);
+            Mono<String> response = webClient.post()
+                    .uri(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(request)
+                    .retrieve()
+                    .bodyToMono(String.class);
+            String responseBody = response.block();
+            JsonElement responseJson = JsonParser.parseString(responseBody);
+            JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
+            JsonElement accessTokenJson = responseObj.get("access_token");
+            if (accessTokenJson != null && !accessTokenJson.isJsonNull()) {
+                String accessToken = "Bearer " + accessTokenJson.getAsString();
+                Map<String, Object> dataLow = new HashMap<>();
+                dataLow.put("amount", price);
+                if (merchantUid != null) {
+                    dataLow.put("merchant_uid", merchantUid);
+                }
 
-            // 각각의 가격에 대한 API 호출 실행
-            Mono<ResponseEntity<String>> responseRentalApi = null;
+                // API 호출 URL 구성
+                String apiUrl = "https://api.iamport.kr/payments/prepare";
 
+                // 각각의 가격에 대한 API 호출 실행
+                Mono<ResponseEntity<String>> responseApi = null;
 
-            if (merchantUid != null) {
-                responseRentalApi = webClient.post()
-                        .uri(apiUrl)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, accessToken)
-                        .bodyValue(dataLow)
-                        .retrieve()
-                        .toEntity(String.class);
-            }
+                if (merchantUid != null) {
+                    responseApi = webClient.post()
+                            .uri(apiUrl)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, accessToken)
+                            .bodyValue(dataLow)
+                            .retrieve()
+                            .toEntity(String.class);
+                }
 
-            // 응답 상태 코드 확인
-            HttpStatusCode status = null;
-            if (responseRentalApi != null) {
-                status = responseRentalApi.block().getStatusCode();
-            }
+                // 응답 상태 코드 확인
+                HttpStatusCode status = null;
+                if (responseApi != null) {
+                    status = responseApi.block().getStatusCode();
+                }
 
-            // 각각의 결과를 처리하는 로직 추가
-            if (status.is2xxSuccessful()) {
-                // 모든 API 호출이 성공한 경우
-                PostUsedRequest rentalInfo = new PostUsedRequest();
-                rentalInfo.setPrice(price);
-                rentalInfo.setUserid(userid);
-                rentalInfo.setUsername(username);
-                rentalInfo.setMerchantUid(merchantUid);
-                rentalInfo.setInherentid(inherentid);
+                // 각각의 결과를 처리하는 로직 추가
+                if (status.is2xxSuccessful()) {
+                    // 모든 API 호출이 성공한 경우
+                    PostRentalInfoDTO postRentalInfoDTO = new PostRentalInfoDTO();
+                    postRentalInfoDTO.setPrice(price);
+                    postRentalInfoDTO.setUserid(userid);
+                    postRentalInfoDTO.setUsername(username);
+                    postRentalInfoDTO.setInherentid(inherentid);
+                    postRentalInfoDTO.setMerchantUid(merchantUid);
+                    postRentalInfoDTO.setProductname(productname);
+                    postRentalInfoDTO.setRentaltime(rentaltime);
 
-                postService.saveRentalInfoPost(rentalInfo);
-                postService.saveUsedPost(params);
-                return ResponseEntity.ok().build();
+                    postService.saveRentalInfoPost(postRentalInfoDTO);
+                    return ResponseEntity.ok().build();
+                } else {
+                    // 하나 이상의 API 호출이 실패한 경우
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                }
             } else {
-                // 하나 이상의 API 호출이 실패한 경우
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                throw new RuntimeException("Access token not found in response");
             }
-        } else {
-            throw new RuntimeException("Access token not found in response");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
     // 대여 특정 멀천트 아이디 조회
     @PostMapping("/post/selectMerchantIdRental")
-    public ResponseEntity<?> selectMerchantIdRental(@RequestBody PostUsedRequest params,
+    public ResponseEntity<?> selectMerchantIdRental(@RequestBody PostRentalInfoDTO params,
                                               Model model) throws ApiException {
         Map<String, Object> obj = new HashMap<>();
-        List<PostUsedRequest> posts = postService.findMerchantIdRentalOnePost(params.getUserid());
+        List<PostRentalInfoDTO> posts = postService.findMerchantIdRentalOnePost(params.getUserid());
         model.addAttribute("posts", posts);
         obj.put("merchantuid", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
@@ -499,7 +600,7 @@ public class PostController {
 
     // 대여 결제 내역 삭제
     @DeleteMapping("/post/deletePaymentRentalInfoAll")
-    public ResponseEntity<?> deletePaymentRentalInfoAll(@RequestBody PostUsedRequest params) {
+    public ResponseEntity<?> deletePaymentRentalInfoAll(@RequestBody PostRentalInfoDTO params) {
         try {
             postService.deleteRentalInfoPost(params);
             return postService.deletePaidRentalInfoPost(params);
@@ -704,18 +805,18 @@ public class PostController {
                 HttpStatusCode statusMiddle = null;
                 HttpStatusCode statusHigh = null;
                 if (responseLow != null) {
-                    statusLow = responseLow.block().getStatusCode();
+                    statusLow = Objects.requireNonNull(responseLow.block()).getStatusCode();
                 }
                 if (responseMiddle != null) {
-                    statusMiddle = responseMiddle.block().getStatusCode();
+                    statusMiddle = Objects.requireNonNull(responseMiddle.block()).getStatusCode();
                 }
                 if (responseHigh != null) {
-                    statusHigh = responseHigh.block().getStatusCode();
+                    statusHigh = Objects.requireNonNull(responseHigh.block()).getStatusCode();
                 }
 
 
                 // 각각의 결과를 처리하는 로직 추가
-                if (statusLow.is2xxSuccessful() && statusMiddle.is2xxSuccessful() && statusHigh.is2xxSuccessful()) {
+                if (Objects.requireNonNull(statusLow).is2xxSuccessful() && Objects.requireNonNull(statusMiddle).is2xxSuccessful() && Objects.requireNonNull(statusHigh).is2xxSuccessful()) {
                     // 모든 API 호출이 성공한 경우
                     PostBuyerInfoDTO postBuyerInfoDTO = new PostBuyerInfoDTO();
                     postBuyerInfoDTO.setLowprice(lowprice);

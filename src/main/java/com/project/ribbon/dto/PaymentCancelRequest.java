@@ -1,10 +1,12 @@
 package com.project.ribbon.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.ribbon.customvaild.DigitLength;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaymentCancelRequest {
     private String merchantUid;
     private String impUid;
@@ -21,5 +23,6 @@ public class PaymentCancelRequest {
     private String refundTel;
     private String paydate;
     private String canceldate;
-
+    private String rentaltime;
+    private String productname;
 }
