@@ -352,6 +352,15 @@ public class PostService {
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
+    public ResponseEntity<?> deleteRentalPriceAndProductNamePost(final PostUsedRequest params) {
+        try {
+            postMapper.deleteRentalPriceAndProductName(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("대여 가격 및 상품명 삭제에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
     // 대여 결제 정보 저장
     @Transactional
     public ResponseEntity<?> savePaymentRentalInfoPost(final PaymentDTO paymentDTO) {

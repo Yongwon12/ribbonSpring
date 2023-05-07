@@ -626,6 +626,12 @@
                 usedcomments
                 WHERE inherentid = #{usedid}
     </delete>
+    <delete id="deleteRentalPriceAndProductName" >
+        DELETE
+                FROM
+                rentalproductprice
+                WHERE inherentid = #{usedid}
+    </delete>
 
     <!-- 대여 정보 저장 -->
     <insert id="saveRentalInfo" parameterType="com.project.ribbon.dto.PostRentalInfoDTO"
@@ -702,6 +708,7 @@
         WHERE user.userid = #{userid}
           AND user.userid IS NOT NULL
     </select>
+
 
     <!-- 대여 결제 정보삭제 -->
     <delete id="deleteRentalInfoById" >

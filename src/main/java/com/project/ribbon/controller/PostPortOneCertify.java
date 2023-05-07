@@ -374,6 +374,8 @@ public class PostPortOneCertify {
             String merchant_uid = paymentRequest.getMerchantUid();
             Long userid = paymentRequest.getUserid();
             Long inherentid = paymentRequest.getInherentid();
+            String rentaltime = paymentRequest.getRentaltime();
+            String productname = paymentRequest.getProductname();
             // 엑세스 토큰 발급
             WebClient webClient = WebClient.builder().build();
             String url = "https://api.iamport.kr/users/getToken";
@@ -426,6 +428,8 @@ public class PostPortOneCertify {
                     paymentDTO.setBuyerName(paymentData.getResponse().getBuyer_name());
                     paymentDTO.setUserid(userid);
                     paymentDTO.setInherentid(inherentid);
+                    paymentDTO.setRentaltime(rentaltime);
+                    paymentDTO.setProductname(productname);
                     postService.savePaymentRentalInfoPost(paymentDTO);
                     // 결제 성공시 응답
                     switch (status) {

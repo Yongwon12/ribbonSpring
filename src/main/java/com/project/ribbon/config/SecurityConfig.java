@@ -21,6 +21,7 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
@@ -128,6 +129,7 @@ public class SecurityConfig {
         repository.setHeaderName("X-XSRF-TOKEN");
         return repository;
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

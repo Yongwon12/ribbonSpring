@@ -23,11 +23,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.*;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.stereotype.Controller;
@@ -64,10 +64,11 @@ public class PostController {
 
     private final MemberService memberService;
 
-    @Autowired
     @Qualifier("jwtTokenProvider")
     private JwtTokenProvider jwtTokenProvider;
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    private ApplicationContext applicationContext;
 
 
     // 서버업로드용 서버 ip : https://ribbonding.shop:48610
@@ -642,6 +643,7 @@ public class PostController {
         try {
             postService.deleteUsedWriteCommentsPost(params);
             postService.deleteUsedWriteLikedPost(params);
+            postService.deleteRentalPriceAndProductNamePost(params);
             return postService.deleteUsedPost(params);
         } catch (Exception e) {
             return new ResponseEntity<>("An error occurred while deleting the post.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -1055,10 +1057,14 @@ public class PostController {
             tokenInfoMap.put("roles", posts.getRoles());
             response.put("tokenInfo", tokenInfoMap);
             return ResponseEntity.ok(response);
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (BadCredentialsException e) {
+            // 로그인 실패 처리
+            // 클라이언트에게 보낼 응답 메시지 생성
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "invalid_grant");
+            errorResponse.put("error_description", "잘못된 아이디 또는 비밀번호입니다.");
+            // ResponseEntity 객체를 이용해 응답 반환
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
     }
     // 엑세스토큰 재발급

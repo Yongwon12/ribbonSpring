@@ -9,6 +9,7 @@ public class PaymentRequest {
     private String merchantUid;
     private String impUid;
     private Long userid;
+    private String username;
     private Long inherentid;
     private String rentaltime;
     private String productname;

@@ -38,7 +38,7 @@
       width: 100%;
     }
     input[type="submit"] {
-      background-color: #4CAF50;
+      background-color:#333;
       border: none;
       border-radius: 3px;
       color: #fff;
@@ -49,10 +49,10 @@
       width: 100%;
     }
     input[type="submit"]:hover {
-      background-color: #3e8e41;
+      background-color: #555;
     }
     button {
-      background-color: #4CAF50;
+      background-color: #333;
       border: none;
       color: white;
       padding: 10px 20px;
@@ -130,6 +130,7 @@
 </head>
 <body>
 <h1>UsedComments Report Login</h1>
+<button onclick="location.href='/ribbon/admin/report'">맺음 신고 및 공지 목록</button>
 <form id="form-id" th:action="@{/ribbon/admin/post/usedcommentslogin}" method="post">
   <label for="userid">Admin:</label>
   <input type="text" id="userid" name="userid" required>

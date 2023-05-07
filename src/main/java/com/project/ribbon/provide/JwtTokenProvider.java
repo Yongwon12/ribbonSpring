@@ -5,27 +5,81 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.event.EventListener;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class JwtTokenProvider {
+public class JwtTokenProvider implements ApplicationContextAware {
+    private ApplicationContext applicationContext;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+    private static final int MAX_ATTEMPTS = 5;
+
+    // 인증 실패 횟수 카운트를 저장할 맵
+    private Map<String, Integer> loginAttempts = new HashMap<>();
+
+    // 재시도 대기 시간을 저장할 맵
+    private Map<String, Long> retryTimes = new HashMap<>();
+
+    @EventListener
+    public void handleAuthenticationFailureEvent(AbstractAuthenticationFailureEvent event) {
+        String username = (String) event.getAuthentication().getPrincipal();
+        int attempts = loginAttempts.getOrDefault(username, 0) + 1;
+        loginAttempts.put(username, attempts);
+        long retryTime = 0;
+
+        if (attempts >= MAX_ATTEMPTS) {
+            if (attempts == MAX_ATTEMPTS) {
+                retryTime = Instant.now().toEpochMilli() + (15 * 60 * 1000); // 15분 대기
+            } else if (attempts == MAX_ATTEMPTS * 2) {
+                retryTime = Instant.now().toEpochMilli() + (30 * 60 * 1000); // 30분 대기
+            } else if (attempts == MAX_ATTEMPTS * 3) {
+                retryTime = Instant.now().toEpochMilli() + (60 * 60 * 1000); // 1시간 대기
+            }
+            retryTimes.put(username, retryTime);
+        }
+
+        // 로그인 실패 횟수가 최대 시도 횟수에 도달한 경우, 예외를 발생시킴
+        if (attempts >= MAX_ATTEMPTS) {
+            throw new LockedException("로그인 실패 횟수가 초과되어 " + getRetryTime(username) + " 까지 잠김 처리됩니다.");
+        }
+    }
+
+    // 유저의 재시도 대기 시간을 반환하는 메서드
+    public Date getRetryTime(String username) {
+        long retryTime = retryTimes.getOrDefault(username, 0L);
+        return new Date(retryTime);
+    }
+
+    // 유저의 로그인 실패 횟수를 초기화하는 메서드
+    public void resetLoginAttempts(String username) {
+        loginAttempts.remove(username);
+        retryTimes.remove(username);
+    }
 
     private final Key key;
+
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);

@@ -80,6 +80,8 @@ public interface PostMapper {
     void deleteByUsedId(PostUsedRequest params);
     void deleteUsedWriteByLikedId(PostUsedRequest params);
     void deleteUsedWriteComments(PostUsedRequest params);
+    void deleteRentalPriceAndProductName(PostUsedRequest params);
+
 
     // 대여 결제 정보 저장
     void savePaymentRentalInfo(PaymentDTO paymentDTO);
