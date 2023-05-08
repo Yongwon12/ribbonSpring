@@ -472,7 +472,7 @@
     <!-- 대여 게시글 조회  -->
     <select id="findUsedAll" resultType="com.project.ribbon.domain.post.PostUsedResponse">
         SELECT
-            id,region,title,description,shortdescription,usedimage1,price,user.userid,user.username,writedate,user.nickname,
+            id,region,title,description,shortdescription,usedimage1,user.userid,user.username,writedate,user.nickname,
             usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount,
             productname1, productname2, productname3, productname4, productname5, productname6, productname7, productname8,
             productname9, productname10, price1, price2, price3, price4, price5, price6, price7, price8, price9, price10
@@ -489,7 +489,7 @@
     <!-- 대여 특정 게시글 조회  -->
     <select id="findUsedOne" resultType="com.project.ribbon.domain.post.PostUsedResponse">
         SELECT
-            id,region,title,description,shortdescription,usedimage1,price,user.userid,user.username,writedate,user.nickname,
+            id,region,title,description,shortdescription,usedimage1,user.userid,user.username,writedate,user.nickname,
             usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount,
             productname1, productname2, productname3, productname4, productname5, productname6, productname7, productname8,
             productname9, productname10, price1, price2, price3, price4, price5, price6, price7, price8, price9, price10
@@ -1857,7 +1857,7 @@
     </select>
 
 
-    <!-- 내가 좋아요 누른 글 중고 -->
+    <!-- 내가 좋아요 누른 글 대여 -->
     <select id="findByMyUsedLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyUsedLikedResponse">
         SELECT
             usedwrite.id,region,title,description,usedimage1,usedwrite.userid,
