@@ -73,7 +73,7 @@ public interface PostMapper {
     // 대여 게시글 작성
     void saveUsed(PostUsedRequest params);
     // 대여 게시글 작성
-    void saveRental(PostRentalRequest params);
+    void saveRental(PostUsedRequest params);
     // 대여 게시글 수정
     void updateUsed(PostUsedRequest params);
     // 대여 게시글 삭제

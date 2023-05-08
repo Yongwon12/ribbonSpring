@@ -68,7 +68,6 @@
         , description
         , shortdescription
         , usedimage1
-        , price
         , userid
         , writedate
         , nickname
@@ -476,8 +475,7 @@
             id,region,title,description,shortdescription,usedimage1,price,user.userid,user.username,writedate,user.nickname,
             usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount,
             productname1, productname2, productname3, productname4, productname5, productname6, productname7, productname8,
-            productname9, productname10, price1, price2, price3, price4, price5, price6, price7, price8, price9, price10, rentalimage1,
-            rentalimage2, rentalimage3, rentalimage4, rentalimage5, rentalimage6, rentalimage7, rentalimage8, rentalimage9, rentalimage10
+            productname9, productname10, price1, price2, price3, price4, price5, price6, price7, price8, price9, price10
         FROM
             usedwrite
                 LEFT JOIN user
@@ -494,8 +492,7 @@
             id,region,title,description,shortdescription,usedimage1,price,user.userid,user.username,writedate,user.nickname,
             usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount,
             productname1, productname2, productname3, productname4, productname5, productname6, productname7, productname8,
-            productname9, productname10, price1, price2, price3, price4, price5, price6, price7, price8, price9, price10, rentalimage1,
-            rentalimage2, rentalimage3, rentalimage4, rentalimage5, rentalimage6, rentalimage7, rentalimage8, rentalimage9, rentalimage10
+            productname9, productname10, price1, price2, price3, price4, price5, price6, price7, price8, price9, price10
         FROM
             usedwrite
                 LEFT JOIN user
@@ -525,9 +522,7 @@
         , #{description}
         , #{shortdescription}
         , #{usedimage1}
-        , #{price}
         , #{userid}
-        , #{username}
         , #{writedate}
         , #{nickname}
         , #{usedid}
@@ -542,19 +537,21 @@
         , #{numpeople}
         , #{opentime}
         , #{storetel}
-        , #{parking})
+        , #{parking}
+        )
+
         <selectKey keyProperty="inherentid" order="AFTER" resultType="java.lang.Long">
             SELECT LAST_INSERT_ID()
         </selectKey>
+
     </insert>
     <!-- 대여 게시글 저장 -->
-    <insert id="saveRental" parameterType="com.project.ribbon.domain.post.PostRentalRequest">
+    <insert id="saveRental" parameterType="com.project.ribbon.domain.post.PostUsedRequest">
         INSERT INTO rentalproductprice (
         inherentid, productname1, productname2, productname3, productname4,
         productname5, productname6, productname7, productname8, productname9,
         productname10, price1, price2, price3, price4, price5, price6, price7,
-        price8, price9, price10, rentalimage1, rentalimage2, rentalimage3, rentalimage4,
-        rentalimage5, rentalimage6, rentalimage7, rentalimage8, rentalimage9, rentalimage10
+        price8, price9, price10
         ) VALUES (
         #{inherentid}
         , #{productname1}
@@ -576,17 +573,7 @@
         , #{price7}
         , #{price8}
         , #{price9}
-        , #{price10}
-        , #{rentalimage1}
-        , #{rentalimage2}
-        , #{rentalimage3}
-        , #{rentalimage4}
-        , #{rentalimage5}
-        , #{rentalimage6}
-        , #{rentalimage7}
-        , #{rentalimage8}
-        , #{rentalimage9}
-        , #{rentalimage10})
+        , #{price10})
     </insert>
 
     <!-- 대여 게시글 수정 -->
@@ -1334,7 +1321,7 @@
     </delete>
 
 
-    <!-- 중고 좋아요 삽입 -->
+    <!-- 대여 좋아요 삽입 -->
     <insert id="saveUsedLiked" parameterType="com.project.ribbon.domain.post.PostUsedLikedRequest"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO usedliked (
@@ -1350,13 +1337,13 @@
     </insert>
 
 
-    <!-- 중고 좋아요 갯수 카운트 +1 -->
+    <!-- 대여 좋아요 갯수 카운트 +1 -->
     <update id="updateUsedLiked" parameterType="com.project.ribbon.domain.post.PostUsedLikedRequest">
 
         UPDATE usedwrite SET likedcount = likedcount + 1 WHERE usedid = #{inherentid}
 
     </update>
-    <!-- 중고 좋아요 갯수 카운트 -1 -->
+    <!-- 대여 좋아요 갯수 카운트 -1 -->
     <update id="updateDeleteUsedLiked" parameterType="com.project.ribbon.domain.post.PostUsedLikedRequest">
 
         UPDATE usedwrite SET likedcount = likedcount - 1 WHERE usedid = #{inherentid}
@@ -1364,7 +1351,7 @@
     </update>
 
 
-    <!-- 중고 좋아요 삭제 -->
+    <!-- 대여 좋아요 삭제 -->
     <delete id="deleteByUsedLikedId" >
         DELETE
                 FROM
@@ -1443,7 +1430,7 @@
         ORDER BY
             groupcomments.writedate DESC LIMIT 1;
     </select>
-    <!-- 중고 댓글 알림 조회  -->
+    <!-- 대여 댓글 알림 조회  -->
     <select id="findUsedCommentsAlarm" resultType="com.project.ribbon.domain.post.PostUsedCommentsRequest">
         SELECT
             usedwrite.title,
@@ -1696,7 +1683,7 @@
     </delete>
 
 
-    <!-- 중고 댓글 작성자 아이디 조회  -->
+    <!-- 대여 댓글 작성자 아이디 조회  -->
     <select id="findUsedCommentsId" resultType="com.project.ribbon.domain.post.PostUsedCommentsIdResponse">
         SELECT
             commentsid
@@ -1706,7 +1693,7 @@
     </select>
 
 
-    <!-- 중고 댓글 정보 조회  -->
+    <!-- 대여 댓글 정보 조회  -->
     <select id="findByUsedCommentsInherentId" resultType="com.project.ribbon.domain.post.PostUsedCommentsResponse">
         SELECT
             description,usedcomments.userid,user.nickname,inherentid,
@@ -1719,7 +1706,7 @@
     </select>
 
 
-    <!-- 중고 댓글 작성 -->
+    <!-- 대여 댓글 작성 -->
     <insert id="saveUsedComments" parameterType="com.project.ribbon.domain.post.PostUsedCommentsRequest"
             useGeneratedKeys="true" keyProperty="commentsid">
         INSERT INTO usedcomments (
@@ -1736,13 +1723,13 @@
 
     </insert>
 
-    <!-- 중고 댓글 갯수 카운트 +1 -->
+    <!-- 대여 댓글 갯수 카운트 +1 -->
     <update id="updateUsedCommentsCount" parameterType="com.project.ribbon.domain.post.PostUsedCommentsRequest">
 
         UPDATE usedwrite SET commentcount = commentcount + 1 WHERE usedid = #{inherentid}
 
     </update>
-    <!-- 중고 댓글 갯수 카운트 -1 -->
+    <!-- 대여 댓글 갯수 카운트 -1 -->
     <update id="updateDeleteUsedCommentsCount" parameterType="com.project.ribbon.domain.post.PostUsedCommentsRequest">
 
         UPDATE usedwrite SET commentcount = commentcount - 1 WHERE usedid = #{inherentid}
@@ -1750,7 +1737,7 @@
     </update>
 
 
-    <!-- 중고 댓글 수정 -->
+    <!-- 대여 댓글 수정 -->
     <update id="updateUsedComments" parameterType="com.project.ribbon.domain.post.PostUsedCommentsRequest">
         UPDATE usedcomments
         SET
@@ -1762,7 +1749,7 @@
     </update>
 
 
-    <!-- 중고 댓글 정보 삭제 -->
+    <!-- 대여 댓글 정보 삭제 -->
     <delete id="deleteUsedComments" >
         DELETE
                 FROM
@@ -1817,16 +1804,21 @@
     </select>
 
 
-    <!-- 중고 내가 쓴 글  -->
+    <!-- 대여 내가 쓴 글  -->
     <select id="findByMyUsedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyUsedResponse">
         SELECT
-            id,region,title,description,usedimage1,price,usedwrite.userid,
+            id,region,title,description,usedimage1,usedwrite.userid,user.username,shortdescription,
             writedate,user.nickname,usedid,usedimage2,usedimage3,usedimage4,
-            usedimage5,likedcount,commentcount,profileimage
+            usedimage5,likedcount,commentcount,profileimage, productname1,
+            productname2, productname3, productname4, productname5, productname6,
+            productname7, productname8, productname9, productname10, price1, price2,
+            price3, price4, price5, price6, price7, price8, price9, price10
         FROM
             usedwrite
                 LEFT JOIN user
                           ON user.userid = usedwrite.userid
+                LEFT JOIN rentalproductprice
+                          ON rentalproductprice.inherentid = usedwrite.usedid
         WHERE
             usedwrite.userid = #{userid}
         ORDER BY writedate DESC
@@ -1868,15 +1860,21 @@
     <!-- 내가 좋아요 누른 글 중고 -->
     <select id="findByMyUsedLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyUsedLikedResponse">
         SELECT
-            usedwrite.id,region,title,description,usedimage1,price,usedwrite.userid,
+            usedwrite.id,region,title,description,usedimage1,usedwrite.userid,
+            user.username,shortdescription,
             writedate,user.nickname,usedid,usedimage2,usedimage3,usedimage4,
-            usedimage5,likedcount,commentcount,profileimage
+            usedimage5,likedcount,commentcount,profileimage, productname1,
+            productname2, productname3, productname4, productname5, productname6,
+            productname7, productname8, productname9, productname10, price1, price2,
+            price3, price4, price5, price6, price7, price8, price9, price10
         FROM
             usedwrite
                 LEFT JOIN usedliked
                           ON usedliked.inherentid=usedwrite.usedid
                 LEFT JOIN user
                           ON user.userid = usedwrite.userid
+                LEFT JOIN rentalproductprice
+                          ON rentalproductprice.inherentid = usedwrite.usedid
         WHERE usedliked.userid = #{userid}
         ORDER BY writedate DESC
     </select>

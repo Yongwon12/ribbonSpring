@@ -14,6 +14,8 @@ public class PostMyUsedLikedResponse {
     private String usedimage1;
     private String price;
     private Long userid;
+    private String username;
+    private String shortdescription;
     private String writedate;
     private String nickname;
     private Long usedid;      // PK

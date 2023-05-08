@@ -64,8 +64,9 @@ public class PostController {
 
     private final MemberService memberService;
 
+
     @Qualifier("jwtTokenProvider")
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private ApplicationContext applicationContext;
@@ -367,32 +368,12 @@ public class PostController {
     // 대여 글작성
     @PostMapping("/post/writeused")
     public ResponseEntity<?> saveUsedPost(
-            @RequestParam("id") @NotNull(message = "카테고리는 필수 입력값입니다.") Integer id,
+            @RequestParam("id") @Size(min = 2, max = 15, message = "카테고리는 2~15자리여야 합니다.") @NotNull(message = "카테고리는 필수 입력값입니다.") String id,
             @RequestParam("region") @NotBlank(message = "지역은 필수 입력값입니다.") String region,
             @RequestParam("title") @Size(min = 2, max = 30, message = "제목은 2~30자리여야 합니다.") @NotBlank(message = "제목은 필수 입력 값입니다.") String title,
             @RequestParam("description") @NotBlank(message = "내용은 필수 입력 값입니다.") @Size(min = 2, max = 500, message = "내용은 2~500자리여야 합니다.") String description,
             @RequestParam("shortdescription") @NotBlank(message = "내용은 필수 입력 값입니다.") @Size(min = 2, max = 40, message = "내용은 2~40자리여야 합니다.") String shortdescription,
             @RequestParam(value = "usedimage1", required = false) MultipartFile file1,
-            @RequestParam("price1") @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price1,
-            @RequestParam("price2") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price2,
-            @RequestParam("price3") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price3,
-            @RequestParam("price4") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price4,
-            @RequestParam("price5") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price5,
-            @RequestParam("price6") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price6,
-            @RequestParam("price7") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price7,
-            @RequestParam("price8") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price8,
-            @RequestParam("price9") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price9,
-            @RequestParam("price10") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.") Integer price10,
-            @RequestParam("productname1") @NotBlank(message = "상품명은 필수 입력값입니다.") String productname1,
-            @RequestParam("productname2") String productname2,
-            @RequestParam("productname3") String productname3,
-            @RequestParam("productname4") String productname4,
-            @RequestParam("productname5") String productname5,
-            @RequestParam("productname6") String productname6,
-            @RequestParam("productname7") String productname7,
-            @RequestParam("productname8") String productname8,
-            @RequestParam("productname9") String productname9,
-            @RequestParam("productname10") String productname10,
             @RequestParam("userid") @NotNull(message = "유저아이디는 필수 입력값입니다.") Long userid,
             @RequestParam("writedate") @NotBlank(message = "작성날짜는 필수 입력값입니다.") String writedate,
             @RequestParam("nickname") @NotBlank(message = "닉네임은 필수 입력 값입니다.") String nickname,
@@ -400,21 +381,35 @@ public class PostController {
             @RequestParam(value = "usedimage3", required = false) MultipartFile file3,
             @RequestParam(value = "usedimage4", required = false) MultipartFile file4,
             @RequestParam(value = "usedimage5", required = false) MultipartFile file5,
-            @RequestParam(value = "rentalimage1", required = false) MultipartFile file6,
-            @RequestParam(value = "rentalimage2", required = false) MultipartFile file7,
-            @RequestParam(value = "rentalimage3", required = false) MultipartFile file8,
-            @RequestParam(value = "rentalimage4", required = false) MultipartFile file9,
-            @RequestParam(value = "rentalimage5", required = false) MultipartFile file10,
-            @RequestParam(value = "rentalimage6", required = false) MultipartFile file11,
-            @RequestParam(value = "rentalimage7", required = false) MultipartFile file12,
-            @RequestParam(value = "rentalimage8", required = false) MultipartFile file13,
-            @RequestParam(value = "rentalimage9", required = false) MultipartFile file14,
-            @RequestParam(value = "rentalimage10", required = false) MultipartFile file15)
+            @RequestParam("storename") @NotBlank(message = "가게이름은 필수 입력값입니다.") String storename,
+            @RequestParam("numpeople") @NotNull(message = "인원수는 필수 입력값입니다.") Integer numpeople,
+            @RequestParam("opentime") @NotBlank(message = "영업시간은 필수 입력값입니다.") String opentime,
+            @RequestParam("storetel") @NotBlank(message = "매장번호는 필수 입력값입니다.") String storetel,
+            @RequestParam("parking") @NotBlank(message = "주차여부은 필수 입력값입니다.") String parking,
+            @RequestParam("price1")  Integer price1,
+    @RequestParam(value = "price2",required = false)  Integer price2,
+    @RequestParam(value = "price3",required = false)  Integer price3,
+    @RequestParam(value = "price4",required = false)  Integer price4,
+    @RequestParam(value = "price5",required = false)  Integer price5,
+    @RequestParam(value = "price6",required = false)  Integer price6,
+    @RequestParam(value = "price7",required = false)  Integer price7,
+    @RequestParam(value = "price8",required = false)  Integer price8,
+    @RequestParam(value = "price9",required = false)  Integer price9,
+    @RequestParam(value = "price10",required = false)  Integer price10,
+    @RequestParam("productname1")  String productname1,
+    @RequestParam(value = "productname2",required = false)  String productname2,
+    @RequestParam(value = "productname3",required = false)  String productname3,
+    @RequestParam(value = "productname4",required = false)  String productname4,
+    @RequestParam(value = "productname5",required = false)  String productname5,
+    @RequestParam(value = "productname6",required = false)  String productname6,
+    @RequestParam(value = "productname7",required = false)  String productname7,
+    @RequestParam(value = "productname8",required = false)  String productname8,
+    @RequestParam(value = "productname9",required = false)  String productname9,
+    @RequestParam(value = "productname10",required = false)  String productname10)
             throws IOException {
 
         List<MultipartFile> files = Arrays.asList(file1, file2, file3,
-                file4, file5,file6,file7,file8,file9,file10,file11,
-                file12,file13,file14,file15);
+                file4, file5);
         List<String> usedImages = new ArrayList<>();
         for (MultipartFile file : files) {
             if (file != null) {
@@ -427,35 +422,19 @@ public class PostController {
             }
         }
         PostUsedRequest params = new PostUsedRequest();
-        PostRentalRequest postRentalRequest = new PostRentalRequest();
         params.setId(id);
         params.setRegion(region);
         params.setTitle(title);
         params.setDescription(description);
         params.setShortdescription(shortdescription);
-        postRentalRequest.setPrice1(price1);
-        postRentalRequest.setPrice2(price2);
-        postRentalRequest.setPrice3(price3);
-        postRentalRequest.setPrice4(price4);
-        postRentalRequest.setPrice5(price5);
-        postRentalRequest.setPrice6(price6);
-        postRentalRequest.setPrice7(price7);
-        postRentalRequest.setPrice8(price8);
-        postRentalRequest.setPrice9(price9);
-        postRentalRequest.setPrice10(price10);
-        postRentalRequest.setProductname1(productname1);
-        postRentalRequest.setProductname2(productname2);
-        postRentalRequest.setProductname3(productname3);
-        postRentalRequest.setProductname4(productname4);
-        postRentalRequest.setProductname5(productname5);
-        postRentalRequest.setProductname6(productname6);
-        postRentalRequest.setProductname7(productname7);
-        postRentalRequest.setProductname8(productname8);
-        postRentalRequest.setProductname9(productname9);
-        postRentalRequest.setProductname10(productname10);
         params.setUserid(userid);
         params.setWritedate(writedate);
         params.setNickname(nickname);
+        params.setStorename(storename);
+        params.setNumpeople(numpeople);
+        params.setOpentime(opentime);
+        params.setStoretel(storetel);
+        params.setParking(parking);
         if (!usedImages.isEmpty()) {
             params.setUsedimage1(usedImages.get(0));
         }
@@ -471,41 +450,31 @@ public class PostController {
         if (usedImages.size() > 4) {
             params.setUsedimage5(usedImages.get(4));
         }
-        if (usedImages.size() > 5) {
-            postRentalRequest.setRentalimage1(usedImages.get(5));
-        }
-        if (usedImages.size() > 6) {
-            postRentalRequest.setRentalimage2(usedImages.get(6));
-        }
-        if (usedImages.size() > 7) {
-            postRentalRequest.setRentalimage3(usedImages.get(7));
-        }
-        if (usedImages.size() > 8) {
-            postRentalRequest.setRentalimage4(usedImages.get(8));
-        }
-        if (usedImages.size() > 9) {
-            postRentalRequest.setRentalimage5(usedImages.get(9));
-        }
-        if (usedImages.size() > 10) {
-            postRentalRequest.setRentalimage6(usedImages.get(10));
-        }
-        if (usedImages.size() > 11) {
-            postRentalRequest.setRentalimage7(usedImages.get(11));
-        }
-        if (usedImages.size() > 12) {
-            postRentalRequest.setRentalimage8(usedImages.get(12));
-        }
-        if (usedImages.size() > 13) {
-            postRentalRequest.setRentalimage9(usedImages.get(13));
-        }
-        if (usedImages.size() > 14) {
-            postRentalRequest.setRentalimage10(usedImages.get(14));
-        }
-        postService.saveRentalPost(postRentalRequest);
-        return new ResponseEntity<>(postService.saveUsedPost(params), HttpStatus.OK);
+        params.setPrice1(price1);
+        params.setPrice2(price2);
+        params.setPrice3(price3);
+        params.setPrice4(price4);
+        params.setPrice5(price5);
+        params.setPrice6(price6);
+        params.setPrice7(price7);
+        params.setPrice8(price8);
+        params.setPrice9(price9);
+        params.setPrice10(price10);
+        params.setProductname1(productname1);
+        params.setProductname2(productname2);
+        params.setProductname3(productname3);
+        params.setProductname4(productname4);
+        params.setProductname5(productname5);
+        params.setProductname6(productname6);
+        params.setProductname7(productname7);
+        params.setProductname8(productname8);
+        params.setProductname9(productname9);
+        params.setProductname10(productname10);
+        postService.saveUsedPost(params);
+        return new ResponseEntity<>(postService.saveRentalPost(params), HttpStatus.OK);
 
     }
-    // 대여 포트원 주문번호, 금액 사전 등록, 디비 저장 (멘토 금액 컨트롤러)
+    // 대여 포트원 주문번호, 금액 사전 등록, 디비 저장 (대여 금액 컨트롤러)
     @PostMapping("/post/pricebeforehandandsaverentalinfo")
     public ResponseEntity<String> preparePaymentRental(@RequestParam("userid") Long userid,
                                                  @RequestParam("username") @Size(min = 2, max = 10) String username,
@@ -558,11 +527,11 @@ public class PostController {
                 // 응답 상태 코드 확인
                 HttpStatusCode status = null;
                 if (responseApi != null) {
-                    status = responseApi.block().getStatusCode();
+                    status = Objects.requireNonNull(responseApi.block()).getStatusCode();
                 }
 
                 // 각각의 결과를 처리하는 로직 추가
-                if (status.is2xxSuccessful()) {
+                if (Objects.requireNonNull(status).is2xxSuccessful()) {
                     // 모든 API 호출이 성공한 경우
                     PostRentalInfoDTO postRentalInfoDTO = new PostRentalInfoDTO();
                     postRentalInfoDTO.setPrice(price);
@@ -1071,7 +1040,7 @@ public class PostController {
     @PostMapping("/ribbonRefresh")
     public ResponseEntity<TokenInfo> refreshToken(@RequestBody ReissueToken params, @RequestHeader HttpHeaders headers) {
         String refreshToken = params.getRefreshToken();
-        String expireToken = headers.getFirst("Authorization").substring(7);
+        String expireToken = Objects.requireNonNull(headers.getFirst("Authorization")).substring(7);
         // RefreshToken 검증
         if (!jwtTokenProvider.validateToken(refreshToken)) {
             return ResponseEntity.badRequest().build();
@@ -1220,7 +1189,7 @@ public class PostController {
             obj.put("liked2", posts);
             return new ResponseEntity<>(obj, HttpStatus.OK);
         }
-        // 중고 좋아요 알림 조회
+        // 대여 좋아요 알림 조회
         @PostMapping("/post/usedlikedalarm")
         public ResponseEntity<?> usedLikedAlarm(@RequestBody PostUsedLikedRequest params, Model model) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
@@ -1262,7 +1231,7 @@ public class PostController {
             return postService.deleteIndividualLikedPost(params);
         }
 
-        // 중고 좋아요 등록
+        // 대여 좋아요 등록
         @PostMapping("/post/usedliked")
         public Integer saveUsedLikedPost(@RequestBody PostUsedLikedRequest params) throws ApiException, IOException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
@@ -1276,7 +1245,7 @@ public class PostController {
         }
 
 
-        // 중고 좋아요 삭제
+        // 대여 좋아요 삭제
         @DeleteMapping("/post/deleteusedliked")
         public ResponseEntity<?> deleteUsedLikedPost(@RequestBody PostUsedLikedRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
@@ -1314,7 +1283,7 @@ public class PostController {
         obj.put("comment3", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }
-    // 중고 댓글 알림 조회
+    // 대여 댓글 알림 조회
     @PostMapping("/post/usedcommentalarm")
     public ResponseEntity<?> usedLikedAlarm(@RequestBody PostUsedCommentsRequest params, Model model) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
@@ -1464,7 +1433,7 @@ public class PostController {
         }
 
 
-        // 중고 댓글 조회
+        // 대여 댓글 조회
         @PostMapping("/post/usedcommentsinfo")
         public ResponseEntity<?> usedcommentsinfo(@RequestBody PostUsedCommentsResponse inherentid, Model model) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
@@ -1477,7 +1446,7 @@ public class PostController {
         }
 
 
-        // 중고 댓글 등록 및 아이디 전송
+        // 대여 댓글 등록 및 아이디 전송
         @PostMapping("/post/usedcomments")
         public ResponseEntity<?> saveUsedComments(@RequestBody PostUsedCommentsRequest params, Model model) throws ApiException, IOException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
@@ -1495,14 +1464,14 @@ public class PostController {
 
         }
 
-        // 중고 댓글 수정
+        // 대여 댓글 수정
         @PostMapping("/post/updateusedcomments")
         public ResponseEntity<?> updateUsedCommentsPost(@RequestBody PostUsedCommentsRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
             return postService.updateUsedCommentsPost(params);
         }
 
-        // 중고 댓글 삭제
+        // 대여 댓글 삭제
         @DeleteMapping("/post/deleteusedcomments")
         public ResponseEntity<?> deleteUsedCommentsPost(@RequestBody PostUsedCommentsRequest params) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
@@ -1560,7 +1529,7 @@ public class PostController {
             return new ResponseEntity<>(obj, HttpStatus.OK);
         }
 
-        // 내가 쓴 글 중고
+        // 내가 쓴 글 대여
         @PostMapping("/post/myusedwrite")
         public ResponseEntity<?> myBoardWrite(@RequestBody PostMyUsedResponse userid, Model model) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
@@ -1596,7 +1565,7 @@ public class PostController {
             return new ResponseEntity<>(obj, HttpStatus.OK);
         }
 
-        // 내가 좋아요 누른 글 중고
+        // 내가 좋아요 누른 글 대여
         @PostMapping("/post/myusedliked")
         public ResponseEntity<?> myUsedLiked(@RequestBody PostMyUsedLikedResponse userid, Model model) throws ApiException {
             ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;

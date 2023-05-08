@@ -49,14 +49,4 @@ public class PostUsedResponse {
     private String productname9;
     private String productname10;
 
-    private String rentalimage1;
-    private String rentalimage2;
-    private String rentalimage3;
-    private String rentalimage4;
-    private String rentalimage5;
-    private String rentalimage6;
-    private String rentalimage7;
-    private String rentalimage8;
-    private String rentalimage9;
-    private String rentalimage10;
 }

@@ -304,7 +304,7 @@ public class PostService {
     }
     // 대여 게시글 작성
     @Transactional
-    public ResponseEntity<?> saveRentalPost(final PostRentalRequest params) {
+    public ResponseEntity<?> saveRentalPost(final PostUsedRequest params) {
         try {
             postMapper.saveRental(params);
         } catch (Exception e) {
