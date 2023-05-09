@@ -1319,7 +1319,7 @@ public class PostService {
     }
 
     // 특정 채팅방 조회
-    public List<PostChatRoomResponse> findPostByMyId(final Integer myid) {
+    public PostChatRoomResponse findPostByMyId(final Long myid) {
         try {
             return postMapper.findByMyId(myid);
         } catch (Exception e) {
@@ -1341,6 +1341,7 @@ public class PostService {
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
+
 
     // 채팅룸 삭제
     public ResponseEntity<?> deleteChatRoomPost(final PostChatRoomDeleteRequest params) {

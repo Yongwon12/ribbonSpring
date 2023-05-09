@@ -12,13 +12,14 @@ public class PostChatRoomRequest {
 
         @Id
         private Long id;
+        private String roomid;
         private String roomname;
 
-        private Integer myid;
+        private Long myid;
 
-        private Integer yourid;
+        private Long yourid;
 
-        private String writedate;
+        private String createdate;
 
 }
 

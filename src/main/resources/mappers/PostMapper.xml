@@ -189,11 +189,8 @@
         , roomname
         , myid
         , yourid
-        , mynickname
-        , yournickname
-        , myprofileimage
-            , yourprofileimage
-            , writedate
+            , roomid
+            , createdate
     </sql>
 
     <!-- 커뮤니티 게시글 저장 -->
@@ -1886,29 +1883,35 @@
     <!-- 채팅방 정보 저장 -->
     <insert id="saveChatRoom" parameterType="com.project.ribbon.domain.post.PostChatRoomRequest"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO chatroom (
+        INSERT IGNORE INTO chatroom (
         <include refid="postChatRoomColumns" />
         ) VALUES (
         #{id}
-        , #{roomname}
+        ,#{roomname}
         , #{myid}
         , #{yourid}
+        , #{roomid}
         , NOW()
         )
+        ON DUPLICATE KEY UPDATE
+        roomid = #{roomid},
+        createdate = NOW()
     </insert>
 
 
+
+
     <!-- 특정 채팅방 정보 조회  -->
-    <select id="findByMyId" parameterType="Integer" resultType="com.project.ribbon.domain.post.PostChatRoomResponse">
+    <select id="findByMyId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostChatRoomResponse">
         SELECT
-            roomname,yourid,user.nickname,user.profileimage,myid,token,writedate
+            chatroom.roomid,chatroom.roomname,user.profileimage
         FROM
             chatroom
                 LEFT JOIN user
                           ON user.userid = chatroom.yourid
         WHERE
             myid = #{myid}
-        ORDER BY writedate DESC
+        ORDER BY chatroom.createdate DESC
     </select>
 
 
@@ -1917,7 +1920,7 @@
         DELETE
                 FROM
                 chatroom
-                WHERE roomname = #{roomname}
+                WHERE roomid = #{roomid}
     </delete>
 
     <!-- 유저 결제 정보 조회 -->

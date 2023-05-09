@@ -6,7 +6,6 @@ import lombok.Getter;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,18 +13,13 @@ import java.util.Set;
 public class ChatRoom {
     private String roomId;
     private String roomName;
-    private Long myid;
-    private Long yourid;
-    private LocalDateTime createdate;
     private Set<WebSocketSession> sessions = new HashSet<>();
 
     @Builder
-    public ChatRoom(String roomId, String roomName, Long myid, Long yourid,LocalDateTime createdate) {
+    public ChatRoom(String roomId, String roomName) {
         this.roomId = roomId;
         this.roomName = roomName;
-        this.myid = myid;
-        this.yourid = yourid;
-        this.createdate = createdate;
+
     }
 
     public void handlerActions(WebSocketSession session, ChatMessage chatMessage, ChatService chatService) {

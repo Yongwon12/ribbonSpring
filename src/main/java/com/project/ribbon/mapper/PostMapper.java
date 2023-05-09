@@ -298,12 +298,13 @@ public interface PostMapper {
     List<PostMyUsedLikedResponse> findByMyUsedLikedUserId(Long userid);
 
     // 특정 채팅방 조회
-    List<PostChatRoomResponse> findByMyId(Integer myid);
+    PostChatRoomResponse findByMyId(Long myid);
 
 
 
     // 채팅방 입력
     void saveChatRoom(PostChatRoomRequest params);
+
 
     // db꺼내오기 테스트
     List<PostResponse> findAllTest(Integer id);

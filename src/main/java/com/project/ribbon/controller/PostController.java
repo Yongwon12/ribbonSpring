@@ -1582,25 +1582,18 @@ public class PostController {
         }
 
 
-        // 채팅방 넣기
-        @PostMapping("/post/chatroom")
-        public ResponseEntity<?> saveChatRoomPost(@RequestBody PostChatRoomRequest params) throws ApiException {
-            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-            return postService.saveChatRoomPost(params);
 
-        }
-
-        // 특정 채팅방 조회
-        @PostMapping("/post/chatroominfo")
-        public ResponseEntity<?> viewChatRoomPost(@RequestBody PostChatRoomResponse myid, Model model) throws ApiException {
-            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-            postService.findPostByMyId(myid.getMyid());
-            Map<String, Object> obj = new HashMap<>();
-            List<PostChatRoomResponse> posts = postService.findPostByMyId(myid.getMyid());
-            model.addAttribute("posts", posts);
-            obj.put("chatroom", posts);
-            return new ResponseEntity<>(obj, HttpStatus.OK);
-        }
+//        // 특정 채팅방 조회
+//        @PostMapping("/post/chatroominfo")
+//        public ResponseEntity<?> viewChatRoomPost(@RequestBody PostChatRoomResponse myid, Model model) throws ApiException {
+//            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+//            postService.findPostByMyId(myid.getMyid());
+//            Map<String, Object> obj = new HashMap<>();
+//            List<PostChatRoomResponse> posts = postService.findPostByMyId(myid.getMyid());
+//            model.addAttribute("posts", posts);
+//            obj.put("chatroom", posts);
+//            return new ResponseEntity<>(obj, HttpStatus.OK);
+//        }
 
 
         // 특정 채팅방 삭제

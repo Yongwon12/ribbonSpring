@@ -1,6 +1,7 @@
 package com.project.ribbon.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.ribbon.domain.post.PostChatRoomRequest;
 import com.project.ribbon.dto.ChatRoom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,6 @@ import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -18,6 +18,7 @@ import java.util.*;
 @Service
 public class ChatService {
     private final ObjectMapper objectMapper;
+    private final PostService postService;
     private Map<String, ChatRoom> chatRooms;
 
     @PostConstruct
@@ -33,18 +34,22 @@ public class ChatService {
         return chatRooms.get(roomId);
     }
 
-    public ChatRoom createRoom(String roomName,Long myid,Long yourid) {
+    public ChatRoom createRoom(String roomName, Long myid, Long yourid) {
         String randomId = UUID.randomUUID().toString();
+        PostChatRoomRequest insertparams = new PostChatRoomRequest();
+        insertparams.setRoomname(roomName);
+        insertparams.setMyid(myid);
+        insertparams.setYourid(yourid);
+        insertparams.setRoomid(randomId);
+        postService.saveChatRoomPost(insertparams);
         ChatRoom chatRoom = ChatRoom.builder()
                 .roomId(randomId)
                 .roomName(roomName)
-                .myid(myid)
-                .yourid(yourid)
-                .createdate(LocalDateTime.now())
                 .build();
         chatRooms.put(randomId, chatRoom);
         return chatRoom;
     }
+
 
     public <T> void sendMessage(WebSocketSession session, T message) {
         try{
