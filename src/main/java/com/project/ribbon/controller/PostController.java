@@ -76,11 +76,11 @@ public class PostController {
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
     // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://112.148.33.214:8000/api/userimage/";
-    String boardip = "http://112.148.33.214:8000/api/boardimage/";
-    String groupip = "http://112.148.33.214:8000/api/groupimage/";
-    String usedip = "http://112.148.33.214:8000/api/usedimage/";
-    String mentorip = "http://112.148.33.214:8000/api/writementortitleimage/";
+    String userip = "http://192.168.3.89:8000/api/userimage/";
+    String boardip = "http://192.168.3.89:8000/api/boardimage/";
+    String groupip = "http://192.168.3.89:8000/api/groupimage/";
+    String usedip = "http://192.168.3.89:8000/api/usedimage/";
+    String mentorip = "http://192.168.3.89:8000/api/writementortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -369,7 +369,8 @@ public class PostController {
     @PostMapping("/post/writeused")
     public ResponseEntity<?> saveUsedPost(
             @RequestParam("id") @Size(min = 2, max = 15, message = "카테고리는 2~15자리여야 합니다.") @NotNull(message = "카테고리는 필수 입력값입니다.") String id,
-            @RequestParam("region") @NotBlank(message = "지역은 필수 입력값입니다.") String region,
+            @RequestParam("region") @NotBlank(message = "주소는 필수 입력값입니다.") String region,
+            @RequestParam("detailregion") @NotBlank(message = "상세주소는 필수 입력값입니다.") String detailregion,
             @RequestParam("title") @Size(min = 2, max = 30, message = "제목은 2~30자리여야 합니다.") @NotBlank(message = "제목은 필수 입력 값입니다.") String title,
             @RequestParam("description") @NotBlank(message = "내용은 필수 입력 값입니다.") @Size(min = 2, max = 500, message = "내용은 2~500자리여야 합니다.") String description,
             @RequestParam("shortdescription") @NotBlank(message = "내용은 필수 입력 값입니다.") @Size(min = 2, max = 40, message = "내용은 2~40자리여야 합니다.") String shortdescription,
@@ -386,6 +387,7 @@ public class PostController {
             @RequestParam("opentime") @NotBlank(message = "영업시간은 필수 입력값입니다.") String opentime,
             @RequestParam("storetel") @NotBlank(message = "매장번호는 필수 입력값입니다.") String storetel,
             @RequestParam("parking") @NotBlank(message = "주차여부은 필수 입력값입니다.") String parking,
+            @RequestParam("holiday") @NotBlank(message = "공휴일은 필수 입력값입니다.") String holiday,
             @RequestParam("price1")  Integer price1,
     @RequestParam(value = "price2",required = false)  Integer price2,
     @RequestParam(value = "price3",required = false)  Integer price3,
@@ -424,6 +426,7 @@ public class PostController {
         PostUsedRequest params = new PostUsedRequest();
         params.setId(id);
         params.setRegion(region);
+        params.setDetailregion(detailregion);
         params.setTitle(title);
         params.setDescription(description);
         params.setShortdescription(shortdescription);
@@ -435,6 +438,7 @@ public class PostController {
         params.setOpentime(opentime);
         params.setStoretel(storetel);
         params.setParking(parking);
+        params.setHoliday(holiday);
         if (!usedImages.isEmpty()) {
             params.setUsedimage1(usedImages.get(0));
         }

@@ -1,31 +1,16 @@
 package com.project.ribbon.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import java.time.LocalDateTime;
-
-@Getter
-@Setter
+@Data
 public class ChatMessage {
-    private MessageType type;
-    private Long id;
-    private String message;
-    private String nickname;
-    private String profileimage;
-    private LocalDateTime timestamp;
-    
-    public enum MessageType {
-        ENTER, CHAT, LEAVE
+    public enum MessageType{
+        ENTER,TALK,EXIT
     }
 
-    // ChatMessage를 ChatEntity로 변환하는 메소드
-    public ChatEntity toEntity() {
-        ChatEntity entity = new ChatEntity();
-        entity.setMessage(message);
-        entity.setNickname(nickname);
-        entity.setProfileimage(profileimage);
-        entity.setTimestamp(timestamp);
-        return entity;
-    }
+    private MessageType type;
+    private String roomId;
+    private String roomName;
+    private String sender;
+    private String message;
 }

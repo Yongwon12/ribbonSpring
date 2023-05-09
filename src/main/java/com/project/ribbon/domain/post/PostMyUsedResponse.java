@@ -9,6 +9,7 @@ public class PostMyUsedResponse {
 
     private Integer id;
     private String region;
+    private String detailregion;
     private String title;
     private String description;
     private String usedimage1;
@@ -19,6 +20,12 @@ public class PostMyUsedResponse {
     private String writedate;
     private String nickname;
     private Long usedid;      // PK
+    private String storename;
+    private String numpeople;
+    private String opentime;
+    private String storetel;
+    private String parking;
+    private String holiday;
     private String  usedimage2;
     private String  usedimage3;
     private String  usedimage4;

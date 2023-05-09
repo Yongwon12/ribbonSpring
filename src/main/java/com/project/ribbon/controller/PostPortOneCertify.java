@@ -5,13 +5,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.project.ribbon.dto.*;
 import com.project.ribbon.repository.MemberRepository;
+import com.project.ribbon.service.FirebaseCloudMessageRentalService;
 import com.project.ribbon.service.PostService;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -24,11 +23,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+
 @RestController
 public class PostPortOneCertify {
     private final SqlSessionTemplate sqlSession;
 
     private final MemberRepository memberRepository;
+
+    private final FirebaseCloudMessageRentalService firebaseCloudMessageRentalService;
     private final PostService postService;
     @Value("${myapp.secretToken}")
     private String secretToken;
@@ -37,10 +39,11 @@ public class PostPortOneCertify {
     @Value("${myapp.impSecret}")
     private String impSecret;
 
-    public PostPortOneCertify(MemberRepository memberRepository, PostService postService, SqlSessionTemplate sqlSession) {
+    public PostPortOneCertify(MemberRepository memberRepository, PostService postService, SqlSessionTemplate sqlSession, FirebaseCloudMessageRentalService firebaseCloudMessageRentalService) {
         this.memberRepository = memberRepository;
         this.postService = postService;
         this.sqlSession = sqlSession;
+        this.firebaseCloudMessageRentalService = firebaseCloudMessageRentalService;
     }
 
     // 엑세스 토큰 얻기
@@ -376,6 +379,7 @@ public class PostPortOneCertify {
             Long inherentid = paymentRequest.getInherentid();
             String rentaltime = paymentRequest.getRentaltime();
             String productname = paymentRequest.getProductname();
+            String token = paymentRequest.getToken();
             // 엑세스 토큰 발급
             WebClient webClient = WebClient.builder().build();
             String url = "https://api.iamport.kr/users/getToken";
@@ -430,6 +434,11 @@ public class PostPortOneCertify {
                     paymentDTO.setInherentid(inherentid);
                     paymentDTO.setRentaltime(rentaltime);
                     paymentDTO.setProductname(productname);
+                    firebaseCloudMessageRentalService.sendMessageTo(
+                            token,
+                           paymentData.getResponse().getBuyer_name(),
+                           productname);
+                    ResponseEntity.ok().build().getStatusCode();
                     postService.savePaymentRentalInfoPost(paymentDTO);
                     // 결제 성공시 응답
                     switch (status) {

@@ -11,10 +11,9 @@ public class PostChatRoomResponse {
     private String roomname;
     private Integer myid;
     private Integer yourid;
-    private String yournickname;
-    private String yourprofileimage;
     private String token;
     private String writedate;
     private String nickname;
     private String profileimage;
+
 }

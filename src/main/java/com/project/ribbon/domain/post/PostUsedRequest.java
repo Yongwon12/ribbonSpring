@@ -18,6 +18,7 @@ public class PostUsedRequest {
 
         private String id;
         private String region;
+        private String detailregion;
 
         private String title;
 
@@ -43,6 +44,7 @@ public class PostUsedRequest {
         private String opentime;
         private String storetel;
         private String parking;
+        private String holiday;
         @NotNull(message = "가격은 필수 입력값입니다.") @DigitLength(min = 3, max = 7, message = "가격은 4~7자리로 입력해주세요.")
         private Integer price1;
         private Integer price2;

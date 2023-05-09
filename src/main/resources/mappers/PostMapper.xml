@@ -64,6 +64,7 @@
     <sql id="postUsedColumns">
         id
         , region
+        , detailregion
         , title
         , description
         , shortdescription
@@ -84,6 +85,7 @@
         , opentime
         , storetel
         , parking
+        , holiday
     </sql>
     <!-- writementor 테이블 전체 컬럼 -->
     <sql id="postWritementorColumns">
@@ -472,8 +474,9 @@
     <!-- 대여 게시글 조회  -->
     <select id="findUsedAll" resultType="com.project.ribbon.domain.post.PostUsedResponse">
         SELECT
-            id,region,title,description,shortdescription,usedimage1,user.userid,user.username,writedate,user.nickname,
-            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount,
+            id,region,detailregion,title,description,shortdescription,usedimage1,user.userid,user.username,writedate,user.nickname,
+            storename,numpeople,opentime,storetel,parking,holiday,
+            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,profileimage,inquirycount,
             productname1, productname2, productname3, productname4, productname5, productname6, productname7, productname8,
             productname9, productname10, price1, price2, price3, price4, price5, price6, price7, price8, price9, price10
         FROM
@@ -489,7 +492,8 @@
     <!-- 대여 특정 게시글 조회  -->
     <select id="findUsedOne" resultType="com.project.ribbon.domain.post.PostUsedResponse">
         SELECT
-            id,region,title,description,shortdescription,usedimage1,user.userid,user.username,writedate,user.nickname,
+            id,region,detailregion,title,description,shortdescription,usedimage1,user.userid,user.username,writedate,user.nickname,
+            storename,numpeople,opentime,storetel,parking,holiday,
             usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount,
             productname1, productname2, productname3, productname4, productname5, productname6, productname7, productname8,
             productname9, productname10, price1, price2, price3, price4, price5, price6, price7, price8, price9, price10
@@ -518,6 +522,7 @@
         ) VALUES (
         #{id}
         , #{region}
+        , #{detailregion}
         , #{title}
         , #{description}
         , #{shortdescription}
@@ -538,6 +543,7 @@
         , #{opentime}
         , #{storetel}
         , #{parking}
+        , #{holiday}
         )
 
         <selectKey keyProperty="inherentid" order="AFTER" resultType="java.lang.Long">
@@ -1807,12 +1813,11 @@
     <!-- 대여 내가 쓴 글  -->
     <select id="findByMyUsedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyUsedResponse">
         SELECT
-            id,region,title,description,usedimage1,usedwrite.userid,user.username,shortdescription,
-            writedate,user.nickname,usedid,usedimage2,usedimage3,usedimage4,
-            usedimage5,likedcount,commentcount,profileimage, productname1,
-            productname2, productname3, productname4, productname5, productname6,
-            productname7, productname8, productname9, productname10, price1, price2,
-            price3, price4, price5, price6, price7, price8, price9, price10
+            id,region,detailregion,title,description,shortdescription,usedimage1,user.userid,user.username,writedate,user.nickname,
+            storename,numpeople,opentime,storetel,parking,holiday,
+            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount,
+            productname1, productname2, productname3, productname4, productname5, productname6, productname7, productname8,
+            productname9, productname10, price1, price2, price3, price4, price5, price6, price7, price8, price9, price10
         FROM
             usedwrite
                 LEFT JOIN user
@@ -1860,13 +1865,11 @@
     <!-- 내가 좋아요 누른 글 대여 -->
     <select id="findByMyUsedLikedUserId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostMyUsedLikedResponse">
         SELECT
-            usedwrite.id,region,title,description,usedimage1,usedwrite.userid,
-            user.username,shortdescription,
-            writedate,user.nickname,usedid,usedimage2,usedimage3,usedimage4,
-            usedimage5,likedcount,commentcount,profileimage, productname1,
-            productname2, productname3, productname4, productname5, productname6,
-            productname7, productname8, productname9, productname10, price1, price2,
-            price3, price4, price5, price6, price7, price8, price9, price10
+            id,region,detailregion,title,description,shortdescription,usedimage1,user.userid,user.username,writedate,user.nickname,
+            storename,numpeople,opentime,storetel,parking,holiday,
+            usedid,usedimage2,usedimage3,usedimage4,usedimage5,likedcount,commentcount,token,profileimage,inquirycount,
+            productname1, productname2, productname3, productname4, productname5, productname6, productname7, productname8,
+            productname9, productname10, price1, price2, price3, price4, price5, price6, price7, price8, price9, price10
         FROM
             usedwrite
                 LEFT JOIN usedliked
@@ -1890,10 +1893,6 @@
         , #{roomname}
         , #{myid}
         , #{yourid}
-        , #{mynickname}
-        , #{yournickname}
-        , #{myprofileimage}
-        , #{yourprofileimage}
         , NOW()
         )
     </insert>
@@ -1902,7 +1901,7 @@
     <!-- 특정 채팅방 정보 조회  -->
     <select id="findByMyId" parameterType="Integer" resultType="com.project.ribbon.domain.post.PostChatRoomResponse">
         SELECT
-            roomname,yourid,user.nickname,user.profileimage,myid,token
+            roomname,yourid,user.nickname,user.profileimage,myid,token,writedate
         FROM
             chatroom
                 LEFT JOIN user

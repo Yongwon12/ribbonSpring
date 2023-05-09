@@ -17,10 +17,6 @@ public class PostChatRoomRequest {
         private Integer myid;
 
         private Integer yourid;
-        private String mynickname;
-        private String yournickname;
-        private String myprofileimage;
-        private String yourprofileimage;
 
         private String writedate;
 
