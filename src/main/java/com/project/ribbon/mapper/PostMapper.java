@@ -299,15 +299,19 @@ public interface PostMapper {
 
     // 특정 채팅방 조회
     PostChatRoomResponse findByMyId(Long myid);
+    // 특정 채팅방 전체 조회
+    List<PostChatRoomResponse> findByChatRoomMyId(Long myid);
 
 
 
     // 채팅방 입력
     void saveChatRoom(PostChatRoomRequest params);
+    // 채팅정보 입력
+    void saveChatInfo(ChatMessage params);
+    // 특정 채팅내역 조회
+    List<PostChatRoomResponse> findByChatInfoMyId(String roomname);
 
 
-    // db꺼내오기 테스트
-    List<PostResponse> findAllTest(Integer id);
 
 
 

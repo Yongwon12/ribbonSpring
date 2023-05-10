@@ -1327,6 +1327,15 @@ public class PostService {
             throw new RuntimeException("특정 채팅방 조회에 실패했습니다.", e);
         }
     }
+    // 특정 채팅방 전체 조회
+    public List<PostChatRoomResponse> findPostByChatRoomMyId(final Long myid) {
+        try {
+            return postMapper.findByChatRoomMyId(myid);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("특정 채팅방 조회에 실패했습니다.", e);
+        }
+    }
 
 
 
@@ -1341,7 +1350,26 @@ public class PostService {
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
-
+    // 채팅정보 넣기
+    @Transactional
+    public ResponseEntity<?> saveChatInfoPost(final ChatMessage params) {
+        try {
+            postMapper.saveChatInfo(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("채팅정보 저장에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
+    // 특정 채팅내역 조회
+    public List<PostChatRoomResponse> findByChatInfoMyIdPost(final String roomname) {
+        try {
+            return postMapper.findByChatInfoMyId(roomname);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("특정 채팅방 조회에 실패했습니다.", e);
+        }
+    }
 
     // 채팅룸 삭제
     public ResponseEntity<?> deleteChatRoomPost(final PostChatRoomDeleteRequest params) {

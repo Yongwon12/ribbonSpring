@@ -1898,7 +1898,41 @@
         createdate = NOW()
     </insert>
 
+    <!-- 채팅내역 저장 -->
+    <insert id="saveChatInfo" parameterType="com.project.ribbon.dto.ChatMessage"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO chatinfo (
+        id,writetime,myid,yourid,description,isright,type,roomname
+        ) VALUES (
+        #{id}
+        , NOW()
+        , #{myid}
+        , #{yourid}
+        , #{message}
+        , #{isright}
+        , #{type}
+        , #{roomName}
+        )
+    </insert>
 
+    <!-- 특정 채팅내역 조회  -->
+    <select id="findByChatInfoMyId" parameterType="String" resultType="com.project.ribbon.domain.post.PostChatRoomResponse">
+        SELECT
+            chatinfo.description,chatinfo.isright,chatinfo.writetime,
+            myuser.userid,youruser.profileimage,youruser.nickname
+        FROM
+            chatinfo
+        LEFT JOIN user AS myuser
+            ON myuser.userid = chatinfo.myid
+        LEFT JOIN user AS youruser
+                  ON youruser.userid = chatinfo.myid
+        WHERE
+            chatinfo.roomname = #{roomname}
+          AND chatinfo.type != 'ENTER'
+          AND myuser.userid IS NOT NULL
+          AND youruser.userid IS NOT NULL
+        ORDER BY chatinfo.writetime DESC
+    </select>
 
 
     <!-- 특정 채팅방 정보 조회  -->
@@ -1911,7 +1945,37 @@
                           ON user.userid = chatroom.yourid
         WHERE
             myid = #{myid}
+        AND user.userid IS NOT NULL
         ORDER BY chatroom.createdate DESC
+    </select>
+
+    <!-- 특정 채팅방 정보 전체 조회  -->
+    <select id="findByChatRoomMyId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostChatRoomResponse">
+        SELECT
+            chatroom.roomid,
+            chatroom.roomname,
+            CASE
+                WHEN SUBSTRING_INDEX(chatroom.roomname, '/', 1) = #{myid}
+                    THEN SUBSTRING_INDEX(chatroom.roomname, '/', -1)
+                ELSE SUBSTRING_INDEX(chatroom.roomname, '/', 1)
+                END AS userid,
+            user.profileimage,
+            user.token,
+            user.nickname
+        FROM
+            chatroom
+                LEFT JOIN user ON user.userid = (
+                CASE
+                    WHEN SUBSTRING_INDEX(chatroom.roomname, '/', 1) = #{myid}
+                        THEN SUBSTRING_INDEX(chatroom.roomname, '/', -1)
+                    ELSE SUBSTRING_INDEX(chatroom.roomname, '/', 1)
+                    END
+                )
+        WHERE
+            (myid = #{myid} OR chatroom.yourid = #{myid})
+          AND user.userid IS NOT NULL
+        ORDER BY chatroom.createdate DESC
+
     </select>
 
 
@@ -1920,7 +1984,7 @@
         DELETE
                 FROM
                 chatroom
-                WHERE roomid = #{roomid}
+                WHERE roomname = #{roomname}
     </delete>
 
     <!-- 유저 결제 정보 조회 -->

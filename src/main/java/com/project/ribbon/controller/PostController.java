@@ -1582,36 +1582,15 @@ public class PostController {
         }
 
 
-
-//        // 특정 채팅방 조회
-//        @PostMapping("/post/chatroominfo")
-//        public ResponseEntity<?> viewChatRoomPost(@RequestBody PostChatRoomResponse myid, Model model) throws ApiException {
-//            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-//            postService.findPostByMyId(myid.getMyid());
-//            Map<String, Object> obj = new HashMap<>();
-//            List<PostChatRoomResponse> posts = postService.findPostByMyId(myid.getMyid());
-//            model.addAttribute("posts", posts);
-//            obj.put("chatroom", posts);
-//            return new ResponseEntity<>(obj, HttpStatus.OK);
+        // 채팅 넣기 알림
+//        @PostMapping("/chat")
+//        public String pushChatPost(@RequestBody ResponseDTO responseDTO) throws IOException {
+//            firebaseCloudChatMessageService.sendMessageTo(
+//                    responseDTO.getToken(),
+//                    responseDTO.getNickname());
+//            return String.valueOf(ResponseEntity.ok().build().getStatusCode());
+//
 //        }
-
-
-        // 특정 채팅방 삭제
-        @DeleteMapping("/post/deleteroom")
-        public ResponseEntity<?> deleteChatRoomPost(@RequestBody PostChatRoomDeleteRequest params) throws ApiException {
-            ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-            return postService.deleteChatRoomPost(params);
-        }
-
-        // 채팅 넣기
-        @PostMapping("/chat")
-        public String pushChatPost(@RequestBody ResponseDTO responseDTO) throws IOException {
-            firebaseCloudChatMessageService.sendMessageTo(
-                    responseDTO.getToken(),
-                    responseDTO.getNickname());
-            return String.valueOf(ResponseEntity.ok().build().getStatusCode());
-
-        }
 
 }
 

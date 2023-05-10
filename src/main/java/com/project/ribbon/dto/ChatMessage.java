@@ -9,8 +9,13 @@ public class ChatMessage {
     }
 
     private MessageType type;
+    private Long id;
     private String roomId;
     private String roomName;
+    private Long myid;
+    private Long yourid;
     private String sender;
     private String message;
+    private String isright;
+    private String token;
 }

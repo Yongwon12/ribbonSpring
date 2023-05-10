@@ -24,7 +24,6 @@ public class ChatRoom {
 
     public void handlerActions(WebSocketSession session, ChatMessage chatMessage, ChatService chatService) {
         if (chatMessage.getType().equals(ChatMessage.MessageType.ENTER)) {
-            chatMessage.setMessage(chatMessage.getSender() + "님이 채팅방을 들어왔습니다.");
             sessions.add(session);
         } if (chatMessage.getType().equals(ChatMessage.MessageType.EXIT)) {
             try {

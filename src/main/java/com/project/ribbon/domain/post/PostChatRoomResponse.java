@@ -18,7 +18,10 @@ public class PostChatRoomResponse {
     private Long yourid;
     private String token;
     private String writedate;
+    private String writetime;
+    private Integer isright;
+    private String description;
     private String nickname;
     private String profileimage;
-
+    private Long userid;
 }

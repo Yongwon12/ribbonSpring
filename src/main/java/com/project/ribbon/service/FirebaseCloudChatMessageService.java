@@ -21,8 +21,8 @@ public class FirebaseCloudChatMessageService {
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/sportscommunity-d11ee/messages:send";
     private final ObjectMapper objectMapper;
 
-    public void sendMessageTo(String token,String nickname) throws IOException {
-        String message = makeMessage(token,nickname);
+    public void sendMessageTo(String token,String sender) throws IOException {
+        String message = makeMessage(token,sender);
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message,
@@ -39,13 +39,13 @@ public class FirebaseCloudChatMessageService {
         System.out.println(response.body().string());
     }
 
-    private String makeMessage(String token,String nickname) throws JsonParseException, JsonProcessingException {
+    private String makeMessage(String token,String sender) throws JsonParseException, JsonProcessingException {
         FcmChatMessage fcmChatMessage = FcmChatMessage.builder()
                 .message(FcmChatMessage.Message.builder()
                         .token(token)
                         .data(FcmChatMessage.Data.builder()
                                 .title("맺음")
-                                .body(nickname+"님이 새로운 메세지를 보냈습니다.")
+                                .body(sender+"님이 새로운 메세지를 보냈습니다.")
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();
