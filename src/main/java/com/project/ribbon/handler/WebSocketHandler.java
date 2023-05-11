@@ -28,12 +28,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         log.info("{}", payload);
         ChatMessage chatMessage = objectMapper.readValue(payload, ChatMessage.class);
+        ChatRoom chatRoom = chatService.findRoomById(chatMessage.getRoomId());
+        chatRoom.handlerActions(session, chatMessage, chatService);
         postService.saveChatInfoPost(chatMessage);
         firebaseCloudChatMessageService.sendMessageTo(
                 chatMessage.getToken(),
                 chatMessage.getSender());
         String.valueOf(ResponseEntity.ok().build().getStatusCode());
-        ChatRoom chatRoom = chatService.findRoomById(chatMessage.getRoomId());
-        chatRoom.handlerActions(session, chatMessage, chatService);
     }
 }
