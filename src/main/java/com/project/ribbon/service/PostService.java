@@ -1381,6 +1381,15 @@ public class PostService {
         }
         return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
     }
+    public ResponseEntity<?> deleteChatInfoPost(final PostChatRoomDeleteRequest params) {
+        try {
+            postMapper.deleteByRoomInfo(params);
+        } catch (Exception e) {
+            // 예외 처리 코드 작성
+            throw new RuntimeException("채팅방 삭제에 실패했습니다.", e);
+        }
+        return new ResponseEntity<>("요청이 성공적으로 처리되었습니다.", HttpStatus.OK);
+    }
     // 유저 결제 정보 조회
     public List<PostPaymentInfoResponse> findPaymentInfoAllPost() {
         try {

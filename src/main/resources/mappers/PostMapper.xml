@@ -1986,6 +1986,13 @@
                 chatroom
                 WHERE roomname = #{roomname}
     </delete>
+    <delete id="deleteByRoomInfo" >
+        DELETE
+                FROM
+                chatinfo
+                WHERE roomname = #{roomname}
+    </delete>
+
 
     <!-- 유저 결제 정보 조회 -->
     <select id="findPaymentInfoAll" resultType="com.project.ribbon.domain.post.PostPaymentInfoResponse">

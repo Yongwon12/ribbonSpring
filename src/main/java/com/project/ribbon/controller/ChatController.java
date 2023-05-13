@@ -61,6 +61,7 @@ public class ChatController {
     @DeleteMapping("/post/deleteroom")
     public ResponseEntity<?> deleteChatRoomPost(@RequestBody PostChatRoomDeleteRequest params) throws ApiException {
         ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        postService.deleteChatInfoPost(params);
         return postService.deleteChatRoomPost(params);
     }
 

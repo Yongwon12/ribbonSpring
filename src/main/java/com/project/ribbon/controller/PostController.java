@@ -1582,15 +1582,5 @@ public class PostController {
         }
 
 
-        // 채팅 넣기 알림
-//        @PostMapping("/chat")
-//        public String pushChatPost(@RequestBody ResponseDTO responseDTO) throws IOException {
-//            firebaseCloudChatMessageService.sendMessageTo(
-//                    responseDTO.getToken(),
-//                    responseDTO.getNickname());
-//            return String.valueOf(ResponseEntity.ok().build().getStatusCode());
-//
-//        }
-
 }
 

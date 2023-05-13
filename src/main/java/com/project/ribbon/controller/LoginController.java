@@ -452,7 +452,7 @@ public class LoginController {
         return new ResponseEntity<>(postService.saveReportUsedCommentsPost(params),HttpStatus.OK);
     }
     // 신고 유저 정보 수정
-    @RequestMapping("/ribbon/admin/post/reportuserdelete")
+    @PostMapping("/ribbon/admin/post/reportuserdelete")
     public String userReportDelete(@RequestBody List<Map<String,String>> params) {
         for (Map<String,String> user:params) {
             String userId = user.get("userid");
@@ -463,7 +463,7 @@ public class LoginController {
         return "admin-reportpostdeleteuser";
     }
     // 활성화 유저 정보 수정 및 삭제
-    @RequestMapping("/ribbon/admin/post/reportuseractivate")
+    @PostMapping("/ribbon/admin/post/reportuseractivate")
     public String userActivateUpdate(@RequestBody List<Map<String,String>> params) {
         for (Map<String,String> user:params) {
             String userId = user.get("userid");
@@ -473,7 +473,7 @@ public class LoginController {
         return "admin-reportpostdeleteuser";
     }
     // 관리자페이지 신고 멘토 글 정보 삭제
-    @RequestMapping("/ribbon/admin/post/reportmentordelete")
+    @PostMapping("/ribbon/admin/post/reportmentordelete")
     public String mentorReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> mentor : params) {
@@ -485,7 +485,7 @@ public class LoginController {
         return "admin-reportpostdeletementor";
     }
     // 관리자페이지 신고 커뮤니티글 정보 삭제
-    @RequestMapping("/ribbon/admin/post/reportboarddelete")
+    @PostMapping("/ribbon/admin/post/reportboarddelete")
     public String boardReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> board : params) {
@@ -496,7 +496,7 @@ public class LoginController {
         return "admin-reportpostdeleteboard";
     }
     // 관리자페이지 신고 개인글 정보 삭제
-    @RequestMapping("/ribbon/admin/post/reportindividualdelete")
+    @PostMapping("/ribbon/admin/post/reportindividualdelete")
     public String individualReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> individual : params) {
@@ -507,7 +507,7 @@ public class LoginController {
         return "admin-reportpostdeleteindividual";
     }
     // 관리자페이지 신고 단체글 정보 삭제
-    @RequestMapping("/ribbon/admin/post/reportgroupdelete")
+    @PostMapping("/ribbon/admin/post/reportgroupdelete")
     public String groupReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> group : params) {
@@ -518,7 +518,7 @@ public class LoginController {
         return "admin-reportpostdeletegroup";
     }
     // 관리자페이지 신고 중고글 정보 삭제
-    @RequestMapping("/ribbon/admin/post/reportuseddelete")
+    @PostMapping("/ribbon/admin/post/reportuseddelete")
     public String usedReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> used : params) {
@@ -530,7 +530,7 @@ public class LoginController {
     }
 
     // 관리자페이지 신고 커뮤니티 댓글 정보 삭제
-    @RequestMapping("/ribbon/admin/post/reportcommentsdelete")
+    @PostMapping("/ribbon/admin/post/reportcommentsdelete")
     public String commentsReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> comments : params) {
@@ -543,7 +543,7 @@ public class LoginController {
         return "admin-reportcomments";
     }
     // 관리자페이지 신고 개인 댓글 정보 삭제
-    @RequestMapping("/ribbon/admin/post/reportindividualcommentsdelete")
+    @PostMapping("/ribbon/admin/post/reportindividualcommentsdelete")
     public String individualCommentsReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> individualcomments : params) {
@@ -556,7 +556,7 @@ public class LoginController {
         return "admin-reportindividualcomments";
     }
     // 관리자페이지 신고 단체 댓글 정보 삭제
-    @RequestMapping("/ribbon/admin/post/reportgroupcommentsdelete")
+    @PostMapping("/ribbon/admin/post/reportgroupcommentsdelete")
     public String groupCommentsReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> groupcomments : params) {
@@ -569,7 +569,7 @@ public class LoginController {
         return "admin-reportgroupcomments";
     }
     // 관리자페이지 신고 중고 댓글 정보 삭제
-    @RequestMapping("/ribbon/admin/post/reportusedcommentsdelete")
+    @PostMapping("/ribbon/admin/post/reportusedcommentsdelete")
     public String usedCommentsReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> usedcomments : params) {

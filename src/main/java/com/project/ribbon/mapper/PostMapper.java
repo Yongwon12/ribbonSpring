@@ -317,6 +317,7 @@ public interface PostMapper {
 
     // 채팅룸 삭제
     void deleteByRoomName(PostChatRoomDeleteRequest params);
+    void deleteByRoomInfo(PostChatRoomDeleteRequest params);
 
 
 

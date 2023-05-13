@@ -11,9 +11,10 @@ import java.util.Set;
 
 @Getter
 public class ChatRoom {
-    private String roomId;
-    private String roomName;
-    private Set<WebSocketSession> sessions = new HashSet<>();
+    private final String roomId;
+    private final String roomName;
+    private final Set<WebSocketSession> sessions = new HashSet<>();
+
 
     @Builder
     public ChatRoom(String roomId, String roomName) {
@@ -23,24 +24,32 @@ public class ChatRoom {
     }
 
     public void handlerActions(WebSocketSession session, ChatMessage chatMessage, ChatService chatService) {
-        if (chatMessage.getType().equals(ChatMessage.MessageType.ENTER)) {
-
-            sessions.add(session);
-        } if (chatMessage.getType().equals(ChatMessage.MessageType.EXIT)) {
-            try {
+        try {
+            if (chatMessage.getType().equals(ChatMessage.MessageType.ENTER)) {
+                sessions.add(session);
+                chatMessage.setMessage(chatMessage.getSender() + "님이 채팅방에 입장했습니다.");
+                sendMessage(chatMessage, chatService);
+            } else if (chatMessage.getType().equals(ChatMessage.MessageType.TALK)) {
+                sendMessage(chatMessage, chatService);
+            } else if (chatMessage.getType().equals(ChatMessage.MessageType.EXIT)) {
                 sessions.remove(session);
                 session.close();
                 chatMessage.setMessage(chatMessage.getSender() + "님이 채팅방을 나갔습니다.");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                sendMessage(chatMessage, chatService);
+            } else {
+                throw new IllegalArgumentException("Unsupported message type: " + chatMessage.getType());
             }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to send message: " + e.getMessage(), e);
         }
-        sendMessage(chatMessage, chatService);
-
     }
 
+
     private <T> void sendMessage(T message, ChatService chatService) {
-        sessions.parallelStream()
-                .forEach(session -> chatService.sendMessage(session, message));
+        synchronized(sessions) {
+            for (WebSocketSession session : sessions) {
+                chatService.sendMessage(session, message);
+            }
+        }
     }
 }
