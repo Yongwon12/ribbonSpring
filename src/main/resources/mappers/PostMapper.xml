@@ -1931,7 +1931,7 @@
           AND chatinfo.type != 'ENTER'
           AND myuser.userid IS NOT NULL
           AND youruser.userid IS NOT NULL
-        ORDER BY chatinfo.writetime DESC
+        ORDER BY chatinfo.writetime DESC LIMIT 30
     </select>
 
 

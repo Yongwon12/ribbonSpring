@@ -15,20 +15,24 @@ public class ChatRoom {
     private final String roomName;
     private final Set<WebSocketSession> sessions = new HashSet<>();
 
-
     @Builder
     public ChatRoom(String roomId, String roomName) {
         this.roomId = roomId;
         this.roomName = roomName;
-
     }
 
     public void handlerActions(WebSocketSession session, ChatMessage chatMessage, ChatService chatService) {
         try {
             if (chatMessage.getType().equals(ChatMessage.MessageType.ENTER)) {
-                sessions.add(session);
-                chatMessage.setMessage(chatMessage.getSender() + "님이 채팅방에 입장했습니다.");
-                sendMessage(chatMessage, chatService);
+                // sessions에 session이 포함되어 있는지에 대한 여부를 판단하는 로직
+                if (!sessions.contains(session)) {
+                    sessions.add(session);
+                    chatMessage.setMessage(chatMessage.getSender() + "님이 채팅방에 입장했습니다.");
+                    sendMessage(chatMessage, chatService);
+                } else {
+                    chatMessage.setType(ChatMessage.MessageType.TALK);
+                    sendMessage(chatMessage, chatService);
+                }
             } else if (chatMessage.getType().equals(ChatMessage.MessageType.TALK)) {
                 sendMessage(chatMessage, chatService);
             } else if (chatMessage.getType().equals(ChatMessage.MessageType.EXIT)) {
@@ -44,9 +48,8 @@ public class ChatRoom {
         }
     }
 
-
     private <T> void sendMessage(T message, ChatService chatService) {
-        synchronized(sessions) {
+        synchronized (sessions) {
             for (WebSocketSession session : sessions) {
                 chatService.sendMessage(session, message);
             }
