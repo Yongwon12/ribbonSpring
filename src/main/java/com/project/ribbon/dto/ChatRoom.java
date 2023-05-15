@@ -25,6 +25,7 @@ public class ChatRoom {
         try {
             if (chatMessage.getType().equals(ChatMessage.MessageType.ENTER)) {
                 // sessions에 session이 포함되어 있는지에 대한 여부를 판단하는 로직
+                // 세션이 없으면 ENTER 있으면 TALK
                 if (!sessions.contains(session)) {
                     sessions.add(session);
                     chatMessage.setMessage(chatMessage.getSender() + "님이 채팅방에 입장했습니다.");
