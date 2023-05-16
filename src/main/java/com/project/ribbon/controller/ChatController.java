@@ -24,7 +24,7 @@ public class ChatController {
     private final ChatService chatService;
     private final PostService postService;
 
-    // 채팅방 아이디 발급
+//     채팅방 아이디 발급
     @PostMapping
     public ResponseEntity<Map<String, Object>> createRoom(@RequestBody RoomRequest roomRequest) {
         chatService.createRoom(roomRequest.getRoomName(), roomRequest.getMyid(), roomRequest.getYourid());
@@ -33,7 +33,6 @@ public class ChatController {
         Map<String, Object> roomInfo = new HashMap<>();
         roomInfo.put("roomId", posts.getRoomid());
         roomInfo.put("roomName", posts.getRoomname());
-        roomInfo.put("profileimage", posts.getProfileimage());
         obj.put("chatroom", roomInfo);
         return new ResponseEntity<>(obj, HttpStatus.OK);
     }

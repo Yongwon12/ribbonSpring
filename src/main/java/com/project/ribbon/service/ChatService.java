@@ -25,6 +25,9 @@ public class ChatService {
     private void init() {
         chatRooms = new LinkedHashMap<>();
     }
+    public List<ChatRoom> findAllRoom() {
+        return new ArrayList<>(chatRooms.values());
+    }
 
     public ChatRoom findRoomById(String roomId) {
         return chatRooms.get(roomId);

@@ -28,8 +28,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         log.info("{}", payload);
         ChatMessage chatMessage = objectMapper.readValue(payload, ChatMessage.class);
+        // 발급받은 룸 아이디를 변수에 할당
         ChatRoom chatRoom = chatService.findRoomById(chatMessage.getRoomId());
+        // 세션 및 메세지 서비스를 핸들링
         chatRoom.handlerActions(session, chatMessage, chatService);
+        // 데이터베이스에 채팅내역 저장
         postService.saveChatInfoPost(chatMessage);
         firebaseCloudChatMessageService.sendMessageTo(
                 chatMessage.getToken(),

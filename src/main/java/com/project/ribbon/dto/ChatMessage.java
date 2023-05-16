@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ChatMessage {
     public enum MessageType{
-        ENTER,TALK,EXIT
+        TALK,ENTER,EXIT
     }
 
     private MessageType type;

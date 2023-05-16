@@ -1938,13 +1938,14 @@
     <!-- 특정 채팅방 정보 조회  -->
     <select id="findByMyId" parameterType="Long" resultType="com.project.ribbon.domain.post.PostChatRoomResponse">
         SELECT
-            chatroom.roomid,chatroom.roomname,user.profileimage
+            chatroom.roomid,chatroom.roomname
         FROM
             chatroom
                 LEFT JOIN user
                           ON user.userid = chatroom.yourid
         WHERE
             myid = #{myid}
+          OR yourid = #{myid}
         AND user.userid IS NOT NULL
         ORDER BY chatroom.createdate DESC
     </select>
