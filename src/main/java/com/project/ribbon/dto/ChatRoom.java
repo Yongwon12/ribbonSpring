@@ -29,6 +29,9 @@ public class ChatRoom {
                 if (!sessions.contains(session)) {
                     sessions.add(session);
                     sendMessage(chatMessage, chatService);
+                }else {
+                    // 유효하지 않은 세션일 때 예외 처리
+                    throw new IllegalArgumentException("Invalid session: " + session.getId());
                 }
                 // 클라이언트 측에서 세션을 종료하면 서버에서도 유저의 session을 sessions에서 비우고
                 // 종료 하지만 방의 sessions는 유지, 하지만 서버가 재시동을 하거나 종료되면 sessions가 자동으로 remove됨
