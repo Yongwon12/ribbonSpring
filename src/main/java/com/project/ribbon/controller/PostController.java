@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.*;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.stereotype.Controller;
@@ -76,11 +77,11 @@ public class PostController {
     // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
     // 개발환경용 서버 ip : http://112.148.33.214:8000
     // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://192.168.3.89:8000/api/userimage/";
-    String boardip = "http://192.168.3.89:8000/api/boardimage/";
-    String groupip = "http://192.168.3.89:8000/api/groupimage/";
-    String usedip = "http://192.168.3.89:8000/api/usedimage/";
-    String mentorip = "http://192.168.3.89:8000/api/writementortitleimage/";
+    String userip = "http://112.148.33.214:8000/api/userimage/";
+    String boardip = "http://112.148.33.214:8000/api/boardimage/";
+    String groupip = "http://112.148.33.214:8000/api/groupimage/";
+    String usedip = "http://112.148.33.214:8000/api/usedimage/";
+    String mentorip = "http://112.148.33.214:8000/api/writementortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -1020,18 +1021,32 @@ public class PostController {
         String userid = memberLoginRequestDto.getUserid();
         String password = memberLoginRequestDto.getPassword();
         try {
+
             TokenInfo tokenInfo = memberService.login(userid, password);
             PostUserRequest posts = postService.findUserRolesInfoAllPost(memberLoginRequestDto.getEmail());
-            Map<String, Object> response = new HashMap<>();
-            Map<String, Object> tokenInfoMap = new HashMap<>();
-            tokenInfoMap.put("grantType", tokenInfo.getGrantType());
-            tokenInfoMap.put("accessToken", tokenInfo.getAccessToken());
-            tokenInfoMap.put("refreshToken", tokenInfo.getRefreshToken());
-            tokenInfoMap.put("roles", posts.getRoles());
-            response.put("tokenInfo", tokenInfoMap);
-            return ResponseEntity.ok(response);
+            if (posts.getRoles().equals("FREEZINGUSER")) {
+                throw new LockedException("계정이 잠김 처리되었습니다.");
+            } else if (!posts.getRoles().equals("FREEZINGUSER")) {
+                Map<String, Object> response = new HashMap<>();
+                Map<String, Object> tokenInfoMap = new HashMap<>();
+                tokenInfoMap.put("grantType", tokenInfo.getGrantType());
+                tokenInfoMap.put("accessToken", tokenInfo.getAccessToken());
+                tokenInfoMap.put("refreshToken", tokenInfo.getRefreshToken());
+                tokenInfoMap.put("roles", posts.getRoles());
+                response.put("tokenInfo", tokenInfoMap);
+                return ResponseEntity.ok(response);
+            }
+            return ResponseEntity.badRequest().build();
         } catch (BadCredentialsException e) {
-            // 로그인 실패 처리
+            // Increase login attempts
+            increaseLoginAttempts(userid);
+
+            // Check if the account should be locked
+            if (isAccountLocked(userid)) {
+                postService.updateReportUserRolesPost(userid);
+                throw new LockedException("계정이 잠김 처리되었습니다.");
+            }
+
             // 클라이언트에게 보낼 응답 메시지 생성
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "invalid_grant");
@@ -1040,6 +1055,32 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
     }
+    private static final int MAX_ATTEMPTS = 5; // Maximum login attempts allowed
+
+    private Map<String, Integer> loginAttempts = new HashMap<>();
+
+    // Increase login attempts and handle account lock logic
+    private void increaseLoginAttempts(String username) {
+        int attempts = loginAttempts.getOrDefault(username, 0) + 1;
+        loginAttempts.put(username, attempts);
+
+        if (attempts >= MAX_ATTEMPTS) {
+            // Lock the account
+            lockAccount(username);
+        }
+    }
+
+    // Check if the account is locked
+    private boolean isAccountLocked(String username) {
+        return loginAttempts.containsKey(username) && loginAttempts.get(username) >= MAX_ATTEMPTS;
+    }
+
+    // Lock the account
+    private void lockAccount(String username) {
+        // Perform account locking logic here
+        postService.updateReportUserRolesPost(username);
+    }
+
     // 엑세스토큰 재발급
     @PostMapping("/ribbonRefresh")
     public ResponseEntity<TokenInfo> refreshToken(@RequestBody ReissueToken params, @RequestHeader HttpHeaders headers) {
