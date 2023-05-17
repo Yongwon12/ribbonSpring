@@ -993,9 +993,11 @@ public class PostController {
 
     // 유저 정보 등록
     @PostMapping("/sign")
-    public ResponseEntity<?> saveUserPost(HttpServletRequest request, @RequestBody @Valid PostUserRequest params, Model model) throws ApiException {
+    public ResponseEntity<?> saveUserPost(@RequestBody @Valid PostUserRequest params, Model model) throws ApiException {
         try {
-
+            if (params.getRoles().equals("FREEZINGUSER")) {
+                throw new LockedException("계정이 잠김 처리되었습니다.");
+            } else {
             if ("USER".equals(params.getRoles())) {
                 postService.saveUserPost(params);
                 postService.saveUserRolesPost(params);
@@ -1008,6 +1010,7 @@ public class PostController {
             model.addAttribute("posts", posts);
             obj.put("userid", posts);
             return ResponseEntity.ok(obj);
+            }
         } catch (ApiException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         } catch (Exception e) {
@@ -1026,7 +1029,7 @@ public class PostController {
             PostUserRequest posts = postService.findUserRolesInfoAllPost(memberLoginRequestDto.getEmail());
             if (posts.getRoles().equals("FREEZINGUSER")) {
                 throw new LockedException("계정이 잠김 처리되었습니다.");
-            } else if (!posts.getRoles().equals("FREEZINGUSER")) {
+            } else {
                 Map<String, Object> response = new HashMap<>();
                 Map<String, Object> tokenInfoMap = new HashMap<>();
                 tokenInfoMap.put("grantType", tokenInfo.getGrantType());
@@ -1036,7 +1039,6 @@ public class PostController {
                 response.put("tokenInfo", tokenInfoMap);
                 return ResponseEntity.ok(response);
             }
-            return ResponseEntity.badRequest().build();
         } catch (BadCredentialsException e) {
             // Increase login attempts
             increaseLoginAttempts(userid);
