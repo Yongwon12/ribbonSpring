@@ -23,43 +23,43 @@ public class ChatController {
     private final ChatService chatService;
     private final PostService postService;
 
-//     채팅방 아이디 발급
-@PostMapping
-public ResponseEntity<Map<String, Object>> createRoom(@RequestBody RoomRequest roomRequest) {
-    Map<String, Object> obj = new HashMap<>();
-    try {
-        chatService.createRoom(roomRequest.getRoomName(), roomRequest.getMyid(), roomRequest.getYourid());
-        PostChatRoomResponse posts = postService.findPostByMyId(roomRequest.getMyid());
-        Map<String, Object> roomInfo = new HashMap<>();
-        roomInfo.put("roomId", posts.getRoomid());
-        roomInfo.put("roomName", posts.getRoomname());
-        obj.put("chatroom", roomInfo);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
-    } catch (Exception e) {
-        // Handle the exception here
-        System.err.println("Error occurred while creating room");
-        System.err.println(e.getMessage());
-        obj.put("error", e.getMessage());
-        return new ResponseEntity<>(obj, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-}
-        // 특정 채팅방 조회
-        @PostMapping("/post/chatroominfo")
-        public ResponseEntity<?> viewChatRoomPost(@RequestBody PostChatRoomResponse myid, Model model) {
-            Map<String, Object> obj = new HashMap<>();
-            try {
-                List<PostChatRoomResponse> posts = postService.findPostByChatRoomMyId(myid.getMyid());
-                model.addAttribute("posts", posts);
-                obj.put("chatroom", posts);
-                return new ResponseEntity<>(obj, HttpStatus.OK);
-            } catch (Exception e) {
-                // Handle the exception here
-                System.err.println("Error occurred while fetching posts for chatroom");
-                System.err.println(e.getMessage());
-                obj.put("error", e.getMessage());
-                return new ResponseEntity<>(obj, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+    //     채팅방 아이디 발급 예외처리
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> createRoom(@RequestBody RoomRequest roomRequest) {
+        Map<String, Object> obj = new HashMap<>();
+        try {
+            chatService.createRoom(roomRequest.getRoomName(), roomRequest.getMyid(), roomRequest.getYourid());
+            PostChatRoomResponse posts = postService.findPostByMyId(roomRequest.getMyid());
+            Map<String, Object> roomInfo = new HashMap<>();
+            roomInfo.put("roomId", posts.getRoomid());
+            roomInfo.put("roomName", posts.getRoomname());
+            obj.put("chatroom", roomInfo);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        } catch (Exception e) {
+            // Handle the exception here
+            System.err.println("Error occurred while creating room");
+            System.err.println(e.getMessage());
+            obj.put("error", e.getMessage());
+            return new ResponseEntity<>(obj, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    // 특정 채팅방 조회 예외처리
+    @PostMapping("/post/chatroominfo")
+    public ResponseEntity<?> viewChatRoomPost(@RequestBody PostChatRoomResponse myid, Model model) {
+        Map<String, Object> obj = new HashMap<>();
+        try {
+            List<PostChatRoomResponse> posts = postService.findPostByChatRoomMyId(myid.getMyid());
+            model.addAttribute("posts", posts);
+            obj.put("chatroom", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        } catch (Exception e) {
+            // Handle the exception here
+            System.err.println("Error occurred while fetching posts for chatroom");
+            System.err.println(e.getMessage());
+            obj.put("error", e.getMessage());
+            return new ResponseEntity<>(obj, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // 특정 채팅내역 조회
     @PostMapping("/post/chatinfo")
     public ResponseEntity<?> viewChatInfoPost(@RequestBody PostChatRoomResponse roomname, Model model) {
@@ -76,7 +76,7 @@ public ResponseEntity<Map<String, Object>> createRoom(@RequestBody RoomRequest r
             return new ResponseEntity<>(obj, HttpStatus.BAD_REQUEST);
         }
     }
-    // 특정 채팅방 삭제
+    // 특정 채팅방 삭제 예외처리
     @DeleteMapping("/post/deleteroom")
     public ResponseEntity<?> deleteChatRoomPost(@RequestBody PostChatRoomDeleteRequest params){
         try {
