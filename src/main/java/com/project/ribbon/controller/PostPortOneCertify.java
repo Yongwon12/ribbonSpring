@@ -131,7 +131,7 @@ public class PostPortOneCertify {
 ////                // 연령 미달
 ////            }
 //
-//            // 1인 1계정 허용 로직
+//            // 1인 1계정 허용 로직 데이터 베이스에 인증정보 저장
 //            Optional<User> user = memberRepository.findByUniqueKey(uniqueKey);
 //            if (user.isEmpty()) {
 //                PostUserUpdateRequest newUserUniqueInfo = new PostUserUpdateRequest();
