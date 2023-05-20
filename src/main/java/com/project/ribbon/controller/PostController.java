@@ -73,15 +73,24 @@ public class PostController {
     private ApplicationContext applicationContext;
 
 
-    // 서버업로드용 서버 ip : https://ribbonding.shop:48610
-    // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/image/
-    // 개발환경용 서버 ip : http://112.148.33.214:8000
-    // 개발환경용 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/image/
-    String userip = "http://112.148.33.214:8000/api/userimage/";
-    String boardip = "http://112.148.33.214:8000/api/boardimage/";
-    String groupip = "http://112.148.33.214:8000/api/groupimage/";
-    String usedip = "http://112.148.33.214:8000/api/usedimage/";
-    String mentorip = "http://112.148.33.214:8000/api/writementortitleimage/";
+    // 서버업로드용 서버 ip
+    @Value("${myapp.cafe24Ip}")
+    private String cafe24Ip;
+    // 서버업로드용 이미지 파일 경로
+    @Value("${myapp.cafe24Img}")
+    private String cafe24Img;
+    // 개발환경용 서버 ip
+    @Value("${myapp.developIp}")
+    private String developIp;
+    // 개발환경용 이미지 파일 경로
+    @Value("${myapp.developImg}")
+    private String developImg;
+
+    String userip = developIp+"userimage/";
+    String boardip = developIp+"boardimage/";
+    String groupip = developIp+"groupimage/";
+    String usedip = developIp+"usedimage/";
+    String mentorip = developIp+"writementortitleimage/";
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -122,7 +131,7 @@ public class PostController {
     // 커뮤니티 프로필 사진 조회
     @GetMapping("/boardimage/{imageName:.+}")
     public ResponseEntity<byte[]> getBoardImage(@PathVariable("imageName") String img) throws IOException {
-        Path imageBoardPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + img);
+        Path imageBoardPath = Paths.get(developImg + img);
         byte[] imageBytes = Files.readAllBytes(imageBoardPath);
 
         final HttpHeaders headers = new HttpHeaders();
@@ -253,7 +262,7 @@ public class PostController {
     // 단체 프로필 사진 조회
     @GetMapping("/groupimage/{imageName:.+}")
     public ResponseEntity<byte[]> getGroupImage(@PathVariable("imageName") String titleimage) throws IOException {
-        Path imageGroupPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + titleimage);
+        Path imageGroupPath = Paths.get(developImg + titleimage);
         byte[] imageBytes = Files.readAllBytes(imageGroupPath);
 
         final HttpHeaders headers = new HttpHeaders();
@@ -590,7 +599,7 @@ public class PostController {
     // 대여 사진 조회
     @GetMapping("/usedimage/{imageName:.+}")
     public ResponseEntity<byte[]> getUsedImage(@PathVariable("imageName") String usedimage) throws IOException {
-        Path imageUsedPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + usedimage);
+        Path imageUsedPath = Paths.get(developImg + usedimage);
         byte[] imageBytes = Files.readAllBytes(imageUsedPath);
 
         final HttpHeaders headers = new HttpHeaders();
@@ -848,7 +857,7 @@ public class PostController {
     // 멘토 타이틀 사진 조회
     @GetMapping("/writementortitleimage/{imageName:.+}")
     public ResponseEntity<byte[]> getWriteMentorTitleImage(@PathVariable("imageName") String mentortitleimage) throws IOException {
-        Path imageWritementorPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + mentortitleimage);
+        Path imageWritementorPath = Paths.get(developImg + mentortitleimage);
         byte[] imageBytes;
         try {
             imageBytes = Files.readAllBytes(imageWritementorPath);
@@ -1168,7 +1177,7 @@ public class PostController {
     // 유저 프로필 사진 조회
     @GetMapping("/userimage/{imageName:.+}")
     public ResponseEntity<byte[]> getImage(@PathVariable("imageName") String profileimage) throws IOException {
-        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/image/" + profileimage);
+        Path imagePath = Paths.get(developImg + profileimage);
         byte[] imageBytes = Files.readAllBytes(imagePath);
 
         final HttpHeaders headers = new HttpHeaders();

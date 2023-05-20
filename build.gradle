@@ -14,9 +14,7 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
-tasks.withType(JavaCompile) {
-    options.compilerArgs << '-Xdoclint:none'
-}
+
 
 repositories {
     mavenCentral()

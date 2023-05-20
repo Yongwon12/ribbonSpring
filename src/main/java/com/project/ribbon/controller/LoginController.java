@@ -40,13 +40,25 @@ public class LoginController {
     private final MemberService memberService;
     private final PostService postService;
     private final FirebaseAnnouncementMessageService firebaseAnnouncementMessageService;
-    // 서버 업로드용 ip : https://ribbonding.shop:48610/ribbon/admin
-    // 서버업로드용 gif 파일 경로 : /oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbon.gif
-    // 서버업로드용 이미지 파일 경로 : /oxen6297/tomcat/webapps/ROOT/WEB-INF/classes/static/ribbonding.png
-    // 개발환경용 ip : http://112.148.33.214:8000/ribbon/admin
-    // 개발환경용 맺음 gif 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.gif
-    // 개발환경용 맺음 이미지 파일 경로 : /Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png
-    String ip = "http://112.148.33.214:8000/ribbon/admin";
+    // 서버 업로드용 ip
+    @Value("${myapp.cafe24AdminIp}")
+    private String cafe24AdminIp;
+    // 서버업로드용 gif 파일 경로
+    @Value("${myapp.cafe24AdminGif}")
+    private String cafe24AdminGif;
+    // 서버업로드용 이미지 파일 경로
+    @Value("${myapp.cafe24AdminImg}")
+    private String cafe24AdminImg;
+    // 개발환경용 ip
+    @Value("${myapp.developAdminIp}")
+    private String developAdminIp;
+    // 개발환경용 맺음 gif 파일 경로
+    @Value("${myapp.developAdminGif}")
+    private String developAdminGif;
+    // 개발환경용 맺음 이미지 파일 경로
+    @Value("${myapp.developAdminImg}")
+    private String developAdminImg;
+    String ip = developAdminIp;
 
     // 맺음 홈페이지
     @GetMapping("/ribbon")
@@ -55,7 +67,7 @@ public class LoginController {
     }
     @GetMapping("/ribbon/ribbon.gif")
     public ResponseEntity<byte[]> getRibbonGif() throws IOException {
-        Path gifPath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbon.gif");
+        Path gifPath = Paths.get(developAdminGif);
         byte[] gifBytes = Files.readAllBytes(gifPath);
 
         final HttpHeaders headers = new HttpHeaders();
@@ -64,7 +76,7 @@ public class LoginController {
     }
     @GetMapping("/ribbon/ribbonding.png")
     public ResponseEntity<byte[]> getRibbonImage() throws IOException {
-        Path imagePath = Paths.get("/Users/gim-yong-won/Desktop/ribbon/src/main/resources/static/ribbonding.png");
+        Path imagePath = Paths.get(developAdminImg);
         byte[] imageBytes = Files.readAllBytes(imagePath);
 
         final HttpHeaders headers = new HttpHeaders();
