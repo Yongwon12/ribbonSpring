@@ -141,25 +141,42 @@ public class PostController {
 
     // 커뮤니티 게시글 조회
     @GetMapping("/board")
-    public ResponseEntity<?> boardWrite(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        Map<String, Object> obj = new HashMap<>();
-        List<PostResponse> posts = postService.findAllPost();
-        model.addAttribute("posts", posts);
-        obj.put("boardwrite", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
+    public ResponseEntity<?> boardWrite(Model model) {
+        try {
+            Map<String, Object> obj = new HashMap<>();
+            List<PostResponse> posts = postService.findAllPost();
+            model.addAttribute("posts", posts);
+            obj.put("boardwrite", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        } catch (ApiException e) {
+// Handle the ApiException here
+            String errorMessage = "An error occurred while processing the request.";
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+// Handle any other exception types here
+            String errorMessage = "An unexpected error occurred.";
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
     // 커뮤니티 특정 게시글 조회
     @PostMapping("/board")
     public ResponseEntity<?> boardWriteOne(@RequestBody PostResponse params, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        try {
         postService.updateBoardInquiryPost(params.getBoardid());
         Map<String, Object> obj = new HashMap<>();
         List<PostResponse> posts = postService.findOnePost(params.getBoardid());
         model.addAttribute("posts", posts);
         obj.put("boardwrite", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
+        } catch (ApiException e) {
+// Handle the ApiException here
+            String errorMessage = "An error occurred while processing the request.";
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+// Handle any other exception types here
+            String errorMessage = "An unexpected error occurred.";
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
@@ -189,25 +206,43 @@ public class PostController {
     // 단체 작성글 조회
     @GetMapping("/group")
     public ResponseEntity<?> groupWrite(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        try{
         Map<String, Object> obj = new HashMap<>();
         List<PostGroupResponse> posts = postService.findGroupAllPost();
         model.addAttribute("posts", posts);
         obj.put("groupwrite", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
+    } catch (ApiException e) {
+// Handle the ApiException here
+        String errorMessage = "An error occurred while processing the request.";
+        return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+    } catch (Exception e) {
+// Handle any other exception types here
+        String errorMessage = "An unexpected error occurred.";
+        return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     }
 
 
     // 단체 특정 작성글 조회
     @PostMapping("/group")
     public ResponseEntity<?> groupWriteOne(@RequestBody PostGroupResponse params, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
-        postService.updateGroupInquiryPost(params.getGroupid());
-        Map<String, Object> obj = new HashMap<>();
-        List<PostGroupResponse> posts = postService.findGroupOnePost(params.getGroupid());
-        model.addAttribute("posts", posts);
-        obj.put("groupwrite", posts);
-        return new ResponseEntity<>(obj, HttpStatus.OK);
+        try {
+            postService.updateGroupInquiryPost(params.getGroupid());
+            Map<String, Object> obj = new HashMap<>();
+            List<PostGroupResponse> posts = postService.findGroupOnePost(params.getGroupid());
+            model.addAttribute("posts", posts);
+            obj.put("groupwrite", posts);
+            return new ResponseEntity<>(obj, HttpStatus.OK);
+        }catch (ApiException e) {
+// Handle the ApiException here
+                String errorMessage = "An error occurred while processing the request.";
+                return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+            } catch (Exception e) {
+// Handle any other exception types here
+                String errorMessage = "An unexpected error occurred.";
+                return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
     }
 
     // 단체 글작성
@@ -296,24 +331,42 @@ public class PostController {
     // 개인 작성글 조회
     @GetMapping("/individual")
     public ResponseEntity<?> indiWrite(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        try {
         Map<String, Object> obj = new HashMap<>();
         List<PostIndiResponse> posts = postService.findIndiAllPost();
         model.addAttribute("posts", posts);
         obj.put("individualwrite", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
+        }catch (ApiException e) {
+// Handle the ApiException here
+            String errorMessage = "An error occurred while processing the request.";
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+// Handle any other exception types here
+            String errorMessage = "An unexpected error occurred.";
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // 개인 특정 작성글 조회
     @PostMapping("/individual")
     public ResponseEntity<?> indiWriteOne(@RequestBody PostIndiResponse params, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        try {
         postService.updateIndiInquiryPost(params.getIndividualid());
         Map<String, Object> obj = new HashMap<>();
         List<PostIndiResponse> posts = postService.findIndiOnePost(params.getIndividualid());
         model.addAttribute("posts", posts);
         obj.put("individualwrite", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
+        }catch (ApiException e) {
+// Handle the ApiException here
+            String errorMessage = "An error occurred while processing the request.";
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+// Handle any other exception types here
+            String errorMessage = "An unexpected error occurred.";
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
@@ -355,24 +408,42 @@ public class PostController {
     // 대여 작성글 조회
     @GetMapping("/used")
     public ResponseEntity<?> usedWrite(Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        try {
         Map<String, Object> obj = new HashMap<>();
         List<PostUsedResponse> posts = postService.findUsedAllPost();
         model.addAttribute("posts", posts);
         obj.put("usedwrite", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
+        }catch (ApiException e) {
+// Handle the ApiException here
+            String errorMessage = "An error occurred while processing the request.";
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+// Handle any other exception types here
+            String errorMessage = "An unexpected error occurred.";
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // 대여 특정 작성글 조회
     @PostMapping("/used")
     public ResponseEntity<?> usedWriteOne(@RequestBody PostUsedResponse params, Model model) throws ApiException {
-        ExceptionEnum err = ExceptionEnum.RUNTIME_EXCEPTION;
+        try {
         postService.updateUsedInquiryPost(params.getUsedid());
         Map<String, Object> obj = new HashMap<>();
         List<PostUsedResponse> posts = postService.findUsedOnePost(params.getUsedid());
         model.addAttribute("posts", posts);
         obj.put("usedwrite", posts);
         return new ResponseEntity<>(obj, HttpStatus.OK);
+        }catch (ApiException e) {
+// Handle the ApiException here
+            String errorMessage = "An error occurred while processing the request.";
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+// Handle any other exception types here
+            String errorMessage = "An unexpected error occurred.";
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // 대여 글작성
