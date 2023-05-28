@@ -128,7 +128,7 @@
               const csrfToken = JSON.parse(xhrCsrf.response).csrfToken;
 
               const xhrDelete = new XMLHttpRequest();
-              xhrDelete.open('POST', '/ribbon/admin/post/inqueryPaymentInfoCancel');
+              xhrDelete.open('POST', '/ribbon/admin/form/inquerypaymentinfocancel');
               xhrDelete.setRequestHeader('Content-Type', 'application/json');
               xhrDelete.setRequestHeader('X-XSRF-TOKEN', csrfToken);
               xhrDelete.send(JSON.stringify(selectedInqueryPayments));

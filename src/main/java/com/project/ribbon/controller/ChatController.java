@@ -44,7 +44,7 @@ public class ChatController {
         }
     }
     // 특정 채팅방 조회 예외처리
-    @PostMapping("/post/chatroominfo")
+    @PostMapping("/form/chatroom")
     public ResponseEntity<?> viewChatRoomPost(@RequestBody PostChatRoomResponse myid, Model model) {
         Map<String, Object> obj = new HashMap<>();
         try {
@@ -61,7 +61,7 @@ public class ChatController {
         }
     }
     // 특정 채팅내역 조회
-    @PostMapping("/post/chatinfo")
+    @PostMapping("/form/chatlist")
     public ResponseEntity<?> viewChatInfoPost(@RequestBody PostChatRoomResponse roomname, Model model) {
         Map<String, Object> obj = new HashMap<>();
         List<PostChatRoomResponse> posts;
@@ -77,7 +77,7 @@ public class ChatController {
         }
     }
     // 특정 채팅방 삭제 예외처리
-    @DeleteMapping("/post/deleteroom")
+    @DeleteMapping("/form/chatroom")
     public ResponseEntity<?> deleteChatRoomPost(@RequestBody PostChatRoomDeleteRequest params){
         try {
             postService.deleteChatInfoPost(params);

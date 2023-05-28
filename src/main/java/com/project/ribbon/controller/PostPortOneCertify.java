@@ -52,7 +52,7 @@ public class PostPortOneCertify {
     }
 
     // 엑세스 토큰 얻기
-    @PostMapping("/getRibbonAccessToken")
+    @PostMapping("/ribbonaccesstoken")
     public ResponseEntity<String> getAccessToken(@RequestBody Map<String, Object> requestBody) {
         try {
             String clientSecretToken = (String) requestBody.get("secretToken");
@@ -91,7 +91,7 @@ public class PostPortOneCertify {
 
 
     // 폰 인증
-//    @PostMapping("/certificationsRibbon")
+//    @PostMapping("/certificationsribbon")
 //    public ResponseEntity<?> handleCertificationsRequest(@RequestBody Map<String, Object> body) {
 //        String impUid = (String) body.get("imp_uid");
 //        Long userid = (Long) body.get("userid");
@@ -249,7 +249,7 @@ public class PostPortOneCertify {
     }
 
     // 결제 취소
-    @PostMapping("/payments/ribbonCancel")
+    @PostMapping("/payments/ribboncancel")
     public ResponseEntity<?> ribbonCancel(@RequestBody PaymentCancelRequest paymentCancelRequest) {
         try {
             String merchant_uid = paymentCancelRequest.getMerchantUid();
@@ -376,7 +376,7 @@ public class PostPortOneCertify {
         }
 
     // 대여 결제완료 검증
-    @PostMapping("/payments/ribbonCompleteRental")
+    @PostMapping("/payments/ribboncompleterental")
     public ResponseEntity<?> completePaymentRental(@RequestBody PaymentRequest paymentRequest) {
         try {
             String merchant_uid = paymentRequest.getMerchantUid();
@@ -473,7 +473,7 @@ public class PostPortOneCertify {
         }
     }
     // 대여 결제 취소
-    @PostMapping("/payments/ribbonCancelRental")
+    @PostMapping("/payments/ribboncancelrental")
     public ResponseEntity<?> ribbonCancelRental(@RequestBody PaymentCancelRequest paymentCancelRequest) {
         try {
             String merchant_uid = paymentCancelRequest.getMerchantUid();

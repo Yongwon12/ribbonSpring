@@ -108,7 +108,7 @@
 
             $.ajax({
               type: 'POST',
-              url: '/ribbon/admin/post/announcement',
+              url: '/ribbon/admin/form/announcement',
               data: JSON.stringify(jsonData),
               contentType: 'application/json',
               success: function (data) {
@@ -132,7 +132,7 @@
 <body>
 <h1>Announcement Login</h1>
 <button onclick="location.href='/ribbon/admin/report'">맺음 신고 및 공지 목록</button>
-<form id="form-id" th:action="@{/ribbon/admin/post/announcement}" method="post">
+<form id="form-id" th:action="@{/ribbon/admin/form/announcement}" method="post">
   <label for="userid">Admin:</label>
   <input type="text" id="userid" name="userid" required>
   <br>

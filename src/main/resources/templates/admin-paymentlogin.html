@@ -108,7 +108,7 @@
 
           $.ajax({
             type: 'POST',
-            url: '/ribbon/admin/post/paymentlogin',
+            url: '/ribbon/admin/form/paymentlogin',
             data: JSON.stringify(jsonData),
             contentType: 'application/json',
             success: function(data) {
@@ -133,7 +133,7 @@
 <body>
 <h1>Payment Login</h1>
 <button onclick="location.href='/ribbon/admin/report'">신고 및 공지</button>
-<form id="form-id" th:action="@{/ribbon/admin/post/paymentlogin}" method="post">
+<form id="form-id" th:action="@{/ribbon/admin/form/paymentlogin}" method="post">
   <label for="userid">Admin:</label>
   <input type="text" id="userid" name="userid" required>
   <br>

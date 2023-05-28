@@ -58,7 +58,7 @@ public class LoginController {
     // 개발환경용 맺음 이미지 파일 경로
     @Value("${myapp.developAdminImg}")
     private String developAdminImg;
-    String ip = developAdminIp;
+//    String ip = developAdminIp;
 
     // 맺음 홈페이지
     @GetMapping("/ribbon")
@@ -178,7 +178,7 @@ public class LoginController {
     }
 
     // 유저 결제 정보 수정
-    @PostMapping("/ribbon/admin/post/hidepaymentinfo")
+    @PostMapping("/ribbon/admin/form/hidepaymentinfo")
     public String hidePaymentInfo(@RequestBody List<Map<String,String>> params) {
         for (Map<String,String> payment:params) {
             String paymentId = payment.get("paymentid");
@@ -188,7 +188,7 @@ public class LoginController {
     }
 
     // 결제 문의 조회
-    @GetMapping("/ribbon/admin/inqueryPaymentInfo")
+    @GetMapping("/ribbon/admin/inquerypaymentinfo")
     public String inqueryPaymentiIfo(Model model) {
         List<PostPaymentInfoResponse> inquerypaymentList = postService.findInqueryPaymentInfoAllPost();
         model.addAttribute("inquerypaymentList", inquerypaymentList);
@@ -199,7 +199,7 @@ public class LoginController {
     private String impKey;
     @Value("${myapp.impSecret}")
     private String impSecret;
-    @PostMapping("/ribbon/admin/post/inqueryPaymentInfoCancel")
+    @PostMapping("/ribbon/admin/form/inquerypaymentinfocancel")
     public String inqueryPaymentInfoDelete(@RequestBody List<Map<String,String>> params) {
         try {
             for (Map<String, String> inquerypayment : params) {
@@ -333,7 +333,7 @@ public class LoginController {
         return "admin-adminannouncement";
     }
     // 관리자페이지 공지사항 삭제
-    @PostMapping("/ribbon/admin/post/adminannouncementdelete")
+    @PostMapping("/ribbon/admin/form/adminannouncementdelete")
     public String adminannouncementInfoDelete(@RequestBody List<Map<String,String>> params) {
         for (Map<String,String> announcement:params) {
             String id = announcement.get("id");
@@ -464,7 +464,7 @@ public class LoginController {
         return new ResponseEntity<>(postService.saveReportUsedCommentsPost(params),HttpStatus.OK);
     }
     // 신고 유저 정보 수정
-    @PostMapping("/ribbon/admin/post/reportuserdelete")
+    @PostMapping("/ribbon/admin/form/reportuserdelete")
     public String userReportDelete(@RequestBody List<Map<String,String>> params) {
         for (Map<String,String> user:params) {
             String userId = user.get("userid");
@@ -475,7 +475,7 @@ public class LoginController {
         return "admin-reportpostdeleteuser";
     }
     // 활성화 유저 정보 수정 및 삭제
-    @PostMapping("/ribbon/admin/post/reportuseractivate")
+    @PostMapping("/ribbon/admin/form/reportuseractivate")
     public String userActivateUpdate(@RequestBody List<Map<String,String>> params) {
         for (Map<String,String> user:params) {
             String userId = user.get("userid");
@@ -485,7 +485,7 @@ public class LoginController {
         return "admin-reportpostdeleteuser";
     }
     // 관리자페이지 신고 멘토 글 정보 삭제
-    @PostMapping("/ribbon/admin/post/reportmentordelete")
+    @PostMapping("/ribbon/admin/form/reportmentordelete")
     public String mentorReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> mentor : params) {
@@ -497,7 +497,7 @@ public class LoginController {
         return "admin-reportpostdeletementor";
     }
     // 관리자페이지 신고 커뮤니티글 정보 삭제
-    @PostMapping("/ribbon/admin/post/reportboarddelete")
+    @PostMapping("/ribbon/admin/form/reportboarddelete")
     public String boardReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> board : params) {
@@ -508,7 +508,7 @@ public class LoginController {
         return "admin-reportpostdeleteboard";
     }
     // 관리자페이지 신고 개인글 정보 삭제
-    @PostMapping("/ribbon/admin/post/reportindividualdelete")
+    @PostMapping("/ribbon/admin/form/reportindividualdelete")
     public String individualReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> individual : params) {
@@ -519,7 +519,7 @@ public class LoginController {
         return "admin-reportpostdeleteindividual";
     }
     // 관리자페이지 신고 단체글 정보 삭제
-    @PostMapping("/ribbon/admin/post/reportgroupdelete")
+    @PostMapping("/ribbon/admin/form/reportgroupdelete")
     public String groupReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> group : params) {
@@ -530,7 +530,7 @@ public class LoginController {
         return "admin-reportpostdeletegroup";
     }
     // 관리자페이지 신고 중고글 정보 삭제
-    @PostMapping("/ribbon/admin/post/reportuseddelete")
+    @PostMapping("/ribbon/admin/form/reportuseddelete")
     public String usedReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> used : params) {
@@ -542,7 +542,7 @@ public class LoginController {
     }
 
     // 관리자페이지 신고 커뮤니티 댓글 정보 삭제
-    @PostMapping("/ribbon/admin/post/reportcommentsdelete")
+    @PostMapping("/ribbon/admin/form/reportcommentsdelete")
     public String commentsReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> comments : params) {
@@ -555,7 +555,7 @@ public class LoginController {
         return "admin-reportcomments";
     }
     // 관리자페이지 신고 개인 댓글 정보 삭제
-    @PostMapping("/ribbon/admin/post/reportindividualcommentsdelete")
+    @PostMapping("/ribbon/admin/form/reportindividualcommentsdelete")
     public String individualCommentsReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> individualcomments : params) {
@@ -568,7 +568,7 @@ public class LoginController {
         return "admin-reportindividualcomments";
     }
     // 관리자페이지 신고 단체 댓글 정보 삭제
-    @PostMapping("/ribbon/admin/post/reportgroupcommentsdelete")
+    @PostMapping("/ribbon/admin/form/reportgroupcommentsdelete")
     public String groupCommentsReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> groupcomments : params) {
@@ -581,7 +581,7 @@ public class LoginController {
         return "admin-reportgroupcomments";
     }
     // 관리자페이지 신고 중고 댓글 정보 삭제
-    @PostMapping("/ribbon/admin/post/reportusedcommentsdelete")
+    @PostMapping("/ribbon/admin/form/reportusedcommentsdelete")
     public String usedCommentsReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> usedcomments : params) {
@@ -594,7 +594,7 @@ public class LoginController {
         return "admin-reportusedcomments";
     }
     //  결제정보 관리자 권한 조회
-    @PostMapping("/ribbon/admin/post/paymentlogin")
+    @PostMapping("/ribbon/admin/form/paymentlogin")
     public void adminPaymentLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
         String userid = adminLoginRequestDto.getUserid();
         String password = adminLoginRequestDto.getPassword();
@@ -604,14 +604,14 @@ public class LoginController {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange(ip+"/paymentinfo", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/paymentinfo", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/paymentlogin");
         }
     }
     //  문의하기 관리자 권한 조회
-    @PostMapping("/ribbon/admin/post/inquirylogin")
+    @PostMapping("/ribbon/admin/form/inquirylogin")
     public void adminInquiryLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
         String userid = adminLoginRequestDto.getUserid();
         String password = adminLoginRequestDto.getPassword();
@@ -621,7 +621,7 @@ public class LoginController {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange(ip+"/inquiryinfo", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/inquiryinfo", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/inquirylogin");
@@ -629,7 +629,7 @@ public class LoginController {
     }
 
     //  멘토 글 신고 관리자 권한 조회
-    @PostMapping("/ribbon/admin/post/mentorlogin")
+    @PostMapping("/ribbon/admin/form/mentorlogin")
     public void adminMentorLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
         String userid = adminLoginRequestDto.getUserid();
         String password = adminLoginRequestDto.getPassword();
@@ -639,14 +639,14 @@ public class LoginController {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportmentor", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/reportmentor", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/mentorlogin");
         }
     }
 //  커뮤니티글 신고 관리자 권한 조회
-@PostMapping("/ribbon/admin/post/boardlogin")
+@PostMapping("/ribbon/admin/form/boardlogin")
 public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
     String userid = adminLoginRequestDto.getUserid();
     String password = adminLoginRequestDto.getPassword();
@@ -656,14 +656,14 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportboard", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/reportboard", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/boardlogin");
         }
     }
     //  개인글 신고 관리자 권한 조회
-    @PostMapping("/ribbon/admin/post/individuallogin")
+    @PostMapping("/ribbon/admin/form/individuallogin")
     public void adminIndividualLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
         String userid = adminLoginRequestDto.getUserid();
         String password = adminLoginRequestDto.getPassword();
@@ -673,14 +673,14 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportindividual", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/reportindividual", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/individuallogin");
         }
     }
     //  단체글 신고 관리자 권한 조회
-    @PostMapping("/ribbon/admin/post/grouplogin")
+    @PostMapping("/ribbon/admin/form/grouplogin")
     public void adminGroupLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
         String userid = adminLoginRequestDto.getUserid();
         String password = adminLoginRequestDto.getPassword();
@@ -690,14 +690,14 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportgroup", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/reportgroup", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/grouplogin");
         }
     }
     //  중고글 신고 관리자 권한 조회
-    @PostMapping("/ribbon/admin/post/usedlogin")
+    @PostMapping("/ribbon/admin/form/usedlogin")
     public void adminUsedLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
         String userid = adminLoginRequestDto.getUserid();
         String password = adminLoginRequestDto.getPassword();
@@ -707,14 +707,14 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportused", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/reportused", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/usedlogin");
         }
     }
     //  유저 신고 관리자 권한 조회
-    @PostMapping("/ribbon/admin/post/userlogin")
+    @PostMapping("/ribbon/admin/form/userlogin")
     public void adminUserLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
         String userid = adminLoginRequestDto.getUserid();
         String password = adminLoginRequestDto.getPassword();
@@ -725,7 +725,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
                 HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-                ResponseEntity<String> result = restTemplate.exchange(ip+"/reportuser", HttpMethod.GET, entity, String.class);
+                ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/reportuser", HttpMethod.GET, entity, String.class);
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.sendRedirect("/ribbon/admin/userlogin");
@@ -733,7 +733,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
 
     }
     //  커뮤니티 댓글 신고 관리자 권한 조회
-    @PostMapping("/ribbon/admin/post/commentslogin")
+    @PostMapping("/ribbon/admin/form/commentslogin")
     public void adminCommentsLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
         String userid = adminLoginRequestDto.getUserid();
         String password = adminLoginRequestDto.getPassword();
@@ -743,14 +743,14 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
                 HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-                ResponseEntity<String> result = restTemplate.exchange(ip+"/reportcomments", HttpMethod.GET, entity, String.class);
+                ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/reportcomments", HttpMethod.GET, entity, String.class);
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.sendRedirect("/ribbon/admin/commentslogin");
             }
     }
     //  개인 댓글 신고 관리자 권한 조회
-    @PostMapping("/ribbon/admin/post/individualcommentslogin")
+    @PostMapping("/ribbon/admin/form/individualcommentslogin")
     public void adminIndividualCommentsLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
         String userid = adminLoginRequestDto.getUserid();
         String password = adminLoginRequestDto.getPassword();
@@ -760,14 +760,14 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportindividualcomments", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/reportindividualcomments", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/individualcommentslogin");
         }
     }
     //  단체 댓글 신고 관리자 권한 조회
-    @PostMapping("/ribbon/admin/post/groupcommentslogin")
+    @PostMapping("/ribbon/admin/form/groupcommentslogin")
     public void adminGroupCommentsLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
         String userid = adminLoginRequestDto.getUserid();
         String password = adminLoginRequestDto.getPassword();
@@ -777,14 +777,14 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportgroupcomments", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/reportgroupcomments", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/groupcommentslogin");
         }
     }
     //  중고 댓글 신고 관리자 권한 조회
-    @PostMapping("/ribbon/admin/post/usedcommentslogin")
+    @PostMapping("/ribbon/admin/form/usedcommentslogin")
     public void adminUsedCommentsLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
         String userid = adminLoginRequestDto.getUserid();
         String password = adminLoginRequestDto.getPassword();
@@ -794,7 +794,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange(ip+"/reportusedcomments", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/reportusedcomments", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/usedcommentslogin");
@@ -802,7 +802,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
     }
 
     //  공지사항 관리자 권한 조회
-    @PostMapping("/ribbon/admin/post/announcement")
+    @PostMapping("/ribbon/admin/form/announcement")
     public void adminAnnouncementLogin(@RequestBody AdminLoginRequestDto adminLoginRequestDto, HttpServletResponse response) throws IOException {
         String userid = adminLoginRequestDto.getUserid();
         String password = adminLoginRequestDto.getPassword();
@@ -812,7 +812,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange(ip+"/insertannouncement", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/insertannouncement", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/announcement");

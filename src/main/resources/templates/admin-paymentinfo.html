@@ -58,7 +58,7 @@
 <body>
 <h1>Payment Info</h1>
 <button onclick="location.href='/ribbon/admin/report'">맺음 신고 및 공지 목록</button>
-<button onclick="location.href='/ribbon/admin/inqueryPaymentInfo'">결제 문의 목록</button>
+<button onclick="location.href='/ribbon/admin/inquerypaymentinfo'">결제 문의 목록</button>
 <button type="button" onclick="SelectedHidePayments()">결제완료처리(수수료를 제외한 금액)</button>
 <table>
   <thead>
@@ -122,7 +122,7 @@
         if (xhrCsrf.status === 200) {
           const csrfToken = JSON.parse(xhrCsrf.response).csrfToken;
           const xhr = new XMLHttpRequest();
-          xhr.open('POST', '/ribbon/admin/post/hidepaymentinfo');
+          xhr.open('POST', '/ribbon/admin/form/hidepaymentinfo');
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.setRequestHeader('X-XSRF-TOKEN', csrfToken);
           xhr.send(JSON.stringify(selectedPayments));

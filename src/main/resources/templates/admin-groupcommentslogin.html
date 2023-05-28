@@ -107,7 +107,7 @@
           // send JSON data to server using AJAX
           $.ajax({
             type: 'POST',
-            url: '/ribbon/admin/post/groupcommentslogin',
+            url: '/ribbon/admin/form/groupcommentslogin',
             data: JSON.stringify(jsonData),
             contentType: 'application/json',
             success: function (data) {
@@ -132,7 +132,7 @@
 <body>
 <h1>GroupComments Report Login</h1>
 <button onclick="location.href='/ribbon/admin/report'">맺음 신고 및 공지 목록</button>
-<form id="form-id" th:action="@{/ribbon/admin/post/groupcommentslogin}" method="post">
+<form id="form-id" th:action="@{/ribbon/admin/form/groupcommentslogin}" method="post">
   <label for="userid">Admin:</label>
   <input type="text" id="userid" name="userid" required>
   <br>

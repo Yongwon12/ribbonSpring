@@ -130,7 +130,7 @@
         if (xhrCsrf.status === 200) {
           const csrfToken = JSON.parse(xhrCsrf.response).csrfToken;
           const xhr = new XMLHttpRequest();
-          xhr.open('POST', '/ribbon/admin/post/reportuseractivate');
+          xhr.open('POST', '/ribbon/admin/form/reportuseractivate');
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.setRequestHeader('X-XSRF-TOKEN', csrfToken);
           xhr.send(JSON.stringify(selectedUsers));
@@ -171,7 +171,7 @@
         if (xhrCsrf.status === 200) {
           const csrfToken = JSON.parse(xhrCsrf.response).csrfToken;
           const xhr = new XMLHttpRequest();
-          xhr.open('POST', '/ribbon/admin/post/reportuserdelete');
+          xhr.open('POST', '/ribbon/admin/form/reportuserdelete');
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.setRequestHeader('X-XSRF-TOKEN', csrfToken);
           xhr.send(JSON.stringify(selectedUsers));
