@@ -126,7 +126,7 @@
         if (xhrCsrf.status === 200) {
           const csrfToken = JSON.parse(xhrCsrf.response).csrfToken;
           const xhr = new XMLHttpRequest();
-          xhr.open('POST', '/ribbon/admin/form/reportgroupdelete');
+          xhr.open('DELETE', '/ribbon/admin/form/reportgroup');
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.setRequestHeader('X-XSRF-TOKEN', csrfToken);
           xhr.send(JSON.stringify(selectedGroups));

@@ -130,7 +130,7 @@
         if (xhrCsrf.status === 200) {
           const csrfToken = JSON.parse(xhrCsrf.response).csrfToken;
           const xhr = new XMLHttpRequest();
-          xhr.open('POST', '/ribbon/admin/form/reportboarddelete');
+          xhr.open('DELETE', '/ribbon/admin/form/reportboard');
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.setRequestHeader('X-XSRF-TOKEN', csrfToken);
           xhr.send(JSON.stringify(selectedBoards));

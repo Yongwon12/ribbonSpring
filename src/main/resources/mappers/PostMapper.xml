@@ -2484,12 +2484,11 @@
                middledescription,highdescription,career,titleimage,
                lowprice,middleprice,highprice,user.userid,user.nickname,
                region,contacttime,writedate FROM writementor
-                          LEFT JOIN user
+                          INNER JOIN user
                                     ON user.userid=writementor.userid
         WHERE (title LIKE CONCAT('%', #{query}, '%')
             OR category LIKE CONCAT('%', #{query}, '%')
             OR user.nickname LIKE CONCAT('%', #{query}, '%'))
-          AND user.userid IS NOT NULL
         ORDER BY writedate DESC
     </select>
 

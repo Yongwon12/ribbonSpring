@@ -302,7 +302,7 @@ public class LoginController {
         return "admin-inquiryinfo";
     }
     // 공지사항 정보 저장
-    @PostMapping("/ribbon/admin/postinsertannouncement")
+    @PostMapping("/ribbon/admin/announcement")
     public ResponseEntity<?> announcementInsert(@RequestBody PostAnnouncementRequest params) throws IOException{
         firebaseAnnouncementMessageService.sendMessageTo(
                 params.getTitle(),
@@ -311,7 +311,7 @@ public class LoginController {
         return new ResponseEntity<>(postService.saveAnnouncementPost(params),HttpStatus.OK);
     }
     // 공지사항 입력 폼
-    @GetMapping("/ribbon/admin/insertannouncement")
+    @GetMapping("/ribbon/admin/announcement")
     public String announcementInsert() {
         return "admin-announcement";
     }
@@ -333,7 +333,7 @@ public class LoginController {
         return "admin-adminannouncement";
     }
     // 관리자페이지 공지사항 삭제
-    @PostMapping("/ribbon/admin/form/adminannouncementdelete")
+    @DeleteMapping("/ribbon/admin/form/adminannouncement")
     public String adminannouncementInfoDelete(@RequestBody List<Map<String,String>> params) {
         for (Map<String,String> announcement:params) {
             String id = announcement.get("id");
@@ -350,7 +350,7 @@ public class LoginController {
         return "admin-reportpostdeleteuser";
     }
     // 신고 유저 정보 저장
-    @PostMapping("/ribbon/admin/reportinsertuser")
+    @PostMapping("/ribbon/admin/reportuser")
     public ResponseEntity<?> userReportInsert(@RequestBody PostReportUserResponse params) {
         return new ResponseEntity<>(postService.saveReportUserPost(params),HttpStatus.OK);
     }
@@ -362,7 +362,7 @@ public class LoginController {
         return "admin-reportpostdeletementor";
     }
     // 신고 멘토글 정보 저장
-    @PostMapping("/ribbon/admin/reportinsertmentor")
+    @PostMapping("/ribbon/admin/reportmentor")
     public ResponseEntity<?> mentorReportInsert(@RequestBody PostWritementorDTO params) {
         return new ResponseEntity<>(postService.saveReportMentorPost(params), HttpStatus.OK);
     }
@@ -374,7 +374,7 @@ public class LoginController {
         return "admin-reportpostdeleteboard";
     }
     // 신고 커뮤니티글 정보 저장
-    @PostMapping("/ribbon/admin/reportinsertboard")
+    @PostMapping("/ribbon/admin/reportboard")
     public ResponseEntity<?> boardReportInsert(@RequestBody PostReportBoardResponse params) {
         return new ResponseEntity<>(postService.saveReportBoardPost(params), HttpStatus.OK);
     }
@@ -386,7 +386,7 @@ public class LoginController {
         return "admin-reportpostdeleteindividual";
     }
     // 신고 개인글 정보 저장
-    @PostMapping("/ribbon/admin/reportinsertindividual")
+    @PostMapping("/ribbon/admin/reportindividual")
     public ResponseEntity<?> individualReportInsert(@RequestBody PostReportIndividualResponse params) {
         return new ResponseEntity<>(postService.saveReportIndividualPost(params),HttpStatus.OK);
     }
@@ -398,7 +398,7 @@ public class LoginController {
         return "admin-reportpostdeletegroup";
     }
     // 신고 단체글 정보 저장
-    @PostMapping("/ribbon/admin/reportinsertgroup")
+    @PostMapping("/ribbon/admin/reportgroup")
     public ResponseEntity<?> groupReportInsert(@RequestBody PostReportGroupResponse params) {
         return new ResponseEntity<>(postService.saveReportGroupPost(params),HttpStatus.OK);
     }
@@ -410,7 +410,7 @@ public class LoginController {
         return "admin-reportpostdeleteused";
     }
     // 신고 중고글 정보 저장
-    @PostMapping("/ribbon/admin/reportinsertused")
+    @PostMapping("/ribbon/admin/reportused")
     public ResponseEntity<?> usedReportInsert(@RequestBody PostReportUsedResponse params) {
 
         return new ResponseEntity<>(postService.saveReportUsedPost(params),HttpStatus.OK);
@@ -423,7 +423,7 @@ public class LoginController {
         return "admin-reportcomments";
     }
     // 신고 커뮤니티 댓글 정보 저장
-    @PostMapping("/ribbon/admin/reportinsertcomments")
+    @PostMapping("/ribbon/admin/reportcomments")
     public ResponseEntity<?> commentsReportInsert(@RequestBody PostReportCommentsResponse params) {
         return new ResponseEntity<>(postService.saveReportCommentsPost(params),HttpStatus.OK);
     }
@@ -435,7 +435,7 @@ public class LoginController {
         return "admin-reportindividualcomments";
     }
     // 신고 개인 댓글 정보 저장
-    @PostMapping("/ribbon/admin/reportinsertindividualcomments")
+    @PostMapping("/ribbon/admin/reportindividualcomments")
     public ResponseEntity<?> individualcommentsReportInsert(@RequestBody PostReportCommentsResponse params) {
         return new ResponseEntity<>(postService.saveReportIndividualCommentsPost(params),HttpStatus.OK);
     }
@@ -447,7 +447,7 @@ public class LoginController {
         return "admin-reportgroupcomments";
     }
     // 신고 단체 댓글 정보 저장
-    @PostMapping("/ribbon/admin/reportinsertgroupcomments")
+    @PostMapping("/ribbon/admin/reportgroupcomments")
     public ResponseEntity<?> groupcommentsReportInsert(@RequestBody PostReportCommentsResponse params) {
         return new ResponseEntity<>(postService.saveReportGroupCommentsPost(params),HttpStatus.OK);
     }
@@ -459,12 +459,12 @@ public class LoginController {
         return "admin-reportusedcomments";
     }
     // 신고 중고 댓글 정보 저장
-    @PostMapping("/ribbon/admin/reportinsertusedcomments")
+    @PostMapping("/ribbon/admin/reportusedcomments")
     public ResponseEntity<?> usedcommentsReportInsert(@RequestBody PostReportCommentsResponse params) {
         return new ResponseEntity<>(postService.saveReportUsedCommentsPost(params),HttpStatus.OK);
     }
     // 신고 유저 정보 수정
-    @PostMapping("/ribbon/admin/form/reportuserdelete")
+    @PutMapping("/ribbon/admin/form/reportuser")
     public String userReportDelete(@RequestBody List<Map<String,String>> params) {
         for (Map<String,String> user:params) {
             String userId = user.get("userid");
@@ -475,7 +475,7 @@ public class LoginController {
         return "admin-reportpostdeleteuser";
     }
     // 활성화 유저 정보 수정 및 삭제
-    @PostMapping("/ribbon/admin/form/reportuseractivate")
+    @PutMapping("/ribbon/admin/form/reportuseractivate")
     public String userActivateUpdate(@RequestBody List<Map<String,String>> params) {
         for (Map<String,String> user:params) {
             String userId = user.get("userid");
@@ -485,7 +485,7 @@ public class LoginController {
         return "admin-reportpostdeleteuser";
     }
     // 관리자페이지 신고 멘토 글 정보 삭제
-    @PostMapping("/ribbon/admin/form/reportmentordelete")
+    @DeleteMapping("/ribbon/admin/form/reportmentor")
     public String mentorReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> mentor : params) {
@@ -497,7 +497,7 @@ public class LoginController {
         return "admin-reportpostdeletementor";
     }
     // 관리자페이지 신고 커뮤니티글 정보 삭제
-    @PostMapping("/ribbon/admin/form/reportboarddelete")
+    @DeleteMapping("/ribbon/admin/form/reportboard")
     public String boardReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> board : params) {
@@ -508,7 +508,7 @@ public class LoginController {
         return "admin-reportpostdeleteboard";
     }
     // 관리자페이지 신고 개인글 정보 삭제
-    @PostMapping("/ribbon/admin/form/reportindividualdelete")
+    @DeleteMapping("/ribbon/admin/form/reportindividual")
     public String individualReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> individual : params) {
@@ -519,7 +519,7 @@ public class LoginController {
         return "admin-reportpostdeleteindividual";
     }
     // 관리자페이지 신고 단체글 정보 삭제
-    @PostMapping("/ribbon/admin/form/reportgroupdelete")
+    @DeleteMapping("/ribbon/admin/form/reportgroup")
     public String groupReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> group : params) {
@@ -530,7 +530,7 @@ public class LoginController {
         return "admin-reportpostdeletegroup";
     }
     // 관리자페이지 신고 중고글 정보 삭제
-    @PostMapping("/ribbon/admin/form/reportuseddelete")
+    @DeleteMapping("/ribbon/admin/form/reportused")
     public String usedReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> used : params) {
@@ -542,7 +542,7 @@ public class LoginController {
     }
 
     // 관리자페이지 신고 커뮤니티 댓글 정보 삭제
-    @PostMapping("/ribbon/admin/form/reportcommentsdelete")
+    @DeleteMapping("/ribbon/admin/form/reportcomments")
     public String commentsReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> comments : params) {
@@ -555,7 +555,7 @@ public class LoginController {
         return "admin-reportcomments";
     }
     // 관리자페이지 신고 개인 댓글 정보 삭제
-    @PostMapping("/ribbon/admin/form/reportindividualcommentsdelete")
+    @DeleteMapping("/ribbon/admin/form/reportindividualcomments")
     public String individualCommentsReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> individualcomments : params) {
@@ -568,7 +568,7 @@ public class LoginController {
         return "admin-reportindividualcomments";
     }
     // 관리자페이지 신고 단체 댓글 정보 삭제
-    @PostMapping("/ribbon/admin/form/reportgroupcommentsdelete")
+    @DeleteMapping("/ribbon/admin/form/reportgroupcomments")
     public String groupCommentsReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> groupcomments : params) {
@@ -581,7 +581,7 @@ public class LoginController {
         return "admin-reportgroupcomments";
     }
     // 관리자페이지 신고 중고 댓글 정보 삭제
-    @PostMapping("/ribbon/admin/form/reportusedcommentsdelete")
+    @DeleteMapping("/ribbon/admin/form/reportusedcomments")
     public String usedCommentsReportDelete(@RequestBody List<Map<String,String>> params) {
         System.out.println(params);
         for (Map<String, String> usedcomments : params) {
@@ -812,7 +812,7 @@ public void adminBoardLogin(@RequestBody AdminLoginRequestDto adminLoginRequestD
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + tokenInfo.getAccessToken());
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-            ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/insertannouncement", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> result = restTemplate.exchange(developAdminIp+"/announcement", HttpMethod.GET, entity, String.class);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendRedirect("/ribbon/admin/announcement");
