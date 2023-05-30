@@ -1160,7 +1160,7 @@
                  WHERE
                      boardwrite.id BETWEEN 1 AND 10
                    AND user.userid is NOT NULL
-                   AND likedcount + commentcount + inquirycount > 0 -- 이 부분 나중에 댓글수 5개 이상일때로 고정
+                   AND likedcount + commentcount + inquirycount > 0 -- 이 부분 나중에 댓글수 10개 이상일때로 고정
                    AND writedate >= (NOW() - INTERVAL '180' MINUTE) -- 3시간 이내에 작성된 글
              ) AS sub
         WHERE
