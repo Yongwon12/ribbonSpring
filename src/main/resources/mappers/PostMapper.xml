@@ -1399,11 +1399,11 @@
             individualcomments.commentscategory
         FROM
             individualwrite
-                LEFT JOIN individualcomments
+                INNER JOIN individualcomments
                           ON individualcomments.inherentid = individualwrite.individualid
-                LEFT JOIN user AS writer
+                INNER JOIN user AS writer
                           ON writer.userid = individualwrite.userid
-                LEFT JOIN user AS commenter
+                INNER JOIN user AS commenter
                           ON commenter.userid = individualcomments.userid
         WHERE
             writer.userid = #{userid}
@@ -1421,11 +1421,11 @@
             groupcomments.commentscategory
         FROM
             groupwrite
-                LEFT JOIN groupcomments
+                INNER JOIN groupcomments
                           ON groupcomments.inherentid = groupwrite.groupid
-                LEFT JOIN user AS writer
+                INNER JOIN user AS writer
                           ON writer.userid = groupwrite.userid
-                LEFT JOIN user AS commenter
+                INNER JOIN user AS commenter
                           ON commenter.userid = groupcomments.userid
         WHERE
             writer.userid = #{userid}
@@ -1443,11 +1443,11 @@
             usedcomments.commentscategory
         FROM
             usedwrite
-                LEFT JOIN usedcomments
+                INNER JOIN usedcomments
                           ON usedcomments.inherentid = usedwrite.usedid
-                LEFT JOIN user AS writer
+                INNER JOIN user AS writer
                           ON writer.userid = usedwrite.userid
-                LEFT JOIN user AS commenter
+                INNER JOIN user AS commenter
                           ON commenter.userid = usedcomments.userid
         WHERE
             writer.userid = #{userid}
