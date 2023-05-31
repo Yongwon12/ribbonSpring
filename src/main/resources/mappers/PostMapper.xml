@@ -1376,11 +1376,11 @@
             comments.commentscategory
         FROM
             boardwrite
-                LEFT JOIN comments
+                INNER JOIN comments
                           ON comments.inherentid = boardwrite.boardid
-                LEFT JOIN user AS writer
+                INNER JOIN user AS writer
                           ON writer.userid = boardwrite.userid
-                LEFT JOIN user AS commenter
+                INNER JOIN user AS commenter
                           ON commenter.userid = comments.userid
         WHERE
             writer.userid = #{userid}
