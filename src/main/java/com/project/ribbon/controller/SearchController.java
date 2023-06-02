@@ -26,7 +26,7 @@ import java.util.Map;
 public class SearchController {
     private final PostService postService;
     @PostMapping("/searchwritementor")
-    public ResponseEntity<?> searchWritementors(@RequestBody PostWritementorDTO query, Model model) {
+    public ResponseEntity<?> searchWriteMentor(@RequestBody PostWritementorDTO query, Model model) {
         Map<String, Object> obj = new HashMap<>();
         List<PostWritementorDTO> posts = postService.findPostByWriteMentorSearch(query.getQuery());
         model.addAttribute("posts", posts);
