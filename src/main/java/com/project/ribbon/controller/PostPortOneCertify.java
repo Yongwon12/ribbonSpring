@@ -3,10 +3,8 @@ package com.project.ribbon.controller;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.project.ribbon.dto.PaymentCancelRequest;
-import com.project.ribbon.dto.PaymentDTO;
-import com.project.ribbon.dto.PaymentData;
-import com.project.ribbon.dto.PaymentRequest;
+import com.project.ribbon.domain.post.PostUserUpdateRequest;
+import com.project.ribbon.dto.*;
 import com.project.ribbon.repository.MemberRepository;
 import com.project.ribbon.service.FirebaseCloudMessageRentalService;
 import com.project.ribbon.service.PostService;
@@ -16,6 +14,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -23,10 +22,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 
 @RestController
@@ -91,73 +87,73 @@ public class PostPortOneCertify {
 
 
     // 폰 인증
-//    @PostMapping("/certificationsribbon")
-//    public ResponseEntity<?> handleCertificationsRequest(@RequestBody Map<String, Object> body) {
-//        String impUid = (String) body.get("imp_uid");
-//        Long userid = (Long) body.get("userid");
-//        try {
-//            // 토큰 발급
-//            WebClient webClient = WebClient.builder().build();
-//            String url = "https://api.iamport.kr/users/getToken";
-//            Map<String, Object> request = new HashMap<>();
-//            request.put("imp_key", impKey);
-//            request.put("imp_secret", impSecret);
-//            Mono<String> response = webClient.post()
-//                    .uri(url)
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .bodyValue(request)
-//                    .retrieve()
-//                    .bodyToMono(String.class);
-//            String responseBody = response.block();
-//            JsonElement responseJson = JsonParser.parseString(responseBody);
-//            JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
-//
-//            // imp_uid로 인증 정보 조회
-//            String getCertificationsUrl = "https://api.iamport.kr/certifications/" + impUid;
-//            HttpHeaders getCertificationsHeaders = new HttpHeaders();
-//            String accessToken = "Bearer " + responseObj.get("access_token").getAsString();
-//            getCertificationsHeaders.set("Authorization", accessToken);
-//            HttpEntity<Void> getCertificationsRequest = new HttpEntity<>(getCertificationsHeaders);
-//            ResponseEntity<Map> getCertificationsResponse = new RestTemplate().exchange(getCertificationsUrl, HttpMethod.GET, getCertificationsRequest, Map.class);
-//            Map certificationsInfo = getCertificationsResponse.getBody();
-//
-//            // unique_key: 개인식별 고유 키, unique_in_site: 사이트 별 개인식별 고유 키
-//            String uniqueKey = (String) certificationsInfo.get("unique_key");
-//            String uniqueInSite = (String) certificationsInfo.get("unique_in_site");
-//            String name = (String) certificationsInfo.get("name");
-//            String gender = (String) certificationsInfo.get("gender");
-//            String birth = (String) certificationsInfo.get("birth");
-//
-//            // 연령 제한 로직
-////            int birthYear = Integer.parseInt(birth.substring(0, 4));
-////            if (birthYear <= 1999) {
-////                // 연령 만족
-////            } else {
-////                // 연령 미달
-////            }
-//
-//            // 1인 1계정 허용 로직 데이터 베이스에 인증정보 저장
-//            Optional<User> user = memberRepository.findByUniqueKey(uniqueKey);
-//            if (user.isEmpty()) {
-//                PostUserUpdateRequest newUserUniqueInfo = new PostUserUpdateRequest();
-//                newUserUniqueInfo.setImpUid(impUid);
-//                newUserUniqueInfo.setUniqueKey(uniqueKey);
-//                newUserUniqueInfo.setUniqueInSite(uniqueInSite);
-//                newUserUniqueInfo.setUserid(userid);
-//                postService.updateUserUniquePost(newUserUniqueInfo);
-//                ResponseEntity.ok("인증 정보를 성공적으로 저장했습니다.");
+    @PostMapping("/certificationsribbon")
+    public ResponseEntity<?> handleCertificationsRequest(@RequestBody Map<String, Object> body) {
+        String impUid = (String) body.get("imp_uid");
+        Long userid = (Long) body.get("userid");
+        try {
+            // 토큰 발급
+            WebClient webClient = WebClient.builder().build();
+            String url = "https://api.iamport.kr/users/getToken";
+            Map<String, Object> request = new HashMap<>();
+            request.put("imp_key", impKey);
+            request.put("imp_secret", impSecret);
+            Mono<String> response = webClient.post()
+                    .uri(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(request)
+                    .retrieve()
+                    .bodyToMono(String.class);
+            String responseBody = response.block();
+            JsonElement responseJson = JsonParser.parseString(responseBody);
+            JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
+
+            // imp_uid로 인증 정보 조회
+            String getCertificationsUrl = "https://api.iamport.kr/certifications/" + impUid;
+            HttpHeaders getCertificationsHeaders = new HttpHeaders();
+            String accessToken = "Bearer " + responseObj.get("access_token").getAsString();
+            getCertificationsHeaders.set("Authorization", accessToken);
+            HttpEntity<Void> getCertificationsRequest = new HttpEntity<>(getCertificationsHeaders);
+            ResponseEntity<Map> getCertificationsResponse = new RestTemplate().exchange(getCertificationsUrl, HttpMethod.GET, getCertificationsRequest, Map.class);
+            Map certificationsInfo = getCertificationsResponse.getBody();
+
+            // unique_key: 개인식별 고유 키, unique_in_site: 사이트 별 개인식별 고유 키
+            String uniqueKey = (String) certificationsInfo.get("unique_key");
+            String uniqueInSite = (String) certificationsInfo.get("unique_in_site");
+            String name = (String) certificationsInfo.get("name");
+            String gender = (String) certificationsInfo.get("gender");
+            String birth = (String) certificationsInfo.get("birth");
+
+            // 연령 제한 로직
+//            int birthYear = Integer.parseInt(birth.substring(0, 4));
+//            if (birthYear <= 1999) {
+//                // 연령 만족
 //            } else {
-//                ResponseEntity.ok("인증이 완료되었습니다.");
+//                // 연령 미달
 //            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
-//        }
-//        return ResponseEntity.ok("Success");
-//
-//
-//    }
+
+            // 1인 1계정 허용 로직 데이터 베이스에 인증정보 저장
+            Optional<User> user = memberRepository.findByUniqueKey(uniqueKey);
+            if (user.isEmpty()) {
+                PostUserUpdateRequest newUserUniqueInfo = new PostUserUpdateRequest();
+                newUserUniqueInfo.setImpUid(impUid);
+                newUserUniqueInfo.setUniqueKey(uniqueKey);
+                newUserUniqueInfo.setUniqueInSite(uniqueInSite);
+                newUserUniqueInfo.setUserid(userid);
+                postService.updateUserUniquePost(newUserUniqueInfo);
+                ResponseEntity.ok("인증 정보를 성공적으로 저장했습니다.");
+            } else {
+                ResponseEntity.ok("인증이 완료되었습니다.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
+        return ResponseEntity.ok("Success");
+
+
+    }
     // 결제완료 검증
     @PostMapping("/payments/ribboncomplete")
     public ResponseEntity<?> completePayment(@RequestBody PaymentRequest paymentRequest) {
