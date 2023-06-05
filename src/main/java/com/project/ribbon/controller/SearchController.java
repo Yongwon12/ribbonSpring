@@ -23,6 +23,7 @@ import java.util.Map;
 @RestController
 @Validated
 @ControllerAdvice
+// 검색 기능 라이브러리 사용하여 수정하기
 public class SearchController {
     private final PostService postService;
     @PostMapping("/searchwritementor")
