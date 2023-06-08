@@ -51,7 +51,7 @@ public class PostPortOneCertify {
         this.firebaseCloudMessageRentalService = firebaseCloudMessageRentalService;
     }
 
-    // 엑세스 토큰 얻기
+    // 엑세스 토큰
     @PostMapping("/ribbonaccesstoken")
     public ResponseEntity<String> getAccessToken(@RequestBody Map<String, Object> requestBody) {
         try {
