@@ -218,7 +218,7 @@ public class LoginController {
                             .retrieve()
                             .bodyToMono(String.class);
                     String responseBody = response.block();
-                    JsonElement responseJson = JsonParser.parseString(responseBody);
+                    JsonElement responseJson = JsonParser.parseString(Objects.requireNonNull(responseBody));
                     JsonObject responseObj = responseJson.getAsJsonObject().getAsJsonObject("response");
                     if (responseObj != null && !responseObj.isJsonNull()) {
                         String accessToken = "Bearer " + responseObj.get("access_token").getAsString();
@@ -250,11 +250,6 @@ public class LoginController {
                         if (Objects.requireNonNull(apiStatus).is2xxSuccessful()) {
 
                             String paymentUrl = "https://api.iamport.kr/payments/find/" + merchant_uid;
-                            Mono<ResponseEntity<PaymentData>> paymentResponse = webClient.get()
-                                    .uri(paymentUrl)
-                                    .header(HttpHeaders.AUTHORIZATION, accessToken)
-                                    .retrieve()
-                                    .toEntity(PaymentData.class);
                             PaymentData paymentData = webClient.get()
                                     .uri(paymentUrl)
                                     .header(HttpHeaders.AUTHORIZATION, accessToken)
@@ -265,20 +260,25 @@ public class LoginController {
                             String status = Objects.requireNonNull(paymentData).getResponse().getStatus();
                             // 결과를 처리하는 로직
                             switch (status) {
-                                case "paid":
+                                case "paid" -> {
                                     return ResponseEntity.ok("결제 완료 상태입니다.").toString();
-                                case "ready":
+                                }
+                                case "ready" -> {
                                     return ResponseEntity.ok("결제 준비 상태입니다.").toString();
-                                case "failed":
+                                }
+                                case "failed" -> {
                                     return ResponseEntity.ok("결제 실패 상태입니다.").toString();
-                                case "cancelled":
+                                }
+                                case "cancelled" -> {
                                     PostBuyerInfoDTO deleteparams = new PostBuyerInfoDTO();
                                     deleteparams.setMerchantUid(merchant_uid);
                                     postService.deleteBuyerInfoPost(deleteparams);
                                     postService.deletePaidInfoPost(deleteparams);
                                     return "admin-inquerypaymentinfo";
-                                default:
+                                }
+                                default -> {
                                     return ResponseEntity.badRequest().build().toString();
+                                }
                             }
                         }
                         return ResponseEntity.ok().build().toString();
@@ -307,7 +307,7 @@ public class LoginController {
         firebaseAnnouncementMessageService.sendMessageTo(
                 params.getTitle(),
                 params.getContent());
-        ResponseEntity.ok().build().getStatusCodeValue();
+        ResponseEntity.ok().build().getStatusCode();
         return new ResponseEntity<>(postService.saveAnnouncementPost(params),HttpStatus.OK);
     }
     // 공지사항 입력 폼
