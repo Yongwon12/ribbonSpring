@@ -13,6 +13,7 @@ import com.project.ribbon.enums.ExceptionEnum;
 import com.project.ribbon.filter.JwtAuthenticationFilter;
 import com.project.ribbon.provide.JwtTokenProvider;
 import com.project.ribbon.response.ApiException;
+import com.project.ribbon.response.BadRequestException;
 import com.project.ribbon.service.*;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -141,23 +142,27 @@ public class PostController {
 
     // 커뮤니티 게시글 조회
     @GetMapping("/board")
-    public ResponseEntity<?> boardWrite(Model model) {
+    public ResponseEntity<Map<String, Object>> boardWrite(Model model) {
         try {
-            Map<String, Object> obj = new HashMap<>();
             List<PostResponse> posts = postService.findAllPost();
             model.addAttribute("posts", posts);
-            obj.put("boardwrite", posts);
-            return new ResponseEntity<>(obj, HttpStatus.OK);
-        } catch (ApiException e) {
-// Handle the ApiException here
-            String errorMessage = "An error occurred while processing the request.";
-            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+
+            Map<String, Object> obj = new HashMap<>();
+            obj.put("code", HttpStatus.OK.value());
+            obj.put("data", posts);
+
+            return ResponseEntity.ok(obj);
+        } catch (BadRequestException e) {
+            // Handle the BadRequestException here
+            String errorMessage = "Bad request.";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", errorMessage));
         } catch (Exception e) {
-// Handle any other exception types here
+            // Handle any other exception types here
             String errorMessage = "An unexpected error occurred.";
-            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", errorMessage));
         }
     }
+
     // 커뮤니티 특정 게시글 조회
     @PostMapping("/board")
     public ResponseEntity<?> boardWriteOne(@RequestBody PostResponse params, Model model) throws ApiException {
